@@ -14,6 +14,11 @@ class Config:
         return self.raw['name']
 
     @property
+    def bridgeid(self):
+        """ID of the bridge."""
+        return self.raw['bridgeid']
+
+    @property
     def mac(self):
         """Mac address of the bridge."""
         return self.raw['mac']

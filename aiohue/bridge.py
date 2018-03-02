@@ -3,7 +3,7 @@ import async_timeout
 from .config import Config
 from .groups import Groups
 from .lights import Lights
-from .errors import raise_error
+from .errors import raise_error, ResponseError
 from .util import get_websession
 
 
@@ -31,19 +31,19 @@ class Bridge:
 
         https://developers.meethue.com/documentation/configuration-api#71_create_user
         """
-        result = await self._request('post', '', {
+        result = await self.request('post', '', {
             'devicetype': device_type
         }, auth=False)
         self.username = result[0]['success']['username']
         return self.username
 
     async def initialize(self):
-        result = await self._request('get', '')
-        self.config = Config(result['config'], self._request)
-        self.groups = Groups(result['groups'], self._request)
-        self.lights = Lights(result['lights'], self._request)
+        result = await self.request('get', '')
+        self.config = Config(result['config'], self.request)
+        self.groups = Groups(result['groups'], self.request)
+        self.lights = Lights(result['lights'], self.request)
 
-    async def _request(self, method, path, json=None, auth=True):
+    async def request(self, method, path, json=None, auth=True):
         """Make a request to the API."""
         url = 'http://{}/api/'.format(self.host)
         if auth:
@@ -52,6 +52,9 @@ class Bridge:
 
         async with async_timeout.timeout(10):
             async with self.websession.request(method, url, json=json) as res:
+                if res.content_type != 'application/json':
+                    raise ResponseError(
+                        'Invalid content type: {}'.format(res.content_type))
                 data = await res.json()
                 _raise_on_error(data)
                 return data

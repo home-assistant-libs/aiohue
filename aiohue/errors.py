@@ -8,6 +8,10 @@ class AiohueException(Exception):
     """Base error for aiohue."""
 
 
+class ResponseError(AiohueException):
+    """Invalid response."""
+
+
 class Unauthorized(AiohueException):
     """Username is not authorized."""
 
