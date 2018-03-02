@@ -1,0 +1,7 @@
+*.py[cod]
+lib
+bin
+pip-selfcheck.json
+pyvenv.cfg
+dist
+aiohue.egg-info
