@@ -1,4 +1,3 @@
-import async_timeout
 import aiohttp
 
 from .bridge import Bridge
@@ -12,7 +11,6 @@ async def discover_nupnp(*, websession: aiohttp.ClientSession = None):
     if websession is None:
         websession = get_websession()
 
-    async with async_timeout.timeout(10):
-        async with websession.get(URL_NUPNP) as res:
-            return [Bridge(item['internalipaddress'], websession=websession)
-                    for item in (await res.json())]
+    async with websession.get(URL_NUPNP) as res:
+        return [Bridge(item['internalipaddress'], websession=websession)
+                for item in (await res.json())]

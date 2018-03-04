@@ -1,9 +1,11 @@
-import async_timeout
+import asyncio
+
+from aiohttp import client_exceptions
 
 from .config import Config
 from .groups import Groups
 from .lights import Lights
-from .errors import raise_error, ResponseError
+from .errors import raise_error, ResponseError, RequestError
 from .util import get_websession
 
 
@@ -38,7 +40,12 @@ class Bridge:
         return self.username
 
     async def initialize(self):
-        result = await self.request('get', '')
+        try:
+            result = await self.request('get', '')
+        except client_exceptions.ClientError:
+            raise RequestError(
+                'Unable to connect to {}'.format(self.host)) from None
+
         self.config = Config(result['config'], self.request)
         self.groups = Groups(result['groups'], self.request)
         self.lights = Lights(result['lights'], self.request)
@@ -50,14 +57,13 @@ class Bridge:
             url += '{}/'.format(self.username)
         url += path
 
-        async with async_timeout.timeout(10):
-            async with self.websession.request(method, url, json=json) as res:
-                if res.content_type != 'application/json':
-                    raise ResponseError(
-                        'Invalid content type: {}'.format(res.content_type))
-                data = await res.json()
-                _raise_on_error(data)
-                return data
+        async with self.websession.request(method, url, json=json) as res:
+            if res.content_type != 'application/json':
+                raise ResponseError(
+                    'Invalid content type: {}'.format(res.content_type))
+            data = await res.json()
+            _raise_on_error(data)
+            return data
 
 
 def _raise_on_error(data):

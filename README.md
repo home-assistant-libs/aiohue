@@ -1,6 +1,7 @@
-# Async Hue
+# Aiohue
+## Asynchronous library to control Phlipis Hue
 
-An async library for Python 3.5+ to control Philips Hue.
+Requires Python 3.5 and uses asyncio and aiohttp.
 
 ```python
 import asyncio
@@ -41,3 +42,18 @@ async def main():
 
 asyncio.get_event_loop().run_until_complete(main())
 ```
+
+## Timeouts
+
+Aiohue does not specify any timeouts for any requests. You will need to specify them in your own code. We recommend the `async_timeout` package:
+
+```python
+import async_timeout
+
+with async_timeout.timeout(10):
+    await bridge.initialize()
+```
+
+## Contribution guidelines
+
+Object hierarchy and property/method names should match the Philips Hue API.
