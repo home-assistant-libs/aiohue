@@ -3,17 +3,10 @@ from pprint import pprint
 import sys
 
 from aiohue.discovery import discover_nupnp
+import async_timeout
 
 
 async def main():
-    from aiohue import Bridge
-
-    bridge = Bridge('non-existing.blabla')
-
-    with async_timeout.timeout(10):
-        await bridge.initialize()
-    return
-
     bridges = await discover_nupnp()
     bridge = bridges[0]
 

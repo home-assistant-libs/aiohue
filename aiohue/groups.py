@@ -30,9 +30,9 @@ class Group:
         return self.raw['action']
 
     async def set_action(self, on=None, bri=None, hue=None, sat=None, xy=None,
-                        ct=None, alert=None, effect=None, transitiontime=None,
-                        bri_inc=None, sat_inc=None, hue_inc=None, ct_inc=None,
-                        xy_inc=None, scene=None):
+                         ct=None, alert=None, effect=None, transitiontime=None,
+                         bri_inc=None, sat_inc=None, hue_inc=None, ct_inc=None,
+                         xy_inc=None, scene=None):
         """Change action of a group."""
         data = {
             key: value for key, value in {
