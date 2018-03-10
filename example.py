@@ -3,7 +3,6 @@ from pprint import pprint
 import sys
 
 from aiohue.discovery import discover_nupnp
-import async_timeout
 
 
 async def main():
@@ -36,5 +35,11 @@ async def main():
     for id in bridge.groups:
         group = bridge.groups[id]
         print('{}: {}'.format(group.name, 'on' if group.action['on'] else 'off'))
+
+    print()
+    print('Scenes:')
+    for id in bridge.scenes:
+        scene = bridge.scenes[id]
+        print(scene.name)
 
 asyncio.get_event_loop().run_until_complete(main())

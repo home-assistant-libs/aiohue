@@ -1,5 +1,6 @@
 from .api import APIItems
 
+
 class Groups(APIItems):
     """Represents Hue Groups.
 
@@ -28,6 +29,14 @@ class Group:
     @property
     def action(self):
         return self.raw['action']
+
+    @property
+    def state(self):
+        return self.raw['state']
+
+    @property
+    def type(self):
+        return self.raw['type']
 
     async def set_action(self, on=None, bri=None, hue=None, sat=None, xy=None,
                          ct=None, alert=None, effect=None, transitiontime=None,

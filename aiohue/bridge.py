@@ -5,6 +5,7 @@ from aiohttp import client_exceptions
 from .config import Config
 from .groups import Groups
 from .lights import Lights
+from .scenes import Scenes
 from .errors import raise_error, ResponseError, RequestError
 from .util import get_websession
 
@@ -21,10 +22,10 @@ class Bridge:
         self.config = None
         self.groups = None
         self.lights = None
+        self.scenes = None
 
         # self.capabilities = None
         # self.rules = None
-        # self.scenes = None
         # self.schedules = None
         # self.sensors = None
 
@@ -49,6 +50,7 @@ class Bridge:
         self.config = Config(result['config'], self.request)
         self.groups = Groups(result['groups'], self.request)
         self.lights = Lights(result['lights'], self.request)
+        self.scenes = Scenes(result['scenes'], self.request)
 
     async def request(self, method, path, json=None, auth=True):
         """Make a request to the API."""

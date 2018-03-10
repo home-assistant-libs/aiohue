@@ -1,5 +1,6 @@
 from .api import APIItems
 
+
 class Lights(APIItems):
     """Represents Hue Lights.
 
@@ -22,12 +23,20 @@ class Light:
         return self.raw['uniqueid']
 
     @property
+    def manufacturername(self):
+        return self.raw['manufacturername']
+
+    @property
     def name(self):
         return self.raw['name']
 
     @property
     def state(self):
         return self.raw['state']
+
+    @property
+    def type(self):
+        return self.raw['type']
 
     async def set_state(self, on=None, bri=None, hue=None, sat=None, xy=None,
                         ct=None, alert=None, effect=None, transitiontime=None,

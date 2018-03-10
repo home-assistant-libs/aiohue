@@ -21,6 +21,9 @@ class APIItems:
             else:
                 self._items[id] = self._item_cls(id, raw_item, self._request)
 
+    def values(self):
+        return self._items.values()
+
     def __getitem__(self, obj_id):
         return self._items[obj_id]
 
