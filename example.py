@@ -2,11 +2,18 @@ import asyncio
 from pprint import pprint
 import sys
 
+import aiohttp
+
 from aiohue.discovery import discover_nupnp
 
 
 async def main():
-    bridges = await discover_nupnp()
+    async with aiohttp.ClientSession() as session:
+        await run(session)
+
+
+async def run(websession):
+    bridges = await discover_nupnp(websession)
     bridge = bridges[0]
 
     print('Found bridge at', bridge.host)

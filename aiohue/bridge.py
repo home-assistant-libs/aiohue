@@ -7,16 +7,15 @@ from .groups import Groups
 from .lights import Lights
 from .scenes import Scenes
 from .errors import raise_error, ResponseError, RequestError
-from .util import get_websession
 
 
 class Bridge:
     """Control a Hue bridge."""
 
-    def __init__(self, host, *, username=None, websession=None):
+    def __init__(self, host, websession, *, username=None):
         self.host = host
         self.username = username
-        self.websession = websession or get_websession()
+        self.websession = websession
         self.username = username
 
         self.config = None
