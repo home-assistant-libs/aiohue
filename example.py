@@ -30,6 +30,7 @@ async def run(websession):
 
     print('Name', bridge.config.name)
     print('Mac', bridge.config.mac)
+    print('API version', bridge.config.apiversion)
 
     print()
     print('Lights:')

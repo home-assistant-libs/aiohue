@@ -27,6 +27,15 @@ class Group:
         return self.raw['name']
 
     @property
+    def uniqueid(self):
+        """Unique ID for the group.
+
+        Requires API version 1.9+ and only for groups that are the type
+        Luminaire or Lightsource.
+        """
+        return self.raw.get('uniqueid')
+
+    @property
     def action(self):
         return self.raw['action']
 

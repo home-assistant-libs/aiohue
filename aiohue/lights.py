@@ -19,7 +19,7 @@ class Light:
         self._request = request
 
     @property
-    def unique_id(self):
+    def uniqueid(self):
         return self.raw['uniqueid']
 
     @property

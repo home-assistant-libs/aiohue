@@ -19,6 +19,11 @@ class Config:
         return self.raw['bridgeid']
 
     @property
+    def apiversion(self):
+        """Supported API version of the bridge."""
+        return self.raw['apiversion']
+
+    @property
     def mac(self):
         """Mac address of the bridge."""
         return self.raw['mac']
