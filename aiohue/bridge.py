@@ -40,11 +40,7 @@ class Bridge:
         return self.username
 
     async def initialize(self):
-        try:
-            result = await self.request('get', '')
-        except client_exceptions.ClientError:
-            raise RequestError(
-                'Unable to connect to {}'.format(self.host)) from None
+        result = await self.request('get', '')
 
         self.config = Config(result['config'], self.request)
         self.groups = Groups(result['groups'], self.request)
@@ -58,13 +54,18 @@ class Bridge:
             url += '{}/'.format(self.username)
         url += path
 
-        async with self.websession.request(method, url, json=json) as res:
-            if res.content_type != 'application/json':
-                raise ResponseError(
-                    'Invalid content type: {}'.format(res.content_type))
-            data = await res.json()
-            _raise_on_error(data)
-            return data
+        try:
+            async with self.websession.request(method, url, json=json) as res:
+                if res.content_type != 'application/json':
+                    raise ResponseError(
+                        'Invalid content type: {}'.format(res.content_type))
+                data = await res.json()
+                _raise_on_error(data)
+                return data
+        except client_exceptions.ClientError as err:
+            raise RequestError(
+                'Error requesting data from {}: {}'.format(self.host, err)
+            ) from None
 
 
 def _raise_on_error(data):
