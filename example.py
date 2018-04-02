@@ -50,4 +50,10 @@ async def run(websession):
         scene = bridge.scenes[id]
         print(scene.name)
 
+    print()
+    print('Sensors:')
+    for id in bridge.sensors:
+        sensor = bridge.sensors[id]
+        print(sensor.name)
+
 asyncio.get_event_loop().run_until_complete(main())

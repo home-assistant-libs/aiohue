@@ -6,6 +6,7 @@ from .config import Config
 from .groups import Groups
 from .lights import Lights
 from .scenes import Scenes
+from .sensors import Sensors
 from .errors import raise_error, ResponseError, RequestError
 
 
@@ -22,11 +23,11 @@ class Bridge:
         self.groups = None
         self.lights = None
         self.scenes = None
+        self.sensors = None
 
         # self.capabilities = None
         # self.rules = None
         # self.schedules = None
-        # self.sensors = None
 
     async def create_user(self, device_type):
         """Create a user.
@@ -46,6 +47,7 @@ class Bridge:
         self.groups = Groups(result['groups'], self.request)
         self.lights = Lights(result['lights'], self.request)
         self.scenes = Scenes(result['scenes'], self.request)
+        self.sensors = Sensors(result['sensors'], self.request)
 
     async def request(self, method, path, json=None, auth=True):
         """Make a request to the API."""
