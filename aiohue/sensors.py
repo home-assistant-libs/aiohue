@@ -36,15 +36,15 @@ class Sensor:
 
     @property
     def productname(self):
-        return self.raw['productname']
+        return self.raw.get('productname')
 
     @property
     def uniqueid(self):
-        return self.raw['uniqueid']
+        return self.raw.get('uniqueid')
 
     @property
     def swversion(self):
-        return self.raw['swversion']
+        return self.raw.get('swversion')
 
     @property
     def state(self):
