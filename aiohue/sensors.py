@@ -92,14 +92,14 @@ class HueDimmerSwitch(GenericSensor):
     def __init__(self, id, raw, request):
         self._buttonevent = raw['state'].get('buttonevent')
         self._lastupdated = raw['state'].get('lastupdated')
-        self._batterylevel = raw['config'].get('batterylevel')
+        self._battery = raw['config'].get('battery')
         self._reachable = raw['config'].get('reachable')
         self._on = raw['config'].get('on')
         super().__init__(id, raw, request)
 
     @property
-    def batterylevel(self):
-        return self._batterylevel
+    def battery(self):
+        return self._battery
 
     @property
     def buttonevent(self):
