@@ -290,14 +290,12 @@ class ZLLSwitchSensor(GenericZLLSensor):
 
 
 class CLIPLightLevelSensor(GenericCLIPSensor):
-    from math import pow
 
     def __init__(self, id, raw, request):
         super().__init__(id, raw, request)
         self._dark = raw['state'].get('dark')
         self._daylight = raw['state'].get('daylight')
         self._lightlevel = raw['state'].get('lightlevel')
-        self._unit_of_measurement = 'lx'
 
     @property
     def dark(self):
@@ -309,11 +307,7 @@ class CLIPLightLevelSensor(GenericCLIPSensor):
 
     @property
     def lightlevel(self):
-        return pow(10, (self._lightlevel - 1) / 10000)
-
-    @property
-    def unit_of_measurement(self):
-        return self._unit_of_measurement
+        return self._lightlevel
 
     async def set_config(self, on=None, tholddark=None, tholdoffset=None):
         """Change config of a CLIP LightLevel sensor."""
@@ -330,14 +324,12 @@ class CLIPLightLevelSensor(GenericCLIPSensor):
 
 
 class ZLLLightLevelSensor(GenericZLLSensor):
-    from math import pow
 
     def __init__(self, id, raw, request):
         super().__init__(id, raw, request)
         self._dark = raw['state'].get('dark')
         self._daylight = raw['state'].get('daylight')
         self._lightlevel = raw['state'].get('lightlevel')
-        self._unit_of_measurement = 'lx'
 
     @property
     def dark(self):
@@ -349,11 +341,7 @@ class ZLLLightLevelSensor(GenericZLLSensor):
 
     @property
     def lightlevel(self):
-        return pow(10, (self._lightlevel - 1) / 10000)
-
-    @property
-    def unit_of_measurement(self):
-        return self._unit_of_measurement
+        return self._lightlevel
 
     async def set_config(self, on=None, tholddark=None, tholdoffset=None):
         """Change config of a ZLL LightLevel sensor."""
@@ -373,15 +361,10 @@ class CLIPTemperatureSensor(GenericCLIPSensor):
     def __init__(self, id, raw, request):
         super().__init__(id, raw, request)
         self._temperature = raw['state'].get('temperature')
-        self._unit_of_measurement = '°C'
 
     @property
     def temperature(self):
-        return float(self._temperature) / 100
-
-    @property
-    def unit_of_measurement(self):
-        return self._unit_of_measurement
+        return self._temperature
 
     async def set_config(self, on=None):
         """Change config of a CLIP Temperature sensor."""
@@ -399,15 +382,10 @@ class ZLLTemperatureSensor(GenericZLLSensor):
     def __init__(self, id, raw, request):
         super().__init__(id, raw, request)
         self._temperature = raw['state'].get('temperature')
-        self._unit_of_measurement = '°C'
 
     @property
     def temperature(self):
-        return float(self._temperature) / 100
-
-    @property
-    def unit_of_measurement(self):
-        return self._unit_of_measurement
+        return self._temperature
 
     async def set_config(self, on=None):
         """Change config of a ZLL Temperature sensor."""
