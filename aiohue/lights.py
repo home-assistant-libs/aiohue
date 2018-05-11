@@ -27,6 +27,15 @@ class Light:
         return self.raw['manufacturername']
 
     @property
+    def modelid(self):
+        return self.raw['modelid']
+
+    @property
+    def productname(self):
+        # productname added in Bridge API 1.24 (published 03/05/2018)
+        return self.raw.get('productname')
+
+    @property
     def name(self):
         return self.raw['name']
 
