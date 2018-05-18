@@ -5,7 +5,7 @@ long_description = open('README.md').read()
 
 setup(
     name='aiohue',
-    version='1.3.1',
+    version='1.4.0',
     license='Apache License 2.0',
     url='https://github.com/balloob/aiohue',
     author='Paulus Schoutsen',
