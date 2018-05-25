@@ -47,6 +47,10 @@ class Group:
     def type(self):
         return self.raw['type']
 
+    @property
+    def lights(self):
+        return self.raw['lights']
+
     async def set_action(self, on=None, bri=None, hue=None, sat=None, xy=None,
                          ct=None, alert=None, effect=None, transitiontime=None,
                          bri_inc=None, sat_inc=None, hue_inc=None, ct_inc=None,
