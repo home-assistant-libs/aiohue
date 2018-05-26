@@ -12,6 +12,7 @@ setup(
     author_email='paulus@paulusschoutsen.nl',
     description='Python module to talk to Philips Hue.',
     long_description=long_description,
+    long_description_content_type='text/markdown',
     packages=['aiohue'],
     zip_safe=True,
     platforms='any',
