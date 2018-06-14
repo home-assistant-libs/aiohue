@@ -53,6 +53,6 @@ async def run(websession):
     print('Sensors:')
     for id in bridge.sensors:
         sensor = bridge.sensors[id]
-        print('{}: {}'.format(sensor.name, sensor.state))
+        print('{}: {}, {}, {}'.format(sensor.name, sensor.type, sensor.state, sensor.config))
 
 asyncio.get_event_loop().run_until_complete(main())

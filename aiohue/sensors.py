@@ -23,15 +23,25 @@ ZGP_SWITCH_BUTTON_2 = 16
 ZGP_SWITCH_BUTTON_3 = 17
 ZGP_SWITCH_BUTTON_4 = 18
 
-ZLL_SWITCH_BUTTON_1_CLICK = 1002
-ZLL_SWITCH_BUTTON_2_CLICK = 2002
-ZLL_SWITCH_BUTTON_3_CLICK = 3002
-ZLL_SWITCH_BUTTON_4_CLICK = 4002
+ZLL_SWITCH_BUTTON_1_INITIAL_PRESS = 1000
+ZLL_SWITCH_BUTTON_2_INITIAL_PRESS = 2000
+ZLL_SWITCH_BUTTON_3_INITIAL_PRESS = 3000
+ZLL_SWITCH_BUTTON_4_INITIAL_PRESS = 4000
 
-ZLL_SWITCH_BUTTON_1_HOLD = 1003
-ZLL_SWITCH_BUTTON_2_HOLD = 2003
-ZLL_SWITCH_BUTTON_3_HOLD = 3003
-ZLL_SWITCH_BUTTON_4_HOLD = 4003
+ZLL_SWITCH_BUTTON_1_HOLD = 1001
+ZLL_SWITCH_BUTTON_2_HOLD = 2001
+ZLL_SWITCH_BUTTON_3_HOLD = 3001
+ZLL_SWITCH_BUTTON_4_HOLD = 4001
+
+ZLL_SWITCH_BUTTON_1_SHORT_RELEASED = 1002
+ZLL_SWITCH_BUTTON_2_SHORT_RELEASED = 2002
+ZLL_SWITCH_BUTTON_3_SHORT_RELEASED = 3002
+ZLL_SWITCH_BUTTON_4_SHORT_RELEASED = 4002
+
+ZLL_SWITCH_BUTTON_1_LONG_RELEASED = 1003
+ZLL_SWITCH_BUTTON_2_LONG_RELEASED = 2003
+ZLL_SWITCH_BUTTON_3_LONG_RELEASED = 3003
+ZLL_SWITCH_BUTTON_4_LONG_RELEASED = 4003
 
 
 class Sensors(APIItems):
@@ -46,6 +56,7 @@ class Sensors(APIItems):
 
 class GenericSensor:
     """Represents the base Hue sensor."""
+
     def __init__(self, id, raw, request):
         self.id = id
         self.raw = raw
@@ -93,8 +104,24 @@ class GenericCLIPSensor(GenericSensor):
         super().__init__(id, raw, request)
 
     @property
+    def battery(self):
+        return self.raw['state'].get('battery')
+
+    @property
+    def lastupdated(self):
+        return self.raw['state']['lastupdated']
+
+    @property
     def on(self):
         return self.raw['config']['on']
+
+    @property
+    def reachable(self):
+        return self.raw['config']['reachable']
+
+    @property
+    def url(self):
+        return self.raw['config'].get('url')
 
 
 class GenericZGPSensor(GenericSensor):
@@ -152,12 +179,12 @@ class DaylightSensor(GenericSensor):
         """Change config of a Daylight sensor."""
         data = {
             key: value for key, value in {
-                'on': on,
-                'long': long,
-                'lat': lat,
-                'sunriseoffset': sunriseoffset,
-                'sunsetoffset': sunsetoffset,
-            }.items() if value is not None
+            'on': on,
+            'long': long,
+            'lat': lat,
+            'sunriseoffset': sunriseoffset,
+            'sunsetoffset': sunsetoffset,
+        }.items() if value is not None
         }
 
         await self._request('put', 'sensors/{}/config'.format(self.id),
@@ -176,8 +203,8 @@ class CLIPPresenceSensor(GenericCLIPSensor):
         """Change config of a CLIP Presence sensor."""
         data = {
             key: value for key, value in {
-                'on': on,
-            }.items() if value is not None
+            'on': on,
+        }.items() if value is not None
         }
 
         await self._request('put', 'sensors/{}/config'.format(self.id),
@@ -196,10 +223,10 @@ class ZLLPresenceSensor(GenericZLLSensor):
         """Change config of a ZLL Presence sensor."""
         data = {
             key: value for key, value in {
-                'on': on,
-                'sensitivity': sensitivity,
-                'sensitivitymax': sensitivitymax,
-            }.items() if value is not None
+            'on': on,
+            'sensitivity': sensitivity,
+            'sensitivitymax': sensitivitymax,
+        }.items() if value is not None
         }
 
         await self._request('put', 'sensors/{}/config'.format(self.id),
@@ -217,8 +244,8 @@ class CLIPSwitchSensor(GenericCLIPSensor):
         """Change config of a CLIP Switch sensor."""
         data = {
             key: value for key, value in {
-                'on': on,
-            }.items() if value is not None
+            'on': on,
+        }.items() if value is not None
         }
 
         await self._request('put', 'sensors/{}/config'.format(self.id),
@@ -231,22 +258,14 @@ class ZGPSwitchSensor(GenericZGPSensor):
 
     @property
     def buttonevent(self):
-        buttonevent = self.raw['state']['buttonevent']
-        if buttonevent == ZGP_SWITCH_BUTTON_1:
-            return ZGP_SWITCH_BUTTON_1
-        elif buttonevent == ZGP_SWITCH_BUTTON_2:
-            return ZGP_SWITCH_BUTTON_2
-        elif buttonevent == ZGP_SWITCH_BUTTON_3:
-            return ZGP_SWITCH_BUTTON_3
-        elif buttonevent == ZGP_SWITCH_BUTTON_4:
-            return ZGP_SWITCH_BUTTON_4
+        return self.raw['state']['buttonevent']
 
     async def set_config(self, on=None):
         """Change config of a ZGP Switch sensor."""
         data = {
             key: value for key, value in {
-                'on': on,
-            }.items() if value is not None
+            'on': on,
+        }.items() if value is not None
         }
 
         await self._request('put', 'sensors/{}/config'.format(self.id),
@@ -259,32 +278,14 @@ class ZLLSwitchSensor(GenericZLLSensor):
 
     @property
     def buttonevent(self):
-        buttonevent = self.raw['state']['buttonevent']
-        if buttonevent == ZLL_SWITCH_BUTTON_1_CLICK:
-            return ZLL_SWITCH_BUTTON_1_CLICK
-        elif buttonevent == ZLL_SWITCH_BUTTON_1_HOLD:
-            return ZLL_SWITCH_BUTTON_1_HOLD
-        elif buttonevent == ZLL_SWITCH_BUTTON_2_CLICK:
-            return ZLL_SWITCH_BUTTON_2_CLICK
-        elif buttonevent == ZLL_SWITCH_BUTTON_2_HOLD:
-            return ZLL_SWITCH_BUTTON_2_HOLD
-        elif buttonevent == ZLL_SWITCH_BUTTON_3_CLICK:
-            return ZLL_SWITCH_BUTTON_3_CLICK
-        elif buttonevent == ZLL_SWITCH_BUTTON_3_HOLD:
-            return ZLL_SWITCH_BUTTON_3_HOLD
-        elif buttonevent == ZLL_SWITCH_BUTTON_4_CLICK:
-            return ZLL_SWITCH_BUTTON_4_CLICK
-        elif buttonevent == ZLL_SWITCH_BUTTON_4_HOLD:
-            return ZLL_SWITCH_BUTTON_4_HOLD
-        else:
-            return None
+        return self.raw['state']['buttonevent']
 
     async def set_config(self, on=None):
         """Change config of a ZLL Switch sensor."""
         data = {
             key: value for key, value in {
-                'on': on,
-            }.items() if value is not None
+            'on': on,
+        }.items() if value is not None
         }
 
         await self._request('put', 'sensors/{}/config'.format(self.id),
@@ -312,10 +313,10 @@ class CLIPLightLevelSensor(GenericCLIPSensor):
         """Change config of a CLIP LightLevel sensor."""
         data = {
             key: value for key, value in {
-                'on': on,
-                'tholddark': tholddark,
-                'tholdoffset': tholdoffset,
-            }.items() if value is not None
+            'on': on,
+            'tholddark': tholddark,
+            'tholdoffset': tholdoffset,
+        }.items() if value is not None
         }
 
         await self._request('put', 'sensors/{}/config'.format(self.id),
@@ -343,10 +344,10 @@ class ZLLLightLevelSensor(GenericZLLSensor):
         """Change config of a ZLL LightLevel sensor."""
         data = {
             key: value for key, value in {
-                'on': on,
-                'tholddark': tholddark,
-                'tholdoffset': tholdoffset,
-            }.items() if value is not None
+            'on': on,
+            'tholddark': tholddark,
+            'tholdoffset': tholdoffset,
+        }.items() if value is not None
         }
 
         await self._request('put', 'sensors/{}/config'.format(self.id),
@@ -365,8 +366,8 @@ class CLIPTemperatureSensor(GenericCLIPSensor):
         """Change config of a CLIP Temperature sensor."""
         data = {
             key: value for key, value in {
-                'on': on,
-            }.items() if value is not None
+            'on': on,
+        }.items() if value is not None
         }
 
         await self._request('put', 'sensors/{}/config'.format(self.id),
@@ -385,8 +386,8 @@ class ZLLTemperatureSensor(GenericZLLSensor):
         """Change config of a ZLL Temperature sensor."""
         data = {
             key: value for key, value in {
-                'on': on,
-            }.items() if value is not None
+            'on': on,
+        }.items() if value is not None
         }
 
         await self._request('put', 'sensors/{}/config'.format(self.id),
