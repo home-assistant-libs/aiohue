@@ -232,6 +232,7 @@ class CLIPSwitchSensor(GenericCLIPSensor):
     def __init__(self, id, raw, request):
         super().__init__(id, raw, request)
 
+    @property
     def buttonevent(self):
         return self.raw['state']['buttonevent']
 
