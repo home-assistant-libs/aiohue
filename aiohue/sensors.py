@@ -124,23 +124,6 @@ class GenericCLIPSensor(GenericSensor):
         return self.raw['config'].get('url')
 
 
-class GenericZGPSensor(GenericSensor):
-    def __init__(self, id, raw, request):
-        super().__init__(id, raw, request)
-
-    @property
-    def battery(self):
-        return self.raw['config'].get('battery')
-
-    @property
-    def lastupdated(self):
-        return self.raw['state'].get('lastupdated')
-
-    @property
-    def on(self):
-        return self.raw['config']['on']
-
-
 class GenericZLLSensor(GenericSensor):
     def __init__(self, id, raw, request):
         super().__init__(id, raw, request)
@@ -167,12 +150,24 @@ class DaylightSensor(GenericSensor):
         super().__init__(id, raw, request)
 
     @property
+    def configured(self):
+        return self.raw['config']['configured']
+
+    @property
     def daylight(self):
         return self.raw['state']['daylight']
 
     @property
     def on(self):
         return self.raw['config']['on']
+
+    @property
+    def sunriseoffset(self):
+        return self.raw['config']['sunriseoffset']
+
+    @property
+    def sunsetoffset(self):
+        return self.raw['config']['sunsetoffset']
 
     async def set_config(self, on=None, long=None, lat=None,
                          sunriseoffset=None, sunsetoffset=None):
@@ -252,13 +247,21 @@ class CLIPSwitchSensor(GenericCLIPSensor):
                             json=data)
 
 
-class ZGPSwitchSensor(GenericZGPSensor):
+class ZGPSwitchSensor(GenericSensor):
     def __init__(self, id, raw, request):
         super().__init__(id, raw, request)
 
     @property
     def buttonevent(self):
         return self.raw['state']['buttonevent']
+
+    @property
+    def lastupdated(self):
+        return self.raw['state'].get('lastupdated')
+
+    @property
+    def on(self):
+        return self.raw['config']['on']
 
     async def set_config(self, on=None):
         """Change config of a ZGP Switch sensor."""
@@ -309,6 +312,14 @@ class CLIPLightLevelSensor(GenericCLIPSensor):
     def lightlevel(self):
         return self.raw['state']['lightlevel']
 
+    @property
+    def tholddark(self):
+        return self.raw['config']['tholddark']
+
+    @property
+    def tholdoffset(self):
+        return self.raw['config']['tholdoffset']
+
     async def set_config(self, on=None, tholddark=None, tholdoffset=None):
         """Change config of a CLIP LightLevel sensor."""
         data = {
@@ -339,6 +350,14 @@ class ZLLLightLevelSensor(GenericZLLSensor):
     @property
     def lightlevel(self):
         return self.raw['state']['lightlevel']
+
+    @property
+    def tholddark(self):
+        return self.raw['config']['tholddark']
+
+    @property
+    def tholdoffset(self):
+        return self.raw['config']['tholdoffset']
 
     async def set_config(self, on=None, tholddark=None, tholdoffset=None):
         """Change config of a ZLL LightLevel sensor."""
@@ -394,6 +413,86 @@ class ZLLTemperatureSensor(GenericZLLSensor):
                             json=data)
 
 
+class CLIPGenericFlagSensor(GenericCLIPSensor):
+    def __init__(self, id, raw, request):
+        super().__init__(id, raw, request)
+
+    @property
+    def flag(self):
+        return self.raw['state']['flag']
+
+    async def set_config(self, on=None):
+        """Change config of a CLIP Generic Flag sensor."""
+        data = {
+            key: value for key, value in {
+            'on': on,
+        }.items() if value is not None
+        }
+
+        await self._request('put', 'sensors/{}/config'.format(self.id),
+                            json=data)
+
+
+class CLIPGenericStatusSensor(GenericCLIPSensor):
+    def __init__(self, id, raw, request):
+        super().__init__(id, raw, request)
+
+    @property
+    def status(self):
+        return self.raw['state']['status']
+
+    async def set_config(self, on=None):
+        """Change config of a CLIP Generic Status sensor."""
+        data = {
+            key: value for key, value in {
+            'on': on,
+        }.items() if value is not None
+        }
+
+        await self._request('put', 'sensors/{}/config'.format(self.id),
+                            json=data)
+
+
+class CLIPHumiditySensor(GenericCLIPSensor):
+    def __init__(self, id, raw, request):
+        super().__init__(id, raw, request)
+
+    @property
+    def humidity(self):
+        return self.raw['state']['humidity']
+
+    async def set_config(self, on=None):
+        """Change config of a CLIP Humidity sensor."""
+        data = {
+            key: value for key, value in {
+            'on': on,
+        }.items() if value is not None
+        }
+
+        await self._request('put', 'sensors/{}/config'.format(self.id),
+                            json=data)
+
+
+class CLIPOpenCloseSensor(GenericCLIPSensor):
+    def __init__(self, id, raw, request):
+        super().__init__(id, raw, request)
+
+    @property
+    def open(self):
+        return self.raw['state']['open']
+
+    async def set_config(self, on=None):
+        """Change config of a CLIP Open Close sensor."""
+        data = {
+            key: value for key, value in {
+            'on': on,
+        }.items() if value is not None
+        }
+
+        await self._request('put', 'sensors/{}/config'.format(self.id),
+                            json=data)
+
+
 def create_sensor(id, raw, request):
     type = raw['type']
 
@@ -401,15 +500,15 @@ def create_sensor(id, raw, request):
         return DaylightSensor(id, raw, request)
 
     elif type == TYPE_CLIP_GENERICFLAG:
-        return GenericSensor(id, raw, request)
+        return CLIPGenericFlagSensor(id, raw, request)
     elif type == TYPE_CLIP_GENERICSTATUS:
-        return GenericSensor(id, raw, request)
+        return CLIPGenericStatusSensor(id, raw, request)
     elif type == TYPE_CLIP_HUMIDITY:
-        return GenericSensor(id, raw, request)
+        return CLIPHumiditySensor(id, raw, request)
     elif type == TYPE_CLIP_LIGHTLEVEL:
         return CLIPLightLevelSensor(id, raw, request)
     elif type == TYPE_CLIP_OPENCLOSE:
-        return GenericSensor(id, raw, request)
+        return CLIPOpenCloseSensor(id, raw, request)
     elif type == TYPE_CLIP_PRESENCE:
         return CLIPPresenceSensor(id, raw, request)
     elif type == TYPE_CLIP_SWITCH:
@@ -429,4 +528,5 @@ def create_sensor(id, raw, request):
     elif type == TYPE_ZLL_TEMPERATURE:
         return ZLLTemperatureSensor(id, raw, request)
 
-    return GenericSensor(id, raw, request)
+    else:
+        return GenericSensor(id, raw, request)
