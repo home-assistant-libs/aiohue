@@ -245,14 +245,14 @@ class ZGPSwitchSensor(GenericZGPSensor):
 
     @property
     def buttonevent(self):
-        if self._buttonevent == 34:
-            return 'BUTTON_1'
-        elif self._buttonevent == 16:
-            return 'BUTTON_2'
-        elif self._buttonevent == 17:
-            return 'BUTTON_3'
-        elif self._buttonevent == 18:
-            return 'BUTTON_4'
+        if self._buttonevent == ZGP_SWITCH_BUTTON_1:
+            return ZGP_SWITCH_BUTTON_1
+        elif self._buttonevent == ZGP_SWITCH_BUTTON_2:
+            return ZGP_SWITCH_BUTTON_2
+        elif self._buttonevent == ZGP_SWITCH_BUTTON_3:
+            return ZGP_SWITCH_BUTTON_3
+        elif self._buttonevent == ZGP_SWITCH_BUTTON_4:
+            return ZGP_SWITCH_BUTTON_4
 
     async def set_config(self, on=None):
         """Change config of a ZGP Switch sensor."""
@@ -273,22 +273,22 @@ class ZLLSwitchSensor(GenericZLLSensor):
 
     @property
     def buttonevent(self):
-        if self._buttonevent == 1002:
-            return 'ON_CLICK'
-        elif self._buttonevent == 1003:
-            return 'ON_HOLD'
-        elif self._buttonevent == 2002:
-            return 'DIM_UP_CLICK'
-        elif self._buttonevent == 2003:
-            return 'DIM_UP_HOLD'
-        elif self._buttonevent == 3002:
-            return 'DIM_DOWN_CLICK'
-        elif self._buttonevent == 3003:
-            return 'DIM_DOWN_HOLD'
-        elif self._buttonevent == 4002:
-            return 'OFF_CLICK'
-        elif self._buttonevent == 4003:
-            return 'OFF_HOLD'
+        if self._buttonevent == ZLL_SWITCH_BUTTON_1_CLICK:
+            return ZLL_SWITCH_BUTTON_1_CLICK
+        elif self._buttonevent == ZLL_SWITCH_BUTTON_1_HOLD:
+            return ZLL_SWITCH_BUTTON_1_HOLD
+        elif self._buttonevent == ZLL_SWITCH_BUTTON_2_CLICK:
+            return ZLL_SWITCH_BUTTON_2_CLICK
+        elif self._buttonevent == ZLL_SWITCH_BUTTON_2_HOLD:
+            return ZLL_SWITCH_BUTTON_2_HOLD
+        elif self._buttonevent == ZLL_SWITCH_BUTTON_3_CLICK:
+            return ZLL_SWITCH_BUTTON_3_CLICK
+        elif self._buttonevent == ZLL_SWITCH_BUTTON_3_HOLD:
+            return ZLL_SWITCH_BUTTON_3_HOLD
+        elif self._buttonevent == ZLL_SWITCH_BUTTON_4_CLICK:
+            return ZLL_SWITCH_BUTTON_4_CLICK
+        elif self._buttonevent == ZLL_SWITCH_BUTTON_4_HOLD:
+            return ZLL_SWITCH_BUTTON_4_HOLD
         else:
             return None
 
