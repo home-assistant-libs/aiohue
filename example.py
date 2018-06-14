@@ -3,6 +3,12 @@ import sys
 
 import aiohttp
 
+from aiohue.sensors import (TYPE_CLIP_GENERICFLAG, TYPE_CLIP_GENERICSTATUS,
+                            TYPE_CLIP_HUMIDITY, TYPE_CLIP_LIGHTLEVEL, TYPE_CLIP_OPENCLOSE,
+                            TYPE_CLIP_PRESENCE, TYPE_CLIP_SWITCH, TYPE_CLIP_TEMPERATURE,
+                            TYPE_DAYLIGHT, TYPE_ZGP_SWITCH, TYPE_ZLL_LIGHTLEVEL,
+                            TYPE_ZLL_PRESENCE, TYPE_ZLL_SWITCH, TYPE_ZLL_TEMPERATURE)
+
 from aiohue.discovery import discover_nupnp
 
 
@@ -53,6 +59,25 @@ async def run(websession):
     print('Sensors:')
     for id in bridge.sensors:
         sensor = bridge.sensors[id]
-        print('{}: {}, {}, {}'.format(sensor.name, sensor.type, sensor.state, sensor.config))
+        if sensor.type in [TYPE_CLIP_SWITCH, TYPE_ZGP_SWITCH, TYPE_ZLL_SWITCH]:
+            print('{}: [Button Event]: {}'.format(sensor.name, sensor.buttonevent))
+        elif sensor.type in [TYPE_CLIP_TEMPERATURE, TYPE_ZLL_TEMPERATURE]:
+            print('{}: [Temperature]: {}'.format(sensor.name, sensor.temperature))
+        elif sensor.type in [TYPE_CLIP_PRESENCE, TYPE_ZLL_PRESENCE]:
+            print('{}: [Presence]: {}'.format(sensor.name, sensor.presence))
+        elif sensor.type == TYPE_CLIP_OPENCLOSE:
+            print('{}: [Open]: {}'.format(sensor.name, sensor.open))
+        elif sensor.type in [TYPE_CLIP_LIGHTLEVEL, TYPE_ZLL_LIGHTLEVEL]:
+            print('{}: [Light Level]: {}'.format(sensor.name, sensor.lightlevel))
+        elif sensor.type == TYPE_CLIP_HUMIDITY:
+            print('{}: [Humidity]: {}'.format(sensor.name, sensor.humidity))
+        elif sensor.type == TYPE_CLIP_GENERICSTATUS:
+            print('{}: [Status]: {}'.format(sensor.name, sensor.status))
+        elif sensor.type == TYPE_CLIP_GENERICFLAG:
+            print('{}: [Flag]: {}'.format(sensor.name, sensor.flag))
+        elif sensor.type == TYPE_DAYLIGHT:
+            print('{}: [Daylight]: {}'.format(sensor.name, sensor.daylight))
+        else:
+            print('{}: [State]: {} [Config]: {}'.format(sensor.name, sensor.state, sensor.config))
 
 asyncio.get_event_loop().run_until_complete(main())
