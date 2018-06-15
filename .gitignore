@@ -5,3 +5,5 @@ pip-selfcheck.json
 pyvenv.cfg
 dist
 aiohue.egg-info
+.DS_Store
+.idea
