@@ -204,8 +204,8 @@ class GeofenceSensor(GenericSensor):
     def reachable(self):
         return self.raw['config']['reachable']
 
-    async def set_config(self, on=None, sensitivity=None, sensitivitymax=None):
-        """Change config of a ZLL Presence sensor."""
+    async def set_config(self, on=None):
+        """Change config of the Geofence sensor."""
         data = {
             key: value for key, value in {
             'on': on,
