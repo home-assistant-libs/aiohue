@@ -11,6 +11,8 @@ TYPE_CLIP_PRESENCE = 'CLIPPresence'
 TYPE_CLIP_SWITCH = 'CLIPSwitch'
 TYPE_CLIP_TEMPERATURE = 'CLIPTemperature'
 
+TYPE_GEOFENCE = 'Geofence'
+
 TYPE_ZGP_SWITCH = 'ZGPSwitch'
 
 TYPE_ZLL_LIGHTLEVEL = 'ZLLLightLevel'
@@ -179,6 +181,34 @@ class DaylightSensor(GenericSensor):
             'lat': lat,
             'sunriseoffset': sunriseoffset,
             'sunsetoffset': sunsetoffset,
+        }.items() if value is not None
+        }
+
+        await self._request('put', 'sensors/{}/config'.format(self.id),
+                            json=data)
+
+
+class GeofenceSensor(GenericSensor):
+    def __init__(self, id, raw, request):
+        super().__init__(id, raw, request)
+
+    @property
+    def on(self):
+        return self.raw['config']['on']
+
+    @property
+    def presence(self):
+        return self.raw['state']['presence']
+
+    @property
+    def reachable(self):
+        return self.raw['config']['reachable']
+
+    async def set_config(self, on=None):
+        """Change config of the Geofence sensor."""
+        data = {
+            key: value for key, value in {
+            'on': on,
         }.items() if value is not None
         }
 
@@ -516,6 +546,9 @@ def create_sensor(id, raw, request):
         return CLIPSwitchSensor(id, raw, request)
     elif type == TYPE_CLIP_TEMPERATURE:
         return CLIPTemperatureSensor(id, raw, request)
+
+    elif type == TYPE_GEOFENCE:
+        return GeofenceSensor(id, raw, request)
 
     elif type == TYPE_ZGP_SWITCH:
         return ZGPSwitchSensor(id, raw, request)
