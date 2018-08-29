@@ -14,6 +14,16 @@ class Config:
         return self.raw['name']
 
     @property
+    def swversion(self):
+        """Software version of the bridge."""
+        return self.raw['swversion']
+
+    @property
+    def modelid(self):
+        """Model ID of the bridge."""
+        return self.raw['modelid']
+
+    @property
     def bridgeid(self):
         """ID of the bridge."""
         return self.raw['bridgeid']
