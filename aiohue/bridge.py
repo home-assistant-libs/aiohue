@@ -17,7 +17,6 @@ class Bridge:
         self.host = host
         self.username = username
         self.websession = websession
-        self.username = username
 
         self.config = None
         self.groups = None
