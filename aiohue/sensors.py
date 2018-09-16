@@ -58,7 +58,6 @@ class Sensors(APIItems):
 
 class GenericSensor:
     """Represents the base Hue sensor."""
-
     def __init__(self, id, raw, request):
         self.id = id
         self.raw = raw
@@ -102,9 +101,6 @@ class GenericSensor:
 
 
 class GenericCLIPSensor(GenericSensor):
-    def __init__(self, id, raw, request):
-        super().__init__(id, raw, request)
-
     @property
     def battery(self):
         return self.raw['state'].get('battery')
@@ -127,9 +123,6 @@ class GenericCLIPSensor(GenericSensor):
 
 
 class GenericZLLSensor(GenericSensor):
-    def __init__(self, id, raw, request):
-        super().__init__(id, raw, request)
-
     @property
     def battery(self):
         return self.raw['config'].get('battery')
@@ -148,9 +141,6 @@ class GenericZLLSensor(GenericSensor):
 
 
 class DaylightSensor(GenericSensor):
-    def __init__(self, id, raw, request):
-        super().__init__(id, raw, request)
-
     @property
     def configured(self):
         return self.raw['config']['configured']
@@ -176,12 +166,12 @@ class DaylightSensor(GenericSensor):
         """Change config of a Daylight sensor."""
         data = {
             key: value for key, value in {
-            'on': on,
-            'long': long,
-            'lat': lat,
-            'sunriseoffset': sunriseoffset,
-            'sunsetoffset': sunsetoffset,
-        }.items() if value is not None
+                'on': on,
+                'long': long,
+                'lat': lat,
+                'sunriseoffset': sunriseoffset,
+                'sunsetoffset': sunsetoffset,
+            }.items() if value is not None
         }
 
         await self._request('put', 'sensors/{}/config'.format(self.id),
@@ -189,9 +179,6 @@ class DaylightSensor(GenericSensor):
 
 
 class GeofenceSensor(GenericSensor):
-    def __init__(self, id, raw, request):
-        super().__init__(id, raw, request)
-
     @property
     def on(self):
         return self.raw['config']['on']
@@ -208,8 +195,8 @@ class GeofenceSensor(GenericSensor):
         """Change config of the Geofence sensor."""
         data = {
             key: value for key, value in {
-            'on': on,
-        }.items() if value is not None
+                'on': on,
+            }.items() if value is not None
         }
 
         await self._request('put', 'sensors/{}/config'.format(self.id),
@@ -217,9 +204,6 @@ class GeofenceSensor(GenericSensor):
 
 
 class CLIPPresenceSensor(GenericCLIPSensor):
-    def __init__(self, id, raw, request):
-        super().__init__(id, raw, request)
-
     @property
     def presence(self):
         return self.raw['state']['presence']
@@ -228,8 +212,8 @@ class CLIPPresenceSensor(GenericCLIPSensor):
         """Change config of a CLIP Presence sensor."""
         data = {
             key: value for key, value in {
-            'on': on,
-        }.items() if value is not None
+                'on': on,
+            }.items() if value is not None
         }
 
         await self._request('put', 'sensors/{}/config'.format(self.id),
@@ -237,9 +221,6 @@ class CLIPPresenceSensor(GenericCLIPSensor):
 
 
 class ZLLPresenceSensor(GenericZLLSensor):
-    def __init__(self, id, raw, request):
-        super().__init__(id, raw, request)
-
     @property
     def presence(self):
         return self.raw['state']['presence']
@@ -248,10 +229,10 @@ class ZLLPresenceSensor(GenericZLLSensor):
         """Change config of a ZLL Presence sensor."""
         data = {
             key: value for key, value in {
-            'on': on,
-            'sensitivity': sensitivity,
-            'sensitivitymax': sensitivitymax,
-        }.items() if value is not None
+                'on': on,
+                'sensitivity': sensitivity,
+                'sensitivitymax': sensitivitymax,
+            }.items() if value is not None
         }
 
         await self._request('put', 'sensors/{}/config'.format(self.id),
@@ -259,9 +240,6 @@ class ZLLPresenceSensor(GenericZLLSensor):
 
 
 class CLIPSwitchSensor(GenericCLIPSensor):
-    def __init__(self, id, raw, request):
-        super().__init__(id, raw, request)
-
     @property
     def buttonevent(self):
         return self.raw['state']['buttonevent']
@@ -270,8 +248,8 @@ class CLIPSwitchSensor(GenericCLIPSensor):
         """Change config of a CLIP Switch sensor."""
         data = {
             key: value for key, value in {
-            'on': on,
-        }.items() if value is not None
+                'on': on,
+            }.items() if value is not None
         }
 
         await self._request('put', 'sensors/{}/config'.format(self.id),
@@ -279,9 +257,6 @@ class CLIPSwitchSensor(GenericCLIPSensor):
 
 
 class ZGPSwitchSensor(GenericSensor):
-    def __init__(self, id, raw, request):
-        super().__init__(id, raw, request)
-
     @property
     def buttonevent(self):
         return self.raw['state']['buttonevent']
@@ -298,8 +273,8 @@ class ZGPSwitchSensor(GenericSensor):
         """Change config of a ZGP Switch sensor."""
         data = {
             key: value for key, value in {
-            'on': on,
-        }.items() if value is not None
+                'on': on,
+            }.items() if value is not None
         }
 
         await self._request('put', 'sensors/{}/config'.format(self.id),
@@ -307,9 +282,6 @@ class ZGPSwitchSensor(GenericSensor):
 
 
 class ZLLSwitchSensor(GenericZLLSensor):
-    def __init__(self, id, raw, request):
-        super().__init__(id, raw, request)
-
     @property
     def buttonevent(self):
         return self.raw['state']['buttonevent']
@@ -318,8 +290,8 @@ class ZLLSwitchSensor(GenericZLLSensor):
         """Change config of a ZLL Switch sensor."""
         data = {
             key: value for key, value in {
-            'on': on,
-        }.items() if value is not None
+                'on': on,
+            }.items() if value is not None
         }
 
         await self._request('put', 'sensors/{}/config'.format(self.id),
@@ -327,10 +299,6 @@ class ZLLSwitchSensor(GenericZLLSensor):
 
 
 class CLIPLightLevelSensor(GenericCLIPSensor):
-
-    def __init__(self, id, raw, request):
-        super().__init__(id, raw, request)
-
     @property
     def dark(self):
         return self.raw['state']['dark']
@@ -355,10 +323,10 @@ class CLIPLightLevelSensor(GenericCLIPSensor):
         """Change config of a CLIP LightLevel sensor."""
         data = {
             key: value for key, value in {
-            'on': on,
-            'tholddark': tholddark,
-            'tholdoffset': tholdoffset,
-        }.items() if value is not None
+                'on': on,
+                'tholddark': tholddark,
+                'tholdoffset': tholdoffset,
+            }.items() if value is not None
         }
 
         await self._request('put', 'sensors/{}/config'.format(self.id),
@@ -366,10 +334,6 @@ class CLIPLightLevelSensor(GenericCLIPSensor):
 
 
 class ZLLLightLevelSensor(GenericZLLSensor):
-
-    def __init__(self, id, raw, request):
-        super().__init__(id, raw, request)
-
     @property
     def dark(self):
         return self.raw['state']['dark']
@@ -394,10 +358,10 @@ class ZLLLightLevelSensor(GenericZLLSensor):
         """Change config of a ZLL LightLevel sensor."""
         data = {
             key: value for key, value in {
-            'on': on,
-            'tholddark': tholddark,
-            'tholdoffset': tholdoffset,
-        }.items() if value is not None
+                'on': on,
+                'tholddark': tholddark,
+                'tholdoffset': tholdoffset,
+            }.items() if value is not None
         }
 
         await self._request('put', 'sensors/{}/config'.format(self.id),
@@ -405,9 +369,6 @@ class ZLLLightLevelSensor(GenericZLLSensor):
 
 
 class CLIPTemperatureSensor(GenericCLIPSensor):
-    def __init__(self, id, raw, request):
-        super().__init__(id, raw, request)
-
     @property
     def temperature(self):
         return self.raw['state']['temperature']
@@ -416,8 +377,8 @@ class CLIPTemperatureSensor(GenericCLIPSensor):
         """Change config of a CLIP Temperature sensor."""
         data = {
             key: value for key, value in {
-            'on': on,
-        }.items() if value is not None
+                'on': on,
+            }.items() if value is not None
         }
 
         await self._request('put', 'sensors/{}/config'.format(self.id),
@@ -425,9 +386,6 @@ class CLIPTemperatureSensor(GenericCLIPSensor):
 
 
 class ZLLTemperatureSensor(GenericZLLSensor):
-    def __init__(self, id, raw, request):
-        super().__init__(id, raw, request)
-
     @property
     def temperature(self):
         return self.raw['state']['temperature']
@@ -436,8 +394,8 @@ class ZLLTemperatureSensor(GenericZLLSensor):
         """Change config of a ZLL Temperature sensor."""
         data = {
             key: value for key, value in {
-            'on': on,
-        }.items() if value is not None
+                'on': on,
+            }.items() if value is not None
         }
 
         await self._request('put', 'sensors/{}/config'.format(self.id),
@@ -445,9 +403,6 @@ class ZLLTemperatureSensor(GenericZLLSensor):
 
 
 class CLIPGenericFlagSensor(GenericCLIPSensor):
-    def __init__(self, id, raw, request):
-        super().__init__(id, raw, request)
-
     @property
     def flag(self):
         return self.raw['state']['flag']
@@ -456,8 +411,8 @@ class CLIPGenericFlagSensor(GenericCLIPSensor):
         """Change config of a CLIP Generic Flag sensor."""
         data = {
             key: value for key, value in {
-            'on': on,
-        }.items() if value is not None
+                'on': on,
+            }.items() if value is not None
         }
 
         await self._request('put', 'sensors/{}/config'.format(self.id),
@@ -465,9 +420,6 @@ class CLIPGenericFlagSensor(GenericCLIPSensor):
 
 
 class CLIPGenericStatusSensor(GenericCLIPSensor):
-    def __init__(self, id, raw, request):
-        super().__init__(id, raw, request)
-
     @property
     def status(self):
         return self.raw['state']['status']
@@ -476,8 +428,8 @@ class CLIPGenericStatusSensor(GenericCLIPSensor):
         """Change config of a CLIP Generic Status sensor."""
         data = {
             key: value for key, value in {
-            'on': on,
-        }.items() if value is not None
+                'on': on,
+            }.items() if value is not None
         }
 
         await self._request('put', 'sensors/{}/config'.format(self.id),
@@ -485,9 +437,6 @@ class CLIPGenericStatusSensor(GenericCLIPSensor):
 
 
 class CLIPHumiditySensor(GenericCLIPSensor):
-    def __init__(self, id, raw, request):
-        super().__init__(id, raw, request)
-
     @property
     def humidity(self):
         return self.raw['state']['humidity']
@@ -496,8 +445,8 @@ class CLIPHumiditySensor(GenericCLIPSensor):
         """Change config of a CLIP Humidity sensor."""
         data = {
             key: value for key, value in {
-            'on': on,
-        }.items() if value is not None
+                'on': on,
+            }.items() if value is not None
         }
 
         await self._request('put', 'sensors/{}/config'.format(self.id),
@@ -505,9 +454,6 @@ class CLIPHumiditySensor(GenericCLIPSensor):
 
 
 class CLIPOpenCloseSensor(GenericCLIPSensor):
-    def __init__(self, id, raw, request):
-        super().__init__(id, raw, request)
-
     @property
     def open(self):
         return self.raw['state']['open']
@@ -516,8 +462,8 @@ class CLIPOpenCloseSensor(GenericCLIPSensor):
         """Change config of a CLIP Open Close sensor."""
         data = {
             key: value for key, value in {
-            'on': on,
-        }.items() if value is not None
+                'on': on,
+            }.items() if value is not None
         }
 
         await self._request('put', 'sensors/{}/config'.format(self.id),
