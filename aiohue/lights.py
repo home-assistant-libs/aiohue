@@ -1,22 +1,13 @@
 from .api import APIItems
-import attr
+from collections import namedtuple
 
 
-@attr.s()
-class XYPoint:
-    """Represents a CIE 1931 XY coordinate pair."""
-
-    x = attr.ib(type=float)
-    y = attr.ib(type=float)
+# Represents a CIE 1931 XY coordinate pair.
+XYPoint = namedtuple('XYPoint', ['x', 'y'])
 
 
-@attr.s()
-class GamutType:
-    """Represents the Gamut of a light."""
-
-    red = attr.ib(type=XYPoint)
-    green = attr.ib(type=XYPoint)
-    blue = attr.ib(type=XYPoint)
+# Represents the Gamut of a light.
+GamutType = namedtuple('GamutType', ['red', 'green', 'blue'])
 
 
 class Lights(APIItems):
