@@ -78,14 +78,14 @@ class Light:
     @property
     def colorgamuttype(self):
         """The color gamut type of the light."""
-        light_spec = self.controlcapabilities()
+        light_spec = self.controlcapabilities
         return light_spec.get('colorgamuttype', 'None')
 
     @property
     def colorgamut(self):
         """The color gamut information of the light."""
         try:
-            light_spec = self.controlcapabilities()
+            light_spec = self.controlcapabilities
             gtup = tuple([XYPoint(*x) for x in light_spec['colorgamut']])
             color_gamut = GamutType(*gtup)
         except KeyError:
