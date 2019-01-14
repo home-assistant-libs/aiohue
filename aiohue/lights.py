@@ -1,4 +1,13 @@
 from .api import APIItems
+from collections import namedtuple
+
+
+# Represents a CIE 1931 XY coordinate pair.
+XYPoint = namedtuple('XYPoint', ['x', 'y'])
+
+
+# Represents the Gamut of a light.
+GamutType = namedtuple('GamutType', ['red', 'green', 'blue'])
 
 
 class Lights(APIItems):
@@ -51,6 +60,29 @@ class Light:
     def swversion(self):
         """Software version of the light."""
         return self.raw['swversion']
+
+    @property
+    def controlcapabilities(self):
+        """Capabilities that the light has to control it."""
+        return self.raw.get('capabilities', {}).get('control', {})
+
+    @property
+    def colorgamuttype(self):
+        """The color gamut type of the light."""
+        light_spec = self.controlcapabilities
+        return light_spec.get('colorgamuttype', 'None')
+
+    @property
+    def colorgamut(self):
+        """The color gamut information of the light."""
+        try:
+            light_spec = self.controlcapabilities
+            gtup = tuple([XYPoint(*x) for x in light_spec['colorgamut']])
+            color_gamut = GamutType(*gtup)
+        except KeyError:
+            color_gamut = None
+
+        return color_gamut
 
     async def set_state(self, on=None, bri=None, hue=None, sat=None, xy=None,
                         ct=None, alert=None, effect=None, transitiontime=None,
