@@ -62,8 +62,8 @@ class Light:
         return self.raw['swversion']
 
     @property
-    def swupdateavailable(self):
-        """Software update available for the light."""
+    def swupdatestate(self):
+        """Software update state of the light."""
         return self.raw.get('swupdate', {}).get('state')
 
     @property
