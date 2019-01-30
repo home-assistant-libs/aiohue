@@ -62,6 +62,11 @@ class Light:
         return self.raw['swversion']
 
     @property
+    def swupdatestate(self):
+        """Software update state of the light."""
+        return self.raw.get('swupdate', {}).get('state')
+
+    @property
     def controlcapabilities(self):
         """Capabilities that the light has to control it."""
         return self.raw.get('capabilities', {}).get('control', {})
