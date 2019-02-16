@@ -19,6 +19,11 @@ class Config:
         return self.raw['swversion']
 
     @property
+    def swupdatebridgestate(self):
+        """Software update state of the bridge."""
+        return self.raw.get('swupdate2', {}).get('bridge', {}).get('state')
+
+    @property
     def modelid(self):
         """Model ID of the bridge."""
         return self.raw['modelid']
