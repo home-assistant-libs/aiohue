@@ -19,7 +19,7 @@ class Config:
         return self.raw['swversion']
 
     @property
-    def swupdatebridgestate(self):
+    def swupdate2_bridge_state(self):
         """Software update state of the bridge."""
         return self.raw.get('swupdate2', {}).get('bridge', {}).get('state')
 
