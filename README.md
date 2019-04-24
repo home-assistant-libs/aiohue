@@ -7,6 +7,7 @@ Requires Python 3.5 and uses asyncio and aiohttp.
 import asyncio
 from pprint import pprint
 
+import aiohttp
 from aiohue.discovery import discover_nupnp
 
 
