@@ -20,6 +20,15 @@ class APIItems:
                 obj.raw = raw_item
             else:
                 self._items[id] = self._item_cls(id, raw_item, self._request)
+        
+        removed_items = []
+
+        for id in self._items:
+            if id not in raw:
+                removed_items.append(id)
+
+        for id in removed_items:
+            del self._items[id]
 
     def values(self):
         return self._items.values()
