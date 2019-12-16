@@ -13,10 +13,11 @@ from .errors import raise_error, ResponseError, RequestError
 class Bridge:
     """Control a Hue bridge."""
 
-    def __init__(self, host, websession, *, username=None):
+    def __init__(self, host, websession, *, username=None, bridge_id=None):
         self.host = host
         self.username = username
         self.websession = websession
+        self._bridge_id = bridge_id
 
         self.config = None
         self.groups = None
@@ -27,6 +28,14 @@ class Bridge:
         # self.capabilities = None
         # self.rules = None
         # self.schedules = None
+
+    @property
+    def id(self):
+        """Return the ID of the bridge."""
+        if self.config is not None:
+            return self.config.bridgeid
+
+        return self._bridge_id
 
     async def create_user(self, device_type):
         """Create a user.
