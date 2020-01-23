@@ -66,6 +66,9 @@ class Bridge:
 
         try:
             async with self.websession.request(method, url, json=json) as res:
+                if res.status >= 300:
+                    raise ResponseError(
+                        'Server returned error code {}'.format(res.status))
                 if res.content_type != 'application/json':
                     raise ResponseError(
                         'Invalid content type: {}'.format(res.content_type))
