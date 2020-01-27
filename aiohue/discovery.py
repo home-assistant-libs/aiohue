@@ -1,7 +1,7 @@
 from .bridge import Bridge
 from .util import normalize_bridge_id
 
-URL_NUPNP = 'https://www.meethue.com/api/nupnp'
+URL_NUPNP = 'https://discovery.meethue.com/'
 
 
 async def discover_nupnp(websession):
