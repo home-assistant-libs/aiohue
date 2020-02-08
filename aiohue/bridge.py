@@ -1,13 +1,9 @@
-import asyncio
-
-from aiohttp import client_exceptions
-
 from .config import Config
 from .groups import Groups
 from .lights import Lights
 from .scenes import Scenes
 from .sensors import Sensors
-from .errors import raise_error, ResponseError, RequestError
+from .errors import raise_error
 
 
 class Bridge:
@@ -64,21 +60,11 @@ class Bridge:
             url += '{}/'.format(self.username)
         url += path
 
-        try:
-            async with self.websession.request(method, url, json=json) as res:
-                if res.status >= 300:
-                    raise ResponseError(
-                        'Server returned error code {}'.format(res.status))
-                if res.content_type != 'application/json':
-                    raise ResponseError(
-                        'Invalid content type: {}'.format(res.content_type))
-                data = await res.json()
-                _raise_on_error(data)
-                return data
-        except client_exceptions.ClientError as err:
-            raise RequestError(
-                'Error requesting data from {}: {}'.format(self.host, err)
-            ) from None
+        async with self.websession.request(method, url, json=json) as res:
+            res.raise_for_status()
+            data = await res.json()
+            _raise_on_error(data)
+            return data
 
 
 def _raise_on_error(data):

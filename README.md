@@ -1,4 +1,5 @@
 # Aiohue
+
 ## Asynchronous library to control Philips Hue
 
 Requires Python 3.5 and uses asyncio and aiohttp.
@@ -47,7 +48,7 @@ async def run(websession):
     await group.set_action(on=not group.state['on'])
 
 
-asyncio.get_event_loop().run_until_complete(main())
+asyncio.run(main())
 ```
 
 ## Timeouts
