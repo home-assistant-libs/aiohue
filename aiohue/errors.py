@@ -8,17 +8,6 @@ class AiohueException(Exception):
     """Base error for aiohue."""
 
 
-class RequestError(AiohueException):
-    """Unable to fulfill request.
-
-    Raised when host or API cannot be reached.
-    """
-
-
-class ResponseError(AiohueException):
-    """Invalid response."""
-
-
 class Unauthorized(AiohueException):
     """Username is not authorized."""
 
