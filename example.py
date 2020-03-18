@@ -7,7 +7,8 @@ from aiohue.sensors import (TYPE_CLIP_GENERICFLAG, TYPE_CLIP_GENERICSTATUS,
                             TYPE_CLIP_HUMIDITY, TYPE_CLIP_LIGHTLEVEL, TYPE_CLIP_OPENCLOSE,
                             TYPE_CLIP_PRESENCE, TYPE_CLIP_SWITCH, TYPE_CLIP_TEMPERATURE,
                             TYPE_DAYLIGHT, TYPE_ZGP_SWITCH, TYPE_ZLL_LIGHTLEVEL,
-                            TYPE_ZLL_PRESENCE, TYPE_ZLL_SWITCH, TYPE_ZLL_TEMPERATURE)
+                            TYPE_ZLL_PRESENCE, TYPE_ZLL_ROTARY, TYPE_ZLL_SWITCH,
+                            TYPE_ZLL_TEMPERATURE)
 
 from aiohue.discovery import discover_nupnp
 
@@ -61,6 +62,8 @@ async def run(websession):
         sensor = bridge.sensors[id]
         if sensor.type in [TYPE_CLIP_SWITCH, TYPE_ZGP_SWITCH, TYPE_ZLL_SWITCH]:
             print('{}: [Button Event]: {}'.format(sensor.name, sensor.buttonevent))
+        elif sensor.type in [TYPE_ZLL_ROTARY]:
+            print('{}: [Rotation Event]: {}'.format(sensor.name, sensor.rotaryevent))
         elif sensor.type in [TYPE_CLIP_TEMPERATURE, TYPE_ZLL_TEMPERATURE]:
             print('{}: [Temperature]: {}'.format(sensor.name, sensor.temperature))
         elif sensor.type in [TYPE_CLIP_PRESENCE, TYPE_ZLL_PRESENCE]:

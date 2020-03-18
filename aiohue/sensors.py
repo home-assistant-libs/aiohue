@@ -17,6 +17,7 @@ TYPE_ZGP_SWITCH = 'ZGPSwitch'
 
 TYPE_ZLL_LIGHTLEVEL = 'ZLLLightLevel'
 TYPE_ZLL_PRESENCE = 'ZLLPresence'
+TYPE_ZLL_ROTARY = 'ZLLRelativeRotary'
 TYPE_ZLL_SWITCH = 'ZLLSwitch'
 TYPE_ZLL_TEMPERATURE = 'ZLLTemperature'
 
@@ -232,6 +233,31 @@ class ZLLPresenceSensor(GenericZLLSensor):
                 'on': on,
                 'sensitivity': sensitivity,
                 'sensitivitymax': sensitivitymax,
+            }.items() if value is not None
+        }
+
+        await self._request('put', 'sensors/{}/config'.format(self.id),
+                            json=data)
+
+
+class ZLLRotarySensor(GenericZLLSensor):
+    @property
+    def rotaryevent(self):
+        return self.raw['state']['rotaryevent']
+
+    @property
+    def expectedrotation(self):
+        return self.raw['state']['expectedrotation']
+
+    @property
+    def expectedeventduration(self):
+        return self.raw['state']['expectedeventduration']
+
+    async def set_config(self, on=None):
+        """Change config of a ZLL Rotary sensor."""
+        data = {
+            key: value for key, value in {
+                'on': on,
             }.items() if value is not None
         }
 
@@ -503,6 +529,8 @@ def create_sensor(id, raw, request):
         return ZLLLightLevelSensor(id, raw, request)
     elif type == TYPE_ZLL_PRESENCE:
         return ZLLPresenceSensor(id, raw, request)
+    elif type == TYPE_ZLL_ROTARY:
+        return ZLLRotarySensor(id, raw, request)
     elif type == TYPE_ZLL_SWITCH:
         return ZLLSwitchSensor(id, raw, request)
     elif type == TYPE_ZLL_TEMPERATURE:
