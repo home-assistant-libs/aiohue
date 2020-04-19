@@ -16,13 +16,10 @@ class LinkButtonNotPressed(AiohueException):
     """Raised when trying to create a user but link button not pressed."""
 
 
-ERRORS = {
-    1: Unauthorized,
-    101: LinkButtonNotPressed
-}
+ERRORS = {1: Unauthorized, 101: LinkButtonNotPressed}
 
 
 def raise_error(error):
-    type = error['type']
+    type = error["type"]
     cls = ERRORS.get(type, AiohueException)
-    raise cls("{}: {}".format(type, error['description']))
+    raise cls("{}: {}".format(type, error["description"]))
