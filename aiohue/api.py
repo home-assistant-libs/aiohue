@@ -9,7 +9,7 @@ class APIItems:
         self._process_raw(raw)
 
     async def update(self):
-        raw = await self._request('get', self._path)
+        raw = await self._request("get", self._path)
         self._process_raw(raw)
 
     def _process_raw(self, raw):
@@ -20,7 +20,7 @@ class APIItems:
                 obj.raw = raw_item
             else:
                 self._items[id] = self._item_cls(id, raw_item, self._request)
-        
+
         removed_items = []
 
         for id in self._items:
