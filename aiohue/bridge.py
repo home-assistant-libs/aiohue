@@ -48,9 +48,9 @@ class Bridge:
         self.config = Config(result["config"], self.request)
         self.groups = Groups(result["groups"], self.request)
         self.lights = Lights(result["lights"], self.request)
-        if 'scenes' in result:
+        if "scenes" in result:
             self.scenes = Scenes(result["scenes"], self.request)
-        if 'sensors' in result:
+        if "sensors" in result:
             self.sensors = Sensors(result["sensors"], self.request)
 
     async def request(self, method, path, json=None, auth=True):
