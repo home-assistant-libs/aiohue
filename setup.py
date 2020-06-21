@@ -7,7 +7,7 @@ setup(
     name='aiohue',
     version='2.2.0',
     license='Apache License 2.0',
-    url='https://github.com/balloob/aiohue',
+    url='https://github.com/home-assistant-libs/aiohue',
     author='Paulus Schoutsen',
     author_email='paulus@paulusschoutsen.nl',
     description='Python module to talk to Philips Hue.',
