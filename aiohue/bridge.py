@@ -1,3 +1,5 @@
+from aiohttp.client_exceptions import ClientConnectionError
+
 from .config import Config
 from .groups import Groups
 from .lights import Lights
@@ -15,6 +17,7 @@ class Bridge:
         self.websession = websession
         self._bridge_id = bridge_id
 
+        self.proto = None
         self.config = None
         self.groups = None
         self.lights = None
@@ -33,16 +36,34 @@ class Bridge:
 
         return self._bridge_id
 
+    async def _figure_out_protocol(self):
+        """Figure out the Hue protocol.
+
+        Hue switched to `https` communications, to remain backward compatible,
+        we try to see if `https` works first. If not, we fallback to `http`.
+        """
+        if self.proto is not None:
+            return
+
+        self.proto = "https"
+
+        try:
+            await self.request("head", "")
+        except ClientConnectionError:
+            self.proto = "http"
+
     async def create_user(self, device_type):
         """Create a user.
 
         https://developers.meethue.com/documentation/configuration-api#71_create_user
         """
+        await self._figure_out_protocol()
         result = await self.request("post", "", {"devicetype": device_type}, auth=False)
         self.username = result[0]["success"]["username"]
         return self.username
 
     async def initialize(self):
+        await self._figure_out_protocol()
         result = await self.request("get", "")
 
         self.config = Config(result["config"], self.request)
@@ -55,12 +76,12 @@ class Bridge:
 
     async def request(self, method, path, json=None, auth=True):
         """Make a request to the API."""
-        url = "http://{}/api/".format(self.host)
+        url = "{}://{}/api/".format(self.proto, self.host)
         if auth:
             url += "{}/".format(self.username)
         url += path
 
-        async with self.websession.request(method, url, json=json) as res:
+        async with self.websession.request(method, url, json=json, ssl=False) as res:
             res.raise_for_status()
             data = await res.json()
             _raise_on_error(data)
