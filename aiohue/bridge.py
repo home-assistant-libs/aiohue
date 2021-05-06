@@ -49,7 +49,7 @@ class Bridge:
 
         try:
             await self.request("head", "")
-        except ClientConnectionError as err:
+        except ClientConnectionError:
             self.proto = "http"
 
     async def create_user(self, device_type):
