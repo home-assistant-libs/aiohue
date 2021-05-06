@@ -38,7 +38,7 @@ class Bridge:
 
     async def _figure_out_protocol(self):
         """Figure out the Hue protocol.
-        
+
         Hue switched to `https` communications, to remain backward compatible,
         we try to see if `https` works first. If not, we fallback to `http`.
         """
