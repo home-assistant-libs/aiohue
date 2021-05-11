@@ -1,4 +1,4 @@
-from aiohttp.client_exceptions import ClientConnectionError
+from aiohttp.client_exceptions import ClientError
 
 from .config import Config
 from .groups import Groups
@@ -49,7 +49,7 @@ class Bridge:
 
         try:
             await self.request("head", "")
-        except ClientConnectionError:
+        except ClientError:
             self.proto = "http"
 
     async def create_user(self, device_type):
