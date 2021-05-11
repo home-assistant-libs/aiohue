@@ -36,34 +36,16 @@ class Bridge:
 
         return self._bridge_id
 
-    async def _figure_out_protocol(self):
-        """Figure out the Hue protocol.
-
-        Hue switched to `https` communications, to remain backward compatible,
-        we try to see if `https` works first. If not, we fallback to `http`.
-        """
-        if self.proto is not None:
-            return
-
-        self.proto = "https"
-
-        try:
-            await self.request("head", "")
-        except ClientConnectionError:
-            self.proto = "http"
-
     async def create_user(self, device_type):
         """Create a user.
 
         https://developers.meethue.com/documentation/configuration-api#71_create_user
         """
-        await self._figure_out_protocol()
         result = await self.request("post", "", {"devicetype": device_type}, auth=False)
         self.username = result[0]["success"]["username"]
         return self.username
 
     async def initialize(self):
-        await self._figure_out_protocol()
         result = await self.request("get", "")
 
         self.config = Config(result["config"], self.request)
@@ -76,16 +58,39 @@ class Bridge:
 
     async def request(self, method, path, json=None, auth=True):
         """Make a request to the API."""
-        url = "{}://{}/api/".format(self.proto, self.host)
+        # By default we assume we need to connect over `https`
+        # Old bridges and incompatible emulates still use `http` so we force a fallback
+        # We will store protocol in `self.proto` if request succesful.
+        if self.proto is None:
+            proto = "https"
+        else:
+            proto = self.proto
+
+        url = "{}://{}/api/".format(proto, self.host)
         if auth:
             url += "{}/".format(self.username)
         url += path
 
-        async with self.websession.request(method, url, json=json, ssl=False) as res:
-            res.raise_for_status()
-            data = await res.json()
-            _raise_on_error(data)
-            return data
+        try:
+            async with self.websession.request(
+                method, url, json=json, ssl=False
+            ) as res:
+                res.raise_for_status()
+
+                # Store the protocol that worked
+                if self.proto is None:
+                    self.proto = proto
+
+                data = await res.json()
+                _raise_on_error(data)
+                return data
+
+        except ClientConnectionError:
+            if self.proto is not None:
+                raise
+
+            self.proto = "http"
+            return await self.request(method, path, json, auth)
 
 
 def _raise_on_error(data):
