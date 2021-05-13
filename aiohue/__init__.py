@@ -1,2 +1,2 @@
-from .errors import *  # noqa
 from .bridge import Bridge  # noqa
+from .errors import *  # noqa

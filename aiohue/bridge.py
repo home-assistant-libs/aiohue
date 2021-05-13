@@ -1,19 +1,18 @@
 from __future__ import annotations
-import asyncio
 
+import asyncio
 import logging
 
 import aiohttp
 from aiohttp import client_exceptions
 
-from .config import Config
 from .clip import Clip
+from .config import Config
+from .errors import raise_error
 from .groups import Groups
 from .lights import Lights
 from .scenes import Scenes
 from .sensors import Sensors
-from .errors import raise_error
-
 
 _DEFAULT = object()
 

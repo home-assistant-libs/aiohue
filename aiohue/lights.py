@@ -1,6 +1,6 @@
-from .api import APIItems
 from collections import namedtuple
 
+from .api import APIItems
 
 # Represents a CIE 1931 XY coordinate pair.
 XYPoint = namedtuple("XYPoint", ["x", "y"])
