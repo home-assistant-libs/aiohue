@@ -69,12 +69,12 @@ class Bridge:
         result = await self.request("get", "")
 
         self.config = Config(result.pop("config"), self.request)
-        self.groups = Groups(result.pop("groups"), self.request)
-        self.lights = Lights(result.pop("lights"), self.request)
+        self.groups = Groups(self.logger, result.pop("groups"), self.request)
+        self.lights = Lights(self.logger, result.pop("lights"), self.request)
         if "scenes" in result:
-            self.scenes = Scenes(result.pop("scenes"), self.request)
+            self.scenes = Scenes(self.logger, result.pop("scenes"), self.request)
         if "sensors" in result:
-            self.sensors = Sensors(result.pop("sensors"), self.request)
+            self.sensors = Sensors(self.logger, result.pop("sensors"), self.request)
 
         logging.getLogger(__name__).debug("Unused result: %s", result)
 
@@ -145,6 +145,8 @@ class Bridge:
                     for event in await self.clip.next_events():
                         self.logger.debug("Received event: %s", event)
                         pending_events.put_nowait(event)
+                except client_exceptions.ServerDisconnectedError:
+                    self.logger.debug("Event endpoint disconnected")
                 except client_exceptions.ClientResponseError as err:
                     self.logger.debug("Event endpoint %s", err.status)
                     if err.status == 503:
@@ -152,8 +154,13 @@ class Bridge:
                         await asyncio.sleep(5)
                 except asyncio.TimeoutError:
                     pass
+                except Exception:
+                    self.logger.exception("Unexpected error")
+                    pending_events.put(None)
+                    break
 
         event_task = loop.create_task(receive_events())
+
         while True:
             try:
                 event = await pending_events.get()
@@ -162,19 +169,38 @@ class Bridge:
                 await event_task
                 raise
 
-            if event["type"] != "update":
+            # If unexpected error occurred
+            if event is None:
+                return
+
+            if event["type"] not in ("update", "motion"):
                 self.logger.debug("Unknown event type: %s", event)
                 continue
 
-            for update in event["data"]:
-                item_type = update["id_v1"].split("/", 2)[1]
+            for event_data in event["data"]:
+                # We don't track an object that groups all items (bridge_home)
+                if event_data["id_v1"] == "/groups/0":
+                    continue
 
-                if item_type == "lights":
-                    obj = self.lights.process_update_event(update)
-                    # if obj is None, we didn't know the object
-                    # We could consider triggering a full refresh
-                    if obj is not None:
-                        yield obj
+                item_type = event_data["id_v1"].split("/", 2)[1]
+
+                if item_type not in (
+                    # These all inherit from APIItems and so can handle events
+                    "lights",
+                    "sensors",
+                    "scenes",
+                    "groups",
+                ):
+                    self.logger.debug(
+                        "Received event for unknown item type %s", item_type
+                    )
+                    continue
+
+                obj = getattr(self, item_type).process_event(event["type"], event_data)
+                # if obj is None, we didn't know the object
+                # We could consider triggering a full refresh
+                if obj is not None:
+                    yield obj
 
 
 def _raise_on_error(data):

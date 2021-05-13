@@ -1,3 +1,6 @@
+from datetime import datetime
+from aiohue.lights import Light
+from aiohue.groups import Group
 import asyncio
 import logging
 import os
@@ -31,6 +34,14 @@ async def main():
         await run(session)
 
 
+def print_light(light):
+    print("{}: {}".format(light.name, "on" if light.state["on"] else "off"))
+
+
+def print_group(group):
+    print("{}: {}".format(group.name, "on" if group.action["on"] else "off"))
+
+
 async def run(websession):
     bridges = await discover_nupnp(websession)
     bridge = bridges[0]
@@ -54,14 +65,12 @@ async def run(websession):
     print()
     print("Lights:")
     for id in bridge.lights:
-        light = bridge.lights[id]
-        print("{}: {}".format(light.name, "on" if light.state["on"] else "off"))
+        print_light(bridge.lights[id])
 
     print()
     print("Groups:")
     for id in bridge.groups:
-        group = bridge.groups[id]
-        print("{}: {}".format(group.name, "on" if group.action["on"] else "off"))
+        print_group(bridge.groups[id])
 
     print()
     print("Scenes:")
@@ -113,13 +122,15 @@ async def run(websession):
 
     try:
         async for updated_object in bridge.listen_events():
-            print(
-                "{}: on={}, bri={}".format(
-                    updated_object.name,
-                    updated_object.state.get("on"),
-                    updated_object.state.get("bri"),
-                )
-            )
+            print(datetime.now().strftime("%H:%M"), end=" ")
+            if isinstance(updated_object, Group):
+                print("Group: ", end="")
+                print_group(updated_object)
+            elif isinstance(updated_object, Light):
+                print("Light: ", end="")
+                print_light(updated_object)
+            else:
+                print("{}: {}".format(type(updated_object).__name__, updated_object))
     except GeneratorExit:
         pass
 

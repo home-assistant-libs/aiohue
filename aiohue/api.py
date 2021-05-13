@@ -1,7 +1,8 @@
 class APIItems:
     """Base class for a map of API Items."""
 
-    def __init__(self, raw, request, path, item_cls):
+    def __init__(self, logger, raw, request, path, item_cls):
+        self._logger = logger
         self._request = request
         self._path = path
         self._item_cls = item_cls
@@ -33,13 +34,28 @@ class APIItems:
     def values(self):
         return self._items.values()
 
-    def process_update_event(self, event):
-        id_v1 = event["id_v1"]
+    def process_event(self, event_type: str, data: dict):
+        id_v1 = data["id_v1"]
         obj_id = id_v1.rsplit("/", 1)[1]
         obj = self._items.get(obj_id)
+
         if obj is None:
+            self._logger.debug("Received event for unknown item %s: %s", id_v1, data)
             return None
-        obj.process_update_event(event)
+
+        meth = getattr(obj, f"process_{event_type}_event", None)
+
+        if meth is None:
+            self._logger.debug(
+                "Don't know how to handle %s event for %s (%s): %s",
+                event_type,
+                id_v1,
+                type(obj).__name__,
+                data,
+            )
+            return None
+
+        meth(data)
         return obj
 
     def __getitem__(self, obj_id):
