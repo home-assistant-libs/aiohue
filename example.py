@@ -104,7 +104,12 @@ async def run(websession):
     print("Listening for events")
     print()
     if os.environ.get("DEBUG") == "1":
-        logging.basicConfig(level="DEBUG", filename="example-debug.log")
+        logging.basicConfig(
+            level=logging.DEBUG,
+            filename="example-debug.log",
+            format="%(asctime)s %(message)s",
+            datefmt="%H:%M:%S",
+        )
 
     async for updated_object in bridge.listen_events():
         print(
