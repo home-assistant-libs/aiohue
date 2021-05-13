@@ -15,6 +15,9 @@ from .sensors import Sensors
 from .errors import raise_error
 
 
+_DEFAULT = object()
+
+
 class Bridge:
     """Control a Hue bridge."""
 
@@ -111,19 +114,22 @@ class Bridge:
             self.proto = "http"
             return await self.request(method, path, json, auth)
 
-    async def request_2(self, method, path):
+    async def request_2(self, method, path, timeout=_DEFAULT):
         """Make a request to any path with Hue's new request method.
 
         This method has the auth in a header.
         """
         url = f"{self.proto}://{self.host}/{path}"
 
-        async with self.websession.request(
-            method,
-            url,
-            ssl=False,
-            headers={"hue-application-key": self.username},
-        ) as res:
+        kwargs = {
+            "ssl": False,
+            "headers": {"hue-application-key": self.username},
+        }
+
+        if timeout is not _DEFAULT:
+            kwargs["timeout"] = timeout
+
+        async with self.websession.request(method, url, **kwargs) as res:
             res.raise_for_status()
             return await res.json()
 

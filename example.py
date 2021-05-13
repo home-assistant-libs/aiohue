@@ -111,14 +111,17 @@ async def run(websession):
             datefmt="%H:%M:%S",
         )
 
-    async for updated_object in bridge.listen_events():
-        print(
-            "{}: on={}, bri={}".format(
-                updated_object.name,
-                updated_object.state.get("on"),
-                updated_object.state.get("bri"),
+    try:
+        async for updated_object in bridge.listen_events():
+            print(
+                "{}: on={}, bri={}".format(
+                    updated_object.name,
+                    updated_object.state.get("on"),
+                    updated_object.state.get("bri"),
+                )
             )
-        )
+    except GeneratorExit:
+        pass
 
 
 try:

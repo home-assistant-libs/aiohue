@@ -6,7 +6,7 @@ class Clip:
 
     async def next_events(self):
         """Note, this method will be pending until next event."""
-        return await self._request_2("get", "eventstream/clip/v2")
+        return await self._request_2("get", "eventstream/clip/v2", timeout=None)
 
     async def resources(self):
         """Fetch resources from Hue.
@@ -25,8 +25,3 @@ class Clip:
         scene
         """
         return await self._request_2("get", "clip/v2/resource")
-
-    @staticmethod
-    async def initialize(request_2):
-        raw = await request_2("get", "clip/v2/resource")
-        return Clip(raw, request_2)
