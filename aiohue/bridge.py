@@ -194,7 +194,10 @@ class Bridge:
                     "groups",
                 ):
                     self.logger.debug(
-                        "Received event for unknown item type %s", item_type
+                        "Received %s event for unknown item type %s: %s",
+                        event["type"],
+                        item_type,
+                        event_data,
                     )
                     continue
 
