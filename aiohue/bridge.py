@@ -143,33 +143,32 @@ class Bridge:
                     self.logger.debug("Event endpoint %s", err.status)
                     if err.status == 503:
                         self.logger.debug("Sleeping while waiting for 503 to resolve")
-                        await asyncio.sleep(1)
+                        await asyncio.sleep(5)
                 except asyncio.TimeoutError:
                     pass
 
         event_task = loop.create_task(receive_events())
-        try:
-            while True:
+        while True:
+            try:
                 event = await pending_events.get()
+            except asyncio.CancelledError:
+                event_task.cancel()
+                await event_task
+                raise
 
-                if event["type"] != "update":
-                    self.logger.debug("Unknown event type: %s", event)
-                    continue
+            if event["type"] != "update":
+                self.logger.debug("Unknown event type: %s", event)
+                continue
 
-                for update in event["data"]:
-                    item_type = update["id_v1"].split("/", 2)[1]
+            for update in event["data"]:
+                item_type = update["id_v1"].split("/", 2)[1]
 
-                    if item_type == "lights":
-                        obj = self.lights.process_update_event(update)
-                        # if obj is None, we didn't know the object
-                        # We could consider triggering a full refresh
-                        if obj is not None:
-                            yield obj
-
-        except asyncio.CancelledError:
-            event_task.cancel()
-            await event_task
-            raise
+                if item_type == "lights":
+                    obj = self.lights.process_update_event(update)
+                    # if obj is None, we didn't know the object
+                    # We could consider triggering a full refresh
+                    if obj is not None:
+                        yield obj
 
 
 def _raise_on_error(data):
