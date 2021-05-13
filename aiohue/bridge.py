@@ -76,7 +76,7 @@ class Bridge:
         if "sensors" in result:
             self.sensors = Sensors(self.logger, result.pop("sensors"), self.request)
 
-        logging.getLogger(__name__).debug("Unused result: %s", result)
+        self.logger.debug("Unused result: %s", result)
 
     async def request(self, method, path, json=None, auth=True):
         """Make a request to the API."""
