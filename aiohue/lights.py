@@ -90,6 +90,25 @@ class Light:
 
         return color_gamut
 
+    def process_update_event(self, update):
+        state = dict(self.state)
+
+        if (color := update.get("color")) :
+            state["xy"] = [color["xy"]["x"], color["xy"]["y"]]
+
+        if ct := update.get("color_temperature"):
+            state["ct"] = ct["mirek"]
+
+        if "on" in update:
+            state["on"] = update["on"]["on"]
+
+        if dimming := update.get("dimming"):
+            state["bri"] = dimming["brightness"]
+
+        state["reachable"] = True
+
+        self.raw = {**self.raw, "state": state}
+
     async def set_state(
         self,
         on=None,

@@ -33,6 +33,15 @@ class APIItems:
     def values(self):
         return self._items.values()
 
+    def process_update_event(self, event):
+        id_v1 = event["id_v1"]
+        obj_id = id_v1.rsplit("/", 1)[1]
+        obj = self._items.get(obj_id)
+        if obj is None:
+            return None
+        obj.process_update_event(event)
+        return obj
+
     def __getitem__(self, obj_id):
         return self._items[obj_id]
 
