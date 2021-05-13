@@ -40,7 +40,9 @@ class APIItems:
         obj = self._items.get(obj_id)
 
         if obj is None:
-            self._logger.debug("Received event for unknown item %s: %s", id_v1, data)
+            self._logger.debug(
+                "Received %s event for unknown item %s: %s", event_type, id_v1, data
+            )
             return None
 
         meth = getattr(obj, f"process_{event_type}_event", None)
