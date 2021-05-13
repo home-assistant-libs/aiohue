@@ -105,7 +105,7 @@ class Light:
             state["on"] = update["on"]["on"]
 
         if dimming := update.get("dimming"):
-            state["bri"] = dimming["brightness"]
+            state["bri"] = int(dimming["brightness"] * 254)
 
         state["reachable"] = True
 
