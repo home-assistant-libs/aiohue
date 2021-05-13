@@ -147,10 +147,13 @@ class Bridge:
                 except client_exceptions.ServerDisconnectedError:
                     self.logger.debug("Event endpoint disconnected")
                 except client_exceptions.ClientResponseError as err:
-                    self.logger.debug("Event endpoint %s", err.status)
-                    if err.status == 503:
-                        self.logger.debug("Sleeping while waiting for 503 to resolve")
-                        await asyncio.sleep(5)
+                    # We get 503 when it's too busy, but any other error
+                    # is probably also because too busy.
+                    self.logger.debug(
+                        "Got status %s from endpoint. Sleeping while waiting to resolve",
+                        err.status,
+                    )
+                    await asyncio.sleep(5)
                 except asyncio.TimeoutError:
                     pass
                 except Exception:
