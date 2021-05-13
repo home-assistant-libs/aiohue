@@ -4,7 +4,7 @@ import asyncio
 import logging
 
 import aiohttp
-from aiohttp.client_exceptions import ClientConnectionError
+from aiohttp import client_exceptions
 
 from .config import Config
 from .clip import Clip
@@ -104,7 +104,7 @@ class Bridge:
                 _raise_on_error(data)
                 return data
 
-        except ClientConnectionError:
+        except client_exceptions.ClientConnectionError:
             if self.proto is not None:
                 raise
 
@@ -119,7 +119,10 @@ class Bridge:
         url = f"{self.proto}://{self.host}/{path}"
 
         async with self.websession.request(
-            method, url, ssl=False, headers={"hue-application-key": self.username}
+            method,
+            url,
+            ssl=False,
+            headers={"hue-application-key": self.username},
         ) as res:
             res.raise_for_status()
             return await res.json()
@@ -131,8 +134,18 @@ class Bridge:
 
         async def receive_events():
             while True:
-                for event in await self.clip.next_events():
-                    pending_events.put_nowait(event)
+                self.logger.debug("Subscribing to events")
+                try:
+                    for event in await self.clip.next_events():
+                        self.logger.debug("Received event: %s", event)
+                        pending_events.put_nowait(event)
+                except client_exceptions.ClientResponseError as err:
+                    self.logger.debug("Event endpoint %s", err.status)
+                    if err.status == 503:
+                        self.logger.debug("Sleeping while waiting for 503 to resolve")
+                        await asyncio.sleep(1)
+                except asyncio.TimeoutError:
+                    pass
 
         event_task = loop.create_task(receive_events())
         try:
@@ -140,7 +153,7 @@ class Bridge:
                 event = await pending_events.get()
 
                 if event["type"] != "update":
-                    self.logger.debug("Unknown event: %s", event)
+                    self.logger.debug("Unknown event type: %s", event)
                     continue
 
                 for update in event["data"]:
@@ -155,6 +168,7 @@ class Bridge:
 
         except asyncio.CancelledError:
             event_task.cancel()
+            await event_task
             raise
 
 

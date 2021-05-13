@@ -1,5 +1,5 @@
 import asyncio
-from pprint import pprint
+import logging
 import sys
 
 import aiohttp
@@ -102,14 +102,18 @@ async def run(websession):
     print()
     print("Listening for events")
     print()
+    logging.basicConfig(level="DEBUG")
+
     async for updated_object in bridge.listen_events():
+        print()
         print(
-            "{}: on:{}, bri:{}".format(
+            "{}: on={}, bri={}".format(
                 updated_object.name,
                 updated_object.state.get("on"),
                 updated_object.state.get("bri"),
             )
         )
+        print()
 
 
 try:
