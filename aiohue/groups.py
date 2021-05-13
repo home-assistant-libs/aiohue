@@ -18,6 +18,8 @@ class Groups(APIItems):
 class Group:
     """Represents a Hue Group."""
 
+    ITEM_TYPE = "groups"
+
     def __init__(self, id, raw, request):
         self.id = id
         self.raw = raw

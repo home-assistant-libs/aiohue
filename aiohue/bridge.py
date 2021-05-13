@@ -118,7 +118,7 @@ class Bridge:
 
         This method has the auth in a header.
         """
-        url = f"{self.proto}://{self.host}/{path}"
+        url = f"{self.proto or 'https'}://{self.host}/{path}"
 
         kwargs = {
             "ssl": False,
@@ -145,13 +145,17 @@ class Bridge:
                         pending_events.put_nowait(event)
                 except client_exceptions.ServerDisconnectedError:
                     self.logger.debug("Event endpoint disconnected")
-                except client_exceptions.ClientResponseError as err:
-                    # We get 503 when it's too busy, but any other error
-                    # is probably also because too busy.
-                    self.logger.debug(
-                        "Got status %s from endpoint. Sleeping while waiting to resolve",
-                        err.status,
-                    )
+                except client_exceptions.ClientError as err:
+                    if isinstance(err, client_exceptions.ClientResponseError):
+                        # We get 503 when it's too busy, but any other error
+                        # is probably also because too busy.
+                        self.logger.debug(
+                            "Got status %s from endpoint. Sleeping while waiting to resolve",
+                            err.status,
+                        )
+                    else:
+                        self.logger.debug("Unable to reach event endpoint: %s", err)
+
                     await asyncio.sleep(5)
                 except asyncio.TimeoutError:
                     pass
@@ -179,7 +183,7 @@ class Bridge:
                 continue
 
             for event_data in event["data"]:
-                # We don't track an object that groups all items (bridge_home)
+                # We don't track object that groups all items (bridge_home)
                 if event_data["id_v1"] == "/groups/0":
                     continue
 

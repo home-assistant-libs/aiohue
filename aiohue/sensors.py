@@ -60,6 +60,8 @@ class Sensors(APIItems):
 class GenericSensor:
     """Represents the base Hue sensor."""
 
+    ITEM_TYPE = "sensors"
+
     def __init__(self, id, raw, request):
         self.id = id
         self.raw = raw

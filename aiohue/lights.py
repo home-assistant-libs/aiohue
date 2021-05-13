@@ -23,6 +23,8 @@ class Lights(APIItems):
 class Light:
     """Represents a Hue light."""
 
+    ITEM_TYPE = "lights"
+
     def __init__(self, id, raw, request):
         self.id = id
         self.raw = raw

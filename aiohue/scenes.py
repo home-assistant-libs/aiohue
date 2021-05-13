@@ -14,6 +14,8 @@ class Scenes(APIItems):
 class Scene:
     """Represents a Hue Scene."""
 
+    ITEM_TYPE = "scenes"
+
     def __init__(self, id, raw, request):
         self.id = id
         self.raw = raw
