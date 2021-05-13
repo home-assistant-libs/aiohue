@@ -93,7 +93,7 @@ class Light:
     def process_update_event(self, update):
         state = dict(self.state)
 
-        if (color := update.get("color")) :
+        if color := update.get("color"):
             state["xy"] = [color["xy"]["x"], color["xy"]["y"]]
 
         if ct := update.get("color_temperature"):
