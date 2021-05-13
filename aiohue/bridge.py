@@ -135,7 +135,6 @@ class Bridge:
 
     async def listen_events(self):
         """Listen to events and apply changes to objects."""
-        loop = asyncio.get_running_loop()
         pending_events = asyncio.Queue()
 
         async def receive_events():
@@ -159,7 +158,7 @@ class Bridge:
                     pending_events.put(None)
                     break
 
-        event_task = loop.create_task(receive_events())
+        event_task = asyncio.create_task(receive_events())
 
         while True:
             try:
