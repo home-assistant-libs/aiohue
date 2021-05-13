@@ -1,6 +1,6 @@
-from .api import APIItems
 from collections import namedtuple
 
+from .api import APIItems
 
 # Represents a CIE 1931 XY coordinate pair.
 XYPoint = namedtuple("XYPoint", ["x", "y"])
@@ -16,12 +16,14 @@ class Lights(APIItems):
     https://developers.meethue.com/documentation/lights-api
     """
 
-    def __init__(self, raw, request):
-        super().__init__(raw, request, "lights", Light)
+    def __init__(self, logger, raw, request):
+        super().__init__(logger, raw, request, "lights", Light)
 
 
 class Light:
     """Represents a Hue light."""
+
+    ITEM_TYPE = "lights"
 
     def __init__(self, id, raw, request):
         self.id = id
@@ -89,6 +91,25 @@ class Light:
             color_gamut = None
 
         return color_gamut
+
+    def process_update_event(self, update):
+        state = dict(self.state)
+
+        if color := update.get("color"):
+            state["xy"] = [color["xy"]["x"], color["xy"]["y"]]
+
+        if ct := update.get("color_temperature"):
+            state["ct"] = ct["mirek"]
+
+        if "on" in update:
+            state["on"] = update["on"]["on"]
+
+        if dimming := update.get("dimming"):
+            state["bri"] = int(dimming["brightness"] / 100 * 254)
+
+        state["reachable"] = True
+
+        self.raw = {**self.raw, "state": state}
 
     async def set_state(
         self,

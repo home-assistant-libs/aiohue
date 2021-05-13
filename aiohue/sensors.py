@@ -53,12 +53,14 @@ class Sensors(APIItems):
     https://developers.meethue.com/documentation/sensors-api
     """
 
-    def __init__(self, raw, request):
-        super().__init__(raw, request, "sensors", create_sensor)
+    def __init__(self, logger, raw, request):
+        super().__init__(logger, raw, request, "sensors", create_sensor)
 
 
 class GenericSensor:
     """Represents the base Hue sensor."""
+
+    ITEM_TYPE = "sensors"
 
     def __init__(self, id, raw, request):
         self.id = id

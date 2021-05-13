@@ -7,12 +7,14 @@ class Scenes(APIItems):
     https://developers.meethue.com/documentation/scenes-api
     """
 
-    def __init__(self, raw, request):
-        super().__init__(raw, request, "scenes", Scene)
+    def __init__(self, logger, raw, request):
+        super().__init__(logger, raw, request, "scenes", Scene)
 
 
 class Scene:
     """Represents a Hue Scene."""
+
+    ITEM_TYPE = "scenes"
 
     def __init__(self, id, raw, request):
         self.id = id
