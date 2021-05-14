@@ -6,7 +6,7 @@ class Clip:
 
     async def next_events(self):
         """Note, this method will be pending until next event."""
-        return await self._request_2("get", "eventstream/clip/v2", timeout=None)
+        return await self._request_2("get", "eventstream/clip/v2", timeout=360)
 
     async def resources(self):
         """Fetch resources from Hue.
