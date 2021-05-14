@@ -129,7 +129,9 @@ async def run(websession):
                     sensor.name, sensor.state, sensor.config
                 )
             )
-        logger.debug("sensor %s: %s", sensor.id, pformat(sensor.state))
+        logger.debug(
+            "sensor %s (%s): %s", sensor.id, sensor.type, pformat(sensor.state)
+        )
 
     print()
     print("Listening for events")
