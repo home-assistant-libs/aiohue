@@ -1,3 +1,4 @@
+from aiohue.errors import LinkButtonNotPressed
 import asyncio
 import logging
 import os
@@ -49,9 +50,15 @@ async def run(websession):
     print("Found bridge at", bridge.host)
 
     if len(sys.argv) == 1:
-        await bridge.create_user("aiophue-example")
+        try:
+            await bridge.create_user("aiophue-example")
+        except LinkButtonNotPressed:
+            print("Press the link button on the bridge before running example.py")
+            return
+
         print("Your username is", bridge.username)
-        print("Pass this to the example to control the bridge")
+        print("Now run:")
+        print(" ".join(sys.argv) + f" {bridge.username}")
         return
 
     bridge.username = sys.argv[1]
