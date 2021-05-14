@@ -225,7 +225,7 @@ class ZLLPresenceSensor(GenericZLLSensor):
     def process_motion_event(self, motion):
         state = dict(self.state)
 
-        if motion in motion:
+        if "motion" in motion:
             state["presence"] = motion["motion"]["motion"]
 
         state["lastupdated"] = datetime.utcnow().replace(microsecond=0).isoformat()
