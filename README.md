@@ -2,7 +2,7 @@
 
 ## Asynchronous library to control Philips Hue
 
-Requires Python 3.5 and uses asyncio and aiohttp.
+Requires Python 3.8+ and uses asyncio and aiohttp.
 
 ```python
 import asyncio

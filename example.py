@@ -1,13 +1,15 @@
-from datetime import datetime
-from aiohue.lights import Light
-from aiohue.groups import Group
 import asyncio
 import logging
 import os
 import sys
+from datetime import datetime
+from pprint import pformat
 
 import aiohttp
 
+from aiohue.discovery import discover_nupnp
+from aiohue.groups import Group
+from aiohue.lights import Light
 from aiohue.sensors import (
     TYPE_CLIP_GENERICFLAG,
     TYPE_CLIP_GENERICSTATUS,
@@ -25,8 +27,6 @@ from aiohue.sensors import (
     TYPE_ZLL_SWITCH,
     TYPE_ZLL_TEMPERATURE,
 )
-
-from aiohue.discovery import discover_nupnp
 
 
 async def main():
@@ -56,6 +56,16 @@ async def run(websession):
 
     bridge.username = sys.argv[1]
 
+    if os.environ.get("DEBUG") == "1":
+        logging.basicConfig(
+            level=logging.DEBUG,
+            filename="example-debug.log",
+            format="%(asctime)s %(message)s",
+            datefmt="%H:%M:%S",
+        )
+
+    logger = logging.getLogger(__name__)
+
     await bridge.initialize()
 
     print("Name", bridge.config.name)
@@ -65,12 +75,16 @@ async def run(websession):
     print()
     print("Lights:")
     for id in bridge.lights:
-        print_light(bridge.lights[id])
+        light = bridge.lights[id]
+        print_light(light)
+        logger.debug("light %s: %s", light.id, pformat(light.state))
 
     print()
     print("Groups:")
     for id in bridge.groups:
-        print_group(bridge.groups[id])
+        group = bridge.groups[id]
+        print_group(group)
+        logger.debug("group %s: %s %s", group.id, group.state, pformat(group.action))
 
     print()
     print("Scenes:")
@@ -108,17 +122,11 @@ async def run(websession):
                     sensor.name, sensor.state, sensor.config
                 )
             )
+        logger.debug("sensor %s: %s", sensor.id, pformat(sensor.state))
 
     print()
     print("Listening for events")
     print()
-    if os.environ.get("DEBUG") == "1":
-        logging.basicConfig(
-            level=logging.DEBUG,
-            filename="example-debug.log",
-            format="%(asctime)s %(message)s",
-            datefmt="%H:%M:%S",
-        )
 
     try:
         async for updated_object in bridge.listen_events():
