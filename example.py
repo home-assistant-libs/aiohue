@@ -144,7 +144,7 @@ async def run(websession):
 
     try:
         async for updated_object in bridge.listen_events():
-            print(datetime.now().strftime("%H:%M"), end=" ")
+            print(datetime.now().strftime("%H:%M:%S"), end=" ")
             if isinstance(updated_object, Group):
                 print("Group: ", end="")
                 print_group(updated_object)
