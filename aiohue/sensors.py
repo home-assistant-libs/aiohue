@@ -1,3 +1,4 @@
+from datetime import datetime
 from .api import APIItems
 
 TYPE_DAYLIGHT = "Daylight"
@@ -220,6 +221,16 @@ class ZLLPresenceSensor(GenericZLLSensor):
     @property
     def presence(self):
         return self.raw["state"]["presence"]
+
+    def process_motion_event(self, motion):
+        state = dict(self.state)
+
+        if motion in motion:
+            state["presence"] = motion["motion"]["motion"]
+
+        state["lastupdated"] = datetime.utcnow().replace(microsecond=0).isoformat()
+
+        self.raw = {**self.raw, "state": state}
 
     async def set_config(self, on=None, sensitivity=None, sensitivitymax=None):
         """Change config of a ZLL Presence sensor."""

@@ -12,6 +12,7 @@ from aiohue.discovery import discover_nupnp
 from aiohue.groups import Group
 from aiohue.lights import Light
 from aiohue.sensors import (
+    GenericSensor,
     TYPE_CLIP_GENERICFLAG,
     TYPE_CLIP_GENERICSTATUS,
     TYPE_CLIP_HUMIDITY,
@@ -41,6 +42,35 @@ def print_light(light):
 
 def print_group(group):
     print("{}: {}".format(group.name, "on" if group.action["on"] else "off"))
+
+
+def print_sensor(sensor):
+    if sensor.type in [TYPE_CLIP_SWITCH, TYPE_ZGP_SWITCH, TYPE_ZLL_SWITCH]:
+        print("{}: [Button Event]: {}".format(sensor.name, sensor.buttonevent))
+    elif sensor.type in [TYPE_ZLL_ROTARY]:
+        print("{}: [Rotation Event]: {}".format(sensor.name, sensor.rotaryevent))
+    elif sensor.type in [TYPE_CLIP_TEMPERATURE, TYPE_ZLL_TEMPERATURE]:
+        print("{}: [Temperature]: {}".format(sensor.name, sensor.temperature))
+    elif sensor.type in [TYPE_CLIP_PRESENCE, TYPE_ZLL_PRESENCE]:
+        print("{}: [Presence]: {}".format(sensor.name, sensor.presence))
+    elif sensor.type == TYPE_CLIP_OPENCLOSE:
+        print("{}: [Open]: {}".format(sensor.name, sensor.open))
+    elif sensor.type in [TYPE_CLIP_LIGHTLEVEL, TYPE_ZLL_LIGHTLEVEL]:
+        print("{}: [Light Level]: {}".format(sensor.name, sensor.lightlevel))
+    elif sensor.type == TYPE_CLIP_HUMIDITY:
+        print("{}: [Humidity]: {}".format(sensor.name, sensor.humidity))
+    elif sensor.type == TYPE_CLIP_GENERICSTATUS:
+        print("{}: [Status]: {}".format(sensor.name, sensor.status))
+    elif sensor.type == TYPE_CLIP_GENERICFLAG:
+        print("{}: [Flag]: {}".format(sensor.name, sensor.flag))
+    elif sensor.type == TYPE_DAYLIGHT:
+        print("{}: [Daylight]: {}".format(sensor.name, sensor.daylight))
+    else:
+        print(
+            "{}: [State]: {} [Config]: {}".format(
+                sensor.name, sensor.state, sensor.config
+            )
+        )
 
 
 async def run(websession):
@@ -103,32 +133,7 @@ async def run(websession):
     print("Sensors:")
     for id in bridge.sensors:
         sensor = bridge.sensors[id]
-        if sensor.type in [TYPE_CLIP_SWITCH, TYPE_ZGP_SWITCH, TYPE_ZLL_SWITCH]:
-            print("{}: [Button Event]: {}".format(sensor.name, sensor.buttonevent))
-        elif sensor.type in [TYPE_ZLL_ROTARY]:
-            print("{}: [Rotation Event]: {}".format(sensor.name, sensor.rotaryevent))
-        elif sensor.type in [TYPE_CLIP_TEMPERATURE, TYPE_ZLL_TEMPERATURE]:
-            print("{}: [Temperature]: {}".format(sensor.name, sensor.temperature))
-        elif sensor.type in [TYPE_CLIP_PRESENCE, TYPE_ZLL_PRESENCE]:
-            print("{}: [Presence]: {}".format(sensor.name, sensor.presence))
-        elif sensor.type == TYPE_CLIP_OPENCLOSE:
-            print("{}: [Open]: {}".format(sensor.name, sensor.open))
-        elif sensor.type in [TYPE_CLIP_LIGHTLEVEL, TYPE_ZLL_LIGHTLEVEL]:
-            print("{}: [Light Level]: {}".format(sensor.name, sensor.lightlevel))
-        elif sensor.type == TYPE_CLIP_HUMIDITY:
-            print("{}: [Humidity]: {}".format(sensor.name, sensor.humidity))
-        elif sensor.type == TYPE_CLIP_GENERICSTATUS:
-            print("{}: [Status]: {}".format(sensor.name, sensor.status))
-        elif sensor.type == TYPE_CLIP_GENERICFLAG:
-            print("{}: [Flag]: {}".format(sensor.name, sensor.flag))
-        elif sensor.type == TYPE_DAYLIGHT:
-            print("{}: [Daylight]: {}".format(sensor.name, sensor.daylight))
-        else:
-            print(
-                "{}: [State]: {} [Config]: {}".format(
-                    sensor.name, sensor.state, sensor.config
-                )
-            )
+        print_sensor(sensor)
         logger.debug(
             "sensor %s (%s): %s", sensor.id, sensor.type, pformat(sensor.state)
         )
@@ -146,6 +151,9 @@ async def run(websession):
             elif isinstance(updated_object, Light):
                 print("Light: ", end="")
                 print_light(updated_object)
+            elif isinstance(updated_object, GenericSensor):
+                print("Sensor: ", end="")
+                print_sensor(updated_object)
             else:
                 print("{}: {}".format(type(updated_object).__name__, updated_object))
     except GeneratorExit:
