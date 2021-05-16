@@ -16,8 +16,8 @@ class Lights(APIItems):
     https://developers.meethue.com/documentation/lights-api
     """
 
-    def __init__(self, logger, raw, request):
-        super().__init__(logger, raw, request, "lights", Light)
+    def __init__(self, logger, raw, v2_resources, request):
+        super().__init__(logger, raw, v2_resources, request, "lights", Light)
 
 
 class Light:
@@ -25,7 +25,7 @@ class Light:
 
     ITEM_TYPE = "lights"
 
-    def __init__(self, id, raw, request):
+    def __init__(self, id, raw, v2_resources, request):
         self.id = id
         self.raw = raw
         self._request = request

@@ -54,8 +54,8 @@ class Sensors(APIItems):
     https://developers.meethue.com/documentation/sensors-api
     """
 
-    def __init__(self, logger, raw, request):
-        super().__init__(logger, raw, request, "sensors", create_sensor)
+    def __init__(self, logger, raw, v2_resources, request):
+        super().__init__(logger, raw, v2_resources, request, "sensors", create_sensor)
 
 
 class GenericSensor:
@@ -63,9 +63,14 @@ class GenericSensor:
 
     ITEM_TYPE = "sensors"
 
-    def __init__(self, id, raw, request):
+    def __init__(self, id, raw, v2_resources, request):
         self.id = id
         self.raw = raw
+        self.v2_resources = v2_resources
+        for resource in v2_resources:
+            if resource.get("type") == "device":
+                self.device = resource
+                break
         self._request = request
 
     @property
@@ -292,6 +297,25 @@ class ZGPSwitchSensor(GenericSensor):
     def on(self):
         return self.raw["config"]["on"]
 
+    @property
+    def inputs(self):
+        return self.raw["capabilities"]["inputs"]
+
+    def process_update_event(self, update):
+        state = dict(self.state)
+
+        if "button" in update:
+            for idx, button in enumerate(self.device["services"]):
+                if button["rid"] == update["id"]:
+                    for event in self.inputs[idx]["events"]:
+                        if event["eventtype"] == update["button"]["last_event"]:
+                            state["buttonevent"] = event["buttonevent"]
+                            break
+
+        state["lastupdated"] = datetime.utcnow().replace(microsecond=0).isoformat()
+
+        self.raw = {**self.raw, "state": state}
+
     async def set_config(self, on=None):
         """Change config of a ZGP Switch sensor."""
         data = {} if on is None else {"on": on}
@@ -455,45 +479,45 @@ class CLIPOpenCloseSensor(GenericCLIPSensor):
         await self._request("put", "sensors/{}/config".format(self.id), json=data)
 
 
-def create_sensor(id, raw, request):
+def create_sensor(id, raw, v2_resources, request):
     type = raw["type"]
 
     if type == TYPE_DAYLIGHT:
-        return DaylightSensor(id, raw, request)
+        return DaylightSensor(id, raw, [], request)
 
     elif type == TYPE_CLIP_GENERICFLAG:
-        return CLIPGenericFlagSensor(id, raw, request)
+        return CLIPGenericFlagSensor(id, raw, [], request)
     elif type == TYPE_CLIP_GENERICSTATUS:
-        return CLIPGenericStatusSensor(id, raw, request)
+        return CLIPGenericStatusSensor(id, raw, [], request)
     elif type == TYPE_CLIP_HUMIDITY:
-        return CLIPHumiditySensor(id, raw, request)
+        return CLIPHumiditySensor(id, raw, [], request)
     elif type == TYPE_CLIP_LIGHTLEVEL:
-        return CLIPLightLevelSensor(id, raw, request)
+        return CLIPLightLevelSensor(id, raw, [], request)
     elif type == TYPE_CLIP_OPENCLOSE:
-        return CLIPOpenCloseSensor(id, raw, request)
+        return CLIPOpenCloseSensor(id, raw, [], request)
     elif type == TYPE_CLIP_PRESENCE:
-        return CLIPPresenceSensor(id, raw, request)
+        return CLIPPresenceSensor(id, raw, [], request)
     elif type == TYPE_CLIP_SWITCH:
-        return CLIPSwitchSensor(id, raw, request)
+        return CLIPSwitchSensor(id, raw, [], request)
     elif type == TYPE_CLIP_TEMPERATURE:
-        return CLIPTemperatureSensor(id, raw, request)
+        return CLIPTemperatureSensor(id, raw, [], request)
 
     elif type == TYPE_GEOFENCE:
-        return GeofenceSensor(id, raw, request)
+        return GeofenceSensor(id, raw, [], request)
 
     elif type == TYPE_ZGP_SWITCH:
-        return ZGPSwitchSensor(id, raw, request)
+        return ZGPSwitchSensor(id, raw, v2_resources, request)
 
     elif type == TYPE_ZLL_LIGHTLEVEL:
-        return ZLLLightLevelSensor(id, raw, request)
+        return ZLLLightLevelSensor(id, raw, [], request)
     elif type == TYPE_ZLL_PRESENCE:
-        return ZLLPresenceSensor(id, raw, request)
+        return ZLLPresenceSensor(id, raw, [], request)
     elif type == TYPE_ZLL_ROTARY:
-        return ZLLRotarySensor(id, raw, request)
+        return ZLLRotarySensor(id, raw, [], request)
     elif type == TYPE_ZLL_SWITCH:
-        return ZLLSwitchSensor(id, raw, request)
+        return ZLLSwitchSensor(id, raw, [], request)
     elif type == TYPE_ZLL_TEMPERATURE:
-        return ZLLTemperatureSensor(id, raw, request)
+        return ZLLTemperatureSensor(id, raw, [], request)
 
     else:
         return GenericSensor(id, raw, request)

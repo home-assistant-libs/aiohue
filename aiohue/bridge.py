@@ -66,14 +66,23 @@ class Bridge:
 
     async def initialize(self):
         result = await self.request("get", "")
+        v2_resources = (await self.clip.resources())["data"]
 
-        self.config = Config(result.pop("config"), self.request)
-        self.groups = Groups(self.logger, result.pop("groups"), self.request)
-        self.lights = Lights(self.logger, result.pop("lights"), self.request)
+        self.config = Config(result.pop("config"), v2_resources, self.request)
+        self.groups = Groups(
+            self.logger, result.pop("groups"), v2_resources, self.request
+        )
+        self.lights = Lights(
+            self.logger, result.pop("lights"), v2_resources, self.request
+        )
         if "scenes" in result:
-            self.scenes = Scenes(self.logger, result.pop("scenes"), self.request)
+            self.scenes = Scenes(
+                self.logger, result.pop("scenes"), v2_resources, self.request
+            )
         if "sensors" in result:
-            self.sensors = Sensors(self.logger, result.pop("sensors"), self.request)
+            self.sensors = Sensors(
+                self.logger, result.pop("sensors"), v2_resources, self.request
+            )
 
         self.logger.debug("Unused result: %s", result)
 

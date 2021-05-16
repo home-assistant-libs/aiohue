@@ -4,7 +4,7 @@ class Config:
     https://developers.meethue.com/documentation/configuration-api#72_get_configuration
     """
 
-    def __init__(self, raw, request):
+    def __init__(self, raw, v2_resources, request):
         self.raw = raw
         self._request = request
 
