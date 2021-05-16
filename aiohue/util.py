@@ -7,7 +7,7 @@ def normalize_bridge_id(bridge_id: str):
     bridge_id = bridge_id.lower()
 
     # zeroconf: properties['id'], field contains semicolons after each 2 char
-    if len(bridge_id) == 17 and sum(True for c in "aa:bb:cc:dd:ee:ff" if c == ":"):
+    if len(bridge_id) == 17 and bridge_id.count(":") == 5:
         return bridge_id.replace(":", "")
 
     # nupnp: contains 4 extra characters in the middle: "fffe"
