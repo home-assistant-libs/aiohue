@@ -66,7 +66,10 @@ class Bridge:
 
     async def initialize(self):
         result = await self.request("get", "")
-        v2_resources = (await self.clip.resources())["data"]
+        try:
+            v2_resources = (await self.clip.resources()).get("data", [])
+        except Exception:
+            v2_resources = []
 
         self.config = Config(result.pop("config"), v2_resources, self.request)
         self.groups = Groups(
