@@ -272,6 +272,16 @@ class CLIPSwitchSensor(GenericCLIPSensor):
     def buttonevent(self):
         return self.raw["state"]["buttonevent"]
 
+    def process_update_event(self, update):
+        state = dict(self.state)
+
+        if "button" in update:
+            state["buttonevent"] = update["button"]["last_event"]
+
+        state["lastupdated"] = datetime.utcnow().replace(microsecond=0).isoformat()
+
+        self.raw = {**self.raw, "state": state}
+
     async def set_config(self, on=None):
         """Change config of a CLIP Switch sensor."""
         data = {} if on is None else {"on": on}
@@ -292,6 +302,16 @@ class ZGPSwitchSensor(GenericSensor):
     def on(self):
         return self.raw["config"]["on"]
 
+    def process_update_event(self, update):
+        state = dict(self.state)
+
+        if "button" in update:
+            state["buttonevent"] = update["button"]["last_event"]
+
+        state["lastupdated"] = datetime.utcnow().replace(microsecond=0).isoformat()
+
+        self.raw = {**self.raw, "state": state}
+
     async def set_config(self, on=None):
         """Change config of a ZGP Switch sensor."""
         data = {} if on is None else {"on": on}
@@ -303,6 +323,16 @@ class ZLLSwitchSensor(GenericZLLSensor):
     @property
     def buttonevent(self):
         return self.raw["state"]["buttonevent"]
+
+    def process_update_event(self, update):
+        state = dict(self.state)
+
+        if "button" in update:
+            state["buttonevent"] = update["button"]["last_event"]
+
+        state["lastupdated"] = datetime.utcnow().replace(microsecond=0).isoformat()
+
+        self.raw = {**self.raw, "state": state}
 
     async def set_config(self, on=None):
         """Change config of a ZLL Switch sensor."""
