@@ -25,7 +25,7 @@ class Light:
 
     ITEM_TYPE = "lights"
 
-    def __init__(self, id, raw, v2_resource, request):
+    def __init__(self, id, raw, v2_resources, request):
         self.id = id
         self.raw = raw
         self._request = request

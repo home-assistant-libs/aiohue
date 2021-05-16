@@ -277,6 +277,10 @@ class CLIPSwitchSensor(GenericCLIPSensor):
     def buttonevent(self):
         return self.raw["state"]["buttonevent"]
 
+    @property
+    def inputs(self):
+        return self.raw["capabilities"]["inputs"]
+
     def process_update_event(self, update):
         state = dict(self.state)
 
