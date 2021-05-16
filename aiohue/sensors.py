@@ -66,11 +66,12 @@ class GenericSensor:
     def __init__(self, id, raw, v2_resources, request):
         self.id = id
         self.raw = raw
-        self.v2_resources = v2_resources
         for resource in v2_resources:
             if resource.get("type") == "device":
                 self.device = resource
                 break
+        else:
+            self.device = None
         self._request = request
 
     @property
@@ -312,7 +313,7 @@ class ZGPSwitchSensor(GenericSensor):
     def process_update_event(self, update):
         state = dict(self.state)
 
-        if "button" in update:
+        if "button" in update and self.device:
             for idx, button in enumerate(self.device["services"]):
                 if button["rid"] != update["id"]:
                     continue
@@ -346,7 +347,7 @@ class ZLLSwitchSensor(GenericZLLSensor):
     def process_update_event(self, update):
         state = dict(self.state)
 
-        if "button" in update:
+        if "button" in update and self.device:
             for idx, button in enumerate(self.device["services"]):
                 if button["rid"] != update["id"]:
                     continue
