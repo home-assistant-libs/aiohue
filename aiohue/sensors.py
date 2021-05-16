@@ -486,38 +486,38 @@ def create_sensor(id, raw, v2_resources, request):
         return DaylightSensor(id, raw, [], request)
 
     elif type == TYPE_CLIP_GENERICFLAG:
-        return CLIPGenericFlagSensor(id, raw, [], request)
+        return CLIPGenericFlagSensor(id, raw, v2_resources, request)
     elif type == TYPE_CLIP_GENERICSTATUS:
-        return CLIPGenericStatusSensor(id, raw, [], request)
+        return CLIPGenericStatusSensor(id, raw, v2_resources, request)
     elif type == TYPE_CLIP_HUMIDITY:
-        return CLIPHumiditySensor(id, raw, [], request)
+        return CLIPHumiditySensor(id, raw, v2_resources, request)
     elif type == TYPE_CLIP_LIGHTLEVEL:
-        return CLIPLightLevelSensor(id, raw, [], request)
+        return CLIPLightLevelSensor(id, raw, v2_resources, request)
     elif type == TYPE_CLIP_OPENCLOSE:
-        return CLIPOpenCloseSensor(id, raw, [], request)
+        return CLIPOpenCloseSensor(id, raw, v2_resources, request)
     elif type == TYPE_CLIP_PRESENCE:
-        return CLIPPresenceSensor(id, raw, [], request)
+        return CLIPPresenceSensor(id, raw, v2_resources, request)
     elif type == TYPE_CLIP_SWITCH:
-        return CLIPSwitchSensor(id, raw, [], request)
+        return CLIPSwitchSensor(id, raw, v2_resources, request)
     elif type == TYPE_CLIP_TEMPERATURE:
-        return CLIPTemperatureSensor(id, raw, [], request)
+        return CLIPTemperatureSensor(id, raw, v2_resources, request)
 
     elif type == TYPE_GEOFENCE:
-        return GeofenceSensor(id, raw, [], request)
+        return GeofenceSensor(id, raw, v2_resources, request)
 
     elif type == TYPE_ZGP_SWITCH:
         return ZGPSwitchSensor(id, raw, v2_resources, request)
 
     elif type == TYPE_ZLL_LIGHTLEVEL:
-        return ZLLLightLevelSensor(id, raw, [], request)
+        return ZLLLightLevelSensor(id, raw, v2_resources, request)
     elif type == TYPE_ZLL_PRESENCE:
-        return ZLLPresenceSensor(id, raw, [], request)
+        return ZLLPresenceSensor(id, raw, v2_resources, request)
     elif type == TYPE_ZLL_ROTARY:
-        return ZLLRotarySensor(id, raw, [], request)
+        return ZLLRotarySensor(id, raw, v2_resources, request)
     elif type == TYPE_ZLL_SWITCH:
-        return ZLLSwitchSensor(id, raw, [], request)
+        return ZLLSwitchSensor(id, raw, v2_resources, request)
     elif type == TYPE_ZLL_TEMPERATURE:
-        return ZLLTemperatureSensor(id, raw, [], request)
+        return ZLLTemperatureSensor(id, raw, v2_resources, request)
 
     else:
-        return GenericSensor(id, raw, request)
+        return GenericSensor(id, raw, v2_resources, request)
