@@ -7,12 +7,12 @@ class Groups(APIItems):
     https://developers.meethue.com/documentation/groups-api
     """
 
-    def __init__(self, logger, raw, request):
-        super().__init__(logger, raw, request, "groups", Group)
+    def __init__(self, logger, raw, v2_resources, request):
+        super().__init__(logger, raw, v2_resources, request, "groups", Group)
 
     async def get_all_lights_group(self):
         """Special all lights group."""
-        return Group("0", await self._request("get", "groups/0"), self._request)
+        return Group("0", await self._request("get", "groups/0"), [], self._request)
 
 
 class Group:
@@ -20,7 +20,7 @@ class Group:
 
     ITEM_TYPE = "groups"
 
-    def __init__(self, id, raw, request):
+    def __init__(self, id, raw, v2_resources, request):
         self.id = id
         self.raw = raw
         self._request = request

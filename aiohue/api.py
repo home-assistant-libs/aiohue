@@ -1,9 +1,10 @@
 class APIItems:
     """Base class for a map of API Items."""
 
-    def __init__(self, logger, raw, request, path, item_cls):
+    def __init__(self, logger, raw, v2_resources, request, path, item_cls):
         self._logger = logger
         self._request = request
+        self._v2_resources = v2_resources
         self._path = path
         self._item_cls = item_cls
         self._items = {}
@@ -20,7 +21,16 @@ class APIItems:
             if obj is not None:
                 obj.raw = raw_item
             else:
-                self._items[id] = self._item_cls(id, raw_item, self._request)
+                self._items[id] = self._item_cls(
+                    id,
+                    raw_item,
+                    [
+                        resource
+                        for resource in self._v2_resources
+                        if resource.get("id_v1") == f"/{self._path}/{id}"
+                    ],
+                    self._request,
+                )
 
         removed_items = []
 
