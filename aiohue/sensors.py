@@ -279,6 +279,7 @@ class ZLLRotarySensor(GenericZLLSensor):
 
         await self._request("put", "sensors/{}/config".format(self.id), json=data)
 
+
 class CLIPSwitchSensor(GenericCLIPSensor):
     @property
     def buttonevent(self):
