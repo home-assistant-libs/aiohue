@@ -294,6 +294,14 @@ class ZGPSwitchSensor(GenericSensor):
     def buttonevent(self):
         return self.raw["state"]["buttonevent"]
 
+    @property
+    def lastupdated(self):
+        return self.raw["state"].get("lastupdated")
+
+    @property
+    def on(self):
+        return self.raw["config"]["on"]
+
     def process_update_event(self, update):
         state = dict(self.state)
 
@@ -303,14 +311,6 @@ class ZGPSwitchSensor(GenericSensor):
         state["lastupdated"] = datetime.utcnow().replace(microsecond=0).isoformat()
 
         self.raw = {**self.raw, "state": state}
-
-    @property
-    def lastupdated(self):
-        return self.raw["state"].get("lastupdated")
-
-    @property
-    def on(self):
-        return self.raw["config"]["on"]
 
     async def set_config(self, on=None):
         """Change config of a ZGP Switch sensor."""
