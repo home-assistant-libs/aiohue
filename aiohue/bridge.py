@@ -66,12 +66,17 @@ class Bridge:
 
     async def initialize(self):
         result = await self.request("get", "")
+        self.config = Config(result.pop("config"), self.request)
+
         try:
-            v2_resources = (await self.clip.resources()).get("data", [])
-        except Exception:
+            v2_resources = (await self.clip.resources())["data"]
+        except client_exceptions.ClientResponseError as err:
+            if err.status != 404:
+                raise
+
+            # Older hubs
             v2_resources = []
 
-        self.config = Config(result.pop("config"), v2_resources, self.request)
         self.groups = Groups(
             self.logger, result.pop("groups"), v2_resources, self.request
         )

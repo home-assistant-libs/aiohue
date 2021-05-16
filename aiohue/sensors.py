@@ -281,7 +281,14 @@ class CLIPSwitchSensor(GenericCLIPSensor):
         state = dict(self.state)
 
         if "button" in update:
-            state["buttonevent"] = update["button"]["last_event"]
+            for idx, button in enumerate(self.device["services"]):
+                if button["rid"] != update["id"]:
+                    continue
+
+                for event in self.inputs[idx]["events"]:
+                    if event["eventtype"] == update["button"]["last_event"]:
+                        state["buttonevent"] = event["buttonevent"]
+                        break
 
         state["lastupdated"] = datetime.utcnow().replace(microsecond=0).isoformat()
 
@@ -316,11 +323,13 @@ class ZGPSwitchSensor(GenericSensor):
 
         if "button" in update:
             for idx, button in enumerate(self.device["services"]):
-                if button["rid"] == update["id"]:
-                    for event in self.inputs[idx]["events"]:
-                        if event["eventtype"] == update["button"]["last_event"]:
-                            state["buttonevent"] = event["buttonevent"]
-                            break
+                if button["rid"] != update["id"]:
+                    continue
+
+                for event in self.inputs[idx]["events"]:
+                    if event["eventtype"] == update["button"]["last_event"]:
+                        state["buttonevent"] = event["buttonevent"]
+                        break
 
         state["lastupdated"] = datetime.utcnow().replace(microsecond=0).isoformat()
 
@@ -342,7 +351,14 @@ class ZLLSwitchSensor(GenericZLLSensor):
         state = dict(self.state)
 
         if "button" in update:
-            state["buttonevent"] = update["button"]["last_event"]
+            for idx, button in enumerate(self.device["services"]):
+                if button["rid"] != update["id"]:
+                    continue
+
+                for event in self.inputs[idx]["events"]:
+                    if event["eventtype"] == update["button"]["last_event"]:
+                        state["buttonevent"] = event["buttonevent"]
+                        break
 
         state["lastupdated"] = datetime.utcnow().replace(microsecond=0).isoformat()
 
