@@ -23,6 +23,12 @@ class Group:
     def __init__(self, id, raw, v2_resources, request):
         self.id = id
         self.raw = raw
+        for resource in v2_resources:
+            if resource.get("type") == "room":
+                self.room = resource
+                break
+        else:
+            self.room = None
         self._request = request
 
     @property
