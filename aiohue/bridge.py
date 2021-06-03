@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import asyncio
+from contextlib import asynccontextmanager
 import logging
 
 import aiohttp
@@ -130,24 +131,24 @@ class Bridge:
             self.proto = "http"
             return await self.request(method, path, json, auth)
 
-    async def request_2(self, method, path, timeout=_DEFAULT):
+    @asynccontextmanager
+    async def request_2(self, method, path, **kwargs):
         """Make a request to any path with Hue's new request method.
 
         This method has the auth in a header.
         """
         url = f"{self.proto or 'https'}://{self.host}/{path}"
 
-        kwargs = {
-            "ssl": False,
-            "headers": {"hue-application-key": self.username},
-        }
+        kwargs["ssl"] = False
 
-        if timeout is not _DEFAULT:
-            kwargs["timeout"] = timeout
+        if "headers" not in kwargs:
+            kwargs["headers"] = {}
+
+        kwargs["headers"]["hue-application-key"] = self.username
 
         async with self.websession.request(method, url, **kwargs) as res:
             res.raise_for_status()
-            return await res.json()
+            yield res
 
     async def listen_events(self):
         """Listen to events and apply changes to objects."""
@@ -156,10 +157,13 @@ class Bridge:
         async def receive_events():
             while True:
                 self.logger.debug("Subscribing to events")
+                last_event_id = None
                 try:
-                    for event in await self.clip.next_events():
-                        self.logger.debug("Received event: %s", event)
-                        pending_events.put_nowait(event)
+                    async for events in self.clip.stream_events(last_event_id):
+                        last_event_id = events["id"]
+                        for event in events["data"]:
+                            self.logger.debug("Received event: %s", event)
+                            pending_events.put_nowait(event)
                 except client_exceptions.ServerDisconnectedError:
                     self.logger.debug("Event endpoint disconnected")
                 except client_exceptions.ClientError as err:
