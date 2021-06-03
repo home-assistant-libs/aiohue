@@ -23,6 +23,7 @@ class Clip:
             **kwargs,
         ) as resp:
             event = {}
+            # First event is `{"": "hi"}`, which we will skip.
             skip_event = True
 
             async for line in resp.content:
