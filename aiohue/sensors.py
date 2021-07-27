@@ -159,6 +159,40 @@ class GenericZLLSensor(GenericSensor):
         return self.raw["config"]["reachable"]
 
 
+class GenericSwitchSensor:
+    @property
+    def buttonevent(self):
+        return self.raw["state"]["buttonevent"]
+
+    @property
+    def inputs(self):
+        return self.raw.get("capabilities", {}).get("inputs")
+
+    def process_update_event(self, update):
+        state = dict(self.state)
+
+        if "button" in update and self.device:
+            for idx, button in enumerate(self.device["services"]):
+                if button["rid"] != update["id"]:
+                    continue
+
+                for event in self.inputs[idx]["events"]:
+                    if event["eventtype"] == update["button"]["last_event"]:
+                        state["buttonevent"] = event["buttonevent"]
+                        break
+                break
+
+        state["lastupdated"] = datetime.utcnow().replace(microsecond=0).isoformat()
+
+        self.raw = {**self.raw, "state": state}
+
+    async def set_config(self, on=None):
+        """Change config of a Switch sensor."""
+        data = {} if on is None else {"on": on}
+
+        await self._request("put", "sensors/{}/config".format(self.id), json=data)
+
+
 class DaylightSensor(GenericSensor):
     @property
     def configured(self):
@@ -293,11 +327,7 @@ class CLIPSwitchSensor(GenericCLIPSensor):
         await self._request("put", "sensors/{}/config".format(self.id), json=data)
 
 
-class ZGPSwitchSensor(GenericSensor):
-    @property
-    def buttonevent(self):
-        return self.raw["state"]["buttonevent"]
-
+class ZGPSwitchSensor(GenericSensor, GenericSwitchSensor):
     @property
     def lastupdated(self):
         return self.raw["state"].get("lastupdated")
@@ -306,67 +336,9 @@ class ZGPSwitchSensor(GenericSensor):
     def on(self):
         return self.raw["config"]["on"]
 
-    @property
-    def inputs(self):
-        return self.raw.get("capabilities", {}).get("inputs")
 
-    def process_update_event(self, update):
-        state = dict(self.state)
-
-        if "button" in update and self.device:
-            for idx, button in enumerate(self.device["services"]):
-                if button["rid"] != update["id"]:
-                    continue
-
-                for event in self.inputs[idx]["events"]:
-                    if event["eventtype"] == update["button"]["last_event"]:
-                        state["buttonevent"] = event["buttonevent"]
-                        break
-                break
-
-        state["lastupdated"] = datetime.utcnow().replace(microsecond=0).isoformat()
-
-        self.raw = {**self.raw, "state": state}
-
-    async def set_config(self, on=None):
-        """Change config of a ZGP Switch sensor."""
-        data = {} if on is None else {"on": on}
-
-        await self._request("put", "sensors/{}/config".format(self.id), json=data)
-
-
-class ZLLSwitchSensor(GenericZLLSensor):
-    @property
-    def buttonevent(self):
-        return self.raw["state"]["buttonevent"]
-
-    @property
-    def inputs(self):
-        return self.raw.get("capabilities", {}).get("inputs")
-
-    def process_update_event(self, update):
-        state = dict(self.state)
-
-        if "button" in update and self.device:
-            for idx, button in enumerate(self.device["services"]):
-                if button["rid"] != update["id"]:
-                    continue
-
-                for event in self.inputs[idx]["events"]:
-                    if event["eventtype"] == update["button"]["last_event"]:
-                        state["buttonevent"] = event["buttonevent"]
-                        break
-                break
-
-        state["lastupdated"] = datetime.utcnow().replace(microsecond=0).isoformat()
-
-        self.raw = {**self.raw, "state": state}
-
-    async def set_config(self, on=None):
-        """Change config of a ZLL Switch sensor."""
-        data = {} if on is None else {"on": on}
-
-        await self._request("put", "sensors/{}/config".format(self.id), json=data)
+class ZLLSwitchSensor(GenericZLLSensor, GenericSwitchSensor):
+    pass
 
 
 class CLIPLightLevelSensor(GenericCLIPSensor):
