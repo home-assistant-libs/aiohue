@@ -144,7 +144,7 @@ class GenericCLIPSensor(GenericSensor):
 class GenericZLLSensor(GenericSensor):
     @property
     def battery(self):
-        return self.raw["config"].get("battery")
+        return self.raw["state"].get("battery", self.raw["config"].get("battery"))
 
     @property
     def lastupdated(self):
@@ -181,6 +181,9 @@ class GenericSwitchSensor:
                         state["buttonevent"] = event["buttonevent"]
                         break
                 break
+
+        if "power_state" in update:
+            state["battery"] = update["power_state"]["battery_level"]
 
         state["lastupdated"] = datetime.utcnow().replace(microsecond=0).isoformat()
 
@@ -275,6 +278,9 @@ class ZLLPresenceSensor(GenericZLLSensor):
 
         if "motion" in update:
             state["presence"] = update["motion"]["motion"]
+
+        if "power_state" in update:
+            state["battery"] = update["power_state"]["battery_level"]
 
         state["lastupdated"] = datetime.utcnow().replace(microsecond=0).isoformat()
 
