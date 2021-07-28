@@ -47,6 +47,12 @@ ZLL_SWITCH_BUTTON_2_LONG_RELEASED = 2003
 ZLL_SWITCH_BUTTON_3_LONG_RELEASED = 3003
 ZLL_SWITCH_BUTTON_4_LONG_RELEASED = 4003
 
+EVENT_BUTTON = "button"
+EVENT_LIGHTLEVEL = "light_level"
+EVENT_MOTION = "motion"
+EVENT_POWER = "device_power"
+EVENT_TEMPERATURE = "temperature"
+
 
 class Sensors(APIItems):
     """Represents Hue Sensors.
@@ -73,6 +79,7 @@ class GenericSensor:
         else:
             self.device = None
         self._request = request
+        self.last_event = None
 
     @property
     def name(self):
@@ -109,6 +116,15 @@ class GenericSensor:
     @property
     def config(self):
         return self.raw["config"]
+
+    def generic_process_update_event(self, update, state):
+        if "power_state" in update:
+            state["battery"] = update["power_state"]["battery_level"]
+
+        state["lastupdated"] = datetime.utcnow().replace(microsecond=0).isoformat()
+        self.last_event = update["type"]
+
+        self.raw = {**self.raw, "state": state}
 
 
 class GenericCLIPSensor(GenericSensor):
@@ -182,12 +198,7 @@ class GenericSwitchSensor:
                         break
                 break
 
-        if "power_state" in update:
-            state["battery"] = update["power_state"]["battery_level"]
-
-        state["lastupdated"] = datetime.utcnow().replace(microsecond=0).isoformat()
-
-        self.raw = {**self.raw, "state": state}
+        self.generic_process_update_event(update, state)
 
     async def set_config(self, on=None):
         """Change config of a Switch sensor."""
@@ -279,12 +290,7 @@ class ZLLPresenceSensor(GenericZLLSensor):
         if "motion" in update:
             state["presence"] = update["motion"]["motion"]
 
-        if "power_state" in update:
-            state["battery"] = update["power_state"]["battery_level"]
-
-        state["lastupdated"] = datetime.utcnow().replace(microsecond=0).isoformat()
-
-        self.raw = {**self.raw, "state": state}
+        self.generic_process_update_event(update, state)
 
     async def set_config(self, on=None, sensitivity=None, sensitivitymax=None):
         """Change config of a ZLL Presence sensor."""
@@ -410,9 +416,7 @@ class ZLLLightLevelSensor(GenericZLLSensor):
         if "light" in update and update["light"]["light_level_valid"]:
             state["lightlevel"] = update["light"]["light_level"]
 
-        state["lastupdated"] = datetime.utcnow().replace(microsecond=0).isoformat()
-
-        self.raw = {**self.raw, "state": state}
+        self.generic_process_update_event(update, state)
 
     async def set_config(self, on=None, tholddark=None, tholdoffset=None):
         """Change config of a ZLL LightLevel sensor."""
@@ -452,9 +456,7 @@ class ZLLTemperatureSensor(GenericZLLSensor):
         if "temperature" in update and update["temperature"]["temperature_valid"]:
             state["temperature"] = update["temperature"]["temperature"]
 
-        state["lastupdated"] = datetime.utcnow().replace(microsecond=0).isoformat()
-
-        self.raw = {**self.raw, "state": state}
+        self.generic_process_update_event(update, state)
 
     async def set_config(self, on=None):
         """Change config of a ZLL Temperature sensor."""

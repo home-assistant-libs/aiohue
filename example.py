@@ -46,7 +46,11 @@ def print_group(group):
 
 def print_sensor(sensor):
     if sensor.type in [TYPE_CLIP_SWITCH, TYPE_ZGP_SWITCH, TYPE_ZLL_SWITCH]:
-        print("{}: [Button Event]: {}".format(sensor.name, sensor.buttonevent))
+        print(
+            "{}: [Button Event]: {} (last_event: {})".format(
+                sensor.name, sensor.buttonevent, sensor.last_event
+            )
+        )
     elif sensor.type in [TYPE_ZLL_ROTARY]:
         print("{}: [Rotation Event]: {}".format(sensor.name, sensor.rotaryevent))
     elif sensor.type in [TYPE_CLIP_TEMPERATURE, TYPE_ZLL_TEMPERATURE]:
