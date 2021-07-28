@@ -426,6 +426,16 @@ class ZLLLightLevelSensor(GenericZLLSensor):
     def tholdoffset(self):
         return self.raw["config"]["tholdoffset"]
 
+    def process_update_event(self, update):
+        state = dict(self.state)
+
+        if "light" in update and update["light"]["light_level_valid"]:
+            state["lightlevel"] = update["light"]["light_level"]
+
+        state["lastupdated"] = datetime.utcnow().replace(microsecond=0).isoformat()
+
+        self.raw = {**self.raw, "state": state}
+
     async def set_config(self, on=None, tholddark=None, tholdoffset=None):
         """Change config of a ZLL LightLevel sensor."""
         data = {
@@ -457,6 +467,16 @@ class ZLLTemperatureSensor(GenericZLLSensor):
     @property
     def temperature(self):
         return self.raw["state"]["temperature"]
+
+    def process_update_event(self, update):
+        state = dict(self.state)
+
+        if "temperature" in update and update["temperature"]["temperature_valid"]:
+            state["temperature"] = update["temperature"]["temperature"]
+
+        state["lastupdated"] = datetime.utcnow().replace(microsecond=0).isoformat()
+
+        self.raw = {**self.raw, "state": state}
 
     async def set_config(self, on=None):
         """Change config of a ZLL Temperature sensor."""
