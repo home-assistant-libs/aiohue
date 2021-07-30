@@ -122,7 +122,7 @@ class GenericSensor:
             state["battery"] = update["power_state"]["battery_level"]
 
         state["lastupdated"] = datetime.utcnow().replace(microsecond=0).isoformat()
-        self.last_event = update["type"]
+        self.last_event = update
 
         self.raw = {**self.raw, "state": state}
 

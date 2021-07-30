@@ -48,7 +48,7 @@ def print_sensor(sensor):
     if sensor.type in [TYPE_CLIP_SWITCH, TYPE_ZGP_SWITCH, TYPE_ZLL_SWITCH]:
         print(
             "{}: [Button Event]: {} (last_event: {})".format(
-                sensor.name, sensor.buttonevent, sensor.last_event
+                sensor.name, sensor.buttonevent, sensor.last_event["type"]
             )
         )
     elif sensor.type in [TYPE_ZLL_ROTARY]:
