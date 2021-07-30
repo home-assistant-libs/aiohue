@@ -47,6 +47,12 @@ ZLL_SWITCH_BUTTON_2_LONG_RELEASED = 2003
 ZLL_SWITCH_BUTTON_3_LONG_RELEASED = 3003
 ZLL_SWITCH_BUTTON_4_LONG_RELEASED = 4003
 
+EVENT_BUTTON = "button"
+EVENT_LIGHTLEVEL = "light_level"
+EVENT_MOTION = "motion"
+EVENT_POWER = "device_power"
+EVENT_TEMPERATURE = "temperature"
+
 
 class Sensors(APIItems):
     """Represents Hue Sensors.
@@ -73,6 +79,7 @@ class GenericSensor:
         else:
             self.device = None
         self._request = request
+        self.last_event = None
 
     @property
     def name(self):
@@ -110,6 +117,15 @@ class GenericSensor:
     def config(self):
         return self.raw["config"]
 
+    def generic_process_update_event(self, update, state):
+        if "power_state" in update:
+            state["battery"] = update["power_state"]["battery_level"]
+
+        state["lastupdated"] = datetime.utcnow().replace(microsecond=0).isoformat()
+        self.last_event = update
+
+        self.raw = {**self.raw, "state": state}
+
 
 class GenericCLIPSensor(GenericSensor):
     @property
@@ -144,7 +160,7 @@ class GenericCLIPSensor(GenericSensor):
 class GenericZLLSensor(GenericSensor):
     @property
     def battery(self):
-        return self.raw["config"].get("battery")
+        return self.raw["state"].get("battery", self.raw["config"].get("battery"))
 
     @property
     def lastupdated(self):
@@ -157,6 +173,38 @@ class GenericZLLSensor(GenericSensor):
     @property
     def reachable(self):
         return self.raw["config"]["reachable"]
+
+
+class GenericSwitchSensor:
+    @property
+    def buttonevent(self):
+        return self.raw["state"]["buttonevent"]
+
+    @property
+    def inputs(self):
+        return self.raw.get("capabilities", {}).get("inputs")
+
+    def process_update_event(self, update):
+        state = dict(self.state)
+
+        if "button" in update and self.device:
+            for idx, button in enumerate(self.device["services"]):
+                if button["rid"] != update["id"]:
+                    continue
+
+                for event in self.inputs[idx]["events"]:
+                    if event["eventtype"] == update["button"]["last_event"]:
+                        state["buttonevent"] = event["buttonevent"]
+                        break
+                break
+
+        self.generic_process_update_event(update, state)
+
+    async def set_config(self, on=None):
+        """Change config of a Switch sensor."""
+        data = {} if on is None else {"on": on}
+
+        await self._request("put", "sensors/{}/config".format(self.id), json=data)
 
 
 class DaylightSensor(GenericSensor):
@@ -242,9 +290,7 @@ class ZLLPresenceSensor(GenericZLLSensor):
         if "motion" in update:
             state["presence"] = update["motion"]["motion"]
 
-        state["lastupdated"] = datetime.utcnow().replace(microsecond=0).isoformat()
-
-        self.raw = {**self.raw, "state": state}
+        self.generic_process_update_event(update, state)
 
     async def set_config(self, on=None, sensitivity=None, sensitivitymax=None):
         """Change config of a ZLL Presence sensor."""
@@ -293,11 +339,7 @@ class CLIPSwitchSensor(GenericCLIPSensor):
         await self._request("put", "sensors/{}/config".format(self.id), json=data)
 
 
-class ZGPSwitchSensor(GenericSensor):
-    @property
-    def buttonevent(self):
-        return self.raw["state"]["buttonevent"]
-
+class ZGPSwitchSensor(GenericSensor, GenericSwitchSensor):
     @property
     def lastupdated(self):
         return self.raw["state"].get("lastupdated")
@@ -306,67 +348,9 @@ class ZGPSwitchSensor(GenericSensor):
     def on(self):
         return self.raw["config"]["on"]
 
-    @property
-    def inputs(self):
-        return self.raw.get("capabilities", {}).get("inputs")
 
-    def process_update_event(self, update):
-        state = dict(self.state)
-
-        if "button" in update and self.device:
-            for idx, button in enumerate(self.device["services"]):
-                if button["rid"] != update["id"]:
-                    continue
-
-                for event in self.inputs[idx]["events"]:
-                    if event["eventtype"] == update["button"]["last_event"]:
-                        state["buttonevent"] = event["buttonevent"]
-                        break
-                break
-
-        state["lastupdated"] = datetime.utcnow().replace(microsecond=0).isoformat()
-
-        self.raw = {**self.raw, "state": state}
-
-    async def set_config(self, on=None):
-        """Change config of a ZGP Switch sensor."""
-        data = {} if on is None else {"on": on}
-
-        await self._request("put", "sensors/{}/config".format(self.id), json=data)
-
-
-class ZLLSwitchSensor(GenericZLLSensor):
-    @property
-    def buttonevent(self):
-        return self.raw["state"]["buttonevent"]
-
-    @property
-    def inputs(self):
-        return self.raw.get("capabilities", {}).get("inputs")
-
-    def process_update_event(self, update):
-        state = dict(self.state)
-
-        if "button" in update and self.device:
-            for idx, button in enumerate(self.device["services"]):
-                if button["rid"] != update["id"]:
-                    continue
-
-                for event in self.inputs[idx]["events"]:
-                    if event["eventtype"] == update["button"]["last_event"]:
-                        state["buttonevent"] = event["buttonevent"]
-                        break
-                break
-
-        state["lastupdated"] = datetime.utcnow().replace(microsecond=0).isoformat()
-
-        self.raw = {**self.raw, "state": state}
-
-    async def set_config(self, on=None):
-        """Change config of a ZLL Switch sensor."""
-        data = {} if on is None else {"on": on}
-
-        await self._request("put", "sensors/{}/config".format(self.id), json=data)
+class ZLLSwitchSensor(GenericZLLSensor, GenericSwitchSensor):
+    pass
 
 
 class CLIPLightLevelSensor(GenericCLIPSensor):
@@ -426,6 +410,14 @@ class ZLLLightLevelSensor(GenericZLLSensor):
     def tholdoffset(self):
         return self.raw["config"]["tholdoffset"]
 
+    def process_update_event(self, update):
+        state = dict(self.state)
+
+        if "light" in update and update["light"]["light_level_valid"]:
+            state["lightlevel"] = update["light"]["light_level"]
+
+        self.generic_process_update_event(update, state)
+
     async def set_config(self, on=None, tholddark=None, tholdoffset=None):
         """Change config of a ZLL LightLevel sensor."""
         data = {
@@ -457,6 +449,14 @@ class ZLLTemperatureSensor(GenericZLLSensor):
     @property
     def temperature(self):
         return self.raw["state"]["temperature"]
+
+    def process_update_event(self, update):
+        state = dict(self.state)
+
+        if "temperature" in update and update["temperature"]["temperature_valid"]:
+            state["temperature"] = update["temperature"]["temperature"]
+
+        self.generic_process_update_event(update, state)
 
     async def set_config(self, on=None):
         """Change config of a ZLL Temperature sensor."""
