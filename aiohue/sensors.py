@@ -454,7 +454,7 @@ class ZLLTemperatureSensor(GenericZLLSensor):
         state = dict(self.state)
 
         if "temperature" in update and update["temperature"]["temperature_valid"]:
-            state["temperature"] = update["temperature"]["temperature"]
+            state["temperature"] = int(update["temperature"]["temperature"] * 100)
 
         self.generic_process_update_event(update, state)
 
