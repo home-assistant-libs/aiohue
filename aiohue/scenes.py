@@ -56,3 +56,32 @@ class Scene:
     @property
     def version(self):
         return self.raw["version"]
+
+    async def set_lightstate(
+        self,
+        id=None,
+        on=None,
+        bri=None,
+        hue=None,
+        sat=None,
+        xy=None,
+        ct=None,
+    ):
+        """Change state of a light in scene."""
+        data = {}
+        data['name'] = self.name
+        data['lightstates'] = {}
+        if id is not None:
+            data['lightstates'][id] = {
+                key: value
+                for key, value in {
+                    "on": on,
+                    "bri": bri,
+                    "hue": hue,
+                    "sat": sat,
+                    "xy": xy,
+                    "ct": ct,
+                }.items()
+                if value is not None
+            }
+        await self._request("put", "scenes/{}".format(self.id), json=data)
