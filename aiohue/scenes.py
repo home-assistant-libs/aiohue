@@ -57,6 +57,14 @@ class Scene:
     def version(self):
         return self.raw["version"]
 
+    @property
+    def lightstates(self):
+        return self.get_lightstates()
+
+    async def get_lightstates(self):
+        data = await self._request("get", "scenes/{}".format(self.id))
+        return data["lightstates"]
+
     async def set_lightstate(
         self,
         id=None,
