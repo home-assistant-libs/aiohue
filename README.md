@@ -46,6 +46,15 @@ async def run(websession):
 
     # Change state of a group.
     await group.set_action(on=not group.state['on'])
+    
+    # Change scene brighness and colortemp.
+    print('Scenes:')
+    for id in bridge.scenes:
+        scene = bridge.scenes[id]
+        print(scene.name)
+        lightstates = await scene.lightstates
+        for light_id in scene.lights:
+            await scene.set_lightstate(id=light_id,on=lightstates[light_id]["on"],bri=100,ct=250)
 
 
 asyncio.run(main())
