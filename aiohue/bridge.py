@@ -204,8 +204,9 @@ class Bridge:
                 continue
 
             for event_data in event["data"]:
+                # Some events don't have a v1 ID like homekit/update, skip those.
                 # We don't track object that groups all items (bridge_home)
-                if event_data["id_v1"] == "/groups/0":
+                if event_data.get("id_v1") in (None, "/groups/0"):
                     continue
 
                 item_type = event_data["id_v1"].split("/", 2)[1]
