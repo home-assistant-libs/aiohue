@@ -209,7 +209,10 @@ class Bridge:
                 if event_data.get("id_v1") in (None, "/groups/0"):
                     continue
 
-                item_type = event_data["id_v1"].split("/", 2)[1]
+                if len(id_parts := event_data["id_v1"].split("/", 2)) < 2:
+                    continue
+
+                item_type = id_parts[1]
 
                 if item_type not in (
                     # These all inherit from APIItems and so can handle events
