@@ -1,0 +1,66 @@
+"""Model(s) for button resource on HUE bridge."""
+from dataclasses import dataclass
+from enum import Enum
+from typing import Optional, Type
+
+from .resource import Resource, ResourceTypes
+
+
+class ButtonEvent(Enum):
+    """
+    Enum with possible button events.
+
+    clip-api.schema.json#/definitions/ButtonEvent
+    """
+
+    INITIAL_PRESS = "initial_press"
+    REPEAT = "repeat"
+    SHORT_RELEASE = "short_release"
+    LONG_RELEASE = "long_release"
+    DOUBLE_SHORT_RELEASE = "double_short_release"
+    UNKNOWN = "unknown"
+
+    @classmethod
+    def _missing_(cls: Type, value: str):
+        """Set default enum member if an unknown value is provided."""
+        return ButtonEvent.UNKNOWN
+
+
+@dataclass(kw_only=True)
+class ButtOnFeature:
+    """
+    Represent ButtonFeature object as received from the api.
+
+    clip-api.schema.json#/definitions/ButtOnFeature
+    """
+
+    last_event: ButtonEvent
+
+
+@dataclass(kw_only=True)
+class SwitchInputMetadata:
+    """
+    Represent SwitchInputMetadata object as received from the api.
+
+    clip-api.schema.json#/definitions/SwitchInputMetadata
+    """
+
+    # number of control within switch (value between 0..8).
+    # Meaning in combination with type
+    # - dots: Number of dots
+    # - number: Number printed on device
+    # - other: a logical order of controls in switch
+    control_id: int
+
+
+@dataclass(kw_only=True)
+class Button(Resource):
+    """
+    Represent Button object as received from the api.
+
+    clip-api.schema.json#/definitions/Button
+    """
+
+    metadata: Optional[SwitchInputMetadata]
+    button: Optional[ButtOnFeature]
+    type: ResourceTypes = ResourceTypes.BUTTON

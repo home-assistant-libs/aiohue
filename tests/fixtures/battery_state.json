@@ -1,0 +1,50 @@
+{
+    "errors": [],
+    "data": [
+        {
+            "id": "c1cd98a6-6c23-43bb-b6e1-08dda9e168a4",
+            "id_v1": "/sensors/50",
+            "power_state": {
+                "battery_level": 100,
+                "battery_state": "normal"
+            },
+            "type": "device_power"
+        },
+        {
+            "id": "0bb058bc-2139-43d9-8c9b-edfb4570953b",
+            "id_v1": "/sensors/10",
+            "power_state": {
+                "battery_level": 85,
+                "battery_state": "normal"
+            },
+            "type": "device_power"
+        },
+        {
+            "id": "ba3fdc92-a12a-4a5f-a337-a09fb9bfa4ef",
+            "id_v1": "/sensors/2",
+            "power_state": {
+                "battery_level": 100,
+                "battery_state": "normal"
+            },
+            "type": "device_power"
+        },
+        {
+            "id": "3f219f5a-ad6c-484f-b976-769a9c267a72",
+            "id_v1": "/sensors/5",
+            "power_state": {
+                "battery_level": 100,
+                "battery_state": "normal"
+            },
+            "type": "device_power"
+        },
+        {
+            "id": "7382b202-9eb0-47ae-a77e-a7f44fa86d91",
+            "id_v1": "/sensors/26",
+            "power_state": {
+                "battery_level": 100,
+                "battery_state": "normal"
+            },
+            "type": "device_power"
+        }
+    ]
+}

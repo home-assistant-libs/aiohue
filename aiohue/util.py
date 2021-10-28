@@ -1,5 +1,6 @@
 """Utils for aiohue."""
 import logging
+from dataclasses import fields, is_dataclass, dataclass
 
 
 def normalize_bridge_id(bridge_id: str):
@@ -21,3 +22,18 @@ def normalize_bridge_id(bridge_id: str):
     logging.getLogger(__name__).warn("Received unexpected bridge id: %s", bridge_id)
 
     return bridge_id
+
+
+def update_dataclass(org_obj: dataclass, new_obj: dataclass):
+    """Update instance of dataclass with another, skipping None values."""
+    for f in fields(new_obj):
+        new_val = getattr(new_obj, f.name)
+        cur_val = getattr(org_obj, f.name)
+        if new_val is None:
+            continue
+        if cur_val == new_val:
+            continue
+        if is_dataclass(new_val):
+            update_dataclass(getattr(org_obj, f.name), new_val)
+        else:
+            setattr(org_obj, f.name, new_val)

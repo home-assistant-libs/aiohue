@@ -1,0 +1,42 @@
+"""Model(s) for zigbee_connectivity resource on HUE bridge."""
+from dataclasses import dataclass
+from enum import Enum
+from typing import Optional
+
+from .resource import Resource, ResourceTypes
+
+
+class ConnectivityServiceStatus(Enum):
+    """
+    Enum with possible ConnectivityService statuses.
+
+    defined in clip-api.schema.json#/definitions/ConnectivityService
+    """
+
+    CONNECTED = "connected"
+    DISCONNECTED = "disconnected"
+    CONNECTIVITY_ISSUE = "connectivity_issue"
+
+
+@dataclass(kw_only=True)
+class ConnectivityService(Resource):
+    """
+    Represent ConnectivityService object as received from the api.
+
+    clip-api.schema.json#/definitions/ConnectivityService
+    """
+
+    status: Optional[ConnectivityServiceStatus]  # required in get
+    type: Optional[ResourceTypes]
+
+
+@dataclass(kw_only=True)
+class ZigbeeConnectivity(ConnectivityService):
+    """
+    Represent ZigbeeConnectivity object as received from the api.
+
+    clip-api.schema.json#/definitions/ZigbeeConnectivity
+    """
+
+    mac_address: Optional[str]  # can not be set
+    type: ResourceTypes = ResourceTypes.ZIGBEE_CONNECTIVITY
