@@ -11,7 +11,7 @@ from .room import RoomMetadata
 @dataclass
 class Zone(Group):
     """
-    Represent Zone object as received from the api.
+    Represent Zone object as used by the Hue api.
 
     A group grouping only services.
     A service can be in an arbitrary amount of groups.

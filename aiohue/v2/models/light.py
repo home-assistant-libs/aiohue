@@ -73,7 +73,7 @@ class LightArchetypes(Enum):
 @dataclass
 class LightMetaData(NamedResourceMetadata):
     """
-    Represent LightMetaData object as received from the api.
+    Represent LightMetaData object as used by the Hue api.
 
     clip-api.schema.json#/definitions/LightMetaDataGet
     clip-api.schema.json#/definitions/LightMetaDataPut
@@ -101,7 +101,7 @@ class LightModeValues(Enum):
 @dataclass
 class Gradient:
     """
-    Represent Gradient object as received from the api.
+    Represent Gradient object as used by the Hue api.
 
     TODO: Retrieve api spec.
     """

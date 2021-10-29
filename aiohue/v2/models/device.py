@@ -62,7 +62,7 @@ class DeviceArchetypes(Enum):
 @dataclass
 class DeviceProductData:
     """
-    Represent a DeviceProductData object as received from the api.
+    Represent a DeviceProductData object as used by the Hue api.
 
     clip-api.schema.json#/definitions/DeviceProductData
     """
@@ -86,7 +86,7 @@ class DeviceProductData:
 @dataclass
 class DeviceMetaData(NamedResourceMetadata):
     """
-    Represent DeviceMetaData object as received from the api.
+    Represent DeviceMetaData object as used by the Hue api.
 
     clip-api.schema.json#/definitions/DeviceMetaData
     """
@@ -102,7 +102,7 @@ class DeviceMetaData(NamedResourceMetadata):
 @dataclass
 class Device(Group):
     """
-    Represent a Device object as received from the api.
+    Represent a Device object as used by the Hue api.
 
     clip-api.schema.json#/definitions/DeviceGet
     clip-api.schema.json#/definitions/DevicePut

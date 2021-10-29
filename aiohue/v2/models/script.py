@@ -10,7 +10,7 @@ from .resource import Resource, ResourceMetadata, ResourceTypes
 @dataclass
 class ScriptMetadata(ResourceMetadata):
     """
-    Represent ScriptMetadata object as received from the api.
+    Represent ScriptMetadata object as used by the Hue api.
 
     clip-api.schema.json#/definitions/ScriptMetadataGet
     """
@@ -21,7 +21,7 @@ class ScriptMetadata(ResourceMetadata):
 @dataclass
 class ScriptDefinition(Resource):
     """
-    Represent SceneService object as received from the api.
+    Represent SceneService object as used by the Hue api.
 
     Definition of a script.
     clip-api.schema.json#/definitions/ScriptDefinitionGet
@@ -41,7 +41,7 @@ class ScriptDefinition(Resource):
 @dataclass
 class InstanceMetadata:
     """
-    Represent InstanceMetadata object as received from the api.
+    Represent InstanceMetadata object as used by the Hue api.
 
     Metadata for ScriptInstance.
 
@@ -55,7 +55,7 @@ class InstanceMetadata:
 @dataclass
 class ScriptInstance(Resource):
     """
-    Represent ScriptInstance object as received from the api.
+    Represent ScriptInstance object as used by the Hue api.
 
     Representation of active script.
     Scripts are instantiated using the id and configuration of the ScriptDefinition.

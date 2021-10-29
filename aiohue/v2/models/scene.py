@@ -21,7 +21,7 @@ from .resource import (
 @dataclass
 class ActionAction:
     """
-    Represent ActionAction object as received from the api.
+    Represent ActionAction object as used by the Hue api.
 
     The action to be executed on recall.
     clip-api.schema.json#/definitions/ActionAction
@@ -53,7 +53,7 @@ class ActionAction:
 @dataclass
 class Action:
     """
-    Represent Action object as received from the api.
+    Represent Action object as used by the Hue api.
 
     clip-api.schema.json#/definitions/ActionGet
     clip-api.schema.json#/definitions/ActionPut
@@ -74,7 +74,7 @@ class Action:
 @dataclass
 class SceneMetadata:
     """
-    Represent SceneMetadata object as received from the api.
+    Represent SceneMetadata object as used by the Hue api.
 
     clip-api.schema.json#/definitions/SceneMetadataGet
     clip-api.schema.json#/definitions/SceneMetadataPost
@@ -93,7 +93,7 @@ class SceneMetadata:
 @dataclass
 class SceneService(Resource):
     """
-    Represent SceneService object as received from the api.
+    Represent SceneService object as used by the Hue api.
 
     clip-api.schema.json#/definitions/SceneServiceGet
     clip-api.schema.json#/definitions/SceneServicePost
@@ -117,7 +117,7 @@ class SceneService(Resource):
 @dataclass
 class Scene(SceneService):
     """
-    Represent Scene object as received from the api.
+    Represent Scene object as used by the Hue api.
 
     Inherited from SceneService.
     clip-api.schema.json#/definitions/SceneGet

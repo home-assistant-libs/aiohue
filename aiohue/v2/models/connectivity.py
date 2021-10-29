@@ -22,7 +22,7 @@ class ConnectivityServiceStatus(Enum):
 @dataclass
 class ConnectivityService(Resource):
     """
-    Represent ConnectivityService object as received from the api.
+    Represent ConnectivityService object as used by the Hue api.
 
     clip-api.schema.json#/definitions/ConnectivityService
     """
@@ -39,7 +39,7 @@ class ConnectivityService(Resource):
 @dataclass
 class ZigbeeConnectivity(ConnectivityService):
     """
-    Represent ZigbeeConnectivity object as received from the api.
+    Represent ZigbeeConnectivity object as used by the Hue api.
 
     clip-api.schema.json#/definitions/ZigbeeConnectivity
     """

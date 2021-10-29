@@ -66,7 +66,7 @@ SENSOR_RESOURCE_TYPES = (
 @dataclass
 class Resource:
     """
-    Represent a Resource object as received from the api.
+    Represent a Resource object as used by the Hue api.
 
     clip-api.schema.json#/definitions/ResourceGet
     clip-api.schema.json#/definitions/ResourcePost
@@ -86,7 +86,7 @@ class Resource:
 @dataclass
 class ResourceMetadata:
     """
-    Represent a ResourceMetadata object as received from the api.
+    Represent a ResourceMetadata object as used by the Hue api.
 
     Additional metadata stored for a resource.
     This provides additional information to the user to indentify a resource
@@ -104,7 +104,7 @@ class ResourceMetadata:
 @dataclass
 class NamedResourceMetadata(ResourceMetadata):
     """
-    Represent a NamedResourceMetadata object as received from the api.
+    Represent a NamedResourceMetadata object as used by the Hue api.
 
     Additional metadata including a user given name
 
@@ -120,7 +120,7 @@ class NamedResourceMetadata(ResourceMetadata):
 @dataclass
 class ResourceIdentifier:
     """
-    Represent a ResourceIdentifier object as received from the api.
+    Represent a ResourceIdentifier object as used by the Hue api.
 
     clip-api.schema.json#/definitions/ResourceIdentifierGet
     clip-api.schema.json#/definitions/ResourceIdentifierPost
@@ -140,7 +140,7 @@ class ResourceIdentifier:
 @dataclass
 class SensingService(Resource):
     """
-    Represent a SensingService object as received from the api.
+    Represent a SensingService object as used by the Hue api.
 
     clip-api.schema.json#/definitions/SensingServiceGet
     clip-api.schema.json#/definitions/SensingServicePut

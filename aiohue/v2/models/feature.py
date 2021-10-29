@@ -9,7 +9,7 @@ from typing import List, Optional, Type
 @dataclass
 class OnFeatureBasic:
     """
-    Represent OnFeatureBasic object as received from the api.
+    Represent OnFeatureBasic object as used by the Hue api.
 
     clip-api.schema.json#/definitions/OnFeatureBasic
     """
@@ -29,7 +29,7 @@ class OnFeature(OnFeatureBasic):
 @dataclass
 class DimmingFeatureBasic:
     """
-    Represent DimmingFeatureBasic object as received from the api.
+    Represent DimmingFeatureBasic object as used by the Hue api.
 
     clip-api.schema.json#/definitions/DimmingFeatureBasic
     """
@@ -55,7 +55,7 @@ class DimmingFeature(DimmingFeatureBasic):
 @dataclass
 class Position:
     """
-    Represent Position object as received from the api.
+    Represent Position object as used by the Hue api.
 
     Each Coordinate value is a float between -1 and 1.
     clip-api.schema.json#/definitions/Position
@@ -80,7 +80,7 @@ class AlertEffectType(Enum):
 
 @dataclass
 class AlertFeature:
-    """Represent AlertFeature object as received from the api."""
+    """Represent AlertFeature object as used by the Hue api."""
 
     action: Optional[AlertEffectType] = None
     action_values: List[AlertEffectType] = field(default_factory=list)
@@ -144,7 +144,7 @@ class GamutType(Enum):
 @dataclass
 class ColorFeatureBasic:
     """
-    Represent ColorFeatureBasic object as received from the api.
+    Represent ColorFeatureBasic object as used by the Hue api.
 
     clip-api.schema.json#/definitions/ColorFeatureBasic
     """
@@ -160,7 +160,7 @@ class ColorFeatureBasic:
 @dataclass
 class ColorFeature(ColorFeatureBasic):
     """
-    Represent ColorFeature object as received from the api.
+    Represent ColorFeature object as used by the Hue api.
 
     inherited from ColorFeatureBasic
     clip-api.schema.json#/definitions/ColorFeature
@@ -189,7 +189,7 @@ class MirekSchema:
 @dataclass
 class ColorTemperatureFeatureBasic:
     """
-    Represent ColorTemperatureFeatureBasic object as received from the api.
+    Represent ColorTemperatureFeatureBasic object as used by the Hue api.
 
     clip-api.schema.json#/definitions/ColorTemperatureFeatureBasic
     """
@@ -230,7 +230,7 @@ class DynamicsFeatureStatus(Enum):
 
 @dataclass
 class DynamicsFeature:
-    """Represent DynamicsFeature object as received from the api."""
+    """Represent DynamicsFeature object as used by the Hue api."""
 
     status: Optional[DynamicsFeatureStatus] = None
     status_values: Optional[List[DynamicsFeatureStatus]] = None

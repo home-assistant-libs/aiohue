@@ -8,7 +8,7 @@ from .script import ScriptDefinition
 @dataclass
 class BehaviorScript(ScriptDefinition):
     """
-    Represent BehaviorScript object as received from the api.
+    Represent BehaviorScript object as used by the Hue api.
 
     clip-api.schema.json#/definitions/BehaviorScriptGet
     """

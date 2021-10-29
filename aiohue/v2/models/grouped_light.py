@@ -10,7 +10,7 @@ from .resource import Resource, ResourceTypes
 @dataclass
 class GroupedLight(Resource):
     """
-    Represent a GroupedLight object as received from the api.
+    Represent a GroupedLight object as used by the Hue api.
 
     clip-api.schema.json#/definitions/GroupedLightGet
     clip-api.schema.json#/definitions/GroupedLightPost

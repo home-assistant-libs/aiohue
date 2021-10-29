@@ -64,7 +64,7 @@ class RoomArchetype(Enum):
 @dataclass
 class RoomMetadata(NamedResourceMetadata):
     """
-    Represent RoomMetadata object as received from the api.
+    Represent RoomMetadata object as used by the Hue api.
 
     Configuration object for a room.
 
@@ -84,7 +84,7 @@ class RoomMetadata(NamedResourceMetadata):
 @dataclass
 class Room(Group):
     """
-    Represent Room object as received from the api.
+    Represent Room object as used by the Hue api.
 
     Room resources groups all devices within the same physical space of a room.
     Room only allows resources of type "device" as childs.

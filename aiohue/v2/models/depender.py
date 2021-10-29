@@ -26,7 +26,7 @@ class DependencyLevel(Enum):
 @dataclass
 class DependencyGet:
     """
-    Dependency object as received from the api.
+    Dependency object as used by the Hue api.
 
     Defines target resource of a dependency.
 
@@ -48,7 +48,7 @@ class DependencyGet:
 @dataclass
 class ResourceDependeeGet(DependencyGet):
     """
-    ResourceDependee object as received from the api.
+    ResourceDependee object as used by the Hue api.
 
     Represents a resource which (this) resource is dependent on.
 
@@ -59,7 +59,7 @@ class ResourceDependeeGet(DependencyGet):
 @dataclass
 class ResourceDependerGet(DependencyGet):
     """
-    ResourceDepender object as received from the api.
+    ResourceDepender object as used by the Hue api.
 
     Represents a resource which depend on (this) resource.
 
@@ -70,7 +70,7 @@ class ResourceDependerGet(DependencyGet):
 @dataclass
 class DependerGet(Resource):
     """
-    Depender object as received from the api.
+    Depender object as used by the Hue api.
 
     Represents all the resources which depend on a resource.
 

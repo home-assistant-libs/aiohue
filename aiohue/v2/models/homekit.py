@@ -17,7 +17,7 @@ class HomekitStatus(Enum):
 
 @dataclass
 class HomekitGet(Resource):
-    """Represent a Homekit resource object as received from the api."""
+    """Represent a Homekit resource object as used by the Hue api."""
 
     status: Optional[HomekitStatus] = None
     status_values: List[HomekitStatus] = field(

@@ -11,7 +11,7 @@ from .resource import Resource, ResourceIdentifier, ResourceTypes
 @dataclass
 class Segment:
     """
-    Represent a Segment object as received from the api.
+    Represent a Segment object as used by the Hue api.
 
     Contains the segments configuration of the device for entertainment purposes.
     A device can be segmented in a single way.
@@ -26,7 +26,7 @@ class Segment:
 @dataclass
 class SegmentReference:
     """
-    Represent a SegmentReference object as received from the api.
+    Represent a SegmentReference object as used by the Hue api.
 
     From which entertainment_service, which segment is a member of this channel.
 
@@ -65,7 +65,7 @@ class SegmentationProperties:
 @dataclass
 class EntertainmentChannelGet:
     """
-    Represent a EntertainmentChannel object as received from the api.
+    Represent a EntertainmentChannel object as used by the Hue api.
 
     Holds position of the channel and list of members, which is an array of segments resource identifiers.
 
@@ -128,7 +128,7 @@ class StreamingProxyMode(Enum):
 @dataclass
 class StreamingProxy:
     """
-    Represent a StreamingProxy object as received from the api.
+    Represent a StreamingProxy object as used by the Hue api.
 
     Holds position of the channel and list of members, which is an array of segments resource identifiers.
 
@@ -149,7 +149,7 @@ class StreamingProxy:
 @dataclass
 class ServiceLocation:
     """
-    Represent a ServiceLocation object as received from the api.
+    Represent a ServiceLocation object as used by the Hue api.
 
     clip-api.schema.json#/definitions/ServiceLocationGet
     """
@@ -168,7 +168,7 @@ class ServiceLocation:
 @dataclass
 class EntertainmentLocations:
     """
-    Represent a EntertainmentLocations object as received from the api.
+    Represent a EntertainmentLocations object as used by the Hue api.
 
     The position of each entertainment service in the configuration.
     If the service has several segments, more than one x,y,z location may be needed
@@ -203,7 +203,7 @@ class EntertainmentConfigurationAction(Enum):
 @dataclass
 class EntertainmentConfiguration(Resource):
     """
-    Entertainment Configuration as received from the api.
+    Entertainment Configuration as used by the Hue api.
 
     clip-api.schema.json#/definitions/EntertainmentConfigurationGet
     clip-api.schema.json#/definitions/EntertainmentConfigurationPut
@@ -258,7 +258,7 @@ class EntertainmentConfiguration(Resource):
 @dataclass
 class Entertainment(Resource):
     """
-    Represent Entertainment resource as received from the api.
+    Represent Entertainment resource as used by the Hue api.
 
     clip-api.schema.json#/definitions/EntertainmentGet
     """

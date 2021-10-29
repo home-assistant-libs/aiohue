@@ -30,7 +30,7 @@ class ButtonEvent(Enum):
 @dataclass
 class ButtOnFeature:
     """
-    Represent ButtonFeature object as received from the api.
+    Represent ButtonFeature object as used by the Hue api.
 
     clip-api.schema.json#/definitions/ButtOnFeature
     """
@@ -46,7 +46,7 @@ class ButtOnFeature:
 @dataclass
 class SwitchInputMetadata:
     """
-    Represent SwitchInputMetadata object as received from the api.
+    Represent SwitchInputMetadata object as used by the Hue api.
 
     clip-api.schema.json#/definitions/SwitchInputMetadata
     """
@@ -62,7 +62,7 @@ class SwitchInputMetadata:
 @dataclass
 class Button(Resource):
     """
-    Represent Button object as received from the api.
+    Represent Button object as used by the Hue api.
 
     clip-api.schema.json#/definitions/Button
     """

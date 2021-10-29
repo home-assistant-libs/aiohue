@@ -8,7 +8,7 @@ from .script import ScriptInstance
 @dataclass
 class BehaviorInstance(ScriptInstance):
     """
-    Represent BehaviorInstance object as received from the api.
+    Represent BehaviorInstance object as used by the Hue api.
 
     clip-api.schema.json#/definitions/BehaviorInstanceGet
     clip-api.schema.json#/definitions/BehaviorInstancePost
