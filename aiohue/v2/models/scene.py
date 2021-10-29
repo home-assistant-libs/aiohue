@@ -1,5 +1,6 @@
 """Model(s) for Scene resource on HUE bridge."""
 from dataclasses import dataclass
+from types import NoneType
 from typing import List, Optional
 
 from .feature import (
@@ -35,17 +36,17 @@ class ActionAction:
 
     def __post_init__(self) -> None:
         """Make sure that data has valid type (allows creating from dict)."""
-        if not isinstance(self.on, (type(None), OnFeatureBasic)):
+        if not isinstance(self.on, (NoneType, OnFeatureBasic)):
             self.on = OnFeatureBasic(**self.on)
-        if not isinstance(self.dimming, (type(None), DimmingFeatureBasic)):
+        if not isinstance(self.dimming, (NoneType, DimmingFeatureBasic)):
             self.dimming = DimmingFeatureBasic(**self.dimming)
         if not isinstance(
-            self.color_temperature, (type(None), ColorTemperatureFeatureBasic)
+            self.color_temperature, (NoneType, ColorTemperatureFeatureBasic)
         ):
             self.color_temperature = ColorTemperatureFeatureBasic(
                 **self.color_temperature
             )
-        if not isinstance(self.color, (type(None), ColorFeatureBasic)):
+        if not isinstance(self.color, (NoneType, ColorFeatureBasic)):
             self.color = ColorFeatureBasic(**self.color)
 
 
@@ -85,7 +86,7 @@ class SceneMetadata:
 
     def __post_init__(self) -> None:
         """Make sure that data has valid type (allows creating from dict)."""
-        if not isinstance(self.image, (type(None), ResourceIdentifier)):
+        if not isinstance(self.image, (NoneType, ResourceIdentifier)):
             self.image = ResourceIdentifier(**self.image)
 
 
@@ -107,7 +108,7 @@ class SceneService(Resource):
         super().__post_init__()
         if self.actions and self.recall:
             raise ValueError("actions and recall can not be set at the same time")
-        if not isinstance(self.recall, (type(None), RecallFeature)):
+        if not isinstance(self.recall, (NoneType, RecallFeature)):
             self.recall = RecallFeature(**self.recall)
         if self.actions and not isinstance(self.actions[0], Action):
             self.actions = [Action(**x) for x in self.actions]
@@ -134,9 +135,9 @@ class Scene(SceneService):
     def __post_init__(self) -> None:
         """Make sure that data has valid type (allows creating from dict)."""
         super().__post_init__()
-        if not isinstance(self.group, (type(None), ResourceIdentifier)):
+        if not isinstance(self.group, (NoneType, ResourceIdentifier)):
             self.group = ResourceIdentifier(**self.group)
-        if not isinstance(self.metadata, (type(None), SceneMetadata)):
+        if not isinstance(self.metadata, (NoneType, SceneMetadata)):
             self.metadata = SceneMetadata(**self.metadata)
-        if not isinstance(self.palette, (type(None), PaletteFeature)):
+        if not isinstance(self.palette, (NoneType, PaletteFeature)):
             self.palette = PaletteFeature(**self.palette)

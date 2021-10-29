@@ -1,6 +1,7 @@
 """Model(s) for Room resource on HUE bridge."""
 from dataclasses import dataclass
 from enum import Enum
+from types import NoneType
 from typing import Optional, Set, Type
 
 from .group import Group
@@ -100,7 +101,7 @@ class Room(Group):
     def __post_init__(self) -> None:
         """Make sure that data has valid type (allows creating from dict)."""
         super().__post_init__()
-        if not isinstance(self.metadata, (type(None), RoomMetadata)):
+        if not isinstance(self.metadata, (NoneType, RoomMetadata)):
             self.metadata = RoomMetadata(**self.metadata)
 
     @property
@@ -114,6 +115,10 @@ class Room(Group):
         if not self.grouped_services:
             return None
         return next(
-            (x.rid for x in self.grouped_services if x.rtype == ResourceTypes.GROUPED_LIGHT),
+            (
+                x.rid
+                for x in self.grouped_services
+                if x.rtype == ResourceTypes.GROUPED_LIGHT
+            ),
             None,
         )

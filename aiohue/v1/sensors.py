@@ -169,7 +169,6 @@ class GenericSwitchSensor:
     def inputs(self):
         return self.raw.get("capabilities", {}).get("inputs")
 
-
     async def set_config(self, on=None):
         """Change config of a Switch sensor."""
         data = {} if on is None else {"on": on}
@@ -371,7 +370,6 @@ class ZLLLightLevelSensor(GenericZLLSensor):
     @property
     def tholdoffset(self):
         return self.raw["config"]["tholdoffset"]
-
 
     async def set_config(self, on=None, tholddark=None, tholdoffset=None):
         """Change config of a ZLL LightLevel sensor."""

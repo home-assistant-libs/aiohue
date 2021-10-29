@@ -1,6 +1,7 @@
 """Model(s) for device_power resource on HUE bridge."""
 from dataclasses import dataclass
 from enum import Enum
+from types import NoneType
 from typing import Optional, Type
 
 from .resource import Resource, ResourceTypes
@@ -56,5 +57,5 @@ class DevicePower(Resource):
     def __post_init__(self) -> None:
         """Make sure that data has valid type (allows creating from dict)."""
         super().__post_init__()
-        if not isinstance(self.power_state, (type(None), PowerState)):
+        if not isinstance(self.power_state, (NoneType, PowerState)):
             self.power_state = PowerState(**self.power_state)

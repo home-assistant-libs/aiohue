@@ -1,6 +1,7 @@
 """Model(s) for entertainment resource on HUE bridge."""
 from dataclasses import dataclass
 from enum import Enum
+from types import NoneType
 from typing import List, Optional
 
 from .feature import Position
@@ -235,22 +236,22 @@ class EntertainmentConfiguration(Resource):
         """Make sure that data has valid type (allows creating from dict)."""
         super().__post_init__()
         if not isinstance(
-            self.configuration_type, (type(None), EntertainmentConfigurationType)
+            self.configuration_type, (NoneType, EntertainmentConfigurationType)
         ):
             self.configuration_type = EntertainmentConfigurationType(
                 self.configuration_type
             )
-        if not isinstance(self.status, (type(None), EntertainmentStatus)):
+        if not isinstance(self.status, (NoneType, EntertainmentStatus)):
             self.status = EntertainmentStatus(self.status)
-        if not isinstance(self.active_streamer, (type(None), ResourceIdentifier)):
+        if not isinstance(self.active_streamer, (NoneType, ResourceIdentifier)):
             self.active_streamer = ResourceIdentifier(**self.active_streamer)
-        if not isinstance(self.stream_proxy, (type(None), StreamingProxy)):
+        if not isinstance(self.stream_proxy, (NoneType, StreamingProxy)):
             self.stream_proxy = StreamingProxy(**self.stream_proxy)
         if self.channels and not isinstance(self.channels[0], EntertainmentChannelGet):
             self.channels = [EntertainmentChannelGet(**x) for x in self.channels]
         if self.locations and not isinstance(self.locations[0], EntertainmentLocations):
             self.locations = [EntertainmentLocations(**x) for x in self.locations]
-        if not isinstance(self.action, (type(None), EntertainmentConfigurationAction)):
+        if not isinstance(self.action, (NoneType, EntertainmentConfigurationAction)):
             self.action = EntertainmentConfigurationAction(self.action)
 
 
@@ -270,5 +271,5 @@ class Entertainment(Resource):
     def __post_init__(self) -> None:
         """Make sure that data has valid type (allows creating from dict)."""
         super().__post_init__()
-        if not isinstance(self.segments, (type(None), SegmentationProperties)):
+        if not isinstance(self.segments, (NoneType, SegmentationProperties)):
             self.segments = SegmentationProperties(**self.segments)

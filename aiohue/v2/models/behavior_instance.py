@@ -14,4 +14,5 @@ class BehaviorInstance(ScriptInstance):
     clip-api.schema.json#/definitions/BehaviorInstancePost
     clip-api.schema.json#/definitions/BehaviorInstancePut
     """
+
     type: ResourceTypes = ResourceTypes.BEHAVIOR_INSTANCE

@@ -2,6 +2,7 @@
 
 from dataclasses import dataclass, field
 from enum import Enum
+from types import NoneType
 from typing import List, Optional, Type
 
 
@@ -65,8 +66,8 @@ class Position:
     z: float
 
 
-class AlertFeatureAction(Enum):
-    """Enum with possible alert action values."""
+class AlertEffectType(Enum):
+    """Enum with possible alert effect values."""
 
     BREATHE = "breathe"
     UNKNOWN = "unknown"
@@ -74,24 +75,24 @@ class AlertFeatureAction(Enum):
     @classmethod
     def _missing_(cls: Type, value: str):
         """Set default enum member if an unknown value is provided."""
-        return AlertFeatureAction.UNKNOWN
+        return AlertEffectType.UNKNOWN
 
 
 @dataclass
 class AlertFeature:
     """Represent AlertFeature object as received from the api."""
 
-    action: Optional[AlertFeatureAction] = None
-    action_values: List[AlertFeatureAction] = field(default_factory=list)
+    action: Optional[AlertEffectType] = None
+    action_values: List[AlertEffectType] = field(default_factory=list)
 
     def __post_init__(self) -> None:
         """Make sure that data has valid type (allows creating from dict)."""
-        if not isinstance(self.action, (type(None), AlertFeatureAction)):
-            self.action = AlertFeatureAction(self.action)
+        if not isinstance(self.action, (NoneType, AlertEffectType)):
+            self.action = AlertEffectType(self.action)
         if self.action_values and not isinstance(
-            self.action_values[0], AlertFeatureAction
+            self.action_values[0], AlertEffectType
         ):
-            self.action_values = [AlertFeatureAction(x) for x in self.action_values]
+            self.action_values = [AlertEffectType(x) for x in self.action_values]
 
 
 @dataclass
@@ -171,9 +172,9 @@ class ColorFeature(ColorFeatureBasic):
     def __post_init__(self) -> None:
         """Make sure that data has valid type (allows creating from dict)."""
         super().__post_init__()
-        if not isinstance(self.gamut_type, (type(None), GamutType)):
+        if not isinstance(self.gamut_type, (NoneType, GamutType)):
             self.gamut_type = GamutType(self.gamut_type)
-        if not isinstance(self.gamut, (type(None), ColorFeatureGamut)):
+        if not isinstance(self.gamut, (NoneType, ColorFeatureGamut)):
             self.gamut = ColorFeatureGamut(**self.gamut)
 
 
@@ -201,7 +202,7 @@ class ColorTemperatureFeatureBasic:
 
     def __post_init__(self) -> None:
         """Make sure that data has valid type (allows creating from dict)."""
-        if not isinstance(self.mirek_schema, (type(None), MirekSchema)):
+        if not isinstance(self.mirek_schema, (NoneType, MirekSchema)):
             self.mirek_schema = MirekSchema(**self.mirek_schema)
 
 
@@ -241,7 +242,7 @@ class DynamicsFeature:
 
     def __post_init__(self) -> None:
         """Make sure that data has valid type (allows creating from dict)."""
-        if not isinstance(self.status, (type(None), DynamicsFeatureStatus)):
+        if not isinstance(self.status, (NoneType, DynamicsFeatureStatus)):
             self.status = DynamicsFeatureStatus(self.status)
         if self.status_values and not isinstance(
             self.status_values[0], DynamicsFeatureStatus
@@ -275,9 +276,9 @@ class RecallFeature:
         """Make sure that data has valid type (allows creating from dict)."""
         if self.action and self.status:
             raise ValueError("action and status can not be set at the same time.")
-        if not isinstance(self.action, (type(None), RecallAction)):
+        if not isinstance(self.action, (NoneType, RecallAction)):
             self.action = RecallAction(self.action)
-        if not isinstance(self.dimming, (type(None), DimmingFeatureBasic)):
+        if not isinstance(self.dimming, (NoneType, DimmingFeatureBasic)):
             self.dimming = DimmingFeatureBasic(**self.dimming)
 
 
@@ -290,9 +291,9 @@ class PaletteColor:
 
     def __post_init__(self) -> None:
         """Make sure that data has valid type (allows creating from dict)."""
-        if not isinstance(self.color, (type(None), ColorFeatureBasic)):
+        if not isinstance(self.color, (NoneType, ColorFeatureBasic)):
             self.color = ColorFeatureBasic(**self.color)
-        if not isinstance(self.dimming, (type(None), DimmingFeatureBasic)):
+        if not isinstance(self.dimming, (NoneType, DimmingFeatureBasic)):
             self.dimming = DimmingFeatureBasic(**self.dimming)
 
 
@@ -306,12 +307,12 @@ class PaletteColorTemperature:
     def __post_init__(self) -> None:
         """Make sure that data has valid type (allows creating from dict)."""
         if not isinstance(
-            self.color_temperature, (type(None), ColorTemperatureFeatureBasic)
+            self.color_temperature, (NoneType, ColorTemperatureFeatureBasic)
         ):
             self.color_temperature = ColorTemperatureFeatureBasic(
                 **self.color_temperature
             )
-        if not isinstance(self.dimming, (type(None), DimmingFeatureBasic)):
+        if not isinstance(self.dimming, (NoneType, DimmingFeatureBasic)):
             self.dimming = DimmingFeatureBasic(**self.dimming)
 
 

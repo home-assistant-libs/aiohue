@@ -98,7 +98,7 @@ class HueBridgeV1:
         """Initialize the connection to the bridge and fetch all data."""
         if self._app_key is None:
             raise Unauthorized("There is no app_key provided or requested.")
-        
+
         result = await self.request("get", "")
         self._config = Config(result.pop("config"), self.request)
         self._groups = Groups(self.logger, result.pop("groups"), self.request)

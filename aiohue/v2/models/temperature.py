@@ -1,6 +1,7 @@
 """Model(s) for temperature resource on HUE bridge."""
 
 from dataclasses import dataclass
+from types import NoneType
 from typing import Optional
 
 from .resource import SensingService, ResourceTypes
@@ -28,7 +29,7 @@ class Temperature(SensingService):
     def __post_init__(self) -> None:
         """Make sure that data has valid type (allows creating from dict)."""
         super().__post_init__()
-        if not isinstance(self.temperature, (type(None), TemperatureFeature)):
+        if not isinstance(self.temperature, (NoneType, TemperatureFeature)):
             self.temperature = TemperatureFeature(**self.temperature)
-        if not isinstance(self.enabled, (type(None), bool)):
+        if not isinstance(self.enabled, (NoneType, bool)):
             self.enabled = bool(self.enabled)

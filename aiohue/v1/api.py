@@ -43,7 +43,6 @@ class APIItems:
     def values(self):
         return list(self._items.values())
 
-
     def __getitem__(self, obj_id):
         return self._items[obj_id]
 

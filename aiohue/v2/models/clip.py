@@ -90,7 +90,7 @@ def parse_utc_timestamp(datetimestr: str):
     return datetime.fromisoformat(datetimestr.replace("Z", "+00:00"))
 
 
-def parse_clip_resource(obj_in: dict, strict=True) -> CLIPResource | None:
+def parse_clip_resource(obj_in: dict, strict=False) -> CLIPResource | None:
     """Parse raw object dict to correct CLIP Resource Class."""
     try:
         resource_type = ResourceTypes(obj_in["type"])

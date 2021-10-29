@@ -1,5 +1,6 @@
 """Model(s) for motion resource on HUE bridge."""
 from dataclasses import dataclass
+from types import NoneType
 from typing import Optional
 
 from .resource import SensingService, ResourceTypes
@@ -31,5 +32,5 @@ class Motion(SensingService):
     def __post_init__(self) -> None:
         """Make sure that data has valid type (allows creating from dict)."""
         super().__post_init__()
-        if not isinstance(self.motion, (type(None), MotionSensingFeature)):
+        if not isinstance(self.motion, (NoneType, MotionSensingFeature)):
             self.motion = MotionSensingFeature(**self.motion)

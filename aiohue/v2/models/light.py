@@ -110,7 +110,6 @@ class Gradient:
     points_capable: Optional[int] = None
 
 
-
 @dataclass
 class Light(Resource):
     """
@@ -144,9 +143,7 @@ class Light(Resource):
             self.alert = AlertFeature(**self.alert)
         if not isinstance(self.dimming, (NoneType, DimmingFeature)):
             self.dimming = DimmingFeature(**self.dimming)
-        if not isinstance(
-            self.color_temperature, (NoneType, ColorTemperatureFeature)
-        ):
+        if not isinstance(self.color_temperature, (NoneType, ColorTemperatureFeature)):
             self.color_temperature = ColorTemperatureFeature(**self.color_temperature)
         if not isinstance(self.color, (NoneType, ColorFeature)):
             self.color = ColorFeature(**self.color)

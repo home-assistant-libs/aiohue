@@ -1,5 +1,6 @@
 """Model(s) for grouped_light resource on HUE bridge."""
 from dataclasses import dataclass
+from types import NoneType
 from typing import Optional
 
 from .feature import AlertFeature, OnFeatureBasic
@@ -23,7 +24,7 @@ class GroupedLight(Resource):
     def __post_init__(self) -> None:
         """Make sure that data has valid type (allows creating from dict)."""
         super().__post_init__()
-        if not isinstance(self.on, (type(None), OnFeatureBasic)):
+        if not isinstance(self.on, (NoneType, OnFeatureBasic)):
             self.on = OnFeatureBasic(**self.on)
-        if not isinstance(self.alert, (type(None), AlertFeature)):
+        if not isinstance(self.alert, (NoneType, AlertFeature)):
             self.alert = AlertFeature(**self.alert)

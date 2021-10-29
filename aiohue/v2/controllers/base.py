@@ -51,9 +51,7 @@ class BaseResourcesController(Generic[CLIPResource]):
                 continue
             self._items[str(res.id)] = res
         # subscribe to item updates
-        self.bridge.events.subscribe(
-            self._handle_event, resource_filter=self.item_type
-        )
+        self.bridge.events.subscribe(self._handle_event, resource_filter=self.item_type)
         self.logger.debug("fetched %s items", item_count)
 
     def subscribe(
@@ -126,6 +124,7 @@ class BaseResourcesController(Generic[CLIPResource]):
                 continue
             # dispatch the full resource object to the callback
             callback(type, cur_item)
+
 
 class GroupedControllerBase(Generic[CLIPResource]):
     """Convenience controller which combines items from multiple resources."""
