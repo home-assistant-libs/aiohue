@@ -4,8 +4,6 @@ from datetime import datetime
 from enum import Enum
 from typing import Any, List, Type, TypeVar
 
-import dacite
-
 from ..models.light_level import LightLevel
 from ..models.temperature import Temperature
 from .behavior_instance import BehaviorInstance
@@ -48,7 +46,7 @@ CLIP_RESOURCE_MAPPING = {
     ResourceTypes.HOMEKIT: HomekitGet,
     ResourceTypes.IP_CONNECTIVITY: ConnectivityService,  # TODO
     ResourceTypes.LIGHT: Light,
-    ResourceTypes.LIGHT_LEVEL: Resource,  # TODO
+    ResourceTypes.LIGHT_LEVEL: LightLevel,
     ResourceTypes.MOTION: Motion,
     ResourceTypes.PUBLIC_IMAGE: Resource,  # TODO
     ResourceTypes.RELATIVE_ROTARY: Resource,  # TODO
@@ -56,7 +54,7 @@ CLIP_RESOURCE_MAPPING = {
     ResourceTypes.ROOM: Room,
     ResourceTypes.SCENE: Scene,
     ResourceTypes.SYSTEM_UPDATE: Resource,  # TODO
-    ResourceTypes.TEMPERATURE: Resource,  # TODO
+    ResourceTypes.TEMPERATURE: Temperature,  # TODO
     ResourceTypes.ZIGBEE_BRIDGE_CONNECTIVITY: Resource,  # TODO
     ResourceTypes.ZIGBEE_CONNECTIVITY: ZigbeeConnectivity,
     ResourceTypes.ZONE: Zone,
@@ -91,11 +89,8 @@ def parse_utc_timestamp(datetimestr: str):
 def parse_clip_resource(obj_in: dict) -> CLIPResource:
     """Parse raw object dict to correct CLIP Resource Class."""
     resource_type = ResourceTypes(obj_in["type"])
-    return dacite.from_dict(
-        CLIP_RESOURCE_MAPPING[resource_type],
-        obj_in,
-        config=dacite.Config(type_hooks={datetime: parse_utc_timestamp}, cast=[Enum]),
-    )
+    resource_cls = CLIP_RESOURCE_MAPPING[resource_type]
+    return resource_cls(**obj_in)
 
 
 @dataclass
@@ -111,20 +106,14 @@ class CLIPEvent:
     # ResourceIndentifier (type and id) of the deleted object
     data: List[Resource]
 
-    @classmethod
-    def from_dict(cls: Type, obj_in: dict):
-        """Parse CLIPEvent from dict."""
-        return dacite.from_dict(
-            CLIPEvent,
-            obj_in,
-            config=dacite.Config(
-                type_hooks={
-                    datetime: parse_utc_timestamp,
-                    Resource: parse_clip_resource,
-                },
-                cast=[Enum],
-            ),
-        )
+    def __post_init__(self) -> None:
+        """Make sure that data has valid type."""
+        if not isinstance(self.type, CLIPEventType):
+            self.type = CLIPEventType(self.type)
+        if not isinstance(self.creationtime, datetime):
+            self.creationtime = parse_utc_timestamp(self.creationtime)
+        if self.data and isinstance(self.data[0], dict):
+            self.data = [parse_clip_resource(x) for x in self.data]
 
 
 @dataclass

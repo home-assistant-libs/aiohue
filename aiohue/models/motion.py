@@ -2,17 +2,7 @@
 from dataclasses import dataclass
 from typing import Optional
 
-from .resource import Resource, ResourceTypes
-
-
-@dataclass
-class SensingService(Resource):
-    """
-    Represent a SensingService object as received from the api.
-
-    clip-api.schema.json#/definitions/SensingServiceGet
-    clip-api.schema.json#/definitions/SensingServicePut
-    """
+from .resource import SensingService, ResourceTypes
 
 
 @dataclass
@@ -24,6 +14,7 @@ class MotionSensingFeature:
     """
 
     motion: bool
+    motion_valid: Optional[bool] = None
 
 
 @dataclass
@@ -36,3 +27,8 @@ class Motion(SensingService):
 
     motion: Optional[MotionSensingFeature] = None
     type: ResourceTypes = ResourceTypes.MOTION
+
+    def __post_init__(self) -> None:
+        """Make sure that data has valid type (allows creating from dict)."""
+        if not isinstance(self.motion, (type(None), MotionSensingFeature)):
+            self.motion = MotionSensingFeature(**self.motion)

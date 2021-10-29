@@ -37,6 +37,13 @@ class DependencyGet:
     level: DependencyLevel
     type: Optional[str] = None
 
+    def __post_init__(self) -> None:
+        """Make sure that data has valid type (allows creating from dict)."""
+        if self.target is not None and not isinstance(self.target, ResourceIdentifier):
+            self.target = ResourceIdentifier(**self.target)
+        if self.level is not None and not isinstance(self.level, DependencyLevel):
+            self.level = DependencyLevel(**self.level)
+
 
 @dataclass
 class ResourceDependeeGet(DependencyGet):
@@ -72,3 +79,8 @@ class DependerGet(Resource):
 
     dependers: List[ResourceDependerGet] = field(default_factory=list)
     type: ResourceTypes = ResourceTypes.DEPENDER
+
+    def __post_init__(self) -> None:
+        """Make sure that data has valid type (allows creating from dict)."""
+        if self.dependers and not isinstance(self.dependers[0], ResourceDependerGet):
+            self.dependers = [ResourceDependerGet(**x) for x in self.dependers]

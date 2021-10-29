@@ -43,10 +43,12 @@ def update_dataclass(org_obj: dataclass, new_obj: dataclass):
 def to_dict(obj_in: dataclass, skip_none: bool = True) -> dict:
     """Convert dataclass instance to dict, optionally skip None values."""
     if skip_none:
-        dict_obj = asdict(obj_in, dict_factory=lambda x: {k: v for (k, v) in x if v is not None})
+        dict_obj = asdict(
+            obj_in, dict_factory=lambda x: {k: v for (k, v) in x if v is not None}
+        )
     else:
         dict_obj = asdict(obj_in)
-    
+
     def _clean_dict(_dict_obj: dict):
         final = {}
         for key, value in _dict_obj.items():

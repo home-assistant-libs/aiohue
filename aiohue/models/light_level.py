@@ -2,7 +2,7 @@
 from dataclasses import dataclass
 from typing import Optional
 
-from .resource import Resource, ResourceTypes
+from .resource import SensingService, ResourceTypes
 
 
 @dataclass
@@ -14,7 +14,7 @@ class LightLevelFeature:
 
 
 @dataclass
-class LightLevel(Resource):
+class LightLevel(SensingService):
     """
     Represent a LightLevel resource, a sensor reporting Illuminance in Lux.
 
@@ -23,3 +23,8 @@ class LightLevel(Resource):
 
     light: Optional[LightLevelFeature] = None
     type: ResourceTypes = ResourceTypes.LIGHT_LEVEL
+
+    def __post_init__(self) -> None:
+        """Make sure that data has valid type (allows creating from dict)."""
+        if not isinstance(self.light, (type(None), LightLevelFeature)):
+            self.light = LightLevelFeature(**self.light)

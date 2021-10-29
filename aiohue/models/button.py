@@ -36,6 +36,11 @@ class ButtOnFeature:
 
     last_event: ButtonEvent
 
+    def __post_init__(self) -> None:
+        """Make sure that data has valid type (allows creating from dict)."""
+        if not isinstance(self.last_event, (type(None), ButtonEvent)):
+            self.last_event = ButtonEvent(self.last_event)
+
 
 @dataclass
 class SwitchInputMetadata:
@@ -64,3 +69,10 @@ class Button(Resource):
     metadata: Optional[SwitchInputMetadata] = None
     button: Optional[ButtOnFeature] = None
     type: ResourceTypes = ResourceTypes.BUTTON
+
+    def __post_init__(self) -> None:
+        """Make sure that data has valid type (allows creating from dict)."""
+        if not isinstance(self.metadata, (type(None), SwitchInputMetadata)):
+            self.metadata = SwitchInputMetadata(**self.metadata)
+        if not isinstance(self.button, (type(None), ButtOnFeature)):
+            self.button = ButtOnFeature(**self.button)

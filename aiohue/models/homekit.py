@@ -23,3 +23,10 @@ class HomekitGet(Resource):
         default_factory=HomekitStatus.__members__.values
     )
     type: ResourceTypes = ResourceTypes.HOMEKIT
+
+    def __post_init__(self) -> None:
+        """Make sure that data has valid type (allows creating from dict)."""
+        if not isinstance(self.status, (type(None), HomekitStatus)):
+            self.status = HomekitStatus(self.status)
+        if self.status_values and not isinstance(self.status_values[0], HomekitStatus):
+            self.status_values = [HomekitStatus(x) for x in self.status]

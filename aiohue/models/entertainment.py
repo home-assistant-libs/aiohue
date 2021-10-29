@@ -35,6 +35,11 @@ class SegmentReference:
     service: ResourceIdentifier
     index: int
 
+    def __post_init__(self) -> None:
+        """Make sure that data has valid type (allows creating from dict)."""
+        if not isinstance(self.service, ResourceIdentifier):
+            self.service = ResourceIdentifier(**self.service)
+
 
 @dataclass
 class SegmentationProperties:
@@ -49,6 +54,11 @@ class SegmentationProperties:
     configurable: bool
     max_segments: int
     segments: List[Segment]
+
+    def __post_init__(self) -> None:
+        """Make sure that data has valid type (allows creating from dict)."""
+        if self.segments and not isinstance(self.segments[0], Segment):
+            self.segments = [Segment(**x) for x in self.segments]
 
 
 @dataclass
@@ -67,6 +77,13 @@ class EntertainmentChannelGet:
     # xyz position of this channel. It is the average position of its members.
     position: Position
     members: List[SegmentReference]
+
+    def __post_init__(self) -> None:
+        """Make sure that data has valid type (allows creating from dict)."""
+        if self.position is not None and not isinstance(self.position, Position):
+            self.position = Position(**self.position)
+        if self.members and not isinstance(self.members[0], SegmentReference):
+            self.members = [SegmentReference(**x) for x in self.members]
 
 
 class EntertainmentConfigurationType(Enum):
@@ -120,6 +137,13 @@ class StreamingProxy:
     mode: StreamingProxyMode
     node: ResourceIdentifier
 
+    def __post_init__(self) -> None:
+        """Make sure that data has valid type (allows creating from dict)."""
+        if not isinstance(self.mode, StreamingProxyMode):
+            self.mode = StreamingProxyMode(self.mode)
+        if not isinstance(self.node, ResourceIdentifier):
+            self.node = ResourceIdentifier(**self.node)
+
 
 @dataclass
 class ServiceLocation:
@@ -131,6 +155,13 @@ class ServiceLocation:
 
     service: ResourceIdentifier
     position: Position
+
+    def __post_init__(self) -> None:
+        """Make sure that data has valid type (allows creating from dict)."""
+        if not isinstance(self.position, Position):
+            self.position = Position(self.position)
+        if not isinstance(self.service, ResourceIdentifier):
+            self.service = ResourceIdentifier(**self.service)
 
 
 @dataclass
@@ -145,6 +176,15 @@ class EntertainmentLocations:
     """
 
     service_locations: List[ServiceLocation]
+
+    def __post_init__(self) -> None:
+        """Make sure that data has valid type (allows creating from dict)."""
+        if self.service_locations and not isinstance(
+            self.service_locations[0], ServiceLocation
+        ):
+            self.service_locations = [
+                ServiceLocation(**x) for x in self.service_locations
+            ]
 
 
 class EntertainmentConfigurationAction(Enum):
@@ -191,6 +231,27 @@ class EntertainmentConfiguration(Resource):
     action: Optional[EntertainmentConfigurationAction] = None
     type: Optional[ResourceTypes] = ResourceTypes.ENTERTAINMENT
 
+    def __post_init__(self) -> None:
+        """Make sure that data has valid type (allows creating from dict)."""
+        if not isinstance(
+            self.configuration_type, (type(None), EntertainmentConfigurationType)
+        ):
+            self.configuration_type = EntertainmentConfigurationType(
+                self.configuration_type
+            )
+        if not isinstance(self.status, (type(None), EntertainmentStatus)):
+            self.status = EntertainmentStatus(self.status)
+        if not isinstance(self.active_streamer, (type(None), ResourceIdentifier)):
+            self.active_streamer = ResourceIdentifier(**self.active_streamer)
+        if not isinstance(self.stream_proxy, (type(None), StreamingProxy)):
+            self.stream_proxy = StreamingProxy(**self.stream_proxy)
+        if self.channels and not isinstance(self.channels[0], EntertainmentChannelGet):
+            self.channels = [EntertainmentChannelGet(**x) for x in self.channels]
+        if self.locations and not isinstance(self.locations[0], EntertainmentLocations):
+            self.locations = [EntertainmentLocations(**x) for x in self.locations]
+        if not isinstance(self.action, (type(None), EntertainmentConfigurationAction)):
+            self.action = EntertainmentConfigurationAction(self.action)
+
 
 @dataclass
 class Entertainment(Resource):
@@ -204,3 +265,8 @@ class Entertainment(Resource):
     proxy: Optional[bool] = None
     segments: Optional[SegmentationProperties] = None
     type: ResourceTypes = ResourceTypes.ENTERTAINMENT
+
+    def __post_init__(self) -> None:
+        """Make sure that data has valid type (allows creating from dict)."""
+        if not isinstance(self.segments, (type(None), SegmentationProperties)):
+            self.segments = SegmentationProperties(**self.segments)

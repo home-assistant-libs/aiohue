@@ -29,6 +29,19 @@ class Group(Resource):
     # Supported types: 'light'
     grouped_services: Optional[List[ResourceIdentifier]] = None
 
+    def __post_init__(self) -> None:
+        """Make sure that data has valid type (allows creating from dict)."""
+        if self.children and not isinstance(self.children[0], ResourceIdentifier):
+            self.children = [ResourceIdentifier(**x) for x in self.children]
+        if self.services and not isinstance(self.services[0], ResourceIdentifier):
+            self.services = [ResourceIdentifier(**x) for x in self.services]
+        if self.grouped_services and not isinstance(
+            self.grouped_services[0], ResourceIdentifier
+        ):
+            self.grouped_services = [
+                ResourceIdentifier(**x) for x in self.grouped_services
+            ]
+
     @property
     def lights(self) -> Set[str]:
         """Return a set of light id's belonging to this group/device."""

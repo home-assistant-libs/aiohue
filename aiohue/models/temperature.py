@@ -3,7 +3,7 @@
 from dataclasses import dataclass
 from typing import Optional
 
-from .resource import Resource, ResourceTypes
+from .resource import SensingService, ResourceTypes
 
 
 @dataclass
@@ -15,13 +15,19 @@ class TemperatureFeature:
 
 
 @dataclass
-class Temperature(Resource):
+class Temperature(SensingService):
     """
     Represent a Temperature resource, a sensor reporting Temperature.
 
     TODO: CLIP Schema missing for this resource.
     """
 
-    enabled: Optional[bool] = None
     temperature: Optional[TemperatureFeature] = None
     type: ResourceTypes = ResourceTypes.TEMPERATURE
+
+    def __post_init__(self) -> None:
+        """Make sure that data has valid type (allows creating from dict)."""
+        if not isinstance(self.temperature, (type(None), TemperatureFeature)):
+            self.temperature = TemperatureFeature(**self.temperature)
+        if not isinstance(self.enabled, (type(None), bool)):
+            self.enabled = bool(self.enabled)

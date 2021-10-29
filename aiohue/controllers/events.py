@@ -162,7 +162,7 @@ class EventStream:
                 # events is array with multiple events (but contains just one)
                 events: List[dict] = json.loads(value)
                 for event in events:
-                    clip_event = CLIPEvent.from_dict(event)
+                    clip_event = CLIPEvent(**event)
                     if clip_event.type == CLIPEventType.UNKNOWN:
                         raise InvalidEvent(
                             "Received invalid event %s", event.get("type")

@@ -77,6 +77,11 @@ class Resource:
     type: ResourceTypes
     id_v1: Optional[str] = None
 
+    def __post_init__(self) -> None:
+        """Make sure that data has valid type."""
+        if not isinstance(self.type, ResourceTypes):
+            self.type = ResourceTypes(self.type)
+
 
 @dataclass
 class ResourceMetadata:
@@ -123,5 +128,23 @@ class ResourceIdentifier:
     clip-api.schema.json#/definitions/ResourceIdentifierDelete
     """
 
-    rid: Optional[str] = None  # UUID
-    rtype: Optional[ResourceTypes] = None
+    rid: str  # UUID
+    rtype: ResourceTypes
+
+    def __post_init__(self) -> None:
+        """Make sure that data has valid type."""
+        if not isinstance(self.rtype, ResourceTypes):
+            self.rtype = ResourceTypes(self.rtype)
+
+
+@dataclass
+class SensingService(Resource):
+    """
+    Represent a SensingService object as received from the api.
+
+    clip-api.schema.json#/definitions/SensingServiceGet
+    clip-api.schema.json#/definitions/SensingServicePut
+    """
+
+    # optionnal bool if sensor is enabled
+    enabled: Optional[bool] = None

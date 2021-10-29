@@ -1,7 +1,7 @@
 """Model(s) for Light resource on HUE bridge."""
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from enum import Enum
-from typing import Optional, Type
+from typing import Any, List, Optional, Type
 
 from .feature import (
     AlertFeature,
@@ -80,6 +80,11 @@ class LightMetaData(NamedResourceMetadata):
 
     archetype: Optional[LightArchetypes]
 
+    def __post_init__(self) -> None:
+        """Make sure that data has valid type (allows creating from dict)."""
+        if not isinstance(self.archetype, (type(None), LightArchetypes)):
+            self.archetype = LightArchetypes(self.archetype)
+
 
 class LightModeValues(Enum):
     """
@@ -90,6 +95,19 @@ class LightModeValues(Enum):
 
     NORMAL = "normal"
     STREAMING = "streaming"
+
+
+@dataclass
+class Gradient(NamedResourceMetadata):
+    """
+    Represent Gradient object as received from the api.
+
+    TODO: Retrieve api spec.
+    """
+
+    points: Optional[List[Any]] = None
+    points_capable: Optional[int] = None
+
 
 
 @dataclass
@@ -105,13 +123,33 @@ class Light(Resource):
     on: Optional[OnFeature] = None
     mode: Optional[LightModeValues] = None
     alert: Optional[AlertFeature] = None
-    on: Optional[OnFeature] = None
     dimming: Optional[DimmingFeature] = None
     color_temperature: Optional[ColorTemperatureFeature] = None
     color: Optional[ColorFeature] = None
     dynamics: Optional[DynamicsFeature] = None
-    metadata: Optional[LightMetaData] = None
+    gradient: Optional[Gradient] = None
     type: ResourceTypes = ResourceTypes.LIGHT
+
+    def __post_init__(self) -> None:
+        """Make sure that data has valid type (allows creating from dict)."""
+        if not isinstance(self.metadata, (type(None), LightMetaData)):
+            self.metadata = LightMetaData(**self.metadata)
+        if not isinstance(self.on, (type(None), OnFeature)):
+            self.on = OnFeature(**self.on)
+        if not isinstance(self.mode, (type(None), LightModeValues)):
+            self.mode = LightModeValues(self.mode)
+        if not isinstance(self.alert, (type(None), AlertFeature)):
+            self.alert = AlertFeature(**self.alert)
+        if not isinstance(self.dimming, (type(None), DimmingFeature)):
+            self.dimming = DimmingFeature(**self.dimming)
+        if not isinstance(
+            self.color_temperature, (type(None), ColorTemperatureFeature)
+        ):
+            self.color_temperature = ColorTemperatureFeature(**self.color_temperature)
+        if not isinstance(self.color, (type(None), ColorFeature)):
+            self.color = ColorFeature(**self.color)
+        if not isinstance(self.dynamics, (type(None), DynamicsFeature)):
+            self.dynamics = DynamicsFeature(**self.dynamics)
 
     @property
     def supports_dimming(self) -> bool:

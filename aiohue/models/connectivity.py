@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Optional
 
-from .resource import Resource, ResourceTypes
+from .resource import Resource, ResourceIdentifier, ResourceTypes
 
 
 class ConnectivityServiceStatus(Enum):
@@ -27,7 +27,11 @@ class ConnectivityService(Resource):
     """
 
     status: Optional[ConnectivityServiceStatus] = None  # required in get
-    type: Optional[ResourceTypes] = None
+
+    def __post_init__(self) -> None:
+        """Make sure that data has valid type (allows creating from dict)."""
+        if not isinstance(self.status, (type(None), ConnectivityServiceStatus)):
+            self.status = ConnectivityServiceStatus(self.status)
 
 
 @dataclass
