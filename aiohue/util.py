@@ -42,17 +42,21 @@ def update_dataclass(org_obj: dataclass, new_obj: dataclass):
 
 def to_dict(obj_in: dataclass, skip_none: bool = True) -> dict:
     """Convert dataclass instance to dict, optionally skip None values."""
-    dict_obj = asdict(
-        obj_in, dict_factory=lambda x: {k: v for (k, v) in x if v is not None}
-    )
-
-    def _clean_dict(_dict: dict):
-        # convert unserializable types
-        for key, value in _dict.items():
+    if skip_none:
+        dict_obj = asdict(obj_in, dict_factory=lambda x: {k: v for (k, v) in x if v is not None})
+    else:
+        dict_obj = asdict(obj_in)
+    
+    def _clean_dict(_dict_obj: dict):
+        final = {}
+        for key, value in _dict_obj.items():
+            if value is None and skip_none:
+                continue
+            if isinstance(value, dict):
+                value = _clean_dict(value)
             if isinstance(value, Enum):
-                _dict[key] = value.value
-            elif isinstance(value, dict):
-                _clean_dict(value)
+                value = value.value
+            final[key] = value
+        return final
 
-    _clean_dict(dict_obj)
-    return dict_obj
+    return _clean_dict(dict_obj)

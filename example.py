@@ -60,8 +60,15 @@ async def main():
         light = bridge.lights.items[0]
         print("Turning on light", light.name)
         await bridge.lights.turn_on(light.id)
+        await asyncio.sleep(2)
         print("Set brightness 100 to light", light.name)
-        await bridge.lights.set_brightness(light.id, 100, 50)
+        await bridge.lights.set_brightness(light.id, 100, 4000)
+        await asyncio.sleep(4)
+        print("Set brightness 20 to light", light.name)
+        await bridge.lights.set_brightness(light.id, 20, 4000)
+        await asyncio.sleep(4)
+        print("Turning off light", light.name)
+        await bridge.lights.turn_off(light.id, 2000)
 
         def print_event(event_type, item):
             print()

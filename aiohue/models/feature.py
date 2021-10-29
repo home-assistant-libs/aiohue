@@ -190,8 +190,8 @@ class DynamicsFeatureStatus(Enum):
 class DynamicsFeature:
     """Represent DynamicsFeature object as received from the api."""
 
-    status: DynamicsFeatureStatus = DynamicsFeatureStatus.NONE
-    status_values: List[DynamicsFeatureStatus] = field(default_factory=list)
+    status: Optional[DynamicsFeatureStatus] = None
+    status_values: Optional[List[DynamicsFeatureStatus]] = None
     # Duration of a light transition in ms. Accuracy is in 100ms steps.
     # minimal value 100, maximum 6000000
     duration: Optional[int] = None  # only sent on update/set

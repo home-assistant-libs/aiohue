@@ -8,6 +8,7 @@ from typing import Generator, List, Optional, Type
 
 import aiohttp
 from aiohttp import ClientResponse
+from aiohttp.client_exceptions import ClientResponseError
 from asyncio_throttle import Throttler
 
 from .errors import raise_from_error
@@ -126,7 +127,9 @@ class HueBridgeV2:
     ) -> Optional[bool]:
         """Exit context manager."""
         await self.close()
-        return exc_val
+        if exc_val:
+            raise exc_val
+        return exc_type
 
     async def initialize(self) -> None:
         """Initialize the connection to the bridge and fetch all data."""
