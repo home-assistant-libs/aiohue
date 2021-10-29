@@ -1,4 +1,4 @@
-from datetime import datetime
+"""Hue sensor resources."""
 from .api import APIItems
 
 TYPE_DAYLIGHT = "Daylight"

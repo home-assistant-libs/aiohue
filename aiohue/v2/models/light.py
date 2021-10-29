@@ -1,5 +1,5 @@
 """Model(s) for Light resource on HUE bridge."""
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from enum import Enum
 from types import NoneType
 from typing import Any, List, Optional, Type

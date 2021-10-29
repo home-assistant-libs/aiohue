@@ -155,7 +155,7 @@ class EventStream:
         """Parse a plain message string as received from EventStream."""
         try:
             line = line.decode().strip()
-            if not line or not ":" in line:
+            if not line or ":" not in line:
                 return
             key, value = line.split(":", 1)
             if not key:
@@ -174,5 +174,5 @@ class EventStream:
                     self._event_queue.put_nowait(clip_event)
             else:
                 self.logger.debug("Received unexpected message: %s - %s", key, value)
-        except Exception as exc:  #  pylint:disable=broad-except
+        except Exception as exc:  # pylint: disable=broad-except
             self.logger.warning("Unable to parse Event message: %s", line, exc_info=exc)

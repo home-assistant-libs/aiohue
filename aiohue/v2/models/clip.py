@@ -390,16 +390,3 @@ class ClipMessageZone(ClipMessage):
     """
 
     data: List[Zone]
-
-
-@dataclass
-class ClipMessageZone(ClipMessage):
-    """
-    CLIP Response when requesting zone resource.
-
-    path: GET /clip/v2/resource/zone
-
-    clip-api.schema.json#/definitions/ClipMessageZone
-    """
-
-    data: List[Zone]

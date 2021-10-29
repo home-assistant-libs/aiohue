@@ -2,15 +2,13 @@
 
 from typing import TYPE_CHECKING, Type, Union
 
+from ..models.clip import CLIPResource
 from ..models.group import Group
 from ..models.grouped_light import GroupedLight
 from ..models.resource import ResourceTypes
 from ..models.room import Room
 from ..models.zone import Zone
 from .base import BaseResourcesController, GroupedControllerBase
-
-from ..models.clip import CLIPResource
-from ..models.resource import ResourceTypes
 from .events import EventType
 
 if TYPE_CHECKING:
