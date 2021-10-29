@@ -26,5 +26,6 @@ class Bridge(Resource):
 
     def __post_init__(self) -> None:
         """Make sure that data has valid type (allows creating from dict)."""
+        super().__post_init__()
         if not isinstance(self.time_zone, (type(None), TimeZone)):
             self.time_zone = TimeZone(**self.time_zone)

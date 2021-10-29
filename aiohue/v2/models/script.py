@@ -83,6 +83,7 @@ class ScriptInstance(Resource):
 
     def __post_init__(self) -> None:
         """Make sure that data has valid type (allows creating from dict)."""
+        super().__post_init__()
         if not isinstance(self.metadata, (type(None), InstanceMetadata)):
             self.metadata = InstanceMetadata(**self.metadata)
         if self.dependees and not isinstance(self.dependees[0], ResourceDependeeGet):

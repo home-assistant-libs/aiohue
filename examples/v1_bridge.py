@@ -2,10 +2,10 @@
 import argparse
 import asyncio
 import logging
-import os
-import sys
+from os.path import abspath, dirname
+from sys import path
 
-sys.path.insert(1, os.path.abspath(".."))
+path.insert(1, dirname(dirname(abspath(__file__))))
 
 from aiohue import HueBridgeV1
 from aiohue.v1.lights import Light

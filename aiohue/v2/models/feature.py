@@ -170,6 +170,7 @@ class ColorFeature(ColorFeatureBasic):
 
     def __post_init__(self) -> None:
         """Make sure that data has valid type (allows creating from dict)."""
+        super().__post_init__()
         if not isinstance(self.gamut_type, (type(None), GamutType)):
             self.gamut_type = GamutType(self.gamut_type)
         if not isinstance(self.gamut, (type(None), ColorFeatureGamut)):

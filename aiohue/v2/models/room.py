@@ -99,6 +99,7 @@ class Room(Group):
 
     def __post_init__(self) -> None:
         """Make sure that data has valid type (allows creating from dict)."""
+        super().__post_init__()
         if not isinstance(self.metadata, (type(None), RoomMetadata)):
             self.metadata = RoomMetadata(**self.metadata)
 
@@ -112,7 +113,7 @@ class Room(Group):
         """Return the grouped light id that is connected to this room (if any)."""
         if not self.grouped_services:
             return None
-        next(
-            (x for x in self.grouped_services if x.rid == ResourceTypes.GROUPED_LIGHT),
+        return next(
+            (x.rid for x in self.grouped_services if x.rtype == ResourceTypes.GROUPED_LIGHT),
             None,
         )

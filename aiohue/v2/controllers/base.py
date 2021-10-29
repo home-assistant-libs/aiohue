@@ -52,7 +52,7 @@ class BaseResourcesController(Generic[CLIPResource]):
             self._items[str(res.id)] = res
         # subscribe to item updates
         self.bridge.events.subscribe(
-            self.__handle_event, resource_filter=self.item_type
+            self._handle_event, resource_filter=self.item_type
         )
         self.logger.debug("fetched %s items", item_count)
 
@@ -102,7 +102,7 @@ class BaseResourcesController(Generic[CLIPResource]):
         """Iterate items."""
         return iter(self._items.values())
 
-    def __handle_event(self, type: EventType, item: CLIPResource) -> None:
+    async def _handle_event(self, type: EventType, item: CLIPResource) -> None:
         """Handle incoming event for this resource from the EventStream."""
         if type == EventType.RESOURCE_ADDED:
             # new item added
@@ -126,7 +126,6 @@ class BaseResourcesController(Generic[CLIPResource]):
                 continue
             # dispatch the full resource object to the callback
             callback(type, cur_item)
-
 
 class GroupedControllerBase(Generic[CLIPResource]):
     """Convenience controller which combines items from multiple resources."""

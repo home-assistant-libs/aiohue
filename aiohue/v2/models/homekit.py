@@ -26,6 +26,7 @@ class HomekitGet(Resource):
 
     def __post_init__(self) -> None:
         """Make sure that data has valid type (allows creating from dict)."""
+        super().__post_init__()
         if not isinstance(self.status, (type(None), HomekitStatus)):
             self.status = HomekitStatus(self.status)
         if self.status_values and not isinstance(self.status_values[0], HomekitStatus):

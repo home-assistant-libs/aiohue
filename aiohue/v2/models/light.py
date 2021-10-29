@@ -1,6 +1,7 @@
 """Model(s) for Light resource on HUE bridge."""
 from dataclasses import dataclass, field
 from enum import Enum
+from types import NoneType
 from typing import Any, List, Optional, Type
 
 from .feature import (
@@ -82,7 +83,7 @@ class LightMetaData(NamedResourceMetadata):
 
     def __post_init__(self) -> None:
         """Make sure that data has valid type (allows creating from dict)."""
-        if not isinstance(self.archetype, (type(None), LightArchetypes)):
+        if not isinstance(self.archetype, (NoneType, LightArchetypes)):
             self.archetype = LightArchetypes(self.archetype)
 
 
@@ -98,7 +99,7 @@ class LightModeValues(Enum):
 
 
 @dataclass
-class Gradient(NamedResourceMetadata):
+class Gradient:
     """
     Represent Gradient object as received from the api.
 
@@ -132,23 +133,24 @@ class Light(Resource):
 
     def __post_init__(self) -> None:
         """Make sure that data has valid type (allows creating from dict)."""
-        if not isinstance(self.metadata, (type(None), LightMetaData)):
+        super().__post_init__()
+        if not isinstance(self.metadata, (NoneType, LightMetaData)):
             self.metadata = LightMetaData(**self.metadata)
-        if not isinstance(self.on, (type(None), OnFeature)):
+        if not isinstance(self.on, (NoneType, OnFeature)):
             self.on = OnFeature(**self.on)
-        if not isinstance(self.mode, (type(None), LightModeValues)):
+        if not isinstance(self.mode, (NoneType, LightModeValues)):
             self.mode = LightModeValues(self.mode)
-        if not isinstance(self.alert, (type(None), AlertFeature)):
+        if not isinstance(self.alert, (NoneType, AlertFeature)):
             self.alert = AlertFeature(**self.alert)
-        if not isinstance(self.dimming, (type(None), DimmingFeature)):
+        if not isinstance(self.dimming, (NoneType, DimmingFeature)):
             self.dimming = DimmingFeature(**self.dimming)
         if not isinstance(
-            self.color_temperature, (type(None), ColorTemperatureFeature)
+            self.color_temperature, (NoneType, ColorTemperatureFeature)
         ):
             self.color_temperature = ColorTemperatureFeature(**self.color_temperature)
-        if not isinstance(self.color, (type(None), ColorFeature)):
+        if not isinstance(self.color, (NoneType, ColorFeature)):
             self.color = ColorFeature(**self.color)
-        if not isinstance(self.dynamics, (type(None), DynamicsFeature)):
+        if not isinstance(self.dynamics, (NoneType, DynamicsFeature)):
             self.dynamics = DynamicsFeature(**self.dynamics)
 
     @property

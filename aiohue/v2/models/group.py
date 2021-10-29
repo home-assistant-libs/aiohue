@@ -31,6 +31,7 @@ class Group(Resource):
 
     def __post_init__(self) -> None:
         """Make sure that data has valid type (allows creating from dict)."""
+        super().__post_init__()
         if self.children and not isinstance(self.children[0], ResourceIdentifier):
             self.children = [ResourceIdentifier(**x) for x in self.children]
         if self.services and not isinstance(self.services[0], ResourceIdentifier):

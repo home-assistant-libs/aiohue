@@ -114,6 +114,7 @@ class Device(Group):
 
     def __post_init__(self) -> None:
         """Make sure that data has valid type (allows creating from dict)."""
+        super().__post_init__()
         if not isinstance(self.product_data, (type(None), DeviceProductData)):
             self.product_data = DeviceProductData(**self.product_data)
         if not isinstance(self.metadata, (type(None), DeviceMetaData)):

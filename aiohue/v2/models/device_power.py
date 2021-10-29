@@ -55,5 +55,6 @@ class DevicePower(Resource):
 
     def __post_init__(self) -> None:
         """Make sure that data has valid type (allows creating from dict)."""
+        super().__post_init__()
         if not isinstance(self.power_state, (type(None), PowerState)):
             self.power_state = PowerState(**self.power_state)

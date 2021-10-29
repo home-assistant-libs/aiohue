@@ -1,10 +1,10 @@
 """AIOHue example for HUE bridge authentication."""
 import argparse
 import asyncio
-import os
-import sys
+from os.path import abspath, dirname
+from sys import path
 
-sys.path.insert(1, os.path.abspath(".."))
+path.insert(1, dirname(dirname(abspath(__file__))))
 
 from aiohue import HueBridgeV1, HueBridgeV2, is_v2_bridge
 
@@ -26,8 +26,8 @@ async def main():
         bridge = HueBridgeV2(host)
     else:
         bridge = HueBridgeV1(host)
+    
     # request api_key from bridge
-
     try:
         api_key = await bridge.create_user("authentication_example")
         print()

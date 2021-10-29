@@ -2,10 +2,10 @@
 import argparse
 import asyncio
 import logging
-import os
-import sys
+from os.path import abspath, dirname
+from sys import path
 
-sys.path.insert(1, os.path.abspath(".."))
+path.insert(1, dirname(dirname(abspath(__file__))))
 
 from aiohue import HueBridgeV2
 
@@ -60,7 +60,10 @@ async def main():
             print("received event", event_type.value, item)
             print()
 
-        bridge.events.subscribe(print_event)
+        bridge.lights.subscribe(print_event)
+        bridge.groups.subscribe(print_event)
+        bridge.sensors.subscribe(print_event)
+        bridge.devices.subscribe(print_event)
 
         await asyncio.sleep(3600)
 

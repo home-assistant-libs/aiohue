@@ -5,6 +5,7 @@ from enum import Enum
 from typing import TYPE_CHECKING, Callable, List, NoReturn, Tuple
 
 from aiohttp.client_exceptions import ClientConnectionError
+from asyncio.coroutines import iscoroutinefunction
 
 if TYPE_CHECKING:
     from .. import HueBridgeV2
@@ -90,7 +91,10 @@ class EventStream:
                 continue
             if resource_filter is not None and resource_filter != data.type:
                 continue
-            callback(type, data)
+            if iscoroutinefunction(callback):
+                asyncio.create_task(callback(type, data))
+            else:
+                callback(type, data)
 
     async def __event_reader(self) -> NoReturn:
         """

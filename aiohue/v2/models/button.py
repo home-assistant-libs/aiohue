@@ -72,6 +72,7 @@ class Button(Resource):
 
     def __post_init__(self) -> None:
         """Make sure that data has valid type (allows creating from dict)."""
+        super().__post_init__()
         if not isinstance(self.metadata, (type(None), SwitchInputMetadata)):
             self.metadata = SwitchInputMetadata(**self.metadata)
         if not isinstance(self.button, (type(None), ButtOnFeature)):

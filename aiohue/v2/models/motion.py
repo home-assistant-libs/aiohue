@@ -30,5 +30,6 @@ class Motion(SensingService):
 
     def __post_init__(self) -> None:
         """Make sure that data has valid type (allows creating from dict)."""
+        super().__post_init__()
         if not isinstance(self.motion, (type(None), MotionSensingFeature)):
             self.motion = MotionSensingFeature(**self.motion)

@@ -9,6 +9,10 @@ from ..models.room import Room
 from ..models.zone import Zone
 from .base import BaseResourcesController, GroupedControllerBase
 
+from ..models.clip import CLIPResource
+from ..models.resource import ResourceTypes
+from .events import EventType
+
 if TYPE_CHECKING:
     from .. import HueBridgeV2
 
@@ -30,6 +34,20 @@ class GroupedLightController(BaseResourcesController[Type[GroupedLight]]):
 
     item_type = ResourceTypes.GROUPED_LIGHT
 
+    async def _handle_event(self, type: EventType, item: CLIPResource) -> None:
+        """Handle incoming event for this resource from the EventStream."""
+        await super()._handle_event(type, item)
+        # make sure that an update of grouped light gets propagated to connected zone/room
+        self.bridge.events.emit(EventType.RESOURCE_UPDATED, self.get_zone(item.id))
+
+    def get_zone(self, id:str) -> Room | Zone:
+        """Get the zone or room connected to grouped light."""
+        for group in self.bridge.groups:
+            if group.type == ResourceTypes.GROUPED_LIGHT:
+                continue
+            if group.grouped_light == id:
+                return group
+
 
 class GroupsController(GroupedControllerBase[Union[Room, Group, GroupedLight]]):
     """Controller grouping resources of both room and zone."""
@@ -47,3 +65,4 @@ class GroupsController(GroupedControllerBase[Union[Room, Group, GroupedLight]]):
                 self.grouped_light,
             ],
         )
+

@@ -104,12 +104,13 @@ class SceneService(Resource):
 
     def __post_init__(self) -> None:
         """Make sure that data has valid type (allows creating from dict)."""
+        super().__post_init__()
         if self.actions and self.recall:
             raise ValueError("actions and recall can not be set at the same time")
         if not isinstance(self.recall, (type(None), RecallFeature)):
             self.recall = RecallFeature(**self.recall)
         if self.actions and not isinstance(self.actions[0], Action):
-            self.actions = [Action(x) for x in self.actions]
+            self.actions = [Action(**x) for x in self.actions]
 
 
 @dataclass
@@ -132,6 +133,7 @@ class Scene(SceneService):
 
     def __post_init__(self) -> None:
         """Make sure that data has valid type (allows creating from dict)."""
+        super().__post_init__()
         if not isinstance(self.group, (type(None), ResourceIdentifier)):
             self.group = ResourceIdentifier(**self.group)
         if not isinstance(self.metadata, (type(None), SceneMetadata)):
