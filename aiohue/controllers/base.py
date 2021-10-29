@@ -1,7 +1,6 @@
 """Base controller for HUE resources as retrieved from the Hue bridge."""
 
 import asyncio
-from dataclasses import asdict
 from typing import TYPE_CHECKING, Callable, Dict, Generic, Iterator, List, Tuple
 
 from ..util import to_dict, update_dataclass
@@ -81,7 +80,7 @@ class BaseResourcesController(Generic[CLIPResource]):
         """Get item by it's legacy V1 id."""
         return next((item.v1_id == id for item in self._items.values()), None)
 
-    async def update(self, id: str, obj_in: CLIPResource) -> None:
+    async def _send_put(self, id: str, obj_in: CLIPResource) -> None:
         """
         Update HUE resource with PUT command.
 
