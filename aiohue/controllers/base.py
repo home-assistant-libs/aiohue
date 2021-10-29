@@ -47,6 +47,8 @@ class BaseResourcesController(Generic[CLIPResource]):
                 continue
             item_count += 1
             res: CLIPResource = parse_clip_resource(item)
+            if res is None:
+                continue
             self._items[str(res.id)] = res
         # subscribe to item updates
         self.bridge.events.subscribe(

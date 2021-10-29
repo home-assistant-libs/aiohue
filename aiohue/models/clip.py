@@ -26,6 +26,10 @@ from .room import Room
 from .scene import Scene
 from .zone import Zone
 
+import logging
+
+LOGGER = logging.getLogger(__package__)
+
 CLIP_RESOURCE_MAPPING = {
     # Maps HUE resource type to correct class
     ResourceTypes.BEHAVIOR_INSTANCE: BehaviorInstance,
@@ -86,11 +90,21 @@ def parse_utc_timestamp(datetimestr: str):
     return datetime.fromisoformat(datetimestr.replace("Z", "+00:00"))
 
 
-def parse_clip_resource(obj_in: dict) -> CLIPResource:
+def parse_clip_resource(obj_in: dict, strict=False) -> CLIPResource | None:
     """Parse raw object dict to correct CLIP Resource Class."""
-    resource_type = ResourceTypes(obj_in["type"])
-    resource_cls = CLIP_RESOURCE_MAPPING[resource_type]
-    return resource_cls(**obj_in)
+    try:
+        resource_type = ResourceTypes(obj_in["type"])
+        resource_cls = CLIP_RESOURCE_MAPPING[resource_type]
+        return resource_cls(**obj_in)
+    except Exception as exc:
+        LOGGER.critical(
+            "Something went wrong while parsing a message from the Hue API.\n\n"
+            "Please report the below to the developers!\n"
+            f"{exc}\n{obj_in}\n\n"
+        )
+        if strict:
+            raise exc
+        return None
 
 
 @dataclass
@@ -113,7 +127,9 @@ class CLIPEvent:
         if not isinstance(self.creationtime, datetime):
             self.creationtime = parse_utc_timestamp(self.creationtime)
         if self.data and isinstance(self.data[0], dict):
-            self.data = [parse_clip_resource(x) for x in self.data]
+            self.data = [
+                x for x in [parse_clip_resource(x) for x in self.data] if x is not None
+            ]
 
 
 @dataclass
