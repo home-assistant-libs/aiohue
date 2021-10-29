@@ -3,7 +3,7 @@
 import asyncio
 from typing import TYPE_CHECKING, Callable, Dict, Generic, Iterator, List, Tuple
 
-from ..util import to_dict, update_dataclass
+from ...util import to_dict, update_dataclass
 
 from ..models.clip import CLIPResource, parse_clip_resource
 from ..models.resource import ResourceTypes

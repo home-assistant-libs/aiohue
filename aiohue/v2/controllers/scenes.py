@@ -2,7 +2,7 @@
 
 from typing import Type
 
-from aiohue.models.feature import RecallAction, RecallFeature
+from ..models.feature import RecallAction, RecallFeature
 
 from ..models.resource import ResourceTypes
 from ..models.scene import Scene

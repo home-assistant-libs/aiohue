@@ -9,6 +9,10 @@ class APIItems:
         self._items = {}
         self._process_raw(raw)
 
+    @property
+    def items(self):
+        return self.values()
+
     async def update(self):
         """Request update of all items of this resource type."""
         raw = await self._request("get", self._path)
@@ -37,7 +41,8 @@ class APIItems:
             del self._items[id]
 
     def values(self):
-        return self._items.values()
+        return list(self._items.values())
+
 
     def __getitem__(self, obj_id):
         return self._items[obj_id]

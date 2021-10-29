@@ -2,14 +2,13 @@
 
 from typing import Type
 
-from aiohue.models.feature import (
+from ..models.feature import (
     ColorFeature,
     ColorPoint,
     DimmingFeature,
     DynamicsFeature,
     OnFeature,
 )
-
 from ..models.light import Light
 from ..models.resource import ResourceTypes
 from .base import BaseResourcesController

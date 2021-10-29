@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from typing import List
 
 from aiohttp import ClientSession
-
+from .util import is_v2_bridge
 
 URL_NUPNP = "https://discovery.meethue.com/"
 
@@ -26,7 +26,7 @@ async def discover_nupnp(
     if websession is None:
         websession = ClientSession()
     try:
-        async with websession.get(URL_NUPNP) as res:
+        async with websession.get(URL_NUPNP, timeout=5) as res:
             for item in await res.json():
                 host = item["internalipaddress"]
                 # the nupnp discovery might return items that are not in local network
@@ -54,7 +54,7 @@ async def is_hue_bridge(
     try:
         # every hue bridge returns discovery info on this endpoint
         url = f"http://{host}/api/config"
-        async with websession.get(url) as res:
+        async with websession.get(url, timeout=1) as res:
             assert res.status == 200
             data = await res.json()
             return data["bridgeid"]

@@ -464,7 +464,7 @@ def create_sensor(id, raw, request):
     type = raw["type"]
 
     if type == TYPE_DAYLIGHT:
-        return DaylightSensor(id, raw, [], request)
+        return DaylightSensor(id, raw, request)
 
     elif type == TYPE_CLIP_GENERICFLAG:
         return CLIPGenericFlagSensor(id, raw, request)

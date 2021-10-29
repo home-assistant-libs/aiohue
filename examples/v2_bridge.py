@@ -1,50 +1,32 @@
-"""Example script for using AIOHue connecting to a Hue bridge."""
+"""Example script for using AIOHue connecting to a V2 Hue bridge."""
+import argparse
 import asyncio
 import logging
+import os
 import sys
-from pprint import pformat
+
+sys.path.insert(1, os.path.abspath(".."))
 
 from aiohue import HueBridgeV2
-from aiohue.discovery import discover_nupnp
-from aiohue.errors import LinkButtonNotPressed
+
+parser = argparse.ArgumentParser(description="AIOHue Example")
+parser.add_argument("host", help="hostname of Hue bridge")
+parser.add_argument("appkey", help="appkey for Hue bridge")
+parser.add_argument("--debug", help="enable debug logging", action="store_true")
+args = parser.parse_args()
 
 
 async def main():
     """Run Main execution."""
-    # TODO: make this a bit prettier with argparse
-    app_key = None
-    host = None
-    if len(sys.argv) == 1:
-        # if no arguments are given, discover bridge with nupnp
-        discovered_bridges = await discover_nupnp()
-        host = discovered_bridges[1].host
-        print("Found bridge at", host)
-    elif len(sys.argv) > 2:
-        # both host and key are given
-        host = sys.argv[1]
-        app_key = sys.argv[2]
-    else:
-        host = sys.argv[1]
+    if args.debug:
+        logging.basicConfig(
+            level=logging.DEBUG,
+            format="%(asctime)-15s %(levelname)-5s %(name)s -- %(message)s",
+        )
 
-    if app_key is None:
-        try:
-            bridge = HueBridgeV2(host, app_key)
-            app_key = await bridge.create_user("aiophue-example")
-        except LinkButtonNotPressed:
-            print("Press the link button on the bridge before running example.py")
-            return
+    async with HueBridgeV2(args.host, app_key=args.appkey) as bridge:
 
-        print("Your username is", app_key)
-        print("Now run:")
-        print(" ".join(sys.argv) + f" {app_key}")
-        return
-
-    logging.basicConfig(
-        level=logging.DEBUG,
-        format="%(asctime)-15s %(levelname)-5s %(name)s -- %(message)s",
-    )
-
-    async with HueBridgeV2(host, app_key) as bridge:
+        print("Connected to bridge: ", bridge.bridge_id)
 
         print()
         print("found lights:")
@@ -69,6 +51,9 @@ async def main():
         await asyncio.sleep(1)
         print("Turning off light", light.name)
         await bridge.lights.turn_off(light.id, 2000)
+
+        print()
+        print("Subscribing to events...")
 
         def print_event(event_type, item):
             print()

@@ -9,7 +9,7 @@ from aiohttp.client_exceptions import ClientConnectionError
 if TYPE_CHECKING:
     from .. import HueBridgeV2
 
-from ..errors import InvalidAPIVersion, InvalidEvent, Unauthorized
+from ...errors import InvalidAPIVersion, InvalidEvent, Unauthorized
 from ..models.clip import CLIPEvent, CLIPEventType, CLIPResource
 from ..models.resource import ResourceTypes
 

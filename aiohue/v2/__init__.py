@@ -8,10 +8,9 @@ from typing import Generator, List, Optional, Type
 
 import aiohttp
 from aiohttp import ClientResponse
-from aiohttp.client_exceptions import ClientResponseError
 from asyncio_throttle import Throttler
 
-from .errors import raise_from_error
+from ..errors import Unauthorized, raise_from_error
 from .controllers.events import EventStream
 
 from .controllers.bridge_config import BridgeConfigController
@@ -28,17 +27,19 @@ class HueBridgeV2:
     def __init__(
         self,
         host: str,
-        app_key: str | None = None,
         websession: aiohttp.ClientSession | None = None,
+        app_key: str | None = None,
     ) -> None:
         """
         Initialize the Bridge instance.
 
-            host: the hostname or IP-address of the bridge as string.
-            websession: optionally provide a aiohttp ClientSession.
-            app_key: optionally provide a hue appkey/username for authentication.
+        Parameters:
+            `host`: the hostname or IP-address of the bridge as string.
+            `websession`: optionally provide a aiohttp ClientSession.
+            `app_key`: optionally provide a hue appkey/username for authentication.
 
             NOTE: You'll need to call initialize before any data is available.
+            NOTE: If app_key is not provided, you need to call create_user.
         """
         self._host = host
         self._app_key = app_key
@@ -49,7 +50,7 @@ class HueBridgeV2:
         self._throttler = Throttler(rate_limit=10, period=1)
         self._events = EventStream(self)
         # all resource controllers
-        self._bridge_config = BridgeConfigController(self)
+        self._config = BridgeConfigController(self)
         self._devices = DevicesController(self)
         self._lights = LightsController(self)
         self._scenes = ScenesController(self)
@@ -59,7 +60,7 @@ class HueBridgeV2:
     @property
     def bridge_id(self) -> str | None:
         """Return the ID of the bridge we're currently connected to."""
-        return self._resources.bridge_config.id
+        return self._config.id
 
     @property
     def host(self) -> str:
@@ -72,9 +73,9 @@ class HueBridgeV2:
         return self._events
 
     @property
-    def bridge_config(self) -> BridgeConfigController:
+    def config(self) -> BridgeConfigController:
         """Get the Bridge(config) Controller."""
-        return self._bridge_config
+        return self._config
 
     @property
     def devices(self) -> DevicesController:
@@ -107,41 +108,29 @@ class HueBridgeV2:
 
         https://developers.meethue.com/documentation/configuration-api#71_create_user
         """
-        result = await self.request(
-            "post", "", legacy=True, auth=False, json={"devicetype": device_type}
-        )
-        self._app_key = result[0]["success"]["username"]
+        # there is not (yet) a V2 way of creating a user, so we use the V1 api for that for now.
+        data = {"devicetype": device_type}
+        async with self.create_request("post", "api", json=data) as resp:
+            result = await resp.json()
+            # response is returned as list
+            result = result[0]
+            if "error" in result:
+                raise_from_error(result["error"])
+        self._app_key = result["success"]["username"]
         return self._app_key
-
-    async def __aenter__(self) -> "HueBridgeV2":
-        """Return Context manager."""
-        assert self._app_key is not None
-        await self.initialize()
-        return self
-
-    async def __aexit__(
-        self,
-        exc_type: Type[BaseException],
-        exc_val: BaseException,
-        exc_tb: TracebackType,
-    ) -> Optional[bool]:
-        """Exit context manager."""
-        await self.close()
-        if exc_val:
-            raise exc_val
-        return exc_type
 
     async def initialize(self) -> None:
         """Initialize the connection to the bridge and fetch all data."""
-        if self._websession is None:
-            self._websession = aiohttp.ClientSession()
+
+        if self._app_key is None:
+            raise Unauthorized("There is no app_key provided or requested.")
 
         # Initialize all HUE resource controllers
         # fetch complete full state once and distribute to controllers
         full_state = await self.request("get", "clip/v2/resource")
 
         await asyncio.gather(
-            self._bridge_config.initialize(full_state),
+            self._config.initialize(full_state),
             self._devices.initialize(full_state),
             self._lights.initialize(full_state),
             self._scenes.initialize(full_state),
@@ -176,6 +165,9 @@ class HueBridgeV2:
         Takes rate limiting (throttling) into account for connections.
         Returns a generator with aiohttp ClientResponse.
         """
+        if self._websession is None:
+            self._websession = aiohttp.ClientSession()
+
         url = f"https://{self._host}/{path}"
 
         kwargs["ssl"] = False
@@ -190,3 +182,21 @@ class HueBridgeV2:
             async with self._websession.request(method, url, **kwargs) as res:
                 res.raise_for_status()
                 yield res
+
+    async def __aenter__(self) -> "HueBridgeV2":
+        """Return Context manager."""
+        if self._app_key:
+            await self.initialize()
+        return self
+
+    async def __aexit__(
+        self,
+        exc_type: Type[BaseException],
+        exc_val: BaseException,
+        exc_tb: TracebackType,
+    ) -> Optional[bool]:
+        """Exit context manager."""
+        await self.close()
+        if exc_val:
+            raise exc_val
+        return exc_type

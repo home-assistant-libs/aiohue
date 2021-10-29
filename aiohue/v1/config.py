@@ -29,7 +29,7 @@ class Config:
         return self.raw["modelid"]
 
     @property
-    def bridgeid(self):
+    def bridge_id(self):
         """ID of the bridge."""
         return self.raw["bridgeid"]
 
