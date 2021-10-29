@@ -5,7 +5,7 @@ from typing import Optional
 from .resource import Resource, ResourceTypes
 
 
-@dataclass(kw_only=True)
+@dataclass
 class SensingService(Resource):
     """
     Represent a SensingService object as received from the api.
@@ -15,7 +15,7 @@ class SensingService(Resource):
     """
 
 
-@dataclass(kw_only=True)
+@dataclass
 class MotionSensingFeature:
     """
     Represent MotionSensingFeature as retrieved from api.
@@ -26,7 +26,7 @@ class MotionSensingFeature:
     motion: bool
 
 
-@dataclass(kw_only=True)
+@dataclass
 class Motion(SensingService):
     """
     Represent a Motion resource, a service detecting motion.
@@ -34,5 +34,5 @@ class Motion(SensingService):
     clip-api.schema.json#/definitions/Motion
     """
 
-    motion: Optional[MotionSensingFeature]
+    motion: Optional[MotionSensingFeature] = None
     type: ResourceTypes = ResourceTypes.MOTION

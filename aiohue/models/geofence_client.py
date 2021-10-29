@@ -5,7 +5,7 @@ from typing import Optional
 from .resource import Resource, ResourceTypes
 
 
-@dataclass(kw_only=True)
+@dataclass
 class GeofenceClient(Resource):
     """
     Representation of Geofence Client.
@@ -15,7 +15,6 @@ class GeofenceClient(Resource):
     clip-api.schema.json#/definitions/GeofenceClientPut
     """
 
-    is_at_home: Optional[bool]  # Indicator if Geofence Client is at home.
-    name: Optional[str]
+    is_at_home: Optional[bool] = None  # Indicator if Geofence Client is at home.
+    name: Optional[str] = None
     type: ResourceTypes = ResourceTypes.GEOFENCE_CLIENT
-

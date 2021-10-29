@@ -5,14 +5,14 @@ from typing import Optional
 from .resource import Resource, ResourceTypes
 
 
-@dataclass(kw_only=True)
+@dataclass
 class TimeZone:
     """Represent TimeZone object as received from API."""
 
     time_zone: str  # e.g. Europe/Amsterdam
 
 
-@dataclass(kw_only=True)
+@dataclass
 class Bridge(Resource):
     """
     Represent Bridge object as retrieved from the api.
@@ -20,6 +20,6 @@ class Bridge(Resource):
     clip-api.schema.json#/definitions/BridgeGet
     """
 
-    bridge_id: Optional[str]  # sent on get, can not be updated
-    time_zone: Optional[TimeZone]
+    bridge_id: Optional[str] = None  # sent on get, can not be updated
+    time_zone: Optional[TimeZone] = None
     type: ResourceTypes = ResourceTypes.BRIDGE

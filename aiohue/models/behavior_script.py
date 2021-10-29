@@ -5,7 +5,7 @@ from .resource import ResourceTypes
 from .script import ScriptDefinition
 
 
-@dataclass(kw_only=True)
+@dataclass
 class BehaviorScript(ScriptDefinition):
     """
     Represent BehaviorScript object as received from the api.

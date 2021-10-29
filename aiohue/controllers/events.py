@@ -4,7 +4,7 @@ import json
 from enum import Enum
 from typing import TYPE_CHECKING, Callable, List, NoReturn, Tuple
 
-from aiohttp.client_exceptions import ClientConnectionError, ClientResponseError
+from aiohttp.client_exceptions import ClientConnectionError
 
 if TYPE_CHECKING:
     from .. import HueBridgeV2
@@ -12,7 +12,6 @@ if TYPE_CHECKING:
 from ..errors import InvalidAPIVersion, InvalidEvent, Unauthorized
 from ..models.clip import CLIPEvent, CLIPEventType, CLIPResource
 from ..models.resource import ResourceTypes
-from aiohttp import ClientError
 
 
 class EventStreamStatus(Enum):
@@ -128,7 +127,7 @@ class EventStream:
                         )
                         self.__parse_message(line)
             except (ClientConnectionError, asyncio.TimeoutError) as err:
-                status = getattr(err, 'status', None)
+                status = getattr(err, "status", None)
                 if status is not None and status == 404:
                     raise InvalidAPIVersion from err
                 if status is not None and status == 403:

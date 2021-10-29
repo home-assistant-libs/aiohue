@@ -7,7 +7,7 @@ from .feature import Position
 from .resource import Resource, ResourceIdentifier, ResourceTypes
 
 
-@dataclass(kw_only=True)
+@dataclass
 class Segment:
     """
     Represent a Segment object as received from the api.
@@ -22,7 +22,7 @@ class Segment:
     start: int
 
 
-@dataclass(kw_only=True)
+@dataclass
 class SegmentReference:
     """
     Represent a SegmentReference object as received from the api.
@@ -36,7 +36,7 @@ class SegmentReference:
     index: int
 
 
-@dataclass(kw_only=True)
+@dataclass
 class SegmentationProperties:
     """
     Represent a SegmentationProperties dict type.
@@ -51,7 +51,7 @@ class SegmentationProperties:
     segments: List[Segment]
 
 
-@dataclass(kw_only=True)
+@dataclass
 class EntertainmentChannelGet:
     """
     Represent a EntertainmentChannel object as received from the api.
@@ -107,7 +107,7 @@ class StreamingProxyMode(Enum):
     MANUAL = "manual"
 
 
-@dataclass(kw_only=True)
+@dataclass
 class StreamingProxy:
     """
     Represent a StreamingProxy object as received from the api.
@@ -121,7 +121,7 @@ class StreamingProxy:
     node: ResourceIdentifier
 
 
-@dataclass(kw_only=True)
+@dataclass
 class ServiceLocation:
     """
     Represent a ServiceLocation object as received from the api.
@@ -133,7 +133,7 @@ class ServiceLocation:
     position: Position
 
 
-@dataclass(kw_only=True)
+@dataclass
 class EntertainmentLocations:
     """
     Represent a EntertainmentLocations object as received from the api.
@@ -159,7 +159,7 @@ class EntertainmentConfigurationAction(Enum):
     STOP = "stop"
 
 
-@dataclass(kw_only=True)
+@dataclass
 class EntertainmentConfiguration(Resource):
     """
     Entertainment Configuration as received from the api.
@@ -169,30 +169,30 @@ class EntertainmentConfiguration(Resource):
     """
 
     # Friendly name of the entertainment configuration (max 32 chars)
-    name: Optional[str]
+    name: Optional[str] = None
     # Defines for which type of application this channel assignment was optimized
-    configuration_type: Optional[EntertainmentConfigurationType]
+    configuration_type: Optional[EntertainmentConfigurationType] = None
     # Read only field reporting if the stream is active or not
-    status: Optional[EntertainmentStatus]
+    status: Optional[EntertainmentStatus] = None
     # who's streaming: Expected value is of a ResourceIdentifier of the type auth_v1
-    active_streamer: Optional[ResourceIdentifier]
+    active_streamer: Optional[ResourceIdentifier] = None
     # the proxy that is in use
-    stream_proxy: Optional[StreamingProxy]
+    stream_proxy: Optional[StreamingProxy] = None
     # Holds the channels. Each channel groups segments of one or different light
-    channels: Optional[List[EntertainmentChannelGet]]
+    channels: Optional[List[EntertainmentChannelGet]] = None
     # Entertertainment services of the lights that are in the zone have locations
-    locations: Optional[List[EntertainmentLocations]]
+    locations: Optional[List[EntertainmentLocations]] = None
     # action: only available on update/put
     # If status is "inactive" -> write start to start streaming.
     # Writing start when it's already active does not change the owership of the streaming.
     # If status is "active" -> write "stop" to end the current streaming.
     # In order to start streaming when other application is already streaming,
     # first write "stop" and then "start"
-    action: Optional[EntertainmentConfigurationAction]
+    action: Optional[EntertainmentConfigurationAction] = None
     type: Optional[ResourceTypes] = ResourceTypes.ENTERTAINMENT
 
 
-@dataclass(kw_only=True)
+@dataclass
 class Entertainment(Resource):
     """
     Represent Entertainment resource as received from the api.
@@ -200,7 +200,7 @@ class Entertainment(Resource):
     clip-api.schema.json#/definitions/EntertainmentGet
     """
 
-    renderer: bool
-    proxy: bool
-    segments: Optional[SegmentationProperties]
+    renderer: Optional[bool] = None
+    proxy: Optional[bool] = None
+    segments: Optional[SegmentationProperties] = None
     type: ResourceTypes = ResourceTypes.ENTERTAINMENT

@@ -5,7 +5,8 @@ from typing import Optional
 
 from .resource import Resource, ResourceTypes
 
-@dataclass(kw_only=True)
+
+@dataclass
 class TemperatureFeature:
     """Represent TemperatureFeature."""
 
@@ -13,7 +14,7 @@ class TemperatureFeature:
     temperature_valid: Optional[bool]
 
 
-@dataclass(kw_only=True)
+@dataclass
 class Temperature(Resource):
     """
     Represent a Temperature resource, a sensor reporting Temperature.
@@ -21,6 +22,6 @@ class Temperature(Resource):
     TODO: CLIP Schema missing for this resource.
     """
 
-    enabled: Optional[bool]
-    temperature: Optional[TemperatureFeature]
+    enabled: Optional[bool] = None
+    temperature: Optional[TemperatureFeature] = None
     type: ResourceTypes = ResourceTypes.TEMPERATURE

@@ -56,6 +56,13 @@ async def main():
         for item in bridge.devices:
             print(item.metadata.name)
 
+        # turn on a light
+        light = bridge.lights.items[0]
+        print("Turning on light", light.name)
+        await bridge.lights.turn_on(light.id)
+        print("Set brightness 100 to light", light.name)
+        await bridge.lights.set_brightness(light.id, 100, 50)
+
         def print_event(event_type, item):
             print()
             print("received event", event_type.value, item)

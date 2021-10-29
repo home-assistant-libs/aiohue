@@ -5,7 +5,6 @@ from enum import Enum
 from typing import Optional, Type
 
 
-
 class ResourceTypes(Enum):
     """
     Type of the supported resources.
@@ -63,7 +62,8 @@ SENSOR_RESOURCE_TYPES = (
     ResourceTypes.ZIGBEE_CONNECTIVITY,
 )
 
-@dataclass(kw_only=True)
+
+@dataclass
 class Resource:
     """
     Represent a Resource object as received from the api.
@@ -75,10 +75,10 @@ class Resource:
 
     id: str  # UUID
     type: ResourceTypes
-    id_v1: Optional[str]
+    id_v1: Optional[str] = None
 
 
-@dataclass(kw_only=True)
+@dataclass
 class ResourceMetadata:
     """
     Represent a ResourceMetadata object as received from the api.
@@ -93,10 +93,10 @@ class ResourceMetadata:
     """
 
     # string representation of the archetype of the resource
-    archetype: Optional[str]
+    archetype: Optional[str] = None
 
 
-@dataclass(kw_only=True)
+@dataclass
 class NamedResourceMetadata(ResourceMetadata):
     """
     Represent a NamedResourceMetadata object as received from the api.
@@ -109,10 +109,10 @@ class NamedResourceMetadata(ResourceMetadata):
     """
 
     #  Human readable name of a resource
-    name: str
+    name: Optional[str] = None
 
 
-@dataclass(kw_only=True)
+@dataclass
 class ResourceIdentifier:
     """
     Represent a ResourceIdentifier object as received from the api.
@@ -123,5 +123,5 @@ class ResourceIdentifier:
     clip-api.schema.json#/definitions/ResourceIdentifierDelete
     """
 
-    rid: Optional[str]  # UUID
-    rtype: Optional[ResourceTypes]
+    rid: Optional[str] = None  # UUID
+    rtype: Optional[ResourceTypes] = None

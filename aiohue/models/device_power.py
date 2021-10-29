@@ -1,7 +1,7 @@
 """Model(s) for device_power resource on HUE bridge."""
 from dataclasses import dataclass
 from enum import Enum
-from typing import Type
+from typing import Optional, Type
 
 from .resource import Resource, ResourceTypes
 
@@ -23,7 +23,7 @@ class BatteryState(Enum):
         return BatteryState.UNKNOWN
 
 
-@dataclass(kw_only=True)
+@dataclass
 class PowerState:
     """
     Represent PowerState as retrieved from api.
@@ -35,7 +35,7 @@ class PowerState:
     battery_state: BatteryState
 
 
-@dataclass(kw_only=True)
+@dataclass
 class DevicePower(Resource):
     """
     Represent a DevicePower resource, a sensor with battery state.
@@ -43,5 +43,5 @@ class DevicePower(Resource):
     clip-api.schema.json#/definitions/TODO
     """
 
-    power_state: PowerState
+    power_state: Optional[PowerState] = None
     type: ResourceTypes = ResourceTypes.DEVICE_POWER

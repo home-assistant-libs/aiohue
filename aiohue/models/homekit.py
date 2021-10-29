@@ -1,7 +1,7 @@
 """Model(s) for homekit resource on HUE bridge."""
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import List
+from typing import List, Optional
 
 from .resource import Resource, ResourceTypes
 
@@ -14,10 +14,12 @@ class HomekitStatus(Enum):
     UNPAIRED = "unpaired"
 
 
-@dataclass(kw_only=True)
+@dataclass
 class HomekitGet(Resource):
     """Represent a Homekit resource object as received from the api."""
 
-    status: HomekitStatus
-    status_values: List[HomekitStatus] = field(default_factory=HomekitStatus.__members__.values)
+    status: Optional[HomekitStatus] = None
+    status_values: List[HomekitStatus] = field(
+        default_factory=HomekitStatus.__members__.values
+    )
     type: ResourceTypes = ResourceTypes.HOMEKIT

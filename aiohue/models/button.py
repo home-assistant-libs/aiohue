@@ -26,7 +26,7 @@ class ButtonEvent(Enum):
         return ButtonEvent.UNKNOWN
 
 
-@dataclass(kw_only=True)
+@dataclass
 class ButtOnFeature:
     """
     Represent ButtonFeature object as received from the api.
@@ -37,7 +37,7 @@ class ButtOnFeature:
     last_event: ButtonEvent
 
 
-@dataclass(kw_only=True)
+@dataclass
 class SwitchInputMetadata:
     """
     Represent SwitchInputMetadata object as received from the api.
@@ -53,7 +53,7 @@ class SwitchInputMetadata:
     control_id: int
 
 
-@dataclass(kw_only=True)
+@dataclass
 class Button(Resource):
     """
     Represent Button object as received from the api.
@@ -61,6 +61,6 @@ class Button(Resource):
     clip-api.schema.json#/definitions/Button
     """
 
-    metadata: Optional[SwitchInputMetadata]
-    button: Optional[ButtOnFeature]
+    metadata: Optional[SwitchInputMetadata] = None
+    button: Optional[ButtOnFeature] = None
     type: ResourceTypes = ResourceTypes.BUTTON

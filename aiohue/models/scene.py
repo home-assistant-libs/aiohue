@@ -16,7 +16,7 @@ from .resource import (
 )
 
 
-@dataclass(kw_only=True)
+@dataclass
 class ActionAction:
     """
     Represent ActionAction object as received from the api.
@@ -27,13 +27,13 @@ class ActionAction:
     clip-api.schema.json#/definitions/ActionActionPut
     """
 
-    on: Optional[OnFeatureBasic]
-    dimming: Optional[DimmingFeatureBasic]
-    color: Optional[ColorFeatureBasic]
-    color_temperature: Optional[ColorTemperatureFeatureBasic]
+    on: Optional[OnFeatureBasic] = None
+    dimming: Optional[DimmingFeatureBasic] = None
+    color: Optional[ColorFeatureBasic] = None
+    color_temperature: Optional[ColorTemperatureFeatureBasic] = None
 
 
-@dataclass(kw_only=True)
+@dataclass
 class Action:
     """
     Represent Action object as received from the api.
@@ -47,7 +47,7 @@ class Action:
     action: ActionAction
 
 
-@dataclass(kw_only=True)
+@dataclass
 class SceneMetadata:
     """
     Represent SceneMetadata object as received from the api.
@@ -61,7 +61,7 @@ class SceneMetadata:
     image: Optional[ResourceIdentifier]
 
 
-@dataclass(kw_only=True)
+@dataclass
 class SceneService(Resource):
     """
     Represent SceneService object as received from the api.
@@ -71,11 +71,11 @@ class SceneService(Resource):
     clip-api.schema.json#/definitions/SceneServicePut
     """
 
-    actions: Optional[List[Action]]
-    recall: Optional[RecallFeature]  # used only on update/set
+    actions: Optional[List[Action]] = None
+    recall: Optional[RecallFeature] = None  # used only on update/set
 
 
-@dataclass(kw_only=True)
+@dataclass
 class Scene(SceneService):
     """
     Represent Scene object as received from the api.
@@ -86,7 +86,7 @@ class Scene(SceneService):
     clip-api.schema.json#/definitions/ScenePut
     """
 
-    group: Optional[ResourceIdentifier]
-    metadata: Optional[SceneMetadata]
-    speed: Optional[float] # optional transition speed
+    group: Optional[ResourceIdentifier] = None
+    metadata: Optional[SceneMetadata] = None
+    speed: Optional[float] = None  # optional transition speed
     type: ResourceTypes = ResourceTypes.SCENE

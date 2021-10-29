@@ -69,7 +69,7 @@ class LightArchetypes(Enum):
         return LightArchetypes.UNKNOWN
 
 
-@dataclass(kw_only=True)
+@dataclass
 class LightMetaData(NamedResourceMetadata):
     """
     Represent LightMetaData object as received from the api.
@@ -92,7 +92,7 @@ class LightModeValues(Enum):
     STREAMING = "streaming"
 
 
-@dataclass(kw_only=True)
+@dataclass
 class Light(Resource):
     """
     Represent a Light object as retrieved from the api.
@@ -101,16 +101,16 @@ class Light(Resource):
     clip-api.schema.json#/definitions/LightPut
     """
 
-    metadata: Optional[LightMetaData]
-    on: Optional[OnFeature]
-    mode: Optional[LightModeValues]
-    alert: Optional[AlertFeature]
-    on: Optional[OnFeature]
-    dimming: Optional[DimmingFeature]
-    color_temperature: Optional[ColorTemperatureFeature]
-    color: Optional[ColorFeature]
-    dynamics: Optional[DynamicsFeature]
-    metadata: Optional[LightMetaData]
+    metadata: Optional[LightMetaData] = None
+    on: Optional[OnFeature] = None
+    mode: Optional[LightModeValues] = None
+    alert: Optional[AlertFeature] = None
+    on: Optional[OnFeature] = None
+    dimming: Optional[DimmingFeature] = None
+    color_temperature: Optional[ColorTemperatureFeature] = None
+    color: Optional[ColorFeature] = None
+    dynamics: Optional[DynamicsFeature] = None
+    metadata: Optional[LightMetaData] = None
     type: ResourceTypes = ResourceTypes.LIGHT
 
     @property

@@ -23,6 +23,7 @@ class InvalidEvent(AiohueException):
 class InvalidAPIVersion(AiohueException):
     """Raised when we're trying to connect to an unsupported bridge version."""
 
+
 ERRORS = {1: Unauthorized, 101: LinkButtonNotPressed}
 
 

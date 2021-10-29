@@ -58,7 +58,7 @@ class DeviceArchetypes(Enum):
         return DeviceArchetypes.UNKNOWN_ARCHETYPE
 
 
-@dataclass(kw_only=True)
+@dataclass
 class DeviceProductData:
     """
     Represent a DeviceProductData object as received from the api.
@@ -72,10 +72,10 @@ class DeviceProductData:
     product_archetype: DeviceArchetypes
     certified: bool
     software_version: str
-    product_id: Optional[str]  # missing in output from bridge ?
+    product_id: Optional[str] = None  # missing in output from bridge ?
 
 
-@dataclass(kw_only=True)
+@dataclass
 class DeviceMetaData(NamedResourceMetadata):
     """
     Represent DeviceMetaData object as received from the api.
@@ -83,10 +83,10 @@ class DeviceMetaData(NamedResourceMetadata):
     clip-api.schema.json#/definitions/DeviceMetaData
     """
 
-    archetype: Optional[DeviceArchetypes]
+    archetype: Optional[DeviceArchetypes] = None
 
 
-@dataclass(kw_only=True)
+@dataclass
 class Device(Group):
     """
     Represent a Device object as received from the api.
@@ -95,7 +95,7 @@ class Device(Group):
     clip-api.schema.json#/definitions/DevicePut
     """
 
-    product_data: Optional[DeviceProductData]
-    metadata: Optional[DeviceMetaData]  # optional in put
-    creation_time: Optional[str]
+    product_data: Optional[DeviceProductData] = None
+    metadata: Optional[DeviceMetaData] = None  # optional in put
+    creation_time: Optional[str] = None
     type: ResourceTypes = ResourceTypes.DEVICE

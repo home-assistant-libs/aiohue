@@ -5,15 +5,15 @@ from typing import Optional
 from .resource import Resource, ResourceTypes
 
 
-@dataclass(kw_only=True)
+@dataclass
 class LightLevelFeature:
     """Represent LightLevelFeature."""
 
-    light_level: Optional[int]
+    light_level: Optional[int] = None
     light_level_valid: bool = True
 
 
-@dataclass(kw_only=True)
+@dataclass
 class LightLevel(Resource):
     """
     Represent a LightLevel resource, a sensor reporting Illuminance in Lux.
@@ -21,5 +21,5 @@ class LightLevel(Resource):
     # TODO: CLIP Schema missing for this resource.
     """
 
-    light: Optional[LightLevelFeature]
+    light: Optional[LightLevelFeature] = None
     type: ResourceTypes = ResourceTypes.LIGHT_LEVEL

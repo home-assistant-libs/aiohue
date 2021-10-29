@@ -1,6 +1,7 @@
 """Utils for aiohue."""
+from enum import Enum
 import logging
-from dataclasses import fields, is_dataclass, dataclass
+from dataclasses import asdict, fields, is_dataclass, dataclass
 
 
 def normalize_bridge_id(bridge_id: str):
@@ -37,3 +38,21 @@ def update_dataclass(org_obj: dataclass, new_obj: dataclass):
             update_dataclass(getattr(org_obj, f.name), new_val)
         else:
             setattr(org_obj, f.name, new_val)
+
+
+def to_dict(obj_in: dataclass, skip_none: bool = True) -> dict:
+    """Convert dataclass instance to dict, optionally skip None values."""
+    dict_obj = asdict(
+        obj_in, dict_factory=lambda x: {k: v for (k, v) in x if v is not None}
+    )
+
+    def _clean_dict(_dict: dict):
+        # convert unserializable types
+        for key, value in _dict.items():
+            if isinstance(value, Enum):
+                _dict[key] = value.value
+            elif isinstance(value, dict):
+                _clean_dict(value)
+
+    _clean_dict(dict_obj)
+    return dict_obj

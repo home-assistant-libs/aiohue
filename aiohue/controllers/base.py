@@ -1,8 +1,9 @@
 """Base controller for HUE resources as retrieved from the Hue bridge."""
 
+from dataclasses import asdict
 from typing import TYPE_CHECKING, Callable, Dict, Generic, Iterator, List, Tuple
 
-from ..util import update_dataclass
+from ..util import to_dict, update_dataclass
 
 from ..models.clip import CLIPResource, parse_clip_resource
 from ..models.resource import ResourceTypes
@@ -79,6 +80,18 @@ class BaseResourcesController(Generic[CLIPResource]):
         """Get item by it's legacy V1 id."""
         return next((item.v1_id == id for item in self._items.values()), None)
 
+    async def update(self, id: str, obj_in: CLIPResource) -> None:
+        """
+        Update HUE resource with PUT command.
+
+        Provide instance of object's class with only the changed key set.
+        Note that not all resources allow updating/setting of data.
+        """
+        endpoint = f"clip/v2/resource/{self.item_type.value}/{id}"
+        # create a clean dict with only the changed keys set.
+        data = to_dict(obj_in)
+        await self.bridge.request("put", endpoint, json=data)
+
     def __getitem__(self, id: str) -> CLIPResource:
         """Get item by id."""
         return self._items[str(id)]
@@ -116,7 +129,9 @@ class BaseResourcesController(Generic[CLIPResource]):
 class GroupedControllerBase(Generic[CLIPResource]):
     """Convenience controller which combines items from multiple resources."""
 
-    def __init__(self, bridge: "HueBridgeV2", resources: List[BaseResourcesController]) -> None:
+    def __init__(
+        self, bridge: "HueBridgeV2", resources: List[BaseResourcesController]
+    ) -> None:
         """Initialize instance."""
         self._resources = resources
         self.bridge = bridge

@@ -98,7 +98,7 @@ def parse_clip_resource(obj_in: dict) -> CLIPResource:
     )
 
 
-@dataclass(kw_only=True)
+@dataclass
 class CLIPEvent:
     """CLIP Event message as emitted by the EventStream."""
 
@@ -127,7 +127,7 @@ class CLIPEvent:
         )
 
 
-@dataclass(kw_only=True)
+@dataclass
 class Error:
     """
     Error object which is returned when at least one error occured on a API call.
@@ -139,7 +139,7 @@ class Error:
     description: str
 
 
-@dataclass(kw_only=True)
+@dataclass
 class ClipMessage:
     """
     Basic message body for all return messages on GET, data contains full expanded resource.
@@ -151,7 +151,7 @@ class ClipMessage:
     data: Any
 
 
-@dataclass(kw_only=True)
+@dataclass
 class ClipMessageBehaviorInstance(ClipMessage):
     """
     CLIP Response when requesting behavior_instance resource.
@@ -164,7 +164,7 @@ class ClipMessageBehaviorInstance(ClipMessage):
     data: List[BehaviorInstance]
 
 
-@dataclass(kw_only=True)
+@dataclass
 class ClipMessageBehaviorScript(ClipMessage):
     """
     CLIP Response when requesting behavior_script resource.
@@ -177,7 +177,7 @@ class ClipMessageBehaviorScript(ClipMessage):
     data: List[BehaviorScript]
 
 
-@dataclass(kw_only=True)
+@dataclass
 class ClipMessageBridge(ClipMessage):
     """
     CLIP Response when requesting bridge resource.
@@ -190,7 +190,7 @@ class ClipMessageBridge(ClipMessage):
     data: List[Bridge]
 
 
-@dataclass(kw_only=True)
+@dataclass
 class ClipMessageBridgeHome(ClipMessage):
     """
     CLIP Response when requesting bridge_home resource.
@@ -203,7 +203,7 @@ class ClipMessageBridgeHome(ClipMessage):
     data: List[BridgeHome]
 
 
-@dataclass(kw_only=True)
+@dataclass
 class ClipMessageButton(ClipMessage):
     """
     CLIP Response when requesting button resource.
@@ -216,7 +216,7 @@ class ClipMessageButton(ClipMessage):
     data: List[Button]
 
 
-@dataclass(kw_only=True)
+@dataclass
 class ClipMessageDependerGet(ClipMessage):
     """
     CLIP Response when requesting depender resource.
@@ -229,7 +229,7 @@ class ClipMessageDependerGet(ClipMessage):
     data: List[DependerGet]
 
 
-@dataclass(kw_only=True)
+@dataclass
 class ClipMessageDevice(ClipMessage):
     """
     CLIP Response when requesting device resource.
@@ -242,7 +242,7 @@ class ClipMessageDevice(ClipMessage):
     data: List[Device]
 
 
-@dataclass(kw_only=True)
+@dataclass
 class ClipMessageEntertainmentConfiguration(ClipMessage):
     """
     CLIP Response when requesting entertainment_configuration resource.
@@ -255,7 +255,7 @@ class ClipMessageEntertainmentConfiguration(ClipMessage):
     data: List[EntertainmentConfiguration]
 
 
-@dataclass(kw_only=True)
+@dataclass
 class ClipMessageEntertainment(ClipMessage):
     """
     CLIP Response when requesting entertainment resource.
@@ -268,7 +268,7 @@ class ClipMessageEntertainment(ClipMessage):
     data: List[Entertainment]
 
 
-@dataclass(kw_only=True)
+@dataclass
 class ClipMessageGeofenceClient(ClipMessage):
     """
     CLIP Response when requesting geofence_client resource.
@@ -281,7 +281,7 @@ class ClipMessageGeofenceClient(ClipMessage):
     data: List[GeofenceClient]
 
 
-@dataclass(kw_only=True)
+@dataclass
 class ClipMessageGroupedLight(ClipMessage):
     """
     CLIP Response when requesting grouped_light resource.
@@ -294,7 +294,7 @@ class ClipMessageGroupedLight(ClipMessage):
     data: List[GroupedLight]
 
 
-@dataclass(kw_only=True)
+@dataclass
 class ClipMessageLight(ClipMessage):
     """
     CLIP Response when requesting light resource.
@@ -307,7 +307,7 @@ class ClipMessageLight(ClipMessage):
     data: List[Light]
 
 
-@dataclass(kw_only=True)
+@dataclass
 class ClipMessageMotion(ClipMessage):
     """
     CLIP Response when requesting motion resource.
@@ -320,7 +320,7 @@ class ClipMessageMotion(ClipMessage):
     data: List[Motion]
 
 
-@dataclass(kw_only=True)
+@dataclass
 class ClipMessageResource(ClipMessage):
     """
     CLIP Response when requesting resource endpoint.
@@ -335,7 +335,7 @@ class ClipMessageResource(ClipMessage):
     data: List[Resource]
 
 
-@dataclass(kw_only=True)
+@dataclass
 class ClipMessageRoom(ClipMessage):
     """
     CLIP Response when requesting room resource.
@@ -348,7 +348,7 @@ class ClipMessageRoom(ClipMessage):
     data: List[Room]
 
 
-@dataclass(kw_only=True)
+@dataclass
 class ClipMessageScene(ClipMessage):
     """
     CLIP Response when requesting scene resource.
@@ -361,7 +361,7 @@ class ClipMessageScene(ClipMessage):
     data: List[Scene]
 
 
-@dataclass(kw_only=True)
+@dataclass
 class ClipMessageZigbeeConnectivity(ClipMessage):
     """
     CLIP Response when requesting zigbee_connectivity resource.
@@ -374,7 +374,7 @@ class ClipMessageZigbeeConnectivity(ClipMessage):
     data: List[ZigbeeConnectivity]
 
 
-@dataclass(kw_only=True)
+@dataclass
 class ClipMessageZone(ClipMessage):
     """
     CLIP Response when requesting zone resource.
@@ -387,7 +387,7 @@ class ClipMessageZone(ClipMessage):
     data: List[Zone]
 
 
-@dataclass(kw_only=True)
+@dataclass
 class ClipMessageZone(ClipMessage):
     """
     CLIP Response when requesting zone resource.

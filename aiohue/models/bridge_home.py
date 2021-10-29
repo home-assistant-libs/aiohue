@@ -5,7 +5,7 @@ from .resource import ResourceTypes
 from .group import Group
 
 
-@dataclass(kw_only=True)
+@dataclass
 class BridgeHome(Group):
     """
     Represent BridgeHome object as retrieved from the api.

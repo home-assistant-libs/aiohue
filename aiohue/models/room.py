@@ -60,7 +60,7 @@ class RoomArchetype(Enum):
         return RoomArchetype.OTHER
 
 
-@dataclass(kw_only=True)
+@dataclass
 class RoomMetadata(NamedResourceMetadata):
     """
     Represent RoomMetadata object as received from the api.
@@ -75,7 +75,7 @@ class RoomMetadata(NamedResourceMetadata):
     archetype: RoomArchetype
 
 
-@dataclass(kw_only=True)
+@dataclass
 class Room(Group):
     """
     Represent Room object as received from the api.
@@ -89,7 +89,7 @@ class Room(Group):
     clip-api.schema.json#/definitions/RoomPut
     """
 
-    metadata: Optional[RoomMetadata]  # required in post/get, optional in put
+    metadata: Optional[RoomMetadata] = None  # required in post/get, optional in put
     type: ResourceTypes = ResourceTypes.ROOM
 
     @property

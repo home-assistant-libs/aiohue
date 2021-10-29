@@ -5,7 +5,7 @@ from enum import Enum
 from typing import List, Optional, Type
 
 
-@dataclass(kw_only=True)
+@dataclass
 class OnFeatureBasic:
     """
     Represent OnFeatureBasic object as received from the api.
@@ -16,7 +16,7 @@ class OnFeatureBasic:
     on: bool
 
 
-@dataclass(kw_only=True)
+@dataclass
 class OnFeature(OnFeatureBasic):
     """
     Represent OnFeature object, inherited from OnFeatureBasic.
@@ -25,7 +25,7 @@ class OnFeature(OnFeatureBasic):
     """
 
 
-@dataclass(kw_only=True)
+@dataclass
 class DimmingFeatureBasic:
     """
     Represent DimmingFeatureBasic object as received from the api.
@@ -37,7 +37,7 @@ class DimmingFeatureBasic:
     brightness: float
 
 
-@dataclass(kw_only=True)
+@dataclass
 class DimmingFeature(DimmingFeatureBasic):
     """
     Represent DimmingFeature object, inherits from DimmingFeatureBasic.
@@ -72,7 +72,7 @@ class AlertFeatureAction(Enum):
         return AlertFeatureAction.UNKNOWN
 
 
-@dataclass(kw_only=True)
+@dataclass
 class AlertFeature:
     """Represent AlertFeature object as received from the api."""
 
@@ -117,7 +117,7 @@ class GamutType(Enum):
     OTHER = "other"
 
 
-@dataclass(kw_only=True)
+@dataclass
 class ColorFeatureBasic:
     """
     Represent ColorFeatureBasic object as received from the api.
@@ -128,7 +128,7 @@ class ColorFeatureBasic:
     xy: ColorPoint
 
 
-@dataclass(kw_only=True)
+@dataclass
 class ColorFeature(ColorFeatureBasic):
     """
     Represent ColorFeature object as received from the api.
@@ -137,8 +137,8 @@ class ColorFeature(ColorFeatureBasic):
     clip-api.schema.json#/definitions/ColorFeature
     """
 
-    gamut_type: Optional[GamutType]
-    gamut: Optional[ColorFeatureGamut]
+    gamut_type: Optional[GamutType] = None
+    gamut: Optional[ColorFeatureGamut] = None
 
 
 @dataclass
@@ -149,7 +149,7 @@ class MirekSchema:
     mirek_minimum: int = 500
 
 
-@dataclass(kw_only=True)
+@dataclass
 class ColorTemperatureFeatureBasic:
     """
     Represent ColorTemperatureFeatureBasic object as received from the api.
@@ -164,7 +164,7 @@ class ColorTemperatureFeatureBasic:
     mirek_valid: Optional[bool] = False
 
 
-@dataclass(kw_only=True)
+@dataclass
 class ColorTemperatureFeature(ColorTemperatureFeatureBasic):
     """
     Represent ColorTemperatureFeature object, inherited from ColorTemperatureFeatureBasic.
@@ -186,7 +186,7 @@ class DynamicsFeatureStatus(Enum):
         return DynamicsFeatureStatus.UNKNOWN
 
 
-@dataclass(kw_only=True)
+@dataclass
 class DynamicsFeature:
     """Represent DynamicsFeature object as received from the api."""
 
@@ -194,7 +194,7 @@ class DynamicsFeature:
     status_values: List[DynamicsFeatureStatus] = field(default_factory=list)
     # Duration of a light transition in ms. Accuracy is in 100ms steps.
     # minimal value 100, maximum 6000000
-    duration: Optional[int]  # only sent on update/set
+    duration: Optional[int] = None  # only sent on update/set
 
 
 class RecallAction(Enum):
@@ -204,7 +204,7 @@ class RecallAction(Enum):
     DYNAMIC_PALETTE = "dynamic_palette"
 
 
-@dataclass(kw_only=True)
+@dataclass
 class RecallFeature:
     """
     Properties to send when updating/setting RecallFeature on the api.
@@ -212,9 +212,9 @@ class RecallFeature:
     clip-api.schema.json#/definitions/RecallFeature
     """
 
-    action: Optional[RecallAction]
-    status: Optional[str]
+    action: Optional[RecallAction] = None
+    status: Optional[str] = None
     # Duration of transition in ms. Accuracy is in 100ms steps.
     # minimal value 100, maximum 6000000
-    duration: Optional[int]
-    dimming: Optional[DimmingFeatureBasic]
+    duration: Optional[int] = None
+    dimming: Optional[DimmingFeatureBasic] = None

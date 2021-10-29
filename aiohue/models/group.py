@@ -6,7 +6,7 @@ from typing import List, Optional, Set
 from .resource import SENSOR_RESOURCE_TYPES, Resource, ResourceIdentifier, ResourceTypes
 
 
-@dataclass(kw_only=True)
+@dataclass
 class Group(Resource):
     """
     Supertype of all groups grouping devices or services.
@@ -14,8 +14,12 @@ class Group(Resource):
     clip-api.schema.json#/definitions/Group
     """
 
-    children: Optional[List[ResourceIdentifier]]  # only available in get response
-    services: Optional[List[ResourceIdentifier]]  # only available in get response
+    children: Optional[
+        List[ResourceIdentifier]
+    ] = None  # only available in get response
+    services: Optional[
+        List[ResourceIdentifier]
+    ] = None  # only available in get response
     # grouped_services references all services aggregating control and
     # state of services in the group. This includes all services grouped
     # in the group hierarchy given by child relation. This includes all services
@@ -23,7 +27,7 @@ class Group(Resource):
     # Aggregation is per service type, ie every service type which can be grouped
     # has a corresponding definition of grouped type.
     # Supported types: 'light'
-    grouped_services: Optional[List[ResourceIdentifier]]
+    grouped_services: Optional[List[ResourceIdentifier]] = None
 
     @property
     def lights(self) -> Set[str]:

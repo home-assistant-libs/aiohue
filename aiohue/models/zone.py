@@ -7,7 +7,7 @@ from .resource import ResourceTypes
 from .room import RoomMetadata
 
 
-@dataclass(kw_only=True)
+@dataclass
 class Zone(Group):
     """
     Represent Zone object as received from the api.
@@ -20,7 +20,7 @@ class Zone(Group):
     clip-api.schema.json#/definitions/Zone
     """
 
-    metadata: Optional[RoomMetadata]
+    metadata: Optional[RoomMetadata] = None
     type: ResourceTypes = ResourceTypes.ZONE
 
     @property
@@ -32,5 +32,3 @@ class Zone(Group):
             (x for x in self.grouped_services if x.rid == ResourceTypes.GROUPED_LIGHT),
             None,
         )
-
-

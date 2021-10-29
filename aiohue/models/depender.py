@@ -1,6 +1,6 @@
 """Dependency Schemas used by (script) Hue resources."""
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from enum import Enum
 from typing import List, Optional
 
@@ -23,7 +23,7 @@ class DependencyLevel(Enum):
     CRITICAL = "critical"
 
 
-@dataclass(kw_only=True)
+@dataclass
 class DependencyGet:
     """
     Dependency object as received from the api.
@@ -35,10 +35,10 @@ class DependencyGet:
 
     target: ResourceIdentifier  # Id of the dependency resource (target).
     level: DependencyLevel
-    type: Optional[str]
+    type: Optional[str] = None
 
 
-@dataclass(kw_only=True)
+@dataclass
 class ResourceDependeeGet(DependencyGet):
     """
     ResourceDependee object as received from the api.
@@ -49,7 +49,7 @@ class ResourceDependeeGet(DependencyGet):
     """
 
 
-@dataclass(kw_only=True)
+@dataclass
 class ResourceDependerGet(DependencyGet):
     """
     ResourceDepender object as received from the api.
@@ -60,7 +60,7 @@ class ResourceDependerGet(DependencyGet):
     """
 
 
-@dataclass(kw_only=True)
+@dataclass
 class DependerGet(Resource):
     """
     Depender object as received from the api.
@@ -70,5 +70,5 @@ class DependerGet(Resource):
     clip-api.schema.json#/definitions/DependerGet
     """
 
-    dependers: List[ResourceDependerGet]
+    dependers: List[ResourceDependerGet] = field(default_factory=list)
     type: ResourceTypes = ResourceTypes.DEPENDER

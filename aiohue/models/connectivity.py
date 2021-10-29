@@ -18,7 +18,7 @@ class ConnectivityServiceStatus(Enum):
     CONNECTIVITY_ISSUE = "connectivity_issue"
 
 
-@dataclass(kw_only=True)
+@dataclass
 class ConnectivityService(Resource):
     """
     Represent ConnectivityService object as received from the api.
@@ -26,11 +26,11 @@ class ConnectivityService(Resource):
     clip-api.schema.json#/definitions/ConnectivityService
     """
 
-    status: Optional[ConnectivityServiceStatus]  # required in get
-    type: Optional[ResourceTypes]
+    status: Optional[ConnectivityServiceStatus] = None  # required in get
+    type: Optional[ResourceTypes] = None
 
 
-@dataclass(kw_only=True)
+@dataclass
 class ZigbeeConnectivity(ConnectivityService):
     """
     Represent ZigbeeConnectivity object as received from the api.
@@ -38,5 +38,5 @@ class ZigbeeConnectivity(ConnectivityService):
     clip-api.schema.json#/definitions/ZigbeeConnectivity
     """
 
-    mac_address: Optional[str]  # can not be set
+    mac_address: Optional[str] = None  # can not be set
     type: ResourceTypes = ResourceTypes.ZIGBEE_CONNECTIVITY

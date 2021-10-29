@@ -6,7 +6,7 @@ from .feature import AlertFeature, OnFeatureBasic
 from .resource import Resource, ResourceTypes
 
 
-@dataclass(kw_only=True)
+@dataclass
 class GroupedLight(Resource):
     """
     Represent a GroupedLight object as received from the api.
@@ -16,7 +16,6 @@ class GroupedLight(Resource):
     clip-api.schema.json#/definitions/GroupedLightPut
     """
 
-    on: Optional[OnFeatureBasic]
-    alert: Optional[AlertFeature]
+    on: Optional[OnFeatureBasic] = None
+    alert: Optional[AlertFeature] = None
     type: ResourceTypes = ResourceTypes.GROUPED_LIGHT
-
