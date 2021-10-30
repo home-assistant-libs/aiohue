@@ -1,6 +1,7 @@
 """Model(s) for Scene resource on HUE bridge."""
 from dataclasses import dataclass
-from types import NoneType
+
+
 from typing import List, Optional
 
 from .feature import (
@@ -34,21 +35,6 @@ class ActionAction:
     color: Optional[ColorFeatureBasic] = None
     color_temperature: Optional[ColorTemperatureFeatureBasic] = None
 
-    def __post_init__(self) -> None:
-        """Make sure that data has valid type (allows creating from dict)."""
-        if not isinstance(self.on, (NoneType, OnFeatureBasic)):
-            self.on = OnFeatureBasic(**self.on)
-        if not isinstance(self.dimming, (NoneType, DimmingFeatureBasic)):
-            self.dimming = DimmingFeatureBasic(**self.dimming)
-        if not isinstance(
-            self.color_temperature, (NoneType, ColorTemperatureFeatureBasic)
-        ):
-            self.color_temperature = ColorTemperatureFeatureBasic(
-                **self.color_temperature
-            )
-        if not isinstance(self.color, (NoneType, ColorFeatureBasic)):
-            self.color = ColorFeatureBasic(**self.color)
-
 
 @dataclass
 class Action:
@@ -62,13 +48,6 @@ class Action:
 
     target: ResourceIdentifier
     action: ActionAction
-
-    def __post_init__(self) -> None:
-        """Make sure that data has valid type (allows creating from dict)."""
-        if not isinstance(self.target, ResourceIdentifier):
-            self.target = ResourceIdentifier(**self.target)
-        if not isinstance(self.action, ActionAction):
-            self.action = ActionAction(**self.action)
 
 
 @dataclass
@@ -84,11 +63,6 @@ class SceneMetadata:
     name: str
     image: Optional[ResourceIdentifier] = None
 
-    def __post_init__(self) -> None:
-        """Make sure that data has valid type (allows creating from dict)."""
-        if not isinstance(self.image, (NoneType, ResourceIdentifier)):
-            self.image = ResourceIdentifier(**self.image)
-
 
 @dataclass
 class SceneService(Resource):
@@ -102,16 +76,6 @@ class SceneService(Resource):
 
     actions: Optional[List[Action]] = None
     recall: Optional[RecallFeature] = None  # used only on update/set
-
-    def __post_init__(self) -> None:
-        """Make sure that data has valid type (allows creating from dict)."""
-        super().__post_init__()
-        if self.actions and self.recall:
-            raise ValueError("actions and recall can not be set at the same time")
-        if not isinstance(self.recall, (NoneType, RecallFeature)):
-            self.recall = RecallFeature(**self.recall)
-        if self.actions and not isinstance(self.actions[0], Action):
-            self.actions = [Action(**x) for x in self.actions]
 
 
 @dataclass
@@ -131,13 +95,3 @@ class Scene(SceneService):
     speed: Optional[float] = None
     palette: Optional[PaletteFeature] = None
     type: ResourceTypes = ResourceTypes.SCENE
-
-    def __post_init__(self) -> None:
-        """Make sure that data has valid type (allows creating from dict)."""
-        super().__post_init__()
-        if not isinstance(self.group, (NoneType, ResourceIdentifier)):
-            self.group = ResourceIdentifier(**self.group)
-        if not isinstance(self.metadata, (NoneType, SceneMetadata)):
-            self.metadata = SceneMetadata(**self.metadata)
-        if not isinstance(self.palette, (NoneType, PaletteFeature)):
-            self.palette = PaletteFeature(**self.palette)

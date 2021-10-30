@@ -1,7 +1,8 @@
 """Model(s) for Light resource on HUE bridge."""
 from dataclasses import dataclass
 from enum import Enum
-from types import NoneType
+
+
 from typing import Any, List, Optional, Type
 
 from .feature import (
@@ -81,11 +82,6 @@ class LightMetaData(NamedResourceMetadata):
 
     archetype: Optional[LightArchetypes]
 
-    def __post_init__(self) -> None:
-        """Make sure that data has valid type (allows creating from dict)."""
-        if not isinstance(self.archetype, (NoneType, LightArchetypes)):
-            self.archetype = LightArchetypes(self.archetype)
-
 
 class LightModeValues(Enum):
     """
@@ -130,26 +126,6 @@ class Light(Resource):
     gradient: Optional[Gradient] = None
     type: ResourceTypes = ResourceTypes.LIGHT
 
-    def __post_init__(self) -> None:
-        """Make sure that data has valid type (allows creating from dict)."""
-        super().__post_init__()
-        if not isinstance(self.metadata, (NoneType, LightMetaData)):
-            self.metadata = LightMetaData(**self.metadata)
-        if not isinstance(self.on, (NoneType, OnFeature)):
-            self.on = OnFeature(**self.on)
-        if not isinstance(self.mode, (NoneType, LightModeValues)):
-            self.mode = LightModeValues(self.mode)
-        if not isinstance(self.alert, (NoneType, AlertFeature)):
-            self.alert = AlertFeature(**self.alert)
-        if not isinstance(self.dimming, (NoneType, DimmingFeature)):
-            self.dimming = DimmingFeature(**self.dimming)
-        if not isinstance(self.color_temperature, (NoneType, ColorTemperatureFeature)):
-            self.color_temperature = ColorTemperatureFeature(**self.color_temperature)
-        if not isinstance(self.color, (NoneType, ColorFeature)):
-            self.color = ColorFeature(**self.color)
-        if not isinstance(self.dynamics, (NoneType, DynamicsFeature)):
-            self.dynamics = DynamicsFeature(**self.dynamics)
-
     @property
     def supports_dimming(self) -> bool:
         """Return if this light supports brightness control."""
@@ -184,7 +160,7 @@ class Light(Resource):
         """Return current brightness of light."""
         if self.dimming is not None:
             return self.dimming.brightness
-        return 100.0
+        return 100.0 if self.is_on else 0.0
 
     @property
     def is_dynamic(self) -> bool:
@@ -192,3 +168,8 @@ class Light(Resource):
         if self.dynamics is not None:
             return self.dynamics.status == DynamicsFeatureStatus.DYNAMIC_PALETTE
         return False
+
+    @property
+    def entertainment_active(self) -> bool:
+        """Return bool if this light is currently streaming in Entertainment mode."""
+        return self.mode == LightModeValues.STREAMING

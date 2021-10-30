@@ -1,7 +1,8 @@
 """Model(s) for Room resource on HUE bridge."""
 from dataclasses import dataclass
 from enum import Enum
-from types import NoneType
+
+
 from typing import Optional, Set, Type
 
 from .group import Group
@@ -75,11 +76,6 @@ class RoomMetadata(NamedResourceMetadata):
 
     archetype: RoomArchetype
 
-    def __post_init__(self) -> None:
-        """Make sure that data has valid type (allows creating from dict)."""
-        if not isinstance(self.archetype, RoomArchetype):
-            self.archetype = RoomArchetype(self.archetype)
-
 
 @dataclass
 class Room(Group):
@@ -97,12 +93,6 @@ class Room(Group):
 
     metadata: Optional[RoomMetadata] = None  # required in post/get, optional in put
     type: ResourceTypes = ResourceTypes.ROOM
-
-    def __post_init__(self) -> None:
-        """Make sure that data has valid type (allows creating from dict)."""
-        super().__post_init__()
-        if not isinstance(self.metadata, (NoneType, RoomMetadata)):
-            self.metadata = RoomMetadata(**self.metadata)
 
     @property
     def devices(self) -> Set[str]:

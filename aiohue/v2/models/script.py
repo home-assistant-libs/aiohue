@@ -1,6 +1,7 @@
 """Model(s) for script resource on HUE bridge."""
 from dataclasses import dataclass
-from types import NoneType
+
+
 from typing import List, Optional
 
 from .depender import ResourceDependeeGet
@@ -81,11 +82,3 @@ class ScriptInstance(Resource):
     status_data: Optional[dict] = None
     metadata: Optional[InstanceMetadata] = None
     type: Optional[ResourceTypes] = None
-
-    def __post_init__(self) -> None:
-        """Make sure that data has valid type (allows creating from dict)."""
-        super().__post_init__()
-        if not isinstance(self.metadata, (NoneType, InstanceMetadata)):
-            self.metadata = InstanceMetadata(**self.metadata)
-        if self.dependees and not isinstance(self.dependees[0], ResourceDependeeGet):
-            self.dependees = [ResourceDependeeGet(x) for x in self.dependees]

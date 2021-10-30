@@ -2,7 +2,16 @@
 from enum import Enum
 import logging
 from dataclasses import asdict, fields, is_dataclass, dataclass
+from typing import Any, Type, Union, get_args, get_origin
 from aiohttp import ClientSession
+from datetime import datetime
+
+try:
+    # python 3.10
+    from types import NoneType
+except:  # noqa
+    # older python version
+    NoneType = type(None)
 
 
 async def is_v2_bridge(host: str, websession: ClientSession | None = None) -> bool:
@@ -58,7 +67,7 @@ def update_dataclass(org_obj: dataclass, new_obj: dataclass):
             setattr(org_obj, f.name, new_val)
 
 
-def to_dict(obj_in: dataclass, skip_none: bool = True) -> dict:
+def dataclass_to_dict(obj_in: dataclass, skip_none: bool = True) -> dict:
     """Convert dataclass instance to dict, optionally skip None values."""
     if skip_none:
         dict_obj = asdict(
@@ -80,3 +89,69 @@ def to_dict(obj_in: dataclass, skip_none: bool = True) -> dict:
         return final
 
     return _clean_dict(dict_obj)
+
+
+def parse_utc_timestamp(datetimestr: str):
+    """Parse datetime from string."""
+    return datetime.fromisoformat(datetimestr.replace("Z", "+00:00"))
+
+
+def dataclass_from_dict(cls: dataclass, dict_obj: dict, strict=False):
+    """
+    Create (instance of) a dataclass by providing a dict with values.
+
+    Including support for nested structures and common type conversions.
+    If strict mode enabled, any additional keys in the provided dict will result in a KeyError.
+    """
+    if strict:
+        extra_keys = dict_obj.keys() - set([f.name for f in fields(cls)])
+        if extra_keys:
+            raise KeyError("Extra keys not allowed: %s" % ",".join(extra_keys))
+
+    def _get_val(name: str, value: Any, value_type: Type):
+        if value is None and value_type is NoneType:
+            return None
+        if is_dataclass(value_type) and isinstance(value, dict):
+            return dataclass_from_dict(value_type, value)
+        origin = get_origin(value_type)
+        if origin is list:
+            return [_get_val(name, subval, get_args(value_type)[0]) for subval in value]
+        if origin is Union:
+            # try all possible types
+            sub_value_types = get_args(value_type)
+            for sub_arg_type in sub_value_types:
+                if value is NoneType and sub_arg_type is NoneType:
+                    return value
+                # try them all until one succeeds
+                try:
+                    return _get_val(name, value, sub_arg_type)
+                except (KeyError, TypeError, ValueError):
+                    pass
+            raise TypeError(
+                f"Value {value} of type {type(value)} is invalid for {name}, "
+                f"expected value of type {value_type}"
+            )
+
+        if value_type is Any:
+            return value
+        if value is None and value_type is not NoneType:
+            raise KeyError(f"`{name}` of type `{value_type}` is required.")
+        if issubclass(value_type, Enum):
+            return value_type(value)
+        if value_type is type(datetime):
+            return parse_utc_timestamp(value)
+        if not isinstance(value, value_type):
+            raise TypeError(
+                f"Value {value} of type {type(value)} is invalid for {name}, "
+                f"expected value of type {value_type}"
+            )
+        return value_type(value)
+
+    return cls(
+        **{
+            field.name: _get_val(
+                f"{cls.__name__}.{field.name}", dict_obj.get(field.name), field.type
+            )
+            for field in fields(cls)
+        }
+    )

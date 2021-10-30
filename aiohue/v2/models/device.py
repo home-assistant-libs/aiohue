@@ -1,7 +1,7 @@
 """Model(s) for device resource on HUE bridge."""
 from dataclasses import dataclass
 from enum import Enum
-from types import NoneType
+
 from typing import Optional, Type
 
 from .group import Group
@@ -75,13 +75,6 @@ class DeviceProductData:
     software_version: str
     product_id: Optional[str] = None  # missing in output from bridge ?
 
-    def __post_init__(self) -> None:
-        """Make sure that data has valid type (allows creating from dict)."""
-        if self.product_archetype is not None and not isinstance(
-            self.product_archetype, DeviceArchetypes
-        ):
-            self.product_archetype = DeviceArchetypes(self.product_archetype)
-
 
 @dataclass
 class DeviceMetaData(NamedResourceMetadata):
@@ -92,11 +85,6 @@ class DeviceMetaData(NamedResourceMetadata):
     """
 
     archetype: Optional[DeviceArchetypes] = None
-
-    def __post_init__(self) -> None:
-        """Make sure that data has valid type (allows creating from dict)."""
-        if not isinstance(self.archetype, (NoneType, DeviceArchetypes)):
-            self.archetype = DeviceArchetypes(self.archetype)
 
 
 @dataclass
@@ -112,11 +100,3 @@ class Device(Group):
     metadata: Optional[DeviceMetaData] = None  # optional in put
     creation_time: Optional[str] = None
     type: ResourceTypes = ResourceTypes.DEVICE
-
-    def __post_init__(self) -> None:
-        """Make sure that data has valid type (allows creating from dict)."""
-        super().__post_init__()
-        if not isinstance(self.product_data, (NoneType, DeviceProductData)):
-            self.product_data = DeviceProductData(**self.product_data)
-        if not isinstance(self.metadata, (NoneType, DeviceMetaData)):
-            self.metadata = DeviceMetaData(**self.metadata)

@@ -33,14 +33,14 @@ class EventStream:
 
     def __init__(self, bridge: "HueBridgeV2") -> None:
         """Initialize instance."""
-        self.bridge = bridge
+        self._bridge = bridge
         self._listeners = set()
         self._event_queue = asyncio.Queue()
         self._last_event_id = ""
         self._status = EventStreamStatus.DISCONNECTED
         self._bg_tasks: List[asyncio.Task] = []
         self._subscribers: List[EventSubscriptionType] = []
-        self.logger = bridge.logger.getChild("events")
+        self._logger = bridge.logger.getChild("events")
 
     async def initialize(self) -> None:
         """
@@ -112,12 +112,12 @@ class EventStream:
             if self._last_event_id:
                 headers["Last-Event-ID"] = self._last_event_id
             try:
-                async with self.bridge.create_request(
+                async with self._bridge.create_request(
                     "get", "eventstream/clip/v2", timeout=0, headers=headers
                 ) as resp:
                     # update status to connected once we reach this point
                     self._status = EventStreamStatus.CONNECTED
-                    self.logger.debug("Connected to EventStream")
+                    self._logger.debug("Connected to EventStream")
                     # messages come in one by line, according to EventStream/SSE specs
                     # we iterate over the incoming lines in the streamreader
                     # to prevent a deadlock waiting for a message while the connectioin is dead
@@ -166,13 +166,15 @@ class EventStream:
                 # events is array with multiple events (but contains just one)
                 events: List[dict] = json.loads(value)
                 for event in events:
-                    clip_event = CLIPEvent(**event)
+                    clip_event = CLIPEvent.from_dict(event)
                     if clip_event.type == CLIPEventType.UNKNOWN:
                         raise InvalidEvent(
                             "Received invalid event %s", event.get("type")
                         )
                     self._event_queue.put_nowait(clip_event)
             else:
-                self.logger.debug("Received unexpected message: %s - %s", key, value)
+                self._logger.debug("Received unexpected message: %s - %s", key, value)
         except Exception as exc:  # pylint: disable=broad-except
-            self.logger.warning("Unable to parse Event message: %s", line, exc_info=exc)
+            self._logger.warning(
+                "Unable to parse Event message: %s", line, exc_info=exc
+            )

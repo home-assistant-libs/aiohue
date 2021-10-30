@@ -13,7 +13,7 @@ from asyncio_throttle import Throttler
 from ..errors import Unauthorized, raise_from_error
 from .controllers.events import EventStream
 
-from .controllers.bridge_config import BridgeConfigController
+from .controllers.config import ConfigController
 from .controllers.sensors import SensorsController
 from .controllers.lights import LightsController
 from .controllers.groups import GroupsController
@@ -47,10 +47,12 @@ class HueBridgeV2:
         self._websession_provided = websession is not None
 
         self.logger = logging.getLogger(f"{__package__}[{host}]")
+        # basic throttler limiting requests to the bridge
+        # as per Hue documentation this is max 10 seconds per second
         self._throttler = Throttler(rate_limit=10, period=1)
         self._events = EventStream(self)
         # all resource controllers
-        self._config = BridgeConfigController(self)
+        self._config = ConfigController(self)
         self._devices = DevicesController(self)
         self._lights = LightsController(self)
         self._scenes = ScenesController(self)
@@ -60,7 +62,7 @@ class HueBridgeV2:
     @property
     def bridge_id(self) -> str | None:
         """Return the ID of the bridge we're currently connected to."""
-        return self._config.id
+        return self._config.bridge_id
 
     @property
     def host(self) -> str:
@@ -73,8 +75,8 @@ class HueBridgeV2:
         return self._events
 
     @property
-    def config(self) -> BridgeConfigController:
-        """Get the Bridge(config) Controller."""
+    def config(self) -> ConfigController:
+        """Get the Config Controller with config-like resources."""
         return self._config
 
     @property
@@ -121,7 +123,6 @@ class HueBridgeV2:
 
     async def initialize(self) -> None:
         """Initialize the connection to the bridge and fetch all data."""
-
         if self._app_key is None:
             raise Unauthorized("There is no app_key provided or requested.")
 

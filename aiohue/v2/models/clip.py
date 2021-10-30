@@ -4,6 +4,8 @@ from datetime import datetime
 from enum import Enum
 from typing import Any, List, Type, TypeVar
 
+from aiohue.util import dataclass_from_dict, parse_utc_timestamp
+
 from ..models.light_level import LightLevel
 from ..models.temperature import Temperature
 from .behavior_instance import BehaviorInstance
@@ -85,26 +87,11 @@ class CLIPEventType(Enum):
         return CLIPEventType.UNKNOWN
 
 
-def parse_utc_timestamp(datetimestr: str):
-    """Parse datetime from string."""
-    return datetime.fromisoformat(datetimestr.replace("Z", "+00:00"))
-
-
-def parse_clip_resource(obj_in: dict, strict=False) -> CLIPResource | None:
+def parse_clip_resource(obj_in: dict, strict=False) -> CLIPResource:
     """Parse raw object dict to correct CLIP Resource Class."""
-    try:
-        resource_type = ResourceTypes(obj_in["type"])
-        resource_cls = CLIP_RESOURCE_MAPPING[resource_type]
-        return resource_cls(**obj_in)
-    except Exception as exc:
-        LOGGER.critical(
-            "Something went wrong while parsing a message from the Hue API.\n\n"
-            "Please report the below to the developers!\n"
-            f"{exc}\n{obj_in}\n\n"
-        )
-        if strict:
-            raise exc
-        return None
+    resource_type = ResourceTypes(obj_in["type"])
+    resource_cls = CLIP_RESOURCE_MAPPING[resource_type]
+    return dataclass_from_dict(resource_cls, obj_in, strict=False)
 
 
 @dataclass
@@ -120,16 +107,15 @@ class CLIPEvent:
     # ResourceIndentifier (type and id) of the deleted object
     data: List[Resource]
 
-    def __post_init__(self) -> None:
-        """Make sure that data has valid type."""
-        if not isinstance(self.type, CLIPEventType):
-            self.type = CLIPEventType(self.type)
-        if not isinstance(self.creationtime, datetime):
-            self.creationtime = parse_utc_timestamp(self.creationtime)
-        if self.data and isinstance(self.data[0], dict):
-            self.data = [
-                x for x in [parse_clip_resource(x) for x in self.data] if x is not None
-            ]
+    @classmethod
+    def from_dict(cls: "CLIPEvent", dict_in: dict):
+        """Create instance from dict."""
+        return CLIPEvent(
+            id=dict_in["id"],
+            creationtime=parse_utc_timestamp(dict_in["creationtime"]),
+            type=CLIPEventType(dict_in["type"]),
+            data=[parse_clip_resource(x) for x in dict_in["data"]],
+        )
 
 
 @dataclass

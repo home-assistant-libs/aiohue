@@ -1,7 +1,8 @@
 """Model(s) for button resource on HUE bridge."""
 from dataclasses import dataclass
 from enum import Enum
-from types import NoneType
+
+
 from typing import Optional, Type
 
 from .resource import Resource, ResourceTypes
@@ -37,11 +38,6 @@ class ButtOnFeature:
 
     last_event: ButtonEvent
 
-    def __post_init__(self) -> None:
-        """Make sure that data has valid type (allows creating from dict)."""
-        if not isinstance(self.last_event, (NoneType, ButtonEvent)):
-            self.last_event = ButtonEvent(self.last_event)
-
 
 @dataclass
 class SwitchInputMetadata:
@@ -70,11 +66,3 @@ class Button(Resource):
     metadata: Optional[SwitchInputMetadata] = None
     button: Optional[ButtOnFeature] = None
     type: ResourceTypes = ResourceTypes.BUTTON
-
-    def __post_init__(self) -> None:
-        """Make sure that data has valid type (allows creating from dict)."""
-        super().__post_init__()
-        if not isinstance(self.metadata, (NoneType, SwitchInputMetadata)):
-            self.metadata = SwitchInputMetadata(**self.metadata)
-        if not isinstance(self.button, (NoneType, ButtOnFeature)):
-            self.button = ButtOnFeature(**self.button)

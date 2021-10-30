@@ -77,11 +77,6 @@ class Resource:
     type: ResourceTypes
     id_v1: Optional[str] = None
 
-    def __post_init__(self) -> None:
-        """Make sure that data has valid type."""
-        if not isinstance(self.type, ResourceTypes):
-            self.type = ResourceTypes(self.type)
-
 
 @dataclass
 class ResourceMetadata:
@@ -130,11 +125,6 @@ class ResourceIdentifier:
 
     rid: str  # UUID
     rtype: ResourceTypes
-
-    def __post_init__(self) -> None:
-        """Make sure that data has valid type."""
-        if not isinstance(self.rtype, ResourceTypes):
-            self.rtype = ResourceTypes(self.rtype)
 
 
 @dataclass

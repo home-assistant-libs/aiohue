@@ -1,7 +1,8 @@
 """Model(s) for zigbee_connectivity resource on HUE bridge."""
 from dataclasses import dataclass
 from enum import Enum
-from types import NoneType
+
+
 from typing import Optional
 
 from .resource import Resource, ResourceTypes
@@ -28,12 +29,6 @@ class ConnectivityService(Resource):
     """
 
     status: Optional[ConnectivityServiceStatus] = None  # required in get
-
-    def __post_init__(self) -> None:
-        """Make sure that data has valid type (allows creating from dict)."""
-        super().__post_init__()
-        if not isinstance(self.status, (NoneType, ConnectivityServiceStatus)):
-            self.status = ConnectivityServiceStatus(self.status)
 
 
 @dataclass

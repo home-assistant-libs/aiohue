@@ -3,7 +3,7 @@
 import asyncio
 from typing import TYPE_CHECKING, Callable, Dict, Generic, Iterator, List, Tuple
 
-from ...util import to_dict, update_dataclass
+from ...util import dataclass_to_dict, update_dataclass
 
 from ..models.clip import CLIPResource, parse_clip_resource
 from ..models.resource import ResourceTypes
@@ -21,9 +21,9 @@ class BaseResourcesController(Generic[CLIPResource]):
 
     def __init__(self, bridge: "HueBridgeV2") -> None:
         """Initialize instance."""
-        self.bridge = bridge
+        self._bridge = bridge
         self._items: Dict[str, CLIPResource] = {}
-        self.logger = bridge.logger.getChild(self.item_type.value)
+        self._logger = bridge.logger.getChild(self.item_type.value)
         self._subscribers: List[Tuple[EventCallBackType, str | None]] = []
 
     @property
@@ -40,19 +40,19 @@ class BaseResourcesController(Generic[CLIPResource]):
         """
         if initial_data is None:
             endpoint = f"clip/v2/resource/{self.item_type.value}"
-            initial_data = await self.bridge.request("get", endpoint)
+            initial_data = await self._bridge.request("get", endpoint)
         item_count = 0
         for item in initial_data:
             if ResourceTypes(item["type"]) != self.item_type:
                 continue
             item_count += 1
             res: CLIPResource = parse_clip_resource(item)
-            if res is None:
-                continue
-            self._items[str(res.id)] = res
+            self._items[str(res.id)] = parse_clip_resource(item)
         # subscribe to item updates
-        self.bridge.events.subscribe(self._handle_event, resource_filter=self.item_type)
-        self.logger.debug("fetched %s items", item_count)
+        self._bridge.events.subscribe(
+            self._handle_event, resource_filter=self.item_type
+        )
+        self._logger.debug("fetched %s items", item_count)
 
     def subscribe(
         self,
@@ -89,8 +89,8 @@ class BaseResourcesController(Generic[CLIPResource]):
         """
         endpoint = f"clip/v2/resource/{self.item_type.value}/{id}"
         # create a clean dict with only the changed keys set.
-        data = to_dict(obj_in)
-        asyncio.create_task(self.bridge.request("put", endpoint, json=data))
+        data = dataclass_to_dict(obj_in)
+        asyncio.create_task(self._bridge.request("put", endpoint, json=data))
 
     def __getitem__(self, id: str) -> CLIPResource:
         """Get item by id."""
@@ -114,7 +114,7 @@ class BaseResourcesController(Generic[CLIPResource]):
             if cur_item is None:
                 # should not be possible but just in case
                 # if this does happen often we should consider fetching the full object here
-                self.logger.warning("received update for unknown item %s", item.id)
+                self._logger.warning("received update for unknown item %s", item.id)
                 return
             # make sure we only update keys that are not None
             update_dataclass(cur_item, item)
@@ -134,8 +134,8 @@ class GroupedControllerBase(Generic[CLIPResource]):
     ) -> None:
         """Initialize instance."""
         self._resources = resources
-        self.bridge = bridge
-        self.logger = bridge.logger.getChild(self.__class__.__name__.lower())
+        self._bridge = bridge
+        self._logger = bridge.logger.getChild(self.__class__.__name__.lower())
         self._subscribers: List[Tuple[EventCallBackType, str | None]] = []
 
     @property

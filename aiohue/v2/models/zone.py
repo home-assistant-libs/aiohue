@@ -1,6 +1,7 @@
 """Model(s) for Zone resource on HUE bridge."""
 from dataclasses import dataclass
-from types import NoneType
+
+
 from typing import Optional
 
 from .group import Group
@@ -23,12 +24,6 @@ class Zone(Group):
 
     metadata: Optional[RoomMetadata] = None
     type: ResourceTypes = ResourceTypes.ZONE
-
-    def __post_init__(self) -> None:
-        """Make sure that data has valid type (allows creating from dict)."""
-        super().__post_init__()
-        if not isinstance(self.metadata, (NoneType, RoomMetadata)):
-            self.metadata = RoomMetadata(**self.metadata)
 
     @property
     def grouped_light(self) -> str | None:
