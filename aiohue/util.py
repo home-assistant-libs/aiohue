@@ -106,7 +106,9 @@ def dataclass_from_dict(cls: dataclass, dict_obj: dict, strict=False):
     if strict:
         extra_keys = dict_obj.keys() - set([f.name for f in fields(cls)])
         if extra_keys:
-            raise KeyError("Extra keys not allowed: %s" % ",".join(extra_keys))
+            raise KeyError(
+                "Extra key(s) %s not allowed for %s" % ",".join(extra_keys), (str(cls))
+            )
 
     def _get_val(name: str, value: Any, value_type: Type):
         if value is None and value_type is NoneType:
@@ -131,7 +133,6 @@ def dataclass_from_dict(cls: dataclass, dict_obj: dict, strict=False):
                 f"Value {value} of type {type(value)} is invalid for {name}, "
                 f"expected value of type {value_type}"
             )
-
         if value_type is Any:
             return value
         if value is None and value_type is not NoneType:

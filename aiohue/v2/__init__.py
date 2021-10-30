@@ -4,14 +4,14 @@ import asyncio
 from contextlib import asynccontextmanager
 import logging
 from types import TracebackType
-from typing import Generator, List, Optional, Type
+from typing import Callable, Generator, List, Optional, Type
 
 import aiohttp
 from aiohttp import ClientResponse
 from asyncio_throttle import Throttler
 
 from ..errors import Unauthorized, raise_from_error
-from .controllers.events import EventStream
+from .controllers.events import EventCallBackType, EventStream
 
 from .controllers.config import ConfigController
 from .controllers.sensors import SensorsController
@@ -147,6 +147,31 @@ class HueBridgeV2:
         if not self._websession_provided:
             await self._websession.close()
         self.logger.info("Connection to bridge closed.")
+
+    def subscribe(
+        self,
+        callback: EventCallBackType,
+    ) -> Callable:
+        """
+        Subscribe to status changes for all resources.
+
+        Returns:
+            function to unsubscribe.
+        """
+        unsubscribes = [
+            self.config.subscribe(callback),
+            self.devices.subscribe(callback),
+            self.groups.subscribe(callback),
+            self.lights.subscribe(callback),
+            self.scenes.subscribe(callback),
+            self.sensors.subscribe(callback),
+        ]
+
+        def unsubscribe():
+            for unsub in unsubscribes:
+                unsub()
+
+        return unsubscribe
 
     async def request(self, method: str, path: str, **kwargs) -> dict | List[dict]:
         """Make request on the api and return response data."""

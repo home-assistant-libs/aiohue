@@ -61,10 +61,7 @@ async def main():
             print("received event", event_type.value, item)
             print()
 
-        bridge.lights.subscribe(print_event)
-        bridge.groups.subscribe(print_event)
-        bridge.sensors.subscribe(print_event)
-        bridge.devices.subscribe(print_event)
+        bridge.subscribe(print_event)
 
         await asyncio.sleep(3600)
 

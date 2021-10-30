@@ -1,6 +1,5 @@
 """Base controller for HUE resources as retrieved from the Hue bridge."""
 
-import asyncio
 from typing import TYPE_CHECKING, Callable, Dict, Generic, Iterator, List, Tuple
 
 from ...util import dataclass_to_dict, update_dataclass
@@ -90,7 +89,7 @@ class BaseResourcesController(Generic[CLIPResource]):
         endpoint = f"clip/v2/resource/{self.item_type.value}/{id}"
         # create a clean dict with only the changed keys set.
         data = dataclass_to_dict(obj_in)
-        asyncio.create_task(self._bridge.request("put", endpoint, json=data))
+        await self._bridge.request("put", endpoint, json=data)
 
     def __getitem__(self, id: str) -> CLIPResource:
         """Get item by id."""

@@ -1,4 +1,4 @@
-"""Controller holding and managing HUE resources thare are of the config type."""
+"""Controller holding and managing HUE resources that are of the config type."""
 
 from typing import TYPE_CHECKING, Type, Union
 

@@ -20,11 +20,19 @@ class RoomController(BaseResourcesController[Type[Room]]):
 
     item_type = ResourceTypes.ROOM
 
+    def get_scenes(self, id: str):
+        """Get all scenes for this room."""
+        return [scene for scene in self._bridge.scenes if scene.group.rid == id]
+
 
 class ZoneController(BaseResourcesController[Type[Zone]]):
     """Controller holding and managing HUE resources of type `zone`."""
 
     item_type = ResourceTypes.ZONE
+
+    def get_scenes(self, id: str):
+        """Get all scenes for this zone."""
+        return [scene for scene in self._bridge.scenes if scene.group.rid == id]
 
 
 class GroupedLightController(BaseResourcesController[Type[GroupedLight]]):

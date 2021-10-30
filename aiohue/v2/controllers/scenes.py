@@ -1,6 +1,9 @@
 """Controller holding and managing HUE resources of type `scene`."""
 
 from typing import Type
+from aiohue.v2.models.room import Room
+
+from aiohue.v2.models.zone import Zone
 
 from ..models.feature import RecallAction, RecallFeature
 
@@ -23,3 +26,8 @@ class ScenesController(BaseResourcesController[Type[Scene]]):
             id=id, recall=RecallFeature(action=action, duration=duration)
         )
         await self._send_put(id, update_obj)
+
+    def get_group(self, id: str) -> Zone | Room:
+        """Get group attached to given scene id."""
+        scene = self[id]
+        return next((x for x in self._bridge.groups if x.id == scene.group.rid))
