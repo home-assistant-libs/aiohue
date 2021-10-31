@@ -2,6 +2,8 @@
 
 from typing import TYPE_CHECKING, Callable, Dict, Generic, Iterator, List, Tuple
 
+from aiohue.v2.models.device import Device
+
 from ...util import dataclass_to_dict, update_dataclass
 
 from ..models.clip import CLIPResource, parse_clip_resource
@@ -78,6 +80,16 @@ class BaseResourcesController(Generic[CLIPResource]):
     def get_by_v1_id(self, id: str) -> CLIPResource | None:
         """Get item by it's legacy V1 id."""
         return next((item.v1_id == id for item in self._items.values()), None)
+
+    def get_device(self, id: str) -> Device:
+        """Return device the given resource belongs to."""
+        for device in self._bridge.devices:
+            if device.id == id:
+                # handle usecase where resource is device itself
+                return device
+            for service in device.services:
+                if service.rid == id:
+                    return device
 
     async def _send_put(self, id: str, obj_in: CLIPResource) -> None:
         """
