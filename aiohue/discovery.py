@@ -4,6 +4,8 @@ from typing import List
 
 from aiohttp import ClientSession
 
+from .util import normalize_bridge_id
+
 URL_NUPNP = "https://discovery.meethue.com/"
 
 
@@ -76,7 +78,7 @@ async def is_hue_bridge(host: str, websession: ClientSession | None = None) -> s
         async with websession.get(url, timeout=5) as res:
             res.raise_for_status()
             data = await res.json()
-            return data["bridgeid"]
+            return normalize_bridge_id(data["bridgeid"])
     finally:
         if not websession_provided:
             await websession.close()
