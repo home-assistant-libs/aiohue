@@ -52,7 +52,7 @@ async def discover_nupnp(
                 # the nupnp discovery might return items that are not in local network
                 # connect to each bridge to find out if it's alive.
                 try:
-                    result.append(discover_bridge(host, websession))
+                    result.append(await discover_bridge(host, websession))
                 except Exception:  # noqa
                     pass
         return result
