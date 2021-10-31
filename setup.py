@@ -3,7 +3,7 @@ import os
 
 long_description = open("README.md").read()
 
-PACKAGES = find_packages(include=["aiohue"])
+PACKAGES = find_packages(exclude=["tests", "script", "examples"])
 
 setup(
     name="aiohue",
