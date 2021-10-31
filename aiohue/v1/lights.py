@@ -19,7 +19,7 @@ class Lights(APIItems):
     https://developers.meethue.com/documentation/lights-api
     """
 
-    def __init__(self, logger: Logger, raw: Dict[str:Any], request: Coroutine) -> None:
+    def __init__(self, logger: Logger, raw: Dict[str, Any], request: Coroutine) -> None:
         """Initialize instance."""
         super().__init__(logger, raw, request, "lights", Light)
 

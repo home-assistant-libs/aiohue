@@ -1,6 +1,7 @@
 """Base controller for HUE resources as retrieved from the Hue bridge."""
 
 from typing import TYPE_CHECKING, Callable, Dict, Generic, Iterator, List, Tuple
+from aiohue.v2.models.connectivity import ZigbeeConnectivity
 
 from aiohue.v2.models.device import Device
 
@@ -83,13 +84,18 @@ class BaseResourcesController(Generic[CLIPResource]):
 
     def get_device(self, id: str) -> Device:
         """Return device the given resource belongs to."""
+        if self.item_type == ResourceTypes.DEVICE:
+            return self[id]
         for device in self._bridge.devices:
-            if device.id == id:
-                # handle usecase where resource is device itself
-                return device
             for service in device.services:
                 if service.rid == id:
                     return device
+
+    def get_zigbee_connectivity(self, id: str) -> ZigbeeConnectivity:
+        """Return the ZigbeeConnectivity resource/sensor connected to device."""
+        for service in self.get_device(id).services:
+            if service.rtype == ResourceTypes.ZIGBEE_CONNECTIVITY:
+                return self._bridge.sensors.zigbee_connectivity[service.rid]
 
     async def _send_put(self, id: str, obj_in: CLIPResource) -> None:
         """

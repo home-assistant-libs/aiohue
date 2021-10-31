@@ -12,7 +12,7 @@ class Groups(APIItems):
     https://developers.meethue.com/documentation/groups-api
     """
 
-    def __init__(self, logger: Logger, raw: Dict[str:Any], request: Coroutine) -> None:
+    def __init__(self, logger: Logger, raw: Dict[str, Any], request: Coroutine) -> None:
         """Initialize instance."""
         super().__init__(logger, raw, request, "groups", Group)
 
