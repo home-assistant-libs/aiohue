@@ -58,23 +58,6 @@ async def create_app_key(
             await websession.close()
 
 
-async def is_v2_bridge(host: str, websession: ClientSession | None = None) -> bool:
-    """Check if the bridge has support for the new V2 api."""
-    websession_provided = websession is not None
-    if websession is None:
-        websession = ClientSession()
-    try:
-        # v2 api is https only and returns a 403 forbidden when no key provided
-        url = f"https://{host}/clip/v2/resources"
-        async with websession.get(url, ssl=False) as res:
-            return res.status == 403
-    except Exception:  # pylint: disable=broad-except
-        return False
-    finally:
-        if not websession_provided:
-            await websession.close()
-
-
 def normalize_bridge_id(bridge_id: str):
     """Normalize a bridge identifier."""
     bridge_id = bridge_id.lower()

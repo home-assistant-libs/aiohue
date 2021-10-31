@@ -5,7 +5,7 @@ long_description = open("README.md").read()
 
 setup(
     name="aiohue",
-    version="2.6.4",
+    version="2.6.5",
     license="Apache License 2.0",
     url="https://github.com/home-assistant-libs/aiohue",
     author="Paulus Schoutsen",
