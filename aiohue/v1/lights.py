@@ -1,4 +1,6 @@
 from collections import namedtuple
+from logging import Logger
+from typing import Any, Coroutine, Dict
 
 from .api import APIItems
 
@@ -11,12 +13,14 @@ GamutType = namedtuple("GamutType", ["red", "green", "blue"])
 
 
 class Lights(APIItems):
-    """Represents Hue Lights.
+    """
+    Represents Hue Lights.
 
     https://developers.meethue.com/documentation/lights-api
     """
 
-    def __init__(self, logger, raw, request):
+    def __init__(self, logger: Logger, raw: Dict[str:Any], request: Coroutine) -> None:
+        """Initialize instance."""
         super().__init__(logger, raw, request, "lights", Light)
 
 
@@ -25,7 +29,8 @@ class Light:
 
     ITEM_TYPE = "lights"
 
-    def __init__(self, id, raw, request):
+    def __init__(self, id: str, raw: Dict[str, Any], request: Coroutine) -> None:
+        """Initialize instance."""
         self.id = id
         self.raw = raw
         self._request = request

@@ -55,20 +55,49 @@ class ConfigController(
     """Controller holding and managing HUE resources thare are of the config type."""
 
     @property
-    def bridge(self) -> Bridge | None:
-        """Return the only/first bridge found in items of resource `bridge`."""
-        # the Hue resource system in V2 is generic and even the bridge object is returned as array
-        # there should be only one object returned here but maybe Sigify anticipated
-        # on future changes where bridges can be linked ?
-        for item in self.bridges:
-            return item
-        return None
-
-    @property
     def bridge_id(self) -> str | None:
         """Return id of bridge we're connected to."""
         if bridge := self.bridge:
             return bridge.bridge_id
+        return None
+
+    @property
+    def name(self) -> str | None:
+        """Return name of bridge we're connected to."""
+        if bridge_device := self.bridge_device:
+            return bridge_device.metadata.name
+        return None
+
+    @property
+    def mac_address(self) -> str | None:
+        """Return mac address of bridge we're connected to."""
+        if bridge_device := self.bridge_device:
+            for service in bridge_device.services:
+                if service.rtype == ResourceTypes.ZIGBEE_CONNECTIVITY:
+                    return self._bridge.sensors.zigbee_connectivity[service.rid].mac_address
+        return None
+
+    @property
+    def model_id(self) -> str | None:
+        """Return model ID of bridge we're connected to."""
+        if bridge_device := self.bridge_device:
+            return bridge_device.product_data.model_id
+        return None
+
+    @property
+    def software_version(self) -> str | None:
+        """Return software version of bridge we're connected to."""
+        if bridge_device := self.bridge_device:
+            return bridge_device.product_data.software_version
+        return None
+
+    @property
+    def bridge(self) -> Bridge | None:
+        """Return the only/first bridge found in items of resource `bridge`."""
+        # the Hue resource system in V2 is generic and even the bridge object is returned as array
+        # there should be only one object returned here
+        for item in self.bridges:
+            return item
         return None
 
     @property

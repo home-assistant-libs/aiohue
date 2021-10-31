@@ -1,8 +1,7 @@
-from setuptools import setup, find_packages
-import os
+"""Setup for aiohue."""
+from setuptools import find_packages, setup
 
-long_description = open("README.md").read()
-
+LONG_DESC = open("README.md").read()
 PACKAGES = find_packages(exclude=["tests", "tests.*"])
 
 setup(
@@ -13,7 +12,7 @@ setup(
     author="Paulus Schoutsen",
     author_email="paulus@paulusschoutsen.nl",
     description="Python module to talk to Philips Hue.",
-    long_description=long_description,
+    long_description=LONG_DESC,
     long_description_content_type="text/markdown",
     packages=PACKAGES,
     zip_safe=True,
