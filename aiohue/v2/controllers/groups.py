@@ -44,6 +44,8 @@ class GroupedLightController(BaseResourcesController[Type[GroupedLight]]):
         """Handle incoming event for this resource from the EventStream."""
         await super()._handle_event(type, item)
         # make sure that an update of grouped light gets propagated to connected zone/room
+        if type != EventType.RESOURCE_UPDATED:
+            return
         self._bridge.events.emit(EventType.RESOURCE_UPDATED, self.get_zone(item.id))
 
     def get_zone(self, id: str) -> Room | Zone:

@@ -6,7 +6,7 @@ from typing import Optional, Type
 import aiohttp
 from asyncio_throttle import Throttler
 
-from ..errors import Unauthorized, raise_from_error
+from ..errors import raise_from_error
 from .config import Config
 from .groups import Groups
 from .lights import Lights
@@ -20,19 +20,16 @@ class HueBridgeV1:
     def __init__(
         self,
         host: str,
+        app_key: str,
         websession: aiohttp.ClientSession | None = None,
-        app_key: str | None = None,
     ) -> None:
         """
         Initialize the Bridge instance.
 
         Parameters:
             `host`: the hostname or IP-address of the bridge as string.
+            `app_key`: provide the hue appkey/username for authentication.
             `websession`: optionally provide a aiohttp ClientSession.
-            `app_key`: optionally provide a hue appkey/username for authentication.
-
-            NOTE: You'll need to call initialize before any data is available.
-            NOTE: If app_key is not provided, you need to call create_user.
         """
         self._host = host
         self._app_key = app_key
@@ -84,21 +81,8 @@ class HueBridgeV1:
         """Get the sensor resources."""
         return self._sensors
 
-    async def create_user(self, device_type: str) -> str:
-        """
-        Create a user and return it's app_key for authentication.
-
-        https://developers.meethue.com/documentation/configuration-api#71_create_user
-        """
-        result = await self.request("post", "", {"devicetype": device_type}, auth=False)
-        self._app_key = result[0]["success"]["username"]
-        return self._app_key
-
     async def initialize(self):
         """Initialize the connection to the bridge and fetch all data."""
-        if self._app_key is None:
-            raise Unauthorized("There is no app_key provided or requested.")
-
         result = await self.request("get", "")
         self._config = Config(result.pop("config"), self.request)
         self._groups = Groups(self.logger, result.pop("groups"), self.request)
@@ -107,7 +91,6 @@ class HueBridgeV1:
             self._scenes = Scenes(self.logger, result.pop("scenes"), self.request)
         if "sensors" in result:
             self._sensors = Sensors(self.logger, result.pop("sensors"), self.request)
-
         self.logger.debug("Unused result: %s", result)
 
     async def close(self) -> None:
@@ -116,17 +99,13 @@ class HueBridgeV1:
             await self._websession.close()
         self.logger.info("Connection to bridge closed.")
 
-    async def request(self, method, path, json=None, auth=True):
+    async def request(self, method, endpoint, json=None):
         """Make a request to the API."""
-
         if self._websession is None:
             self._websession = aiohttp.ClientSession()
 
-        # Old bridges and most emulators only use `http`
-        url = f"http://{self.host}/api/"
-        if auth:
-            url += "{}/".format(self._app_key)
-        url += path
+        # Old bridges and (most) emulators only use `http`
+        url = f"http://{self.host}/api/{self._app_key}/{endpoint}"
 
         async with self._websession.request(method, url, json=json) as res:
             res.raise_for_status()
@@ -136,8 +115,7 @@ class HueBridgeV1:
 
     async def __aenter__(self) -> "HueBridgeV1":
         """Return Context manager."""
-        if self._app_key:
-            await self.initialize()
+        await self.initialize()
         return self
 
     async def __aexit__(

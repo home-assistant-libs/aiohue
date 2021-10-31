@@ -27,19 +27,16 @@ class HueBridgeV2:
     def __init__(
         self,
         host: str,
+        app_key: str,
         websession: aiohttp.ClientSession | None = None,
-        app_key: str | None = None,
     ) -> None:
         """
         Initialize the Bridge instance.
 
         Parameters:
             `host`: the hostname or IP-address of the bridge as string.
+            `app_key`: provide the hue appkey/username for authentication.
             `websession`: optionally provide a aiohttp ClientSession.
-            `app_key`: optionally provide a hue appkey/username for authentication.
-
-            NOTE: You'll need to call initialize before any data is available.
-            NOTE: If app_key is not provided, you need to call create_user.
         """
         self._host = host
         self._app_key = app_key
@@ -104,28 +101,8 @@ class HueBridgeV2:
         """Get the Sensors Controller for managing all sensor resources."""
         return self._sensors
 
-    async def create_user(self, device_type: str) -> str:
-        """
-        Create a user and return it's app_key for authentication.
-
-        https://developers.meethue.com/documentation/configuration-api#71_create_user
-        """
-        # there is not (yet) a V2 way of creating a user, so we use the V1 api for that for now.
-        data = {"devicetype": device_type}
-        async with self.create_request("post", "api", json=data) as resp:
-            result = await resp.json()
-            # response is returned as list
-            result = result[0]
-            if "error" in result:
-                raise_from_error(result["error"])
-        self._app_key = result["success"]["username"]
-        return self._app_key
-
     async def initialize(self) -> None:
         """Initialize the connection to the bridge and fetch all data."""
-        if self._app_key is None:
-            raise Unauthorized("There is no app_key provided or requested.")
-
         # Initialize all HUE resource controllers
         # fetch complete full state once and distribute to controllers
         full_state = await self.request("get", "clip/v2/resource")
@@ -201,18 +178,18 @@ class HueBridgeV2:
         if "headers" not in kwargs:
             kwargs["headers"] = {}
 
-        if self._app_key is not None:
-            kwargs["headers"]["hue-application-key"] = self._app_key
+        kwargs["headers"]["hue-application-key"] = self._app_key
 
         async with self._throttler:
             async with self._websession.request(method, url, **kwargs) as res:
+                if res.status == 403:
+                    raise Unauthorized
                 res.raise_for_status()
                 yield res
 
     async def __aenter__(self) -> "HueBridgeV2":
         """Return Context manager."""
-        if self._app_key:
-            await self.initialize()
+        await self.initialize()
         return self
 
     async def __aexit__(

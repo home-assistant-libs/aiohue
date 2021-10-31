@@ -25,7 +25,7 @@ async def main():
             format="%(asctime)-15s %(levelname)-5s %(name)s -- %(message)s",
         )
 
-    async with HueBridgeV1(args.host, app_key=args.appkey) as bridge:
+    async with HueBridgeV1(args.host, args.appkey) as bridge:
 
         print("Connected to bridge: ", bridge.bridge_id)
 

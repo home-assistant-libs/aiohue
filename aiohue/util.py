@@ -6,12 +6,56 @@ from typing import Any, Type, Union, get_args, get_origin
 from aiohttp import ClientSession
 from datetime import datetime
 
+from aiohue.errors import raise_from_error
+
 try:
     # python 3.10
     from types import NoneType
 except:  # noqa
     # older python version
     NoneType = type(None)
+
+
+async def create_app_key(
+    host: str, device_type: str, websession: ClientSession | None = None
+) -> str:
+    """
+    Create a user on the Hue bridge and return it's app_key for authentication.
+
+    The link button on the bridge must be pressed before executing this call,
+    otherwise a LinkButtonNotPressed error will be raised.
+
+    Parameters:
+        `host`: the hostname or IP-address of the bridge as string.
+        `device_type`: provide a name/type for your app for identification.
+        `websession`: optionally provide a aiohttp ClientSession.
+    """
+    # https://developers.meethue.com/documentation/configuration-api#71_create_user
+    # there is not (yet) a V2 way of creating a user.
+    # so this can be used for both V1 and V2 bridges (for now).
+    data = {"devicetype": device_type}
+    websession_provided = websession is not None
+    if websession is None:
+        websession = ClientSession()
+    try:
+        # try both https and http
+        for proto in ["https", "http"]:
+            try:
+                url = f"{proto}://{host}/api"
+                async with websession.post(url, json=data, ssl=False) as resp:
+                    resp.raise_for_status()
+                    result = await resp.json()
+                    # response is returned as list
+                    result = result[0]
+                    if "error" in result:
+                        raise_from_error(result["error"])
+                    return result["success"]["username"]
+            except Exception as exc:  # pylint: disable=broad-except
+                if proto == "http":
+                    raise exc
+    finally:
+        if not websession_provided:
+            await websession.close()
 
 
 async def is_v2_bridge(host: str, websession: ClientSession | None = None) -> bool:
@@ -118,7 +162,7 @@ def dataclass_from_dict(cls: dataclass, dict_obj: dict, strict=False):
         origin = get_origin(value_type)
         if origin is list:
             return [_get_val(name, subval, get_args(value_type)[0]) for subval in value]
-        if origin is Union:
+        if origin is Union:  # type: ignore
             # try all possible types
             sub_value_types = get_args(value_type)
             for sub_arg_type in sub_value_types:
