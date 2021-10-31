@@ -2,5 +2,4 @@ include README.md
 include requirements.txt
 include LICENSE
 graft aiohue
-recursive-include aiohue/ *.py
 recursive-exclude * *.py[co]
