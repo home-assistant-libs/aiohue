@@ -74,7 +74,9 @@ class ConfigController(
         if bridge_device := self.bridge_device:
             for service in bridge_device.services:
                 if service.rtype == ResourceTypes.ZIGBEE_CONNECTIVITY:
-                    return self._bridge.sensors.zigbee_connectivity[service.rid].mac_address
+                    return self._bridge.sensors.zigbee_connectivity[
+                        service.rid
+                    ].mac_address
         return None
 
     @property

@@ -1,16 +1,16 @@
 """Base controller for HUE resources as retrieved from the Hue bridge."""
 
+import asyncio
+from asyncio.coroutines import iscoroutinefunction
 from typing import TYPE_CHECKING, Callable, Dict, Generic, Iterator, List, Tuple
-from aiohue.v2.models.connectivity import ZigbeeConnectivity
 
+from aiohue.v2.models.connectivity import ZigbeeConnectivity
 from aiohue.v2.models.device import Device
 
 from ...util import dataclass_to_dict, update_dataclass
-
 from ..models.clip import CLIPResource, parse_clip_resource
 from ..models.resource import ResourceTypes
 from .events import EventCallBackType, EventType
-
 
 if TYPE_CHECKING:
     from .. import HueBridgeV2
@@ -49,7 +49,7 @@ class BaseResourcesController(Generic[CLIPResource]):
                 continue
             item_count += 1
             res: CLIPResource = parse_clip_resource(item)
-            self._items[str(res.id)] = parse_clip_resource(item)
+            self._items[res.id] = parse_clip_resource(item)
         # subscribe to item updates
         self._bridge.events.subscribe(
             self._handle_event, resource_filter=self.item_type
@@ -60,17 +60,20 @@ class BaseResourcesController(Generic[CLIPResource]):
         self,
         callback: EventCallBackType,
         id_filter: str | None = None,
+        event_filter: EventType | None = None,
     ) -> Callable:
         """
         Subscribe to status changes for this resource type.
 
         Parameters:
+            - `callback` - callback function to call when an event emits.
             - `id_filter` - Optionally provide a resource ID to filter events for.
+            - `event_filter` - Optionally provide an EventType as filter.
 
         Returns:
             function to unsubscribe.
         """
-        subscription = (callback, id_filter)
+        subscription = (callback, id_filter, event_filter)
 
         def unsubscribe():
             self._subscribers.remove(subscription)
@@ -90,12 +93,15 @@ class BaseResourcesController(Generic[CLIPResource]):
             for service in device.services:
                 if service.rid == id:
                     return device
+        # always fallback to bridge device itself
+        return self._bridge.config.bridge_device
 
-    def get_zigbee_connectivity(self, id: str) -> ZigbeeConnectivity:
-        """Return the ZigbeeConnectivity resource/sensor connected to device."""
+    def get_zigbee_connectivity(self, id: str) -> ZigbeeConnectivity | None:
+        """Return the ZigbeeConnectivity resource connected to device."""
         for service in self.get_device(id).services:
             if service.rtype == ResourceTypes.ZIGBEE_CONNECTIVITY:
                 return self._bridge.sensors.zigbee_connectivity[service.rid]
+        return None
 
     async def _send_put(self, id: str, obj_in: CLIPResource) -> None:
         """
@@ -111,7 +117,7 @@ class BaseResourcesController(Generic[CLIPResource]):
 
     def __getitem__(self, id: str) -> CLIPResource:
         """Get item by id."""
-        return self._items[str(id)]
+        return self._items[id]
 
     def __iter__(self) -> Iterator[CLIPResource]:
         """Iterate items."""
@@ -136,10 +142,14 @@ class BaseResourcesController(Generic[CLIPResource]):
             # make sure we only update keys that are not None
             update_dataclass(cur_item, item)
 
-        for (callback, id_filter) in self._subscribers:
-            if id_filter is not None and str(id_filter) != str(item.id):
+        for (callback, id_filter, event_filter) in self._subscribers:
+            if id_filter is not None and id_filter != item.id:
+                continue
+            if event_filter is not None and event_filter != type:
                 continue
             # dispatch the full resource object to the callback
+            if iscoroutinefunction(callback):
+                asyncio.create_task(callback(type, item))
             callback(type, cur_item)
 
 
@@ -156,17 +166,25 @@ class GroupedControllerBase(Generic[CLIPResource]):
         self._subscribers: List[Tuple[EventCallBackType, str | None]] = []
 
     @property
+    def resources(self) -> List[BaseResourcesController]:
+        """Return all resource controllers that are grouped by this groupcontroller."""
+        return self._resources
+
+    @property
     def items(self) -> List[CLIPResource]:
-        """Return all items from all watched resources."""
+        """Return all items from all grouped resources."""
         return [x for y in self._resources for x in y]
 
     def subscribe(
         self,
         callback: EventCallBackType,
         id_filter: str | None = None,
+        event_filter: EventType | None = None,
     ) -> Callable:
-        """Subscribe to status changes for all watched resource."""
-        unsubs = [x.subscribe(callback, id_filter) for x in self._resources]
+        """Subscribe to status changes for all grouped resources."""
+        unsubs = [
+            x.subscribe(callback, id_filter, event_filter) for x in self._resources
+        ]
 
         def unsubscribe():
             for unsub in unsubs:

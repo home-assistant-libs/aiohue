@@ -144,7 +144,11 @@ def dataclass_from_dict(cls: dataclass, dict_obj: dict, strict=False):
             return dataclass_from_dict(value_type, value)
         origin = get_origin(value_type)
         if origin is list:
-            return [_get_val(name, subval, get_args(value_type)[0]) for subval in value]
+            return [
+                _get_val(name, subval, get_args(value_type)[0])
+                for subval in value
+                if subval is not None
+            ]
         if origin is Union:  # type: ignore
             # try all possible types
             sub_value_types = get_args(value_type)

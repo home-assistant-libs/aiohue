@@ -161,7 +161,7 @@ class ColorTemperatureFeatureBasic:
 
     # Color temperature in mirek (153-500) or None when the light color is not in the ct spectrum.
     mirek: Optional[int] = None
-    mirek_schema: Optional[MirekSchema] = MirekSchema()
+    mirek_schema: Optional[MirekSchema] = None
     # mirek_valid will be false if light is currently not in the ct spectrum
     mirek_valid: Optional[bool] = False
 

@@ -70,7 +70,7 @@ class EventStream:
 
         Parameters:
             - `callback` - callback function to call when an event emits.
-            - `event_filter` - Optionally provide a EventType as filter.
+            - `event_filter` - Optionally provide an EventType as filter.
             - `resource_filter` - Optionally provide a ResourceType as filter.
 
         Returns:

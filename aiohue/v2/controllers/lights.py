@@ -82,12 +82,15 @@ class LightsController(BaseResourcesController[Type[Light]]):
         self,
         id: str,
         on: bool = True,
+        brightness: Optional[float] = None,
         color_xy: Optional[Tuple[float, float]] = None,
         color_temp: Optional[int] = None,
         transition_time: int | None = None,
     ) -> None:
         """Set multiple features to light at once."""
         update_obj = Light(id=id, on=OnFeature(on=on))
+        if brightness is not None:
+            update_obj.dimming = DimmingFeature(brightness=brightness)
         if color_xy is not None:
             update_obj.color = ColorFeature(xy=ColorPoint(*color_xy))
         if color_temp is not None:
