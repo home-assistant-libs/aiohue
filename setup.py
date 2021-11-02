@@ -3,6 +3,8 @@ from setuptools import find_packages, setup
 
 LONG_DESC = open("README.md").read()
 PACKAGES = find_packages(exclude=["tests", "tests.*"])
+REQUIREMENTS = list(val.strip() for val in open("requirements.txt"))
+MIN_PY_VERSION = "3.8"
 
 setup(
     name="aiohue",
@@ -17,7 +19,8 @@ setup(
     packages=PACKAGES,
     zip_safe=True,
     platforms="any",
-    install_requires=list(val.strip() for val in open("requirements.txt")),
+    install_requires=REQUIREMENTS,
+    python_requires=f">={MIN_PY_VERSION}",
     classifiers=[
         "Intended Audience :: Developers",
         "Operating System :: OS Independent",
