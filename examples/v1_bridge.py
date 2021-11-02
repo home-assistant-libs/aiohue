@@ -57,6 +57,6 @@ async def main():
 
 
 try:
-    asyncio.new_event_loop().run_until_complete(main())
+    asyncio.run(main())
 except KeyboardInterrupt:
     pass
