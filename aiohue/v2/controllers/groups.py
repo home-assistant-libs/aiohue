@@ -51,7 +51,7 @@ class GroupedLightController(BaseResourcesController[Type[GroupedLight]]):
         if type != EventType.RESOURCE_UPDATED:
             return
         if zone := self.get_zone(item.id):
-            self._bridge.events.emit(EventType.RESOURCE_UPDATED,zone)
+            self._bridge.events.emit(EventType.RESOURCE_UPDATED, zone)
 
     def get_zone(self, id: str) -> Room | Zone | None:
         """Get the zone or room connected to grouped light."""
@@ -66,7 +66,7 @@ class GroupedLightController(BaseResourcesController[Type[GroupedLight]]):
         """Return all underlying lights of this grouped light."""
         if zone := self.get_zone(id):
             return [self._bridge.lights[x] for x in zone.lights]
-        return [] # fallback for a group without a zone (special 0 group)
+        return []  # fallback for a group without a zone (special 0 group)
 
     async def set_state(
         self,

@@ -25,8 +25,7 @@ class EventStreamStatus(Enum):
     DISCONNECTED = 2
 
 
-
-EventType = CLIPEventType # substitute
+EventType = CLIPEventType  # substitute
 EventCallBackType = Callable[[EventType, CLIPResource], None]
 EventSubscriptionType = Tuple[
     EventCallBackType,

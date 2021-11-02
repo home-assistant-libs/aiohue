@@ -15,6 +15,10 @@ class Config:
         """Initialize Config resource controller."""
         self.raw = raw
         self._request = request
+        self.bridgeid = self.bridge_id  # for backwards compatability
+        self.mac = self.mac_address  # for backwards compatability
+        self.modelid = self.model_id  # for backwards compatability
+        self.swversion = self.software_version  # for backwards compatability
 
     @property
     def bridge_id(self) -> str:
