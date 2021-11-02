@@ -1,7 +1,9 @@
 """Controller holding and managing HUE resources of type `room`."""
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Type, Union
+from typing import TYPE_CHECKING, List, Type, Union
+
+from aiohue.v2.models.light import Light
 
 from ..models.clip import CLIPResource
 from ..models.group import Group
@@ -56,6 +58,10 @@ class GroupedLightController(BaseResourcesController[Type[GroupedLight]]):
                 continue
             if group.grouped_light == id:
                 return group
+
+    def get_lights(self, id: str) -> List[Light]:
+        """Return all underlying lights of this grouped light."""
+        return [self._bridge.lights[x] for x in self.get_zone(id).lights]
 
 
 class GroupsController(GroupedControllerBase[Union[Room, Group, GroupedLight]]):
