@@ -1,4 +1,5 @@
 """Controller/model for Hue resource of type Config."""
+from __future__ import annotations
 
 from typing import Any, Coroutine, Dict
 

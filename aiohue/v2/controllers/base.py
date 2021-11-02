@@ -1,4 +1,5 @@
 """Base controller for HUE resources as retrieved from the Hue bridge."""
+from __future__ import annotations
 
 import asyncio
 from asyncio.coroutines import iscoroutinefunction

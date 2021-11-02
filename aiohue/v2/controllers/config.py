@@ -1,4 +1,5 @@
 """Controller holding and managing HUE resources that are of the config type."""
+from __future__ import annotations
 
 from typing import TYPE_CHECKING, Type, Union
 

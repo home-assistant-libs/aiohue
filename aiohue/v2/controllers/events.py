@@ -1,4 +1,5 @@
 """Handle connecting to the HUE Eventstream and distribute events."""
+from __future__ import annotations
 import asyncio
 import json
 from enum import Enum
@@ -25,7 +26,9 @@ class EventStreamStatus(Enum):
 
 EventType = CLIPEventType
 EventCallBackType = Callable[[EventType, CLIPResource], None]
-EventSubscriptionType = Tuple[EventCallBackType, EventType | None, ResourceTypes | None]
+EventSubscriptionType = Tuple[
+    EventCallBackType, "EventType | None", "ResourceTypes | None"
+]
 
 
 class EventStream:

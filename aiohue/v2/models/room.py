@@ -100,7 +100,7 @@ class Room(Group):
         return {x.rid for x in self.services}
 
     @property
-    def grouped_light(self) -> str | None:
+    def grouped_light(self) -> Optional[str]:
         """Return the grouped light id that is connected to this room (if any)."""
         if not self.grouped_services:
             return None

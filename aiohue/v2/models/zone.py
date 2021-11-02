@@ -26,7 +26,7 @@ class Zone(Group):
     type: ResourceTypes = ResourceTypes.ZONE
 
     @property
-    def grouped_light(self) -> str | None:
+    def grouped_light(self) -> Optional[str]:
         """Return the grouped light id that is connected to this zone (if any)."""
         if not self.grouped_services:
             return None

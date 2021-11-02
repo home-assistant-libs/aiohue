@@ -1,4 +1,5 @@
 """Controller holding and managing HUE resources of type `scene`."""
+from __future__ import annotations
 
 from typing import Type
 from aiohue.v2.models.room import Room

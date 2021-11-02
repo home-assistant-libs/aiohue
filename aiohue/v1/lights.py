@@ -1,3 +1,4 @@
+from __future__ import annotations
 from collections import namedtuple
 from logging import Logger
 from typing import Any, Coroutine, Dict

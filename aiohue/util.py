@@ -1,4 +1,5 @@
 """Utils for aiohue."""
+from __future__ import annotations
 from enum import Enum
 import logging
 from dataclasses import asdict, fields, is_dataclass, dataclass

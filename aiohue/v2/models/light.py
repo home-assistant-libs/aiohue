@@ -142,7 +142,7 @@ class Light(Resource):
         return self.color_temperature is not None
 
     @property
-    def name(self) -> str | None:
+    def name(self) -> Optional[str]:
         """Return name from metadata."""
         if self.metadata is not None:
             return self.metadata.name

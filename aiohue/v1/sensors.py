@@ -1,4 +1,5 @@
 """Hue sensor resources."""
+from __future__ import annotations
 from .api import APIItems
 
 TYPE_DAYLIGHT = "Daylight"

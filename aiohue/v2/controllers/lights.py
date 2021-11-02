@@ -1,4 +1,5 @@
 """Controller holding and managing HUE resources of type `light`."""
+from __future__ import annotations
 
 from typing import Optional, Tuple, Type
 

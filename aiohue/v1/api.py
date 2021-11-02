@@ -1,3 +1,6 @@
+from __future__ import annotations
+
+
 class APIItems:
     """Base class for a map of API Items."""
 
