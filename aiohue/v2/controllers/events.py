@@ -11,6 +11,7 @@ from asyncio.coroutines import iscoroutinefunction
 if TYPE_CHECKING:
     from .. import HueBridgeV2
 
+from ...util import NoneType
 from ...errors import InvalidAPIVersion, InvalidEvent, Unauthorized
 from ..models.clip import CLIPEvent, CLIPEventType, CLIPResource
 from ..models.resource import ResourceTypes
@@ -24,10 +25,13 @@ class EventStreamStatus(Enum):
     DISCONNECTED = 2
 
 
-EventType = CLIPEventType
+
+EventType = CLIPEventType # substitute
 EventCallBackType = Callable[[EventType, CLIPResource], None]
 EventSubscriptionType = Tuple[
-    EventCallBackType, "EventType | None", "ResourceTypes | None"
+    EventCallBackType,
+    "Tuple[EventType] | None",
+    "Tuple[ResourceTypes] | None",
 ]
 
 
@@ -65,8 +69,8 @@ class EventStream:
     def subscribe(
         self,
         callback: Callable[[EventType, CLIPResource], None],
-        event_filter: EventType | None = None,
-        resource_filter: ResourceTypes | None = None,
+        event_filter: EventType | Tuple[EventType] | None = None,
+        resource_filter: ResourceTypes | Tuple[ResourceTypes] | None = None,
     ) -> Callable:
         """
         Subscribe to events emitted by the Hue bridge for resources.
@@ -79,6 +83,10 @@ class EventStream:
         Returns:
             function to unsubscribe.
         """
+        if not isinstance(event_filter, (NoneType, tuple)):
+            event_filter = (event_filter,)
+        if not isinstance(resource_filter, (NoneType, tuple)):
+            resource_filter = (resource_filter,)
         subscription = (callback, event_filter, resource_filter)
 
         def unsubscribe():
@@ -90,9 +98,9 @@ class EventStream:
     def emit(self, type: EventType, data: CLIPResource) -> None:
         """Emit event to all listeners."""
         for (callback, event_filter, resource_filter) in self._subscribers:
-            if event_filter is not None and event_filter != type:
+            if event_filter is not None and type not in event_filter:
                 continue
-            if resource_filter is not None and resource_filter != data.type:
+            if resource_filter is not None and data.type not in resource_filter:
                 continue
             if iscoroutinefunction(callback):
                 asyncio.create_task(callback(type, data))
@@ -104,7 +112,7 @@ class EventStream:
 
         Read incoming SSE messages and put them in a Queue to be processed.
 
-        Background tasks that keeps (re)connecting untill stopped.
+        Background task that keeps (re)connecting untill stopped.
 
         https://html.spec.whatwg.org/multipage/server-sent-events.html#event-stream-interpretation
         """
@@ -120,17 +128,18 @@ class EventStream:
                 ) as resp:
                     # update status to connected once we reach this point
                     self._status = EventStreamStatus.CONNECTED
+                    retries = 0  # reset on succesfull connect
                     self._logger.debug("Connected to EventStream")
                     # messages come in one by line, according to EventStream/SSE specs
-                    # we iterate over the incoming lines in the streamreader
-                    # to prevent a deadlock waiting for a message while the connectioin is dead
+                    # we iterate over the incoming lines in the streamreader.
+                    # To prevent a deadlock waiting for a message while the connection is dead
                     # we have a simple timeout guard in place.
-                    # if no message is received in 10 minutes, a Timeout error will be raised
+                    # If no message is received in 30 minutes, a Timeout error will be raised
                     # and thus the connection re-established.
                     iterator = resp.content.__aiter__()
                     while True:
                         line = await asyncio.wait_for(
-                            iterator.__anext__(), timeout=5 * 60
+                            iterator.__anext__(), timeout=30 * 60
                         )
                         self.__parse_message(line)
             except (ClientConnectionError, asyncio.TimeoutError) as err:
@@ -152,7 +161,7 @@ class EventStream:
             # each clip event has array of updated/added/deleted objects in data property
             # we fire an event for each object that was added/updated/deleted
             for item in event.data:
-                self.emit(event.type, item)
+                self.emit(EventType(event.type), item)
 
     def __parse_message(self, line: bytes) -> None:
         """Parse a plain message string as received from EventStream."""

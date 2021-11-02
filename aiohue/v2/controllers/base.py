@@ -8,13 +8,20 @@ from typing import TYPE_CHECKING, Callable, Dict, Generic, Iterator, List, Tuple
 from aiohue.v2.models.connectivity import ZigbeeConnectivity
 from aiohue.v2.models.device import Device
 
-from ...util import dataclass_to_dict, update_dataclass
+from ...util import dataclass_to_dict, update_dataclass, NoneType
 from ..models.clip import CLIPResource, parse_clip_resource
 from ..models.resource import ResourceTypes
 from .events import EventCallBackType, EventType
 
 if TYPE_CHECKING:
     from .. import HueBridgeV2
+
+
+EventSubscriptionType = Tuple[
+    EventCallBackType,
+    "Tuple[str] | None",
+    "Tuple[EventType] | None",
+]
 
 
 class BaseResourcesController(Generic[CLIPResource]):
@@ -27,7 +34,7 @@ class BaseResourcesController(Generic[CLIPResource]):
         self._bridge = bridge
         self._items: Dict[str, CLIPResource] = {}
         self._logger = bridge.logger.getChild(self.item_type.value)
-        self._subscribers: List[Tuple[EventCallBackType, str | None]] = []
+        self._subscribers: List[EventSubscriptionType] = []
 
     @property
     def items(self) -> List[CLIPResource]:
@@ -60,8 +67,8 @@ class BaseResourcesController(Generic[CLIPResource]):
     def subscribe(
         self,
         callback: EventCallBackType,
-        id_filter: str | None = None,
-        event_filter: EventType | None = None,
+        id_filter: str | Tuple[str] | None = None,
+        event_filter: EventType | Tuple[EventType] | None = None,
     ) -> Callable:
         """
         Subscribe to status changes for this resource type.
@@ -74,6 +81,10 @@ class BaseResourcesController(Generic[CLIPResource]):
         Returns:
             function to unsubscribe.
         """
+        if not isinstance(event_filter, (NoneType, tuple)):
+            event_filter = (event_filter,)
+        if not isinstance(id_filter, (NoneType, tuple)):
+            id_filter = (id_filter,)
         subscription = (callback, id_filter, event_filter)
 
         def unsubscribe():
@@ -108,7 +119,7 @@ class BaseResourcesController(Generic[CLIPResource]):
         """
         Update HUE resource with PUT command.
 
-        Provide instance of object's class with only the changed key set.
+        Provide instance of object's class with only the changed keys set.
         Note that not all resources allow updating/setting of data.
         """
         endpoint = f"clip/v2/resource/{self.item_type.value}/{id}"
@@ -144,9 +155,9 @@ class BaseResourcesController(Generic[CLIPResource]):
             update_dataclass(cur_item, item)
 
         for (callback, id_filter, event_filter) in self._subscribers:
-            if id_filter is not None and id_filter != item.id:
+            if id_filter is not None and item.id not in id_filter:
                 continue
-            if event_filter is not None and event_filter != type:
+            if event_filter is not None and type not in event_filter:
                 continue
             # dispatch the full resource object to the callback
             if iscoroutinefunction(callback):
@@ -179,8 +190,8 @@ class GroupedControllerBase(Generic[CLIPResource]):
     def subscribe(
         self,
         callback: EventCallBackType,
-        id_filter: str | None = None,
-        event_filter: EventType | None = None,
+        id_filter: str | Tuple[str] | None = None,
+        event_filter: EventType | Tuple[EventType] | None = None,
     ) -> Callable:
         """Subscribe to status changes for all grouped resources."""
         unsubs = [

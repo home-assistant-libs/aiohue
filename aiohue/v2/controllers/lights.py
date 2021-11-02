@@ -21,6 +21,14 @@ class LightsController(BaseResourcesController[Type[Light]]):
 
     item_type = ResourceTypes.LIGHT
 
+    async def turn_on(self, id: str, transition_time: int | None = None) -> None:
+        """Turn on the light."""
+        return await self.set_on(id, True, transition_time)
+
+    async def turn_off(self, id: str, transition_time: int | None = None) -> None:
+        """Turn off the light."""
+        return await self.set_on(id, False, transition_time)
+
     async def set_on(
         self, id: str, powered: bool, transition_time: int | None = None
     ) -> None:
@@ -29,14 +37,6 @@ class LightsController(BaseResourcesController[Type[Light]]):
         if transition_time is not None:
             update_obj.dynamics = DynamicsFeature(duration=transition_time)
         await self._send_put(id, update_obj)
-
-    async def turn_on(self, id: str, transition_time: int | None = None) -> None:
-        """Turn on the light."""
-        return await self.set_on(id, True, transition_time)
-
-    async def turn_off(self, id: str, transition_time: int | None = None) -> None:
-        """Turn off the light."""
-        return await self.set_on(id, False, transition_time)
 
     async def set_brightness(
         self, id: str, brightness: float, transition_time: int | None = None
