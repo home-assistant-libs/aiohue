@@ -95,7 +95,7 @@ class BaseResourcesController(Generic[CLIPResource]):
 
     def get_by_v1_id(self, id: str) -> CLIPResource | None:
         """Get item by it's legacy V1 id."""
-        return next((item for item in self._items.values() if item.v1_id == id), None)
+        return next((item for item in self._items.values() if item.id_v1 == id), None)
 
     def get_device(self, id: str) -> Device:
         """Return device the given resource belongs to."""
