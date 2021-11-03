@@ -95,7 +95,7 @@ class BaseResourcesController(Generic[CLIPResource]):
 
     def get_by_v1_id(self, id: str) -> CLIPResource | None:
         """Get item by it's legacy V1 id."""
-        return next((item.v1_id == id for item in self._items.values()), None)
+        return next((item for item in self._items.values() if item.v1_id == id), None)
 
     def get_device(self, id: str) -> Device:
         """Return device the given resource belongs to."""
@@ -211,7 +211,7 @@ class GroupedControllerBase(Generic[CLIPResource]):
 
     def __getitem__(self, id: str) -> CLIPResource:
         """Get item by id."""
-        return next((x.id == id for x in self.items))
+        return next((x for x in self.items if x.id == id))
 
     def __iter__(self) -> Iterator[CLIPResource]:
         """Iterate items."""
