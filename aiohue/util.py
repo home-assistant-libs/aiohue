@@ -82,6 +82,9 @@ def normalize_bridge_id(bridge_id: str):
 
 def update_dataclass(org_obj: dataclass, new_obj: dataclass):
     """Update instance of dataclass with another, skipping None values."""
+    if org_obj is None:
+        # this may happen on nested structures with optional fields
+        return new_obj
     for f in fields(new_obj):
         new_val = getattr(new_obj, f.name)
         cur_val = getattr(org_obj, f.name)
