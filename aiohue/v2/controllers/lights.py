@@ -14,6 +14,7 @@ from ..models.feature import (
 from ..models.light import Light
 from ..models.resource import ResourceTypes
 from .base import BaseResourcesController
+from ...errors import AiohueException
 
 
 class LightsController(BaseResourcesController[Type[Light]]):
@@ -23,61 +24,35 @@ class LightsController(BaseResourcesController[Type[Light]]):
 
     async def turn_on(self, id: str, transition_time: int | None = None) -> None:
         """Turn on the light."""
-        return await self.set_on(id, True, transition_time)
+        await self.set_state(id, on=True, transition_time=transition_time)
 
     async def turn_off(self, id: str, transition_time: int | None = None) -> None:
         """Turn off the light."""
-        return await self.set_on(id, False, transition_time)
-
-    async def set_on(
-        self, id: str, powered: bool, transition_time: int | None = None
-    ) -> None:
-        """Turn on/off the light."""
-        update_obj = Light(id=id, on=OnFeature(on=powered))
-        if transition_time is not None:
-            update_obj.dynamics = DynamicsFeature(duration=transition_time)
-        await self._send_put(id, update_obj)
+        await self.set_state(id, on=False, transition_time=transition_time)
 
     async def set_brightness(
         self, id: str, brightness: float, transition_time: int | None = None
     ) -> None:
         """Set brightness to light. Turn on light if it's currently off."""
-        light = self[id]  # will raise keyerror if id not found
-        update_obj = Light(id=id, dimming=DimmingFeature(brightness=brightness))
-        if transition_time is not None:
-            assert transition_time > 100
-            update_obj.dynamics = DynamicsFeature(duration=transition_time)
-        if not light.is_on:
-            update_obj.on = OnFeature(on=True)
-        await self._send_put(id, update_obj)
+        await self.set_state(
+            id, on=True, brightness=brightness, transition_time=transition_time
+        )
 
     async def set_color(
         self, id: str, x: float, y: float, transition_time: int | None = None
     ) -> None:
         """Set color to light. Turn on light if it's currently off."""
-        light = self[id]  # will raise keyerror if id not found
-        update_obj = Light(id=id, color=ColorFeature(xy=ColorPoint(x, y)))
-        if transition_time is not None:
-            assert transition_time > 100
-            update_obj.dynamics = DynamicsFeature(duration=transition_time)
-        if not light.is_on:
-            update_obj.on = OnFeature(on=True)
-        await self._send_put(id, update_obj)
+        await self.set_state(
+            id, on=True, color_xy=(x, y), transition_time=transition_time
+        )
 
     async def set_color_temperature(
         self, id: str, mirek: int, transition_time: int | None = None
     ) -> None:
         """Set Color Temperature to light. Turn on light if it's currently off."""
-        light = self[id]  # will raise keyerror if id not found
-        update_obj = Light(
-            id=id, color_temperature=ColorTemperatureFeature(mirek=mirek)
+        await self.set_state(
+            id, on=True, color_temp=mirek, transition_time=transition_time
         )
-        if transition_time is not None:
-            assert transition_time > 100
-            update_obj.dynamics = DynamicsFeature(duration=transition_time)
-        if not light.is_on:
-            update_obj.on = OnFeature(on=True)
-        await self._send_put(id, update_obj)
 
     async def set_state(
         self,
@@ -97,5 +72,9 @@ class LightsController(BaseResourcesController[Type[Light]]):
         if color_temp is not None:
             update_obj.color_temperature = ColorTemperatureFeature(mirek=color_temp)
         if transition_time is not None:
+            if transition_time < 100:
+                raise AiohueException(
+                    "Transition needs to be specified in millisecond. Min 100, max 60000"
+                )
             update_obj.dynamics = DynamicsFeature(duration=transition_time)
         await self._send_put(id, update_obj)

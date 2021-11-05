@@ -1,7 +1,9 @@
 """Controller holding and managing HUE resources of type `room`."""
 from __future__ import annotations
-
+import asyncio
 from typing import TYPE_CHECKING, List, Optional, Tuple, Type, Union
+
+from ...errors import AiohueException
 
 from ..models.clip import CLIPResource
 from ..models.feature import OnFeature
@@ -87,17 +89,25 @@ class GroupedLightController(BaseResourcesController[Type[GroupedLight]]):
         ):
             await self._send_put(id, GroupedLight(id, on=OnFeature(on=on)))
             return
+        if transition_time is not None and transition_time < 100:
+            raise AiohueException(
+                "Transition needs to be specified in millisecond. Min 100, max 60000"
+            )
         # redirect all other feature commands to underlying lights
         # note that this silently ignore params sent to light that are not supported
-        for light in self.get_lights(id):
-            await self._bridge.lights.set_state(
-                light.id,
-                on=on,
-                brightness=brightness if light.supports_dimming else None,
-                color_xy=color_xy if light.supports_color else None,
-                color_temp=color_temp if light.supports_color_temperature else None,
-                transition_time=transition_time,
-            )
+        await asyncio.gather(
+            *[
+                self._bridge.lights.set_state(
+                    light.id,
+                    on=on,
+                    brightness=brightness if light.supports_dimming else None,
+                    color_xy=color_xy if light.supports_color else None,
+                    color_temp=color_temp if light.supports_color_temperature else None,
+                    transition_time=transition_time,
+                )
+                for light in self.get_lights(id)
+            ]
+        )
 
 
 class GroupsController(GroupedControllerBase[Union[Room, Group, GroupedLight]]):

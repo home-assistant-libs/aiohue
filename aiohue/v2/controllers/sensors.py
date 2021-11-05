@@ -11,7 +11,7 @@ from ..models.temperature import Temperature
 
 from ..models.button import Button
 from ..models.motion import Motion
-from ..models.resource import ResourceTypes
+from ..models.resource import ResourceTypes, SensingService
 from .base import BaseResourcesController, GroupedControllerBase
 
 if TYPE_CHECKING:
@@ -51,11 +51,19 @@ class LightLevelController(BaseResourcesController[Type[LightLevel]]):
 
     item_type = ResourceTypes.LIGHT_LEVEL
 
+    async def set_enabled(self, id: str, enabled: bool) -> None:
+        """Enable/Disable sensor."""
+        await self._send_put(id, LightLevel(id=id, enabled=enabled))
+
 
 class MotionController(BaseResourcesController[Type[Motion]]):
     """Controller holding and managing HUE resources of type `motion`."""
 
     item_type = ResourceTypes.MOTION
+
+    async def set_enabled(self, id: str, enabled: bool) -> None:
+        """Enable/Disable sensor."""
+        await self._send_put(id, Motion(id=id, enabled=enabled))
 
 
 class TemperatureController(BaseResourcesController[Type[Temperature]]):

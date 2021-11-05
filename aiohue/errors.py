@@ -5,7 +5,7 @@ https://developers.meethue.com/documentation/error-messages
 
 
 class AiohueException(Exception):
-    """Base error for aiohue."""
+    """Base exception for aiohue."""
 
 
 class Unauthorized(AiohueException):

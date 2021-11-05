@@ -4,11 +4,11 @@ from setuptools import find_packages, setup
 LONG_DESC = open("README.md").read()
 PACKAGES = find_packages(exclude=["tests", "tests.*"])
 REQUIREMENTS = list(val.strip() for val in open("requirements.txt"))
-MIN_PY_VERSION = "3.8"
+MIN_PY_VERSION = "3.9"
 
 setup(
     name="aiohue",
-    version="2.7.2",
+    version="2.7.3",
     license="Apache License 2.0",
     url="https://github.com/home-assistant-libs/aiohue",
     author="Paulus Schoutsen",

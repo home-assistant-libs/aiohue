@@ -49,7 +49,7 @@ async def discover_nupnp(
     if websession is None:
         websession = ClientSession()
     try:
-        async with websession.get(URL_NUPNP, timeout=5) as res:
+        async with websession.get(URL_NUPNP, timeout=30) as res:
             for item in await res.json():
                 host = item["internalipaddress"]
                 # the nupnp discovery might return items that are not in local network
@@ -76,7 +76,7 @@ async def is_hue_bridge(host: str, websession: ClientSession | None = None) -> s
     try:
         # every hue bridge returns discovery info on this endpoint
         url = f"http://{host}/api/config"
-        async with websession.get(url, timeout=5) as res:
+        async with websession.get(url, timeout=30) as res:
             res.raise_for_status()
             data = await res.json()
             return normalize_bridge_id(data["bridgeid"])
@@ -94,11 +94,11 @@ async def is_v2_bridge(host: str, websession: ClientSession | None = None) -> bo
         # v2 api is https only and returns a 403 forbidden when no key provided
         url = f"https://{host}/clip/v2/resources"
         async with websession.get(
-            url, ssl=False, raise_for_status=False, timeout=5
+            url, ssl=False, raise_for_status=False, timeout=30
         ) as res:
             return res.status == 403
     except Exception:  # pylint: disable=broad-except
-        # all other status/exceptions means the bridge is not v2
+        # all other status/exceptions means the bridge is not v2 or not reachable at this time
         return False
     finally:
         if not websession_provided:
