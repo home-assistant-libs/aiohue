@@ -15,7 +15,7 @@ class MotionSensingFeature:
     clip-api.schema.json#/definitions/MotionSensingFeatureGet
     """
 
-    motion: bool
+    motion: Optional[bool] = None
     motion_valid: Optional[bool] = None
 
 

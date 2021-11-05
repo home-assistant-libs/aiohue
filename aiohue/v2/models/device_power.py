@@ -33,7 +33,7 @@ class PowerState:
     clip-api.schema.json#/definitions/TODO
     """
 
-    battery_level: int
+    battery_level: Optional[int]
     battery_state: BatteryState
 
 
