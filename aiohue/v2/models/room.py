@@ -74,7 +74,7 @@ class RoomMetadata(NamedResourceMetadata):
     clip-api.schema.json#/definitions/RoomMetadataPut
     """
 
-    archetype: RoomArchetype
+    archetype: Optional[RoomArchetype] = None  # required in post/get, optional in put
 
 
 @dataclass

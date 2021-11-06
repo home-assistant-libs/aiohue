@@ -3,7 +3,7 @@ from __future__ import annotations
 
 import asyncio
 from asyncio.coroutines import iscoroutinefunction
-from typing import TYPE_CHECKING, Callable, Dict, Generic, Iterator, List, Tuple
+from typing import TYPE_CHECKING, Any, Callable, Dict, Generic, Iterator, List, Tuple
 
 from aiohue.v2.models.connectivity import ZigbeeConnectivity
 from aiohue.v2.models.device import Device
@@ -124,8 +124,12 @@ class BaseResourcesController(Generic[CLIPResource]):
         """
         endpoint = f"clip/v2/resource/{self.item_type.value}/{id}"
         # create a clean dict with only the changed keys set.
-        data = dataclass_to_dict(obj_in)
+        data = dataclass_to_dict(obj_in, skip_none=True)
         await self._bridge.request("put", endpoint, json=data)
+
+    def get(self, id: str, default: Any = None) -> CLIPResource | None:
+        """Get item by id of default if item does not exist."""
+        return self._items.get(id, default)
 
     def __getitem__(self, id: str) -> CLIPResource:
         """Get item by id."""
@@ -134,6 +138,10 @@ class BaseResourcesController(Generic[CLIPResource]):
     def __iter__(self) -> Iterator[CLIPResource]:
         """Iterate items."""
         return iter(self._items.values())
+
+    def __contains__(self, id: str) -> bool:
+        """Return bool if id is in items."""
+        return id in self._items
 
     async def _handle_event(self, type: EventType, item: CLIPResource) -> None:
         """Handle incoming event for this resource from the EventStream."""
@@ -148,7 +156,7 @@ class BaseResourcesController(Generic[CLIPResource]):
             cur_item = self._items.get(item.id)
             if cur_item is None:
                 # should not be possible but just in case
-                # if this does happen often we should consider fetching the full object here
+                # if this does happen often we should consider fetching the full object
                 self._logger.warning("received update for unknown item %s", item.id)
                 return
             # make sure we only update keys that are not None
@@ -209,10 +217,18 @@ class GroupedControllerBase(Generic[CLIPResource]):
         for resource_control in self._resources:
             await resource_control.initialize(initial_data)
 
+    def get(self, id: str, default: Any = None) -> CLIPResource | None:
+        """Get item by id of default if item does not exist."""
+        return next((x for y in self._resources for x in y if x.id == id), default)
+
     def __getitem__(self, id: str) -> CLIPResource:
         """Get item by id."""
-        return next((x for x in self.items if x.id == id))
+        return next((x for y in self._resources for x in y if x.id == id))
 
     def __iter__(self) -> Iterator[CLIPResource]:
         """Iterate items."""
         return iter(self.items)
+
+    def __contains__(self, id: str) -> bool:
+        """Return bool if id is in items."""
+        return any((x for x in self.items if x.id == id))

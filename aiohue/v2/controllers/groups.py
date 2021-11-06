@@ -5,7 +5,6 @@ from typing import TYPE_CHECKING, List, Optional, Tuple, Type, Union
 
 from ...errors import AiohueException
 
-from ..models.clip import CLIPResource
 from ..models.feature import OnFeature
 from ..models.group import Group
 from ..models.grouped_light import GroupedLight
@@ -15,7 +14,6 @@ from ..models.room import Room
 from ..models.scene import Scene
 from ..models.zone import Zone
 from .base import BaseResourcesController, GroupedControllerBase
-from .events import EventType
 
 if TYPE_CHECKING:
     from .. import HueBridgeV2
@@ -45,15 +43,6 @@ class GroupedLightController(BaseResourcesController[Type[GroupedLight]]):
     """Controller holding and managing HUE resources of type `grouped_light`."""
 
     item_type = ResourceTypes.GROUPED_LIGHT
-
-    async def _handle_event(self, type: EventType, item: CLIPResource) -> None:
-        """Handle incoming event for this resource from the EventStream."""
-        await super()._handle_event(type, item)
-        # make sure that an update of grouped light gets propagated to connected zone/room
-        if type != EventType.RESOURCE_UPDATED:
-            return
-        if zone := self.get_zone(item.id):
-            self._bridge.events.emit(EventType.RESOURCE_UPDATED, zone)
 
     def get_zone(self, id: str) -> Room | Zone | None:
         """Get the zone or room connected to grouped light."""
@@ -91,7 +80,7 @@ class GroupedLightController(BaseResourcesController[Type[GroupedLight]]):
             return
         if transition_time is not None and transition_time < 100:
             raise AiohueException(
-                "Transition needs to be specified in millisecond. Min 100, max 60000"
+                "Transition needs to be specified in milliseconds. Min 100, max 60000"
             )
         # redirect all other feature commands to underlying lights
         # note that this silently ignore params sent to light that are not supported

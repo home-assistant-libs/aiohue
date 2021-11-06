@@ -19,11 +19,17 @@ class DevicesController(BaseResourcesController[Type[Device]]):
 
     def get_lights(self, id: str) -> List[Light]:
         """Return all lights belonging to given device."""
-        return [self._bridge.lights[x] for x in self[id].lights]
+        return [
+            self._bridge.lights[x] for x in self[id].lights if x in self._bridge.lights
+        ]
 
     def get_sensors(self, id: str) -> List[SENSOR_TYPES]:
         """Return all sensors belonging to given device."""
-        return [self._bridge.sensors[x] for x in self[id].sensors]
+        return [
+            self._bridge.sensors[x]
+            for x in self[id].sensors
+            if x in self._bridge.sensors
+        ]
 
     def get_room(self, id: str) -> Room | None:
         """Return room the given device belongs to (if any)."""

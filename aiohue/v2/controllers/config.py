@@ -53,58 +53,52 @@ class ConfigController(
         Union[Bridge, BridgeHome, Entertainment, EntertainmentConfiguration]
     ]
 ):
-    """Controller holding and managing HUE resources thare are of the config type."""
+    """
+    Controller holding and managing HUE resources thare are of the config type.
+
+    Note that the properties will raise AttributeError if not connected to a bridge.
+    """
 
     @property
-    def bridge_id(self) -> str | None:
+    def bridge_id(self) -> str:
         """Return id of bridge we're connected to."""
-        if bridge := self.bridge:
-            return bridge.bridge_id
-        return None
+        return self.bridge.id
 
     @property
-    def name(self) -> str | None:
+    def name(self) -> str:
         """Return name of bridge we're connected to."""
-        if bridge_device := self.bridge_device:
-            return bridge_device.metadata.name
-        return None
+        return self.bridge_device.metadata.name
 
     @property
-    def mac_address(self) -> str | None:
+    def mac_address(self) -> str:
         """Return mac address of bridge we're connected to."""
-        if bridge_device := self.bridge_device:
-            for service in bridge_device.services:
-                if service.rtype == ResourceTypes.ZIGBEE_CONNECTIVITY:
-                    return self._bridge.sensors.zigbee_connectivity[
-                        service.rid
-                    ].mac_address
-        return None
+        return next(
+            (
+                self._bridge.sensors.zigbee_connectivity[service.rid].mac_address
+                for service in self.bridge_device.services
+                if service.rtype == ResourceTypes.ZIGBEE_CONNECTIVITY
+            )
+        )
 
     @property
-    def model_id(self) -> str | None:
+    def model_id(self) -> str:
         """Return model ID of bridge we're connected to."""
-        if bridge_device := self.bridge_device:
-            return bridge_device.product_data.model_id
-        return None
+        return self.bridge_device.product_data.model_id
 
     @property
-    def software_version(self) -> str | None:
+    def software_version(self) -> str:
         """Return software version of bridge we're connected to."""
-        if bridge_device := self.bridge_device:
-            return bridge_device.product_data.software_version
-        return None
+        return self.bridge_device.product_data.software_version
 
     @property
-    def bridge(self) -> Bridge | None:
+    def bridge(self) -> Bridge:
         """Return the only/first bridge found in items of resource `bridge`."""
         # the Hue resource system in V2 is generic and even the bridge object is returned as array
         # there should be only one object returned here
-        for item in self.bridges:
-            return item
-        return None
+        return next((item for item in self.bridges))
 
     @property
-    def bridge_device(self) -> Device | None:
+    def bridge_device(self) -> Device:
         """Return the device object belonging to the bridge."""
         # the Hue resource system in V2 is generic and even the bridge metadata
         # can (only) be retrieved as a device object
@@ -116,7 +110,7 @@ class ConfigController(
                 for service in device.services:
                     if service.rid == bridge.id:
                         return device
-        return None
+        raise AttributeError("bridge_device")
 
     def __init__(self, bridge: "HueBridgeV2") -> None:
         """Initialize underlying controller instances."""
