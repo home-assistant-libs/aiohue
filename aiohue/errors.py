@@ -31,4 +31,4 @@ def raise_from_error(error: dict):
     """Raise Exception based on Hue error."""
     type = error.get("type")
     cls = ERRORS.get(type, AiohueException)
-    raise cls("{}: {}".format(type, error["description"]))
+    raise cls(error["description"])
