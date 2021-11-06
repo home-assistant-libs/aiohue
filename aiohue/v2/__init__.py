@@ -46,8 +46,8 @@ class HueBridgeV2:
 
         self.logger = logging.getLogger(f"{__package__}[{host}]")
         # basic throttler limiting requests to the bridge
-        # as per Hue documentation this is max 10 seconds per second
-        self._throttler = Throttler(rate_limit=10, period=1)
+        # max 1 request per 100ms
+        self._throttler = Throttler(rate_limit=1, period=0.1)
         self._events = EventStream(self)
         # all resource controllers
         self._config = ConfigController(self)

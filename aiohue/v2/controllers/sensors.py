@@ -11,7 +11,7 @@ from ..models.temperature import Temperature
 
 from ..models.button import Button
 from ..models.motion import Motion
-from ..models.resource import ResourceTypes, SensingService
+from ..models.resource import ResourceTypes
 from .base import BaseResourcesController, GroupedControllerBase
 
 if TYPE_CHECKING:
