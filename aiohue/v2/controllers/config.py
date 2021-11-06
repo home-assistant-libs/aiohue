@@ -61,8 +61,8 @@ class ConfigController(
 
     @property
     def bridge_id(self) -> str:
-        """Return id of bridge we're connected to."""
-        return self.bridge.id
+        """Return bridge_id of bridge we're connected to."""
+        return self.bridge.bridge_id
 
     @property
     def name(self) -> str:
