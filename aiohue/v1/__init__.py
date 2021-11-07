@@ -5,7 +5,6 @@ from types import TracebackType
 from typing import Optional, Type
 
 import aiohttp
-from asyncio_throttle import Throttler
 
 from ..errors import raise_from_error
 from .config import Config
@@ -38,8 +37,6 @@ class HueBridgeV1:
         self._websession_provided = websession is not None
 
         self.logger = logging.getLogger(f"{__package__}[{host}]")
-        # max 1 request per 100ms
-        self._throttler = Throttler(rate_limit=1, period=0.1)
         # all api controllers
         self._config = None
         self._devices = None

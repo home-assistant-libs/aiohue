@@ -9,7 +9,6 @@ from typing import Callable, Generator, List, Optional, Type
 
 import aiohttp
 from aiohttp import ClientResponse
-from asyncio_throttle import Throttler
 
 from ..errors import Unauthorized, raise_from_error
 from .controllers.events import EventCallBackType, EventStream
@@ -45,9 +44,6 @@ class HueBridgeV2:
         self._websession_provided = websession is not None
 
         self.logger = logging.getLogger(f"{__package__}[{host}]")
-        # basic throttler limiting requests to the bridge
-        # max 1 request per 100ms
-        self._throttler = Throttler(rate_limit=1, period=0.1)
         self._events = EventStream(self)
         # all resource controllers
         self._config = ConfigController(self)
@@ -166,7 +162,6 @@ class HueBridgeV2:
         """
         Make a request to any path with V2 request method (auth in header).
 
-        Takes rate limiting (throttling) into account for connections.
         Returns a generator with aiohttp ClientResponse.
         """
         if self._websession is None:
@@ -181,12 +176,11 @@ class HueBridgeV2:
 
         kwargs["headers"]["hue-application-key"] = self._app_key
 
-        async with self._throttler:
-            async with self._websession.request(method, url, **kwargs) as res:
-                if res.status == 403:
-                    raise Unauthorized
-                res.raise_for_status()
-                yield res
+        async with self._websession.request(method, url, **kwargs) as res:
+            if res.status == 403:
+                raise Unauthorized
+            res.raise_for_status()
+            yield res
 
     async def __aenter__(self) -> "HueBridgeV2":
         """Return Context manager."""
