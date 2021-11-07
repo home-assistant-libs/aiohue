@@ -1,9 +1,7 @@
 """Controller holding and managing HUE resources of type `room`."""
 from __future__ import annotations
-import asyncio
-from typing import TYPE_CHECKING, List, Optional, Tuple, Type, Union
+from typing import TYPE_CHECKING, List, Type, Union
 
-from ...errors import AiohueException
 
 from ..models.feature import OnFeature
 from ..models.group import Group
@@ -59,44 +57,14 @@ class GroupedLightController(BaseResourcesController[Type[GroupedLight]]):
             return [self._bridge.lights[x] for x in zone.lights]
         return []  # fallback for a group without a zone (special 0 group)
 
-    async def set_state(
-        self,
-        id: str,
-        on: bool = True,
-        brightness: Optional[float] = None,
-        color_xy: Optional[Tuple[float, float]] = None,
-        color_temp: Optional[int] = None,
-        transition_time: int | None = None,
-    ) -> None:
-        """Set multiple features to grouped_light at once."""
-        # a grouped light can only handle OnFeature
-        if (
-            brightness is None
-            and color_xy is None
-            and color_temp is None
-            and transition_time is None
-        ):
-            await self._send_put(id, GroupedLight(id, on=OnFeature(on=on)))
-            return
-        if transition_time is not None and transition_time < 100:
-            raise AiohueException(
-                "Transition needs to be specified in milliseconds. Min 100, max 60000"
-            )
-        # redirect all other feature commands to underlying lights
-        # note that this silently ignore params sent to light that are not supported
-        await asyncio.gather(
-            *[
-                self._bridge.lights.set_state(
-                    light.id,
-                    on=on,
-                    brightness=brightness if light.supports_dimming else None,
-                    color_xy=color_xy if light.supports_color else None,
-                    color_temp=color_temp if light.supports_color_temperature else None,
-                    transition_time=transition_time,
-                )
-                for light in self.get_lights(id)
-            ]
-        )
+    async def set_state(self, id: str, on: bool = True) -> None:
+        """
+        Set supported feature(s) to grouped_light resource.
+
+        NOTE: a grouped_light can only handle OnFeature
+        To send other features, you'll have to control the underlying lights
+        """
+        await self._send_put(id, GroupedLight(id, on=OnFeature(on=on)))
 
 
 class GroupsController(GroupedControllerBase[Union[Room, Group, GroupedLight]]):
