@@ -4,7 +4,7 @@ from setuptools import find_packages, setup
 LONG_DESC = open("README.md").read()
 PACKAGES = find_packages(exclude=["tests", "tests.*"])
 REQUIREMENTS = list(val.strip() for val in open("requirements.txt"))
-MIN_PY_VERSION = "3.9"
+MIN_PY_VERSION = "3.8"
 
 setup(
     name="aiohue",
