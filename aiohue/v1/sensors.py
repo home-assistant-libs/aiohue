@@ -1,4 +1,5 @@
-from datetime import datetime
+"""Hue sensor resources."""
+from __future__ import annotations
 from .api import APIItems
 
 TYPE_DAYLIGHT = "Daylight"
@@ -60,8 +61,8 @@ class Sensors(APIItems):
     https://developers.meethue.com/documentation/sensors-api
     """
 
-    def __init__(self, logger, raw, v2_resources, request):
-        super().__init__(logger, raw, v2_resources, request, "sensors", create_sensor)
+    def __init__(self, logger, raw, request):
+        super().__init__(logger, raw, request, "sensors", create_sensor)
 
 
 class GenericSensor:
@@ -69,15 +70,9 @@ class GenericSensor:
 
     ITEM_TYPE = "sensors"
 
-    def __init__(self, id, raw, v2_resources, request):
+    def __init__(self, id, raw, request):
         self.id = id
         self.raw = raw
-        for resource in v2_resources:
-            if resource.get("type") == "device":
-                self.device = resource
-                break
-        else:
-            self.device = None
         self._request = request
         self.last_event = None
 
@@ -116,15 +111,6 @@ class GenericSensor:
     @property
     def config(self):
         return self.raw["config"]
-
-    def generic_process_update_event(self, update, state):
-        if "power_state" in update:
-            state["battery"] = update["power_state"]["battery_level"]
-
-        state["lastupdated"] = datetime.utcnow().replace(microsecond=0).isoformat()
-        self.last_event = update
-
-        self.raw = {**self.raw, "state": state}
 
 
 class GenericCLIPSensor(GenericSensor):
@@ -183,22 +169,6 @@ class GenericSwitchSensor:
     @property
     def inputs(self):
         return self.raw.get("capabilities", {}).get("inputs")
-
-    def process_update_event(self, update):
-        state = dict(self.state)
-
-        if "button" in update and self.device:
-            for idx, button in enumerate(self.device["services"]):
-                if button["rid"] != update["id"]:
-                    continue
-
-                for event in self.inputs[idx]["events"]:
-                    if event["eventtype"] == update["button"]["last_event"]:
-                        state["buttonevent"] = event["buttonevent"]
-                        break
-                break
-
-        self.generic_process_update_event(update, state)
 
     async def set_config(self, on=None):
         """Change config of a Switch sensor."""
@@ -283,14 +253,6 @@ class ZLLPresenceSensor(GenericZLLSensor):
     @property
     def presence(self):
         return self.raw["state"]["presence"]
-
-    def process_update_event(self, update):
-        state = dict(self.state)
-
-        if "motion" in update:
-            state["presence"] = update["motion"]["motion"]
-
-        self.generic_process_update_event(update, state)
 
     async def set_config(self, on=None, sensitivity=None, sensitivitymax=None):
         """Change config of a ZLL Presence sensor."""
@@ -410,14 +372,6 @@ class ZLLLightLevelSensor(GenericZLLSensor):
     def tholdoffset(self):
         return self.raw["config"]["tholdoffset"]
 
-    def process_update_event(self, update):
-        state = dict(self.state)
-
-        if "light" in update and update["light"]["light_level_valid"]:
-            state["lightlevel"] = update["light"]["light_level"]
-
-        self.generic_process_update_event(update, state)
-
     async def set_config(self, on=None, tholddark=None, tholdoffset=None):
         """Change config of a ZLL LightLevel sensor."""
         data = {
@@ -449,14 +403,6 @@ class ZLLTemperatureSensor(GenericZLLSensor):
     @property
     def temperature(self):
         return self.raw["state"]["temperature"]
-
-    def process_update_event(self, update):
-        state = dict(self.state)
-
-        if "temperature" in update and update["temperature"]["temperature_valid"]:
-            state["temperature"] = int(update["temperature"]["temperature"] * 100)
-
-        self.generic_process_update_event(update, state)
 
     async def set_config(self, on=None):
         """Change config of a ZLL Temperature sensor."""
@@ -513,45 +459,45 @@ class CLIPOpenCloseSensor(GenericCLIPSensor):
         await self._request("put", "sensors/{}/config".format(self.id), json=data)
 
 
-def create_sensor(id, raw, v2_resources, request):
+def create_sensor(id, raw, request):
     type = raw["type"]
 
     if type == TYPE_DAYLIGHT:
-        return DaylightSensor(id, raw, [], request)
+        return DaylightSensor(id, raw, request)
 
     elif type == TYPE_CLIP_GENERICFLAG:
-        return CLIPGenericFlagSensor(id, raw, v2_resources, request)
+        return CLIPGenericFlagSensor(id, raw, request)
     elif type == TYPE_CLIP_GENERICSTATUS:
-        return CLIPGenericStatusSensor(id, raw, v2_resources, request)
+        return CLIPGenericStatusSensor(id, raw, request)
     elif type == TYPE_CLIP_HUMIDITY:
-        return CLIPHumiditySensor(id, raw, v2_resources, request)
+        return CLIPHumiditySensor(id, raw, request)
     elif type == TYPE_CLIP_LIGHTLEVEL:
-        return CLIPLightLevelSensor(id, raw, v2_resources, request)
+        return CLIPLightLevelSensor(id, raw, request)
     elif type == TYPE_CLIP_OPENCLOSE:
-        return CLIPOpenCloseSensor(id, raw, v2_resources, request)
+        return CLIPOpenCloseSensor(id, raw, request)
     elif type == TYPE_CLIP_PRESENCE:
-        return CLIPPresenceSensor(id, raw, v2_resources, request)
+        return CLIPPresenceSensor(id, raw, request)
     elif type == TYPE_CLIP_SWITCH:
-        return CLIPSwitchSensor(id, raw, v2_resources, request)
+        return CLIPSwitchSensor(id, raw, request)
     elif type == TYPE_CLIP_TEMPERATURE:
-        return CLIPTemperatureSensor(id, raw, v2_resources, request)
+        return CLIPTemperatureSensor(id, raw, request)
 
     elif type == TYPE_GEOFENCE:
-        return GeofenceSensor(id, raw, v2_resources, request)
+        return GeofenceSensor(id, raw, request)
 
     elif type == TYPE_ZGP_SWITCH:
-        return ZGPSwitchSensor(id, raw, v2_resources, request)
+        return ZGPSwitchSensor(id, raw, request)
 
     elif type == TYPE_ZLL_LIGHTLEVEL:
-        return ZLLLightLevelSensor(id, raw, v2_resources, request)
+        return ZLLLightLevelSensor(id, raw, request)
     elif type == TYPE_ZLL_PRESENCE:
-        return ZLLPresenceSensor(id, raw, v2_resources, request)
+        return ZLLPresenceSensor(id, raw, request)
     elif type == TYPE_ZLL_ROTARY:
-        return ZLLRotarySensor(id, raw, v2_resources, request)
+        return ZLLRotarySensor(id, raw, request)
     elif type == TYPE_ZLL_SWITCH:
-        return ZLLSwitchSensor(id, raw, v2_resources, request)
+        return ZLLSwitchSensor(id, raw, request)
     elif type == TYPE_ZLL_TEMPERATURE:
-        return ZLLTemperatureSensor(id, raw, v2_resources, request)
+        return ZLLTemperatureSensor(id, raw, request)
 
     else:
-        return GenericSensor(id, raw, v2_resources, request)
+        return GenericSensor(id, raw, request)
