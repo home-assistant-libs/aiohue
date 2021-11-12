@@ -174,9 +174,7 @@ class BaseResourcesController(Generic[CLIPResource]):
         subscribers = (
             self._subscribers.get(item.id, []) + self._subscribers[ID_FILTER_ALL]
         )
-        for (callback, id_filter, event_filter) in subscribers:
-            if id_filter is not None and item.id not in id_filter:
-                continue
+        for (callback, event_filter) in subscribers:
             if event_filter is not None and type not in event_filter:
                 continue
             # dispatch the full resource object to the callback
