@@ -5,7 +5,7 @@ import json
 from enum import Enum
 from typing import TYPE_CHECKING, Callable, List, NoReturn, Tuple
 
-from aiohttp.client_exceptions import ClientConnectionError
+from aiohttp.client_exceptions import ClientError
 from asyncio.coroutines import iscoroutinefunction
 
 if TYPE_CHECKING:
@@ -141,7 +141,7 @@ class EventStream:
                             iterator.__anext__(), timeout=30 * 60
                         )
                         self.__parse_message(line)
-            except (ClientConnectionError, asyncio.TimeoutError) as err:
+            except (ClientError, asyncio.TimeoutError) as err:
                 status = getattr(err, "status", None)
                 if status == 404:
                     raise InvalidAPIVersion from err
