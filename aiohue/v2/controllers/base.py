@@ -19,9 +19,10 @@ if TYPE_CHECKING:
 
 EventSubscriptionType = Tuple[
     EventCallBackType,
-    "Tuple[str] | None",
     "Tuple[EventType] | None",
 ]
+
+ID_FILTER_ALL = "*"
 
 
 class BaseResourcesController(Generic[CLIPResource]):
@@ -34,7 +35,7 @@ class BaseResourcesController(Generic[CLIPResource]):
         self._bridge = bridge
         self._items: Dict[str, CLIPResource] = {}
         self._logger = bridge.logger.getChild(self.item_type.value)
-        self._subscribers: List[EventSubscriptionType] = []
+        self._subscribers: Dict[str, EventSubscriptionType] = {ID_FILTER_ALL: []}
 
     @property
     def items(self) -> List[CLIPResource]:
@@ -75,22 +76,34 @@ class BaseResourcesController(Generic[CLIPResource]):
 
         Parameters:
             - `callback` - callback function to call when an event emits.
-            - `id_filter` - Optionally provide a resource ID to filter events for.
-            - `event_filter` - Optionally provide an EventType as filter.
+            - `id_filter` - Optionally provide resource ID(s) to filter events for, `*` for all.
+            - `event_filter` - Optionally provide EventType(s) as filter.
 
         Returns:
             function to unsubscribe.
         """
-        if not isinstance(event_filter, (NoneType, tuple)):
+        if not isinstance(event_filter, (NoneType, (list, tuple))):
             event_filter = (event_filter,)
-        if not isinstance(id_filter, (NoneType, tuple)):
+
+        if id_filter is None:
+            id_filter = (ID_FILTER_ALL,)
+        elif not isinstance(id_filter, (list, tuple)):
             id_filter = (id_filter,)
-        subscription = (callback, id_filter, event_filter)
 
+        subscription = (callback, event_filter)
+
+        for id_key in id_filter:
+            if id_key not in self._subscribers:
+                self._subscribers[id_key] = []
+            self._subscribers[id_key].append(subscription)
+
+        # unsubscribe logic
         def unsubscribe():
-            self._subscribers.remove(subscription)
+            for id_key in id_filter:
+                if id_key not in self._subscribers:
+                    continue
+                self._subscribers[id_key].remove(subscription)
 
-        self._subscribers.append(subscription)
         return unsubscribe
 
     def get_by_v1_id(self, id: str) -> CLIPResource | None:
@@ -100,7 +113,7 @@ class BaseResourcesController(Generic[CLIPResource]):
     def get_device(self, id: str) -> Device | None:
         """
         Return device the given resource belongs to.
-        
+
         Returns None if the resource id is (no longer) valid
         or does not belong to a device.
         """
@@ -167,7 +180,10 @@ class BaseResourcesController(Generic[CLIPResource]):
             # make sure we only update keys that are not None
             update_dataclass(cur_item, item)
 
-        for (callback, id_filter, event_filter) in self._subscribers:
+        subscribers = (
+            self._subscribers.get(item.id, []) + self._subscribers[ID_FILTER_ALL]
+        )
+        for (callback, id_filter, event_filter) in subscribers:
             if id_filter is not None and item.id not in id_filter:
                 continue
             if event_filter is not None and type not in event_filter:
