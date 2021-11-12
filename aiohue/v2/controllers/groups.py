@@ -1,7 +1,7 @@
-"""Controller holding and managing HUE resources of type `room`."""
+"""Controller holding and managing HUE group resources."""
 from __future__ import annotations
-from typing import TYPE_CHECKING, List, Type, Union
 
+from typing import TYPE_CHECKING, List, Type, Union
 
 from ..models.feature import OnFeature
 from ..models.group import Group

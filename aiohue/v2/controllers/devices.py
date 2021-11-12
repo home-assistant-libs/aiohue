@@ -3,11 +3,11 @@ from __future__ import annotations
 
 from typing import List, Type
 
-from ..models.light import Light
-from ..models.room import Room
-
-from ..models.resource import ResourceTypes
+from ..models.connectivity import ZigbeeConnectivity
 from ..models.device import Device
+from ..models.light import Light
+from ..models.resource import ResourceTypes
+from ..models.room import Room
 from .base import BaseResourcesController
 from .sensors import SENSOR_TYPES
 
@@ -34,3 +34,10 @@ class DevicesController(BaseResourcesController[Type[Device]]):
     def get_room(self, id: str) -> Room | None:
         """Return room the given device belongs to (if any)."""
         return next((x for x in self._bridge.groups.room if id in x.devices), None)
+
+    def get_zigbee_connectivity(self, id: str) -> ZigbeeConnectivity | None:
+        """Return the ZigbeeConnectivity resource connected to device."""
+        for service in self._items[id].services:
+            if service.rtype == ResourceTypes.ZIGBEE_CONNECTIVITY:
+                return self._bridge.sensors.zigbee_connectivity[service.rid]
+        return None

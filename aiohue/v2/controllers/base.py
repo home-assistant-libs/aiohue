@@ -5,10 +5,9 @@ import asyncio
 from asyncio.coroutines import iscoroutinefunction
 from typing import TYPE_CHECKING, Any, Callable, Dict, Generic, Iterator, List, Tuple
 
-from aiohue.v2.models.connectivity import ZigbeeConnectivity
 from aiohue.v2.models.device import Device
 
-from ...util import dataclass_to_dict, update_dataclass, NoneType
+from ...util import NoneType, dataclass_to_dict, update_dataclass
 from ..models.clip import CLIPResource, parse_clip_resource
 from ..models.resource import ResourceTypes
 from .events import EventCallBackType, EventType
@@ -123,14 +122,6 @@ class BaseResourcesController(Generic[CLIPResource]):
             for service in device.services:
                 if service.rid == id:
                     return device
-        return None
-
-    def get_zigbee_connectivity(self, id: str) -> ZigbeeConnectivity | None:
-        """Return the ZigbeeConnectivity resource connected to device."""
-        if device := self.get_device(id):
-            for service in device.services:
-                if service.rtype == ResourceTypes.ZIGBEE_CONNECTIVITY:
-                    return self._bridge.sensors.zigbee_connectivity[service.rid]
         return None
 
     async def _send_put(self, id: str, obj_in: CLIPResource) -> None:
