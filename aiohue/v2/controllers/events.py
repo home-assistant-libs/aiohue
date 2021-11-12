@@ -143,9 +143,9 @@ class EventStream:
                         self.__parse_message(line)
             except (ClientConnectionError, asyncio.TimeoutError) as err:
                 status = getattr(err, "status", None)
-                if status is not None and status == 404:
+                if status == 404:
                     raise InvalidAPIVersion from err
-                if status is not None and status == 403:
+                if status == 403:
                     raise Unauthorized from err
                 # pass all other errors because we will auto retry
             finally:
@@ -173,7 +173,8 @@ class EventStream:
                 return
             if key == "id":
                 self._last_event_id = value.replace(":0", "")
-            elif key == "data":
+                return
+            if key == "data":
                 # events is array with multiple events (but contains just one)
                 events: List[dict] = json.loads(value)
                 for event in events:
@@ -183,7 +184,8 @@ class EventStream:
                             "Received invalid event %s", event.get("type")
                         )
                     self._event_queue.put_nowait(clip_event)
-            else:
+                return
+            if key != "data":
                 self._logger.debug("Received unexpected message: %s - %s", key, value)
         except Exception as exc:  # pylint: disable=broad-except
             self._logger.warning(

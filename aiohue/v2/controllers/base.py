@@ -56,8 +56,8 @@ class BaseResourcesController(Generic[CLIPResource]):
             if ResourceTypes(item["type"]) != self.item_type:
                 continue
             item_count += 1
-            res: CLIPResource = parse_clip_resource(item)
-            self._items[res.id] = parse_clip_resource(item)
+            resource: CLIPResource = parse_clip_resource(item)
+            self._items[resource.id] = resource
         # subscribe to item updates
         self._bridge.events.subscribe(
             self._handle_event, resource_filter=self.item_type
@@ -97,22 +97,27 @@ class BaseResourcesController(Generic[CLIPResource]):
         """Get item by it's legacy V1 id."""
         return next((item for item in self._items.values() if item.id_v1 == id), None)
 
-    def get_device(self, id: str) -> Device:
-        """Return device the given resource belongs to."""
+    def get_device(self, id: str) -> Device | None:
+        """
+        Return device the given resource belongs to.
+        
+        Returns None if the resource id is (no longer) valid
+        or does not belong to a device.
+        """
         if self.item_type == ResourceTypes.DEVICE:
             return self[id]
         for device in self._bridge.devices:
             for service in device.services:
                 if service.rid == id:
                     return device
-        # always fallback to bridge device itself
-        return self._bridge.config.bridge_device
+        return None
 
     def get_zigbee_connectivity(self, id: str) -> ZigbeeConnectivity | None:
         """Return the ZigbeeConnectivity resource connected to device."""
-        for service in self.get_device(id).services:
-            if service.rtype == ResourceTypes.ZIGBEE_CONNECTIVITY:
-                return self._bridge.sensors.zigbee_connectivity[service.rid]
+        if device := self.get_device(id):
+            for service in device.services:
+                if service.rtype == ResourceTypes.ZIGBEE_CONNECTIVITY:
+                    return self._bridge.sensors.zigbee_connectivity[service.rid]
         return None
 
     async def _send_put(self, id: str, obj_in: CLIPResource) -> None:
