@@ -63,7 +63,7 @@ class LightsController(BaseResourcesController[Type[Light]]):
         color_temp: Optional[int] = None,
         transition_time: int | None = None,
     ) -> None:
-        """Set multiple features to light at once."""
+        """Set supported feature(s) to light resource."""
         update_obj = Light(id=id, on=OnFeature(on=on))
         if brightness is not None:
             update_obj.dimming = DimmingFeature(brightness=brightness)
