@@ -75,7 +75,7 @@ class BaseResourcesController(Generic[CLIPResource]):
 
         Parameters:
             - `callback` - callback function to call when an event emits.
-            - `id_filter` - Optionally provide resource ID(s) to filter events for, `*` for all.
+            - `id_filter` - Optionally provide resource ID(s) to filter events for.
             - `event_filter` - Optionally provide EventType(s) as filter.
 
         Returns:
