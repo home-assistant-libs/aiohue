@@ -189,3 +189,17 @@ def dataclass_from_dict(cls: dataclass, dict_obj: dict, strict=False):
             for field in fields(cls)
         }
     )
+
+
+def mac_from_bridge_id(bridge_id: str) -> str:
+    """Parse mac address from bridge id."""
+    parts = [
+        bridge_id[0:2],
+        bridge_id[2:4],
+        bridge_id[4:6],
+        # part 6:10 needs to be left out (fffe)
+        bridge_id[10:12],
+        bridge_id[12:14],
+        bridge_id[14:16],
+    ]
+    return ":".join(parts)

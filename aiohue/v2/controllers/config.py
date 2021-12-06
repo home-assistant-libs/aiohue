@@ -3,11 +3,11 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Type, Union
 
-from aiohue.v2.models.bridge_home import BridgeHome
-from aiohue.v2.models.device import Device
-from aiohue.v2.models.entertainment import Entertainment, EntertainmentConfiguration
-
+from ...util import mac_from_bridge_id
 from ..models.bridge import Bridge
+from ..models.bridge_home import BridgeHome
+from ..models.device import Device
+from ..models.entertainment import Entertainment, EntertainmentConfiguration
 from ..models.resource import ResourceTypes
 from .base import BaseResourcesController, GroupedControllerBase
 
@@ -72,13 +72,8 @@ class ConfigController(
     @property
     def mac_address(self) -> str:
         """Return mac address of bridge we're connected to."""
-        return next(
-            (
-                self._bridge.sensors.zigbee_connectivity[service.rid].mac_address
-                for service in self.bridge_device.services
-                if service.rtype == ResourceTypes.ZIGBEE_CONNECTIVITY
-            )
-        )
+        # the network mac is not available in api so we parse it from the id
+        return mac_from_bridge_id(self.bridge_id)
 
     @property
     def model_id(self) -> str:
