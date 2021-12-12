@@ -150,6 +150,14 @@ class MirekSchema:
     mirek_maximum: int = 153
     mirek_minimum: int = 500
 
+    def __post_init__(self):
+        """Auto correct invalid values."""
+        # Fix for devices that provide wrong info
+        if self.mirek_minimum == 0:
+            self.mirek_minimum = 153
+        if self.mirek_minimum == 65535:
+            self.mirek_minimum = 500
+
 
 @dataclass
 class ColorTemperatureFeatureBasic:
@@ -164,6 +172,15 @@ class ColorTemperatureFeatureBasic:
     mirek_schema: Optional[MirekSchema] = None
     # mirek_valid will be false if light is currently not in the ct spectrum
     mirek_valid: Optional[bool] = False
+
+    def __post_init__(self):
+        """Auto correct invalid values."""
+        if self.mirek is None or self.mirek_schema is None:
+            return
+        if self.mirek < self.mirek_schema.mirek_minimum:
+            self.mirek = self.mirek_schema.mirek_minimum
+        if self.mirek > self.mirek_schema.mirek_maximum:
+            self.mirek = self.mirek_schema.mirek_maximum
 
 
 @dataclass
