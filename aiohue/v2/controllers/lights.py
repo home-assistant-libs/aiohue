@@ -74,7 +74,7 @@ class LightsController(BaseResourcesController[Type[Light]]):
         if transition_time is not None:
             if transition_time < 100:
                 raise AiohueException(
-                    "Transition needs to be specified in millisecond. Min 100, max 60000"
+                    "Transition needs to be specified in millisecond. Min 100, max 6000000"
                 )
             update_obj.dynamics = DynamicsFeature(duration=transition_time)
         await self._send_put(id, update_obj)
