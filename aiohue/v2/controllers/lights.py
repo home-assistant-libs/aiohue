@@ -4,6 +4,8 @@ from __future__ import annotations
 from typing import Optional, Tuple, Type
 
 from ..models.feature import (
+    AlertEffectType,
+    AlertFeature,
     ColorFeature,
     ColorPoint,
     ColorTemperatureFeature,
@@ -62,6 +64,7 @@ class LightsController(BaseResourcesController[Type[Light]]):
         color_xy: Optional[Tuple[float, float]] = None,
         color_temp: Optional[int] = None,
         transition_time: int | None = None,
+        alert: AlertEffectType | None = None
     ) -> None:
         """Set supported feature(s) to light resource."""
         update_obj = Light(id=id, on=OnFeature(on=on))
@@ -77,4 +80,6 @@ class LightsController(BaseResourcesController[Type[Light]]):
                     "Transition needs to be specified in millisecond. Min 100, max 60000"
                 )
             update_obj.dynamics = DynamicsFeature(duration=transition_time)
+        if alert is not None:
+            update_obj.alert = AlertFeature(action=alert)
         await self._send_put(id, update_obj)
