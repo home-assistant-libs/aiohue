@@ -162,10 +162,18 @@ def dataclass_from_dict(cls: dataclass, dict_obj: dict, strict=False):
                     return _get_val(name, value, sub_arg_type)
                 except (KeyError, TypeError, ValueError):
                     pass
-            raise TypeError(
+            # if we get to this point, all possibilities failed
+            # find out if we should raise or log this
+            err = (
                 f"Value {value} of type {type(value)} is invalid for {name}, "
                 f"expected value of type {value_type}"
             )
+            if NoneType not in sub_value_types:
+                # raise exception, we have no idea how to handle this value
+                raise TypeError(err)
+            # failed to parse the (sub) value but None allowed, log only
+            logging.getLogger(__name__).warn(err)
+            return None
         if value_type is Any:
             return value
         if value is None and value_type is not NoneType:
