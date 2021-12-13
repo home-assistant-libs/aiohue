@@ -147,16 +147,16 @@ class ColorFeature(ColorFeatureBasic):
 class MirekSchema:
     """Represent Mirek schema."""
 
-    mirek_maximum: int = 153
-    mirek_minimum: int = 500
+    mirek_minimum: int = 153
+    mirek_maximum: int = 500
 
     def __post_init__(self):
         """Auto correct invalid values."""
         # Fix for devices that provide wrong info
         if self.mirek_minimum == 0:
             self.mirek_minimum = 153
-        if self.mirek_minimum == 65535:
-            self.mirek_minimum = 500
+        if self.mirek_maximum == 65535:
+            self.mirek_maximum = 500
 
 
 @dataclass
