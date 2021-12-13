@@ -1,4 +1,7 @@
+from __future__ import annotations
 from collections import namedtuple
+from logging import Logger
+from typing import Any, Coroutine, Dict
 
 from .api import APIItems
 
@@ -11,13 +14,15 @@ GamutType = namedtuple("GamutType", ["red", "green", "blue"])
 
 
 class Lights(APIItems):
-    """Represents Hue Lights.
+    """
+    Represents Hue Lights.
 
     https://developers.meethue.com/documentation/lights-api
     """
 
-    def __init__(self, logger, raw, v2_resources, request):
-        super().__init__(logger, raw, v2_resources, request, "lights", Light)
+    def __init__(self, logger: Logger, raw: Dict[str, Any], request: Coroutine) -> None:
+        """Initialize instance."""
+        super().__init__(logger, raw, request, "lights", Light)
 
 
 class Light:
@@ -25,7 +30,8 @@ class Light:
 
     ITEM_TYPE = "lights"
 
-    def __init__(self, id, raw, v2_resources, request):
+    def __init__(self, id: str, raw: Dict[str, Any], request: Coroutine) -> None:
+        """Initialize instance."""
         self.id = id
         self.raw = raw
         self._request = request
@@ -91,25 +97,6 @@ class Light:
             color_gamut = None
 
         return color_gamut
-
-    def process_update_event(self, update):
-        state = dict(self.state)
-
-        if color := update.get("color"):
-            state["xy"] = [color["xy"]["x"], color["xy"]["y"]]
-
-        if ct := update.get("color_temperature"):
-            state["ct"] = ct["mirek"]
-
-        if "on" in update:
-            state["on"] = update["on"]["on"]
-
-        if dimming := update.get("dimming"):
-            state["bri"] = int(dimming["brightness"] / 100 * 254)
-
-        state["reachable"] = True
-
-        self.raw = {**self.raw, "state": state}
 
     async def set_state(
         self,

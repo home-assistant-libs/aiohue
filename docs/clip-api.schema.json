@@ -1,0 +1,2951 @@
+{
+    "definitions": {
+      "ActionAction": {
+        "description": "the action to be executed on recall",
+        "type": "object",
+        "properties": {
+          "on": {
+            "$ref": "#/definitions/OnFeatureBasic"
+          },
+          "dimming": {
+            "$ref": "#/definitions/DimmingFeatureBasic"
+          },
+          "color": {
+            "$ref": "#/definitions/ColorFeatureBasic"
+          },
+          "color_temperature": {
+            "$ref": "#/definitions/ColorTemperatureFeatureBasic"
+          }
+        }
+      },
+      "ActionActionPost": {
+        "description": "the action to be executed on recall",
+        "type": "object",
+        "properties": {
+          "on": {
+            "$ref": "#/definitions/OnFeatureBasicPost"
+          },
+          "dimming": {
+            "$ref": "#/definitions/DimmingFeatureBasicPost"
+          },
+          "color": {
+            "$ref": "#/definitions/ColorFeatureBasicPost"
+          },
+          "color_temperature": {
+            "$ref": "#/definitions/ColorTemperatureFeatureBasicPost"
+          }
+        }
+      },
+      "ActionActionPut": {
+        "description": "the action to be executed on recall",
+        "type": "object",
+        "properties": {
+          "on": {
+            "$ref": "#/definitions/OnFeatureBasicPut"
+          },
+          "dimming": {
+            "$ref": "#/definitions/DimmingFeatureBasicPut"
+          },
+          "color": {
+            "$ref": "#/definitions/ColorFeatureBasicPut"
+          },
+          "color_temperature": {
+            "$ref": "#/definitions/ColorTemperatureFeatureBasicPut"
+          }
+        }
+      },
+      "Action": {
+        "type": "object",
+        "properties": {
+          "target": {
+            "$ref": "#/definitions/ResourceIdentifier"
+          },
+          "action": {
+            "$ref": "#/definitions/ActionAction"
+          }
+        },
+        "required": [
+          "target",
+          "action"
+        ]
+      },
+      "ActionPost": {
+        "type": "object",
+        "properties": {
+          "target": {
+            "$ref": "#/definitions/ResourceIdentifierPost"
+          },
+          "action": {
+            "$ref": "#/definitions/ActionActionPost"
+          }
+        },
+        "required": [
+          "target",
+          "action"
+        ]
+      },
+      "ActionPut": {
+        "type": "object",
+        "properties": {
+          "target": {
+            "$ref": "#/definitions/ResourceIdentifierPut"
+          },
+          "action": {
+            "$ref": "#/definitions/ActionActionPut"
+          }
+        },
+        "required": [
+          "target",
+          "action"
+        ]
+      },
+      "BehaviorInstance": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/ScriptInstance"
+          },
+          {
+            "properties": {
+              "type": {
+                "enum": [
+                  "behavior_instance"
+                ],
+                "$ref": "#/definitions/ResourceTypes"
+              }
+            },
+            "type": "object"
+          }
+        ]
+      },
+      "BehaviorInstancePost": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/ScriptInstancePost"
+          },
+          {
+            "properties": {
+              "type": {
+                "enum": [
+                  "behavior_instance"
+                ],
+                "$ref": "#/definitions/ResourceTypes"
+              }
+            },
+            "type": "object"
+          }
+        ]
+      },
+      "BehaviorInstancePut": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/ScriptInstancePut"
+          },
+          {
+            "properties": {
+              "type": {
+                "enum": [
+                  "behavior_instance"
+                ],
+                "$ref": "#/definitions/ResourceTypes"
+              }
+            },
+            "type": "object"
+          }
+        ]
+      },
+      "BehaviorScript": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/ScriptDefinition"
+          },
+          {
+            "properties": {
+              "type": {
+                "enum": [
+                  "behavior_script"
+                ],
+                "$ref": "#/definitions/ResourceTypes"
+              }
+            },
+            "type": "object"
+          }
+        ]
+      },
+      "Bridge": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/Resource"
+          },
+          {
+            "properties": {
+              "type": {
+                "enum": [
+                  "bridge"
+                ],
+                "$ref": "#/definitions/ResourceTypes"
+              },
+              "bridge_id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "bridge_id"
+            ],
+            "type": "object"
+          }
+        ]
+      },
+      "BridgeHome": {
+        "description": "Home resource lists all rooms in a home and all devices which are not assigned to a room.\nHome only contains resources of type \"device\" and \"room\" ",
+        "allOf": [
+          {
+            "$ref": "#/definitions/Group"
+          },
+          {
+            "properties": {
+              "type": {
+                "enum": [
+                  "bridge_home"
+                ],
+                "$ref": "#/definitions/ResourceTypes"
+              }
+            },
+            "type": "object"
+          }
+        ]
+      },
+      "BridgeHomePut": {
+        "description": "Home resource lists all rooms in a home and all devices which are not assigned to a room.\nHome only contains resources of type \"device\" and \"room\" ",
+        "allOf": [
+          {
+            "$ref": "#/definitions/GroupPut"
+          },
+          {
+            "properties": {
+              "type": {
+                "enum": [
+                  "bridge_home"
+                ],
+                "$ref": "#/definitions/ResourceTypes"
+              }
+            },
+            "type": "object"
+          }
+        ]
+      },
+      "BridgePut": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/ResourcePut"
+          },
+          {
+            "properties": {
+              "type": {
+                "enum": [
+                  "bridge"
+                ],
+                "$ref": "#/definitions/ResourceTypes"
+              }
+            },
+            "type": "object"
+          }
+        ]
+      },
+      "Brightness": {
+        "minimum": 0,
+        "maximum": 100,
+        "description": "Brightness percentage. value cannot be 0, writing 0 changes it to lowest possible brightness",
+        "type": "number"
+      },
+      "ButtonEvent": {
+        "description": "event which can be send by a button control",
+        "enum": [
+          "initial_press",
+          "repeat",
+          "short_release",
+          "long_release",
+          "double_short_release"
+        ],
+        "type": "string"
+      },
+      "ButtOnFeature": {
+        "type": "object",
+        "properties": {
+          "last_event": {
+            "$ref": "#/definitions/ButtonEvent"
+          }
+        },
+        "required": [
+          "last_event"
+        ]
+      },
+      "Button": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/Resource"
+          },
+          {
+            "properties": {
+              "type": {
+                "enum": [
+                  "button"
+                ],
+                "$ref": "#/definitions/ResourceTypes"
+              },
+              "metadata": {
+                "$ref": "#/definitions/SwitchInputMetadata"
+              },
+              "button": {
+                "$ref": "#/definitions/ButtOnFeature"
+              }
+            },
+            "required": [
+              "metadata",
+              "button"
+            ],
+            "type": "object"
+          }
+        ]
+      },
+      "ButtonPut": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/ResourcePut"
+          },
+          {
+            "properties": {
+              "type": {
+                "enum": [
+                  "button"
+                ],
+                "$ref": "#/definitions/ResourceTypes"
+              }
+            },
+            "type": "object"
+          }
+        ]
+      },
+      "ClipMessage": {
+        "description": "Basic message body for all return messages on GET, data contains full expanded resource",
+        "type": "object",
+        "properties": {
+          "errors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        },
+        "required": [
+          "errors"
+        ]
+      },
+      "ClipMessageBehaviorInstance": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/ClipMessage"
+          },
+          {
+            "properties": {
+              "data": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/BehaviorInstance"
+                }
+              }
+            },
+            "required": [
+              "data"
+            ],
+            "type": "object"
+          }
+        ]
+      },
+      "ClipMessageBehaviorScript": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/ClipMessage"
+          },
+          {
+            "properties": {
+              "data": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/BehaviorScript"
+                }
+              }
+            },
+            "required": [
+              "data"
+            ],
+            "type": "object"
+          }
+        ]
+      },
+      "ClipMessageBridge": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/ClipMessage"
+          },
+          {
+            "properties": {
+              "data": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/Bridge"
+                }
+              }
+            },
+            "required": [
+              "data"
+            ],
+            "type": "object"
+          }
+        ]
+      },
+      "ClipMessageBridgeHome": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/ClipMessage"
+          },
+          {
+            "properties": {
+              "data": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/BridgeHome"
+                }
+              }
+            },
+            "required": [
+              "data"
+            ],
+            "type": "object"
+          }
+        ]
+      },
+      "ClipMessageButton": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/ClipMessage"
+          },
+          {
+            "properties": {
+              "data": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/Button"
+                }
+              }
+            },
+            "required": [
+              "data"
+            ],
+            "type": "object"
+          }
+        ]
+      },
+      "ClipMessageDependerGet": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/ClipMessage"
+          },
+          {
+            "properties": {
+              "data": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/DependerGet"
+                }
+              }
+            },
+            "required": [
+              "data"
+            ],
+            "type": "object"
+          }
+        ]
+      },
+      "ClipMessageDevice": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/ClipMessage"
+          },
+          {
+            "properties": {
+              "data": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/Device"
+                }
+              }
+            },
+            "required": [
+              "data"
+            ],
+            "type": "object"
+          }
+        ]
+      },
+      "ClipMessageEntertainmentConfiguration": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/ClipMessage"
+          },
+          {
+            "properties": {
+              "data": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/EntertainmentConfiguration"
+                }
+              }
+            },
+            "required": [
+              "data"
+            ],
+            "type": "object"
+          }
+        ]
+      },
+      "ClipMessageEntertainment": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/ClipMessage"
+          },
+          {
+            "properties": {
+              "data": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/Entertainment"
+                }
+              }
+            },
+            "required": [
+              "data"
+            ],
+            "type": "object"
+          }
+        ]
+      },
+      "ClipMessageGeofenceClient": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/ClipMessage"
+          },
+          {
+            "properties": {
+              "data": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GeofenceClient"
+                }
+              }
+            },
+            "required": [
+              "data"
+            ],
+            "type": "object"
+          }
+        ]
+      },
+      "ClipMessageGroupedLight": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/ClipMessage"
+          },
+          {
+            "properties": {
+              "data": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/GroupedLight"
+                }
+              }
+            },
+            "required": [
+              "data"
+            ],
+            "type": "object"
+          }
+        ]
+      },
+      "ClipMessageLight": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/ClipMessage"
+          },
+          {
+            "properties": {
+              "data": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/Light"
+                }
+              }
+            },
+            "required": [
+              "data"
+            ],
+            "type": "object"
+          }
+        ]
+      },
+      "ClipMessageMotion": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/ClipMessage"
+          },
+          {
+            "properties": {
+              "data": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/Motion"
+                }
+              }
+            },
+            "required": [
+              "data"
+            ],
+            "type": "object"
+          }
+        ]
+      },
+      "ClipMessageResource": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/ClipMessage"
+          },
+          {
+            "properties": {
+              "data": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/Resource"
+                }
+              }
+            },
+            "required": [
+              "data"
+            ],
+            "type": "object"
+          }
+        ]
+      },
+      "ClipMessageResourceIdentifierDelete": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/ClipMessage"
+          },
+          {
+            "properties": {
+              "data": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/ResourceIdentifierDelete"
+                }
+              }
+            },
+            "required": [
+              "data"
+            ],
+            "type": "object"
+          }
+        ]
+      },
+      "ClipMessageResourceIdentifierPost": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/ClipMessage"
+          },
+          {
+            "properties": {
+              "data": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/ResourceIdentifierPost"
+                }
+              }
+            },
+            "required": [
+              "data"
+            ],
+            "type": "object"
+          }
+        ]
+      },
+      "ClipMessageResourceIdentifierPut": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/ClipMessage"
+          },
+          {
+            "properties": {
+              "data": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/ResourceIdentifierPut"
+                }
+              }
+            },
+            "required": [
+              "data"
+            ],
+            "type": "object"
+          }
+        ]
+      },
+      "ClipMessageRoom": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/ClipMessage"
+          },
+          {
+            "properties": {
+              "data": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/Room"
+                }
+              }
+            },
+            "required": [
+              "data"
+            ],
+            "type": "object"
+          }
+        ]
+      },
+      "ClipMessageScene": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/ClipMessage"
+          },
+          {
+            "properties": {
+              "data": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/Scene"
+                }
+              }
+            },
+            "required": [
+              "data"
+            ],
+            "type": "object"
+          }
+        ]
+      },
+      "ClipMessageZigbeeConnectivity": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/ClipMessage"
+          },
+          {
+            "properties": {
+              "data": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/ZigbeeConnectivity"
+                }
+              }
+            },
+            "required": [
+              "data"
+            ],
+            "type": "object"
+          }
+        ]
+      },
+      "ClipMessageZone": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/ClipMessage"
+          },
+          {
+            "properties": {
+              "data": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/Zone"
+                }
+              }
+            },
+            "required": [
+              "data"
+            ],
+            "type": "object"
+          }
+        ]
+      },
+      "ColorFeatureBasic": {
+        "type": "object",
+        "properties": {
+          "xy": {
+            "$ref": "#/definitions/ColorPoint"
+          }
+        },
+        "required": [
+          "xy"
+        ]
+      },
+      "ColorFeatureBasicPost": {
+        "type": "object",
+        "properties": {
+          "xy": {
+            "$ref": "#/definitions/ColorPoint"
+          }
+        },
+        "required": [
+          "xy"
+        ]
+      },
+      "ColorFeatureBasicPut": {
+        "type": "object",
+        "properties": {
+          "xy": {
+            "$ref": "#/definitions/ColorPoint"
+          }
+        }
+      },
+      "ColorFeatureGamut": {
+        "description": "Color gamut of color bulb. Some bulbs do not properly return the Gamut information. In this case this is not present.",
+        "type": "object",
+        "properties": {
+          "red": {
+            "$ref": "#/definitions/ColorPoint"
+          },
+          "green": {
+            "$ref": "#/definitions/ColorPoint"
+          },
+          "blue": {
+            "$ref": "#/definitions/ColorPoint"
+          }
+        },
+        "required": [
+          "red",
+          "green",
+          "blue"
+        ]
+      },
+      "ColorFeature": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/ColorFeatureBasic"
+          },
+          {
+            "properties": {
+              "gamut": {
+                "$ref": "#/definitions/ColorFeatureGamut"
+              },
+              "gamut_type": {
+                "enum": [
+                  "A",
+                  "B",
+                  "C",
+                  "mixed",
+                  "other"
+                ],
+                "type": "string"
+              }
+            },
+            "required": [
+              "gamut_type"
+            ],
+            "type": "object"
+          }
+        ]
+      },
+      "ColorFeaturePut": {
+        "$ref": "#/definitions/ColorFeatureBasicPut"
+      },
+      "ColorPoint": {
+        "description": "CIE XY gamut position",
+        "type": "object",
+        "properties": {
+          "x": {
+            "minimum": 0,
+            "maximum": 1,
+            "description": "X position in color gamut",
+            "type": "number"
+          },
+          "y": {
+            "minimum": 0,
+            "maximum": 1,
+            "description": "Y position in color gamut",
+            "type": "number"
+          }
+        },
+        "required": [
+          "x",
+          "y"
+        ]
+      },
+      "ColorTemperatureFeatureBasic": {
+        "type": "object",
+        "properties": {
+          "mirek": {
+            "$ref": "#/definitions/ColorTemperatureMirek"
+          }
+        },
+        "required": [
+          "mirek"
+        ]
+      },
+      "ColorTemperatureFeatureBasicPost": {
+        "type": "object",
+        "properties": {
+          "mirek": {
+            "$ref": "#/definitions/ColorTemperatureMirek"
+          }
+        },
+        "required": [
+          "mirek"
+        ]
+      },
+      "ColorTemperatureFeatureBasicPut": {
+        "type": "object",
+        "properties": {
+          "mirek": {
+            "$ref": "#/definitions/ColorTemperatureMirek"
+          }
+        }
+      },
+      "ColorTemperatureFeature": {
+        "$ref": "#/definitions/ColorTemperatureFeatureBasic"
+      },
+      "ColorTemperatureFeaturePut": {
+        "$ref": "#/definitions/ColorTemperatureFeatureBasicPut"
+      },
+      "ColorTemperatureMirek": {
+        "minimum": 153,
+        "maximum": 500,
+        "description": "color temperature in mirek or null when the light color is not in the ct spectrum",
+        "type": "integer"
+      },
+      "ConnectivityService": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/Resource"
+          },
+          {
+            "properties": {
+              "status": {
+                "enum": [
+                  "connected",
+                  "disconnected",
+                  "connectivity_issue"
+                ],
+                "type": "string"
+              },
+              "type": {
+                "enum": [
+                  "ip_connectivity",
+                  "zigbee_connectivity",
+                  "remote_access"
+                ],
+                "type": "string"
+              }
+            },
+            "required": [
+              "status"
+            ],
+            "type": "object"
+          }
+        ]
+      },
+      "ConnectivityServicePut": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/ResourcePut"
+          },
+          {
+            "properties": {
+              "type": {
+                "enum": [
+                  "ip_connectivity",
+                  "zigbee_connectivity",
+                  "remote_access"
+                ],
+                "type": "string"
+              }
+            },
+            "type": "object"
+          }
+        ]
+      },
+      "Coordinate": {
+        "minimum": -1,
+        "maximum": 1,
+        "description": "Coordinate of a single axis",
+        "type": "number"
+      },
+      "DependencyGet": {
+        "description": "Defines target resource of a dependency.",
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "target": {
+            "description": "Id of the dependency resource (target).",
+            "$ref": "#/definitions/ResourceIdentifier"
+          },
+          "level": {
+            "$ref": "#/definitions/DependencyLevel"
+          }
+        },
+        "required": [
+          "target",
+          "level"
+        ]
+      },
+      "DependencyLevel": {
+        "description": "#- non_critical: Defines a dependency between resources: although source is impacted by removal of target, source remains of target means removal of source.\n- critical: Defines a critical dependency between resources: source cannot function without target, hence removal of target means removal of source. ",
+        "enum": [
+          "critical"
+        ],
+        "type": "string"
+      },
+      "DependerGet": {
+        "description": "Represents all the resources which depend on a resource.",
+        "allOf": [
+          {
+            "$ref": "#/definitions/Resource"
+          },
+          {
+            "properties": {
+              "type": {
+                "enum": [
+                  "depender"
+                ],
+                "$ref": "#/definitions/ResourceTypes"
+              },
+              "dependers": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/ResourceDependerGet"
+                }
+              }
+            },
+            "required": [
+              "dependers"
+            ],
+            "type": "object"
+          }
+        ]
+      },
+      "DeviceArchetypes": {
+        "enum": [
+          "bridge_v2",
+          "unknown_archetype",
+          "classic_bulb",
+          "sultan_bulb",
+          "flood_bulb",
+          "spot_bulb",
+          "candle_bulb",
+          "luster_bulb",
+          "pendant_round",
+          "pendant_long",
+          "ceiling_round",
+          "ceiling_square",
+          "floor_shade",
+          "floor_lantern",
+          "table_shade",
+          "recessed_ceiling",
+          "recessed_floor",
+          "single_spot",
+          "double_spot",
+          "table_wash",
+          "wall_lantern",
+          "wall_shade",
+          "flexible_lamp",
+          "ground_spot",
+          "wall_spot",
+          "plug",
+          "hue_go",
+          "hue_lightstrip",
+          "hue_iris",
+          "hue_bloom",
+          "bollard",
+          "wall_washer",
+          "hue_play",
+          "vintage_bulb",
+          "christmas_tree",
+          "hue_centris",
+          "hue_lightstrip_tv"
+        ],
+        "type": "string"
+      },
+      "Device": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/Group"
+          },
+          {
+            "properties": {
+              "type": {
+                "enum": [
+                  "device"
+                ],
+                "type": "string"
+              },
+              "product_data": {
+                "$ref": "#/definitions/DeviceProductData"
+              },
+              "metadata": {
+                "$ref": "#/definitions/DeviceMetaData"
+              },
+              "creation_time": {
+                "type": "string",
+                "format": "date-time"
+              }
+            },
+            "required": [
+              "product_data",
+              "metadata",
+              "creation_time"
+            ],
+            "type": "object"
+          }
+        ]
+      },
+      "DeviceMetaData": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/NamedResourceMetadata"
+          },
+          {
+            "properties": {
+              "archetype": {
+                "$ref": "#/definitions/DeviceArchetypes"
+              }
+            },
+            "required": [
+              "archetype"
+            ],
+            "type": "object"
+          }
+        ]
+      },
+      "DeviceMetadataPut": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/NamedResourceMetadataPut"
+          },
+          {
+            "properties": {
+              "archetype": {
+                "$ref": "#/definitions/DeviceArchetypes"
+              }
+            },
+            "type": "object"
+          }
+        ]
+      },
+      "DeviceProductData": {
+        "type": "object",
+        "properties": {
+          "model_id": {
+            "type": "string"
+          },
+          "product_id": {
+            "type": "string"
+          },
+          "manufacturer_name": {
+            "type": "string"
+          },
+          "product_name": {
+            "type": "string"
+          },
+          "product_archetype": {
+            "$ref": "#/definitions/DeviceArchetypes"
+          },
+          "certified": {
+            "type": "boolean"
+          },
+          "software_version": {
+            "pattern": "\\d+\\.\\d+\\.\\d+",
+            "type": "string"
+          }
+        },
+        "required": [
+          "model_id",
+          "product_id",
+          "manufacturer_name",
+          "product_name",
+          "product_archetype",
+          "certified",
+          "software_version"
+        ]
+      },
+      "DevicePut": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/GroupPut"
+          },
+          {
+            "properties": {
+              "type": {
+                "enum": [
+                  "device"
+                ],
+                "type": "string"
+              },
+              "metadata": {
+                "$ref": "#/definitions/DeviceMetadataPut"
+              }
+            },
+            "required": [
+              "metadata"
+            ],
+            "type": "object"
+          }
+        ]
+      },
+      "DimmingFeatureBasic": {
+        "type": "object",
+        "properties": {
+          "brightness": {
+            "$ref": "#/definitions/Brightness"
+          }
+        },
+        "required": [
+          "brightness"
+        ]
+      },
+      "DimmingFeatureBasicPost": {
+        "type": "object",
+        "properties": {
+          "brightness": {
+            "$ref": "#/definitions/Brightness"
+          }
+        },
+        "required": [
+          "brightness"
+        ]
+      },
+      "DimmingFeatureBasicPut": {
+        "type": "object",
+        "properties": {
+          "brightness": {
+            "$ref": "#/definitions/Brightness"
+          }
+        }
+      },
+      "DimmingFeature": {
+        "$ref": "#/definitions/DimmingFeatureBasic"
+      },
+      "DimmingFeaturePut": {
+        "$ref": "#/definitions/DimmingFeatureBasicPut"
+      },
+      "Duration": {
+        "minimum": 0,
+        "maximum": 6000000,
+        "multipleOf": 100,
+        "description": "Duration of a light transition in ms. Accuracy is in 100ms steps.",
+        "type": "integer"
+      },
+      "DynamicsFeaturePut": {
+        "type": "object",
+        "properties": {
+          "duration": {
+            "$ref": "#/definitions/Duration"
+          }
+        }
+      },
+      "EntertainmentChannelGet": {
+        "description": "Holds position of the channel and list of members, which is an array of segments resource identifiers",
+        "type": "object",
+        "properties": {
+          "channel_id": {
+            "minimum": 0,
+            "maximum": 255,
+            "description": "Bridge assigns a number upon creation. This is the number to be used by the HueStream API when addressing the channel",
+            "type": "integer"
+          },
+          "position": {
+            "description": "xyz position of this channel. It is the average position of its members",
+            "$ref": "#/definitions/Position"
+          },
+          "members": {
+            "description": "List that references segments that are members of that channel",
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/SegmentReference"
+            }
+          }
+        },
+        "required": [
+          "channel_id",
+          "position",
+          "members"
+        ]
+      },
+      "EntertainmentConfiguration": {
+        "description": "Entertainment configuration",
+        "allOf": [
+          {
+            "$ref": "#/definitions/Resource"
+          },
+          {
+            "properties": {
+              "type": {
+                "enum": [
+                  "entertainment_configuration"
+                ],
+                "type": "string"
+              },
+              "name": {
+                "description": "Friendly name of the entertainment configuration",
+                "$ref": "#/definitions/ResourceName"
+              },
+              "configuration_type": {
+                "description": "Defines for which type of application this channel assignment was optimized for\n\"screen\" : Channels are organized around content from a screen \"music\": Channels are organized for music synchronization \"3dspace: Channels are organized to provide 3d spacial effects \"other\": General use case ",
+                "enum": [
+                  "screen",
+                  "music",
+                  "3dspace",
+                  "other"
+                ],
+                "type": "string"
+              },
+              "status": {
+                "description": "Read only field reporting if the stream is active or not",
+                "enum": [
+                  "active",
+                  "inactive"
+                ],
+                "type": "string"
+              },
+              "active_streamer": {
+                "description": "Expected value is of a ResourceIdentifier of the type auth_v1",
+                "$ref": "#/definitions/ResourceIdentifier"
+              },
+              "stream_proxy": {
+                "$ref": "#/definitions/StreamingProxy"
+              },
+              "channels": {
+                "description": "Holds the channels. Each channel groups segments of one or different light",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/EntertainmentChannelGet"
+                }
+              },
+              "locations": {
+                "description": "Entertertainment services of the lights that are in the zone have locations",
+                "$ref": "#/definitions/EntertainmentLocations"
+              }
+            },
+            "required": [
+              "name",
+              "configuration_type",
+              "status",
+              "active_streamer",
+              "stream_proxy",
+              "channels",
+              "locations"
+            ],
+            "type": "object"
+          }
+        ]
+      },
+      "EntertainmentConfigurationPut": {
+        "description": "Entertainment configuration",
+        "allOf": [
+          {
+            "$ref": "#/definitions/ResourcePut"
+          },
+          {
+            "properties": {
+              "type": {
+                "enum": [
+                  "entertainment_configuration"
+                ],
+                "type": "string"
+              },
+              "action": {
+                "description": "If status is \"inactive\" -> write start to start streaming. Writing start when it's already active\ndoes not change the owership of the streaming. If status is \"active\" -> write \"stop\" to end the current streaming. In order to start streaming when other application is already streaming first write \"stop\" and then \"start\" ",
+                "enum": [
+                  "start",
+                  "stop"
+                ],
+                "type": "string"
+              }
+            },
+            "type": "object"
+          }
+        ]
+      },
+      "Entertainment": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/Resource"
+          },
+          {
+            "properties": {
+              "type": {
+                "enum": [
+                  "entertainment"
+                ],
+                "type": "string"
+              },
+              "renderer": {
+                "type": "boolean"
+              },
+              "proxy": {
+                "type": "boolean"
+              },
+              "segments": {
+                "$ref": "#/definitions/SegmentationProperties"
+              }
+            },
+            "required": [
+              "renderer",
+              "proxy"
+            ],
+            "type": "object"
+          }
+        ]
+      },
+      "EntertainmentLocations": {
+        "description": "Sets the position of each entertainment service in the configuration. If the service has several segments, more than one x,y,z location may be needed",
+        "type": "object",
+        "properties": {
+          "service_locations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/ServiceLocation"
+            }
+          }
+        },
+        "required": [
+          "service_locations"
+        ]
+      },
+      "EntertainmentPut": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/ResourcePut"
+          },
+          {
+            "properties": {
+              "type": {
+                "enum": [
+                  "entertainment"
+                ],
+                "type": "string"
+              },
+              "renderer": {
+                "type": "boolean"
+              },
+              "proxy": {
+                "type": "boolean"
+              },
+              "segments": {
+                "$ref": "#/definitions/SegmentationProperties"
+              }
+            },
+            "required": [
+              "renderer",
+              "proxy",
+              "segments"
+            ],
+            "type": "object"
+          }
+        ]
+      },
+      "Error": {
+        "description": "Error object which is returned when at least one error occured on a API call",
+        "type": "object",
+        "properties": {
+          "description": {
+            "description": "a human-readable explanation specific to this occurrence of the problem.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "description"
+        ]
+      },
+      "GUID": {
+        "pattern": "^[0-9a-f]{8}-([0-9a-f]{4}-){3}[0-9a-f]{12}$",
+        "description": "Unique identifier representing a specific resource instance",
+        "type": "string"
+      },
+      "GeofenceClient": {
+        "description": "Representation of Geofence Client.",
+        "allOf": [
+          {
+            "$ref": "#/definitions/Resource"
+          },
+          {
+            "properties": {
+              "type": {
+                "enum": [
+                  "geofence_client"
+                ],
+                "$ref": "#/definitions/ResourceTypes"
+              },
+              "name": {
+                "minLength": 1,
+                "maxLength": 32,
+                "type": "string"
+              }
+            },
+            "required": [
+              "name"
+            ],
+            "type": "object"
+          }
+        ]
+      },
+      "GeofenceClientPost": {
+        "description": "Representation of Geofence Client.",
+        "allOf": [
+          {
+            "$ref": "#/definitions/ResourcePost"
+          },
+          {
+            "properties": {
+              "type": {
+                "enum": [
+                  "geofence_client"
+                ],
+                "$ref": "#/definitions/ResourceTypes"
+              },
+              "is_at_home": {
+                "description": "Indicator if Geofence Client is at home.",
+                "type": "boolean"
+              },
+              "name": {
+                "minLength": 1,
+                "maxLength": 32,
+                "type": "string"
+              }
+            },
+            "required": [
+              "is_at_home"
+            ],
+            "type": "object"
+          }
+        ]
+      },
+      "GeofenceClientPut": {
+        "description": "Representation of Geofence Client.",
+        "allOf": [
+          {
+            "$ref": "#/definitions/ResourcePut"
+          },
+          {
+            "properties": {
+              "type": {
+                "enum": [
+                  "geofence_client"
+                ],
+                "$ref": "#/definitions/ResourceTypes"
+              },
+              "is_at_home": {
+                "description": "Indicator if Geofence Client is at home.",
+                "type": "boolean"
+              },
+              "name": {
+                "minLength": 1,
+                "maxLength": 32,
+                "type": "string"
+              }
+            },
+            "type": "object"
+          }
+        ]
+      },
+      "Group": {
+        "description": "supertype of all groups grouping devices or services",
+        "allOf": [
+          {
+            "$ref": "#/definitions/Resource"
+          },
+          {
+            "properties": {
+              "grouped_services": {
+                "description": "References all services aggregating control and state of services in the group.\nThis includes all services grouped in the group hiearchy given by child relation This includes all services of a device grouped in the group hiearchy given by child relation Aggregation is per service type, ie every service type which can be grouped has a corresponding definition of grouped type Supported types \"light\" ",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/ResourceIdentifier"
+                }
+              },
+              "services": {
+                "$ref": "#/definitions/ServiceList"
+              }
+            },
+            "required": [
+              "grouped_services",
+              "services"
+            ],
+            "type": "object"
+          }
+        ]
+      },
+      "GroupPost": {
+        "description": "supertype of all groups grouping devices or services",
+        "$ref": "#/definitions/ResourcePost"
+      },
+      "GroupPut": {
+        "description": "supertype of all groups grouping devices or services",
+        "$ref": "#/definitions/ResourcePut"
+      },
+      "GroupedLight": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/Resource"
+          },
+          {
+            "properties": {
+              "type": {
+                "enum": [
+                  "grouped_light"
+                ],
+                "type": "string"
+              },
+              "on": {
+                "$ref": "#/definitions/OnFeatureBasic"
+              }
+            },
+            "type": "object"
+          }
+        ]
+      },
+      "GroupedLightPut": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/ResourcePut"
+          },
+          {
+            "properties": {
+              "type": {
+                "enum": [
+                  "grouped_light"
+                ],
+                "type": "string"
+              },
+              "on": {
+                "$ref": "#/definitions/OnFeatureBasicPut"
+              }
+            },
+            "type": "object"
+          }
+        ]
+      },
+      "InstanceMetadata": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "$ref": "#/definitions/ResourceName"
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "InstanceMetadataPost": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "$ref": "#/definitions/ResourceName"
+          }
+        }
+      },
+      "InstanceMetadataPut": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "$ref": "#/definitions/ResourceName"
+          }
+        }
+      },
+      "LightArchetypes": {
+        "enum": [
+          "unknown_archetype",
+          "classic_bulb",
+          "sultan_bulb",
+          "flood_bulb",
+          "spot_bulb",
+          "candle_bulb",
+          "luster_bulb",
+          "pendant_round",
+          "pendant_long",
+          "ceiling_round",
+          "ceiling_square",
+          "floor_shade",
+          "floor_lantern",
+          "table_shade",
+          "recessed_ceiling",
+          "recessed_floor",
+          "single_spot",
+          "double_spot",
+          "table_wash",
+          "wall_lantern",
+          "wall_shade",
+          "flexible_lamp",
+          "ground_spot",
+          "wall_spot",
+          "plug",
+          "hue_go",
+          "hue_lightstrip",
+          "hue_iris",
+          "hue_bloom",
+          "bollard",
+          "wall_washer",
+          "hue_play",
+          "vintage_bulb",
+          "christmas_tree",
+          "hue_centris",
+          "hue_lightstrip_tv"
+        ],
+        "type": "string"
+      },
+      "Light": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/Resource"
+          },
+          {
+            "properties": {
+              "type": {
+                "enum": [
+                  "light"
+                ],
+                "type": "string"
+              },
+              "metadata": {
+                "$ref": "#/definitions/LightMetaData"
+              },
+              "on": {
+                "$ref": "#/definitions/OnFeature"
+              },
+              "dimming": {
+                "$ref": "#/definitions/DimmingFeature"
+              },
+              "color_temperature": {
+                "$ref": "#/definitions/ColorTemperatureFeature"
+              },
+              "color": {
+                "$ref": "#/definitions/ColorFeature"
+              },
+              "mode": {
+                "$ref": "#/definitions/LightModeValues"
+              }
+            },
+            "required": [
+              "metadata",
+              "on",
+              "mode"
+            ],
+            "type": "object"
+          }
+        ]
+      },
+      "LightMetaData": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/NamedResourceMetadata"
+          },
+          {
+            "properties": {
+              "archetype": {
+                "$ref": "#/definitions/LightArchetypes"
+              }
+            },
+            "required": [
+              "archetype"
+            ],
+            "type": "object"
+          }
+        ]
+      },
+      "LightMetadataPut": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/NamedResourceMetadataPut"
+          },
+          {
+            "properties": {
+              "archetype": {
+                "$ref": "#/definitions/LightArchetypes"
+              }
+            },
+            "type": "object"
+          }
+        ]
+      },
+      "LightModeValues": {
+        "enum": [
+          "normal",
+          "streaming"
+        ],
+        "type": "string"
+      },
+      "LightPut": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/ResourcePut"
+          },
+          {
+            "properties": {
+              "type": {
+                "enum": [
+                  "light"
+                ],
+                "type": "string"
+              },
+              "metadata": {
+                "$ref": "#/definitions/LightMetadataPut"
+              },
+              "on": {
+                "$ref": "#/definitions/OnFeaturePut"
+              },
+              "dimming": {
+                "$ref": "#/definitions/DimmingFeaturePut"
+              },
+              "color_temperature": {
+                "$ref": "#/definitions/ColorTemperatureFeaturePut"
+              },
+              "color": {
+                "$ref": "#/definitions/ColorFeaturePut"
+              },
+              "dynamics": {
+                "$ref": "#/definitions/DynamicsFeaturePut"
+              }
+            },
+            "type": "object"
+          }
+        ]
+      },
+      "Motion": {
+        "description": "service detecting motion",
+        "allOf": [
+          {
+            "$ref": "#/definitions/SensingService"
+          },
+          {
+            "properties": {
+              "type": {
+                "enum": [
+                  "motion"
+                ],
+                "$ref": "#/definitions/ResourceTypes"
+              },
+              "motion": {
+                "$ref": "#/definitions/MotionSensingFeature"
+              }
+            },
+            "required": [
+              "motion"
+            ],
+            "type": "object"
+          }
+        ]
+      },
+      "MotionPut": {
+        "description": "service detecting motion",
+        "allOf": [
+          {
+            "$ref": "#/definitions/SensingServicePut"
+          },
+          {
+            "properties": {
+              "type": {
+                "enum": [
+                  "motion"
+                ],
+                "$ref": "#/definitions/ResourceTypes"
+              }
+            },
+            "type": "object"
+          }
+        ]
+      },
+      "MotionSensingFeature": {
+        "type": "object",
+        "properties": {
+          "motion": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "motion"
+        ]
+      },
+      "NamedResourceMetadata": {
+        "description": "additional metadata including a user given name",
+        "allOf": [
+          {
+            "$ref": "#/definitions/ResourceMetadata"
+          },
+          {
+            "properties": {
+              "name": {
+                "$ref": "#/definitions/ResourceName"
+              }
+            },
+            "required": [
+              "name"
+            ],
+            "type": "object"
+          }
+        ]
+      },
+      "NamedResourceMetadataPost": {
+        "description": "additional metadata including a user given name",
+        "allOf": [
+          {
+            "$ref": "#/definitions/ResourceMetadataPost"
+          },
+          {
+            "properties": {
+              "name": {
+                "$ref": "#/definitions/ResourceName"
+              }
+            },
+            "required": [
+              "name"
+            ],
+            "type": "object"
+          }
+        ]
+      },
+      "NamedResourceMetadataPut": {
+        "description": "additional metadata including a user given name",
+        "allOf": [
+          {
+            "$ref": "#/definitions/ResourceMetadataPut"
+          },
+          {
+            "properties": {
+              "name": {
+                "$ref": "#/definitions/ResourceName"
+              }
+            },
+            "type": "object"
+          }
+        ]
+      },
+      "OnFeatureBasic": {
+        "type": "object",
+        "properties": {
+          "on": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "on"
+        ]
+      },
+      "OnFeatureBasicPost": {
+        "type": "object",
+        "properties": {
+          "on": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "on"
+        ]
+      },
+      "OnFeatureBasicPut": {
+        "type": "object",
+        "properties": {
+          "on": {
+            "type": "boolean"
+          }
+        }
+      },
+      "OnFeature": {
+        "$ref": "#/definitions/OnFeatureBasic"
+      },
+      "OnFeaturePut": {
+        "$ref": "#/definitions/OnFeatureBasicPut"
+      },
+      "Position": {
+        "type": "object",
+        "properties": {
+          "x": {
+            "$ref": "#/definitions/Coordinate"
+          },
+          "y": {
+            "$ref": "#/definitions/Coordinate"
+          },
+          "z": {
+            "$ref": "#/definitions/Coordinate"
+          }
+        },
+        "required": [
+          "x",
+          "y",
+          "z"
+        ]
+      },
+      "RecallFeature": {
+        "type": "object",
+        "properties": {
+          "action": {
+            "enum": [
+              "active"
+            ],
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "active"
+            ],
+            "type": "string"
+          },
+          "duration": {
+            "$ref": "#/definitions/Duration"
+          },
+          "dimming": {
+            "$ref": "#/definitions/DimmingFeatureBasicPut"
+          }
+        }
+      },
+      "ResourceDependeeGet": {
+        "description": "Represents a resource which (this) resource is dependent on.",
+        "$ref": "#/definitions/DependencyGet"
+      },
+      "ResourceDependerGet": {
+        "description": "Represents a resource which depend on (this) resource.",
+        "$ref": "#/definitions/DependencyGet"
+      },
+      "Resource": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "$ref": "#/definitions/GUID"
+          },
+          "type": {
+            "$ref": "#/definitions/ResourceTypes"
+          },
+          "id_v1": {
+            "pattern": "^(\\/[a-z]{4,32}\\/[0-9a-zA-Z-]{1,32})?$",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id"
+        ]
+      },
+      "ResourceIdentifierDelete": {
+        "type": "object",
+        "properties": {
+          "rid": {
+            "$ref": "#/definitions/GUID"
+          },
+          "rtype": {
+            "$ref": "#/definitions/ResourceTypes"
+          }
+        },
+        "required": [
+          "rid",
+          "rtype"
+        ]
+      },
+      "ResourceIdentifier": {
+        "type": "object",
+        "properties": {
+          "rid": {
+            "$ref": "#/definitions/GUID"
+          },
+          "rtype": {
+            "$ref": "#/definitions/ResourceTypes"
+          }
+        },
+        "required": [
+          "rid",
+          "rtype"
+        ]
+      },
+      "ResourceIdentifierPost": {
+        "type": "object",
+        "properties": {
+          "rid": {
+            "$ref": "#/definitions/GUID"
+          },
+          "rtype": {
+            "$ref": "#/definitions/ResourceTypes"
+          }
+        }
+      },
+      "ResourceIdentifierPut": {
+        "type": "object",
+        "properties": {
+          "rid": {
+            "$ref": "#/definitions/GUID"
+          },
+          "rtype": {
+            "$ref": "#/definitions/ResourceTypes"
+          }
+        }
+      },
+      "ResourceMetadata": {
+        "description": "additional metadata stored for a resource. This provides additional information to the user to indetify a rersource or to describe the resources context",
+        "type": "object",
+        "properties": {
+          "archetype": {
+            "description": "string representation of the archetype of the resource",
+            "type": "string"
+          }
+        },
+        "required": [
+          "archetype"
+        ]
+      },
+      "ResourceMetadataPost": {
+        "description": "additional metadata stored for a resource. This provides additional information to the user to indetify a rersource or to describe the resources context",
+        "type": "object",
+        "properties": {
+          "archetype": {
+            "description": "string representation of the archetype of the resource",
+            "type": "string"
+          }
+        },
+        "required": [
+          "archetype"
+        ]
+      },
+      "ResourceMetadataPut": {
+        "description": "additional metadata stored for a resource. This provides additional information to the user to indetify a rersource or to describe the resources context",
+        "type": "object",
+        "properties": {
+          "archetype": {
+            "description": "string representation of the archetype of the resource",
+            "type": "string"
+          }
+        }
+      },
+      "ResourceName": {
+        "minLength": 1,
+        "maxLength": 32,
+        "description": "Human readable name of a resource",
+        "type": "string"
+      },
+      "ResourcePost": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "$ref": "#/definitions/ResourceTypes"
+          }
+        }
+      },
+      "ResourcePut": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "$ref": "#/definitions/ResourceTypes"
+          }
+        }
+      },
+      "ResourceTypes": {
+        "description": "Type of the supported resources",
+        "enum": [
+          "device",
+          "bridge_home",
+          "room",
+          "zone",
+          "light",
+          "button",
+          "relative_rotary",
+          "temperature",
+          "light_level",
+          "motion",
+          "entertainment",
+          "grouped_light",
+          "device_power",
+          "device_update",
+          "ip_connectivity",
+          "zigbee_bridge_connectivity",
+          "zigbee_connectivity",
+          "remote_access",
+          "bridge",
+          "device_discovery",
+          "system_update",
+          "scene",
+          "entertainment_configuration",
+          "public_image",
+          "auth_v1",
+          "behavior_script",
+          "behavior_instance",
+          "geofence",
+          "geofence_client",
+          "depender"
+        ],
+        "type": "string"
+      },
+      "RoomArchetype": {
+        "description": "possible archetypes of a room",
+        "enum": [
+          "living_room",
+          "kitchen",
+          "dining",
+          "bedroom",
+          "kids_bedroom",
+          "bathroom",
+          "nursery",
+          "recreation",
+          "office",
+          "gym",
+          "hallway",
+          "toilet",
+          "front_door",
+          "garage",
+          "terrace",
+          "garden",
+          "driveway",
+          "carport",
+          "home",
+          "downstairs",
+          "upstairs",
+          "top_floor",
+          "attic",
+          "guest_room",
+          "staircase",
+          "lounge",
+          "man_cave",
+          "computer",
+          "studio",
+          "music",
+          "tv",
+          "reading",
+          "closet",
+          "storage",
+          "laundry_room",
+          "balcony",
+          "porch",
+          "barbecue",
+          "pool",
+          "other"
+        ],
+        "type": "string"
+      },
+      "Room": {
+        "description": "Room resources groups all devices within the same physical space of a room.\nRoom only allows resources of type \"device\" as childs A device can only be in at most one room. ",
+        "allOf": [
+          {
+            "$ref": "#/definitions/Group"
+          },
+          {
+            "properties": {
+              "type": {
+                "enum": [
+                  "room"
+                ],
+                "$ref": "#/definitions/ResourceTypes"
+              },
+              "metadata": {
+                "$ref": "#/definitions/RoomMetadata"
+              }
+            },
+            "required": [
+              "metadata"
+            ],
+            "type": "object"
+          }
+        ]
+      },
+      "RoomMetadata": {
+        "description": "configuration object for a room",
+        "allOf": [
+          {
+            "$ref": "#/definitions/NamedResourceMetadata"
+          },
+          {
+            "properties": {
+              "archetype": {
+                "$ref": "#/definitions/RoomArchetype"
+              }
+            },
+            "required": [
+              "archetype"
+            ],
+            "type": "object"
+          }
+        ]
+      },
+      "RoomMetadataPost": {
+        "description": "configuration object for a room",
+        "allOf": [
+          {
+            "$ref": "#/definitions/NamedResourceMetadataPost"
+          },
+          {
+            "properties": {
+              "archetype": {
+                "$ref": "#/definitions/RoomArchetype"
+              }
+            },
+            "required": [
+              "archetype"
+            ],
+            "type": "object"
+          }
+        ]
+      },
+      "RoomMetadataPut": {
+        "description": "configuration object for a room",
+        "allOf": [
+          {
+            "$ref": "#/definitions/NamedResourceMetadataPut"
+          },
+          {
+            "properties": {
+              "archetype": {
+                "$ref": "#/definitions/RoomArchetype"
+              }
+            },
+            "type": "object"
+          }
+        ]
+      },
+      "RoomPost": {
+        "description": "Room resources groups all devices within the same physical space of a room.\nRoom only allows resources of type \"device\" as childs A device can only be in at most one room. ",
+        "allOf": [
+          {
+            "$ref": "#/definitions/GroupPost"
+          },
+          {
+            "properties": {
+              "type": {
+                "enum": [
+                  "room"
+                ],
+                "$ref": "#/definitions/ResourceTypes"
+              },
+              "metadata": {
+                "$ref": "#/definitions/RoomMetadataPost"
+              }
+            },
+            "required": [
+              "metadata"
+            ],
+            "type": "object"
+          }
+        ]
+      },
+      "RoomPut": {
+        "description": "Room resources groups all devices within the same physical space of a room.\nRoom only allows resources of type \"device\" as childs A device can only be in at most one room. ",
+        "allOf": [
+          {
+            "$ref": "#/definitions/GroupPut"
+          },
+          {
+            "properties": {
+              "type": {
+                "enum": [
+                  "room"
+                ],
+                "$ref": "#/definitions/ResourceTypes"
+              },
+              "metadata": {
+                "$ref": "#/definitions/RoomMetadataPut"
+              }
+            },
+            "type": "object"
+          }
+        ]
+      },
+      "Scene": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/SceneService"
+          },
+          {
+            "properties": {
+              "metadata": {
+                "$ref": "#/definitions/SceneMetadata"
+              },
+              "type": {
+                "enum": [
+                  "scene"
+                ],
+                "type": "string"
+              },
+              "group": {
+                "$ref": "#/definitions/ResourceIdentifier"
+              }
+            },
+            "required": [
+              "metadata",
+              "group"
+            ],
+            "type": "object"
+          }
+        ]
+      },
+      "SceneMetadata": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "$ref": "#/definitions/ResourceName"
+          },
+          "image": {
+            "$ref": "#/definitions/ResourceIdentifier"
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "SceneMetadataPost": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "$ref": "#/definitions/ResourceName"
+          },
+          "image": {
+            "$ref": "#/definitions/ResourceIdentifierPost"
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "SceneMetadataPut": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "$ref": "#/definitions/ResourceName"
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "ScenePost": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/SceneServicePost"
+          },
+          {
+            "properties": {
+              "metadata": {
+                "$ref": "#/definitions/SceneMetadataPost"
+              },
+              "type": {
+                "enum": [
+                  "scene"
+                ],
+                "type": "string"
+              },
+              "group": {
+                "$ref": "#/definitions/ResourceIdentifierPost"
+              }
+            },
+            "required": [
+              "metadata",
+              "group"
+            ],
+            "type": "object"
+          }
+        ]
+      },
+      "ScenePut": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/SceneServicePut"
+          },
+          {
+            "properties": {
+              "metadata": {
+                "$ref": "#/definitions/SceneMetadataPut"
+              },
+              "type": {
+                "enum": [
+                  "scene"
+                ],
+                "type": "string"
+              }
+            },
+            "type": "object"
+          }
+        ]
+      },
+      "SceneService": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/Resource"
+          },
+          {
+            "properties": {
+              "actions": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/Action"
+                }
+              }
+            },
+            "required": [
+              "actions"
+            ],
+            "type": "object"
+          }
+        ]
+      },
+      "SceneServicePost": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/ResourcePost"
+          },
+          {
+            "properties": {
+              "actions": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/ActionPost"
+                }
+              }
+            },
+            "required": [
+              "actions"
+            ],
+            "type": "object"
+          }
+        ]
+      },
+      "SceneServicePut": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/ResourcePut"
+          },
+          {
+            "properties": {
+              "actions": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/ActionPut"
+                }
+              },
+              "recall": {
+                "$ref": "#/definitions/RecallFeature"
+              }
+            },
+            "type": "object"
+          }
+        ]
+      },
+      "ScriptDefinition": {
+        "description": "Definition of a script.",
+        "allOf": [
+          {
+            "$ref": "#/definitions/Resource"
+          },
+          {
+            "properties": {
+              "type": {
+                "$ref": "#/definitions/ResourceTypes"
+              },
+              "description": {
+                "description": "Short description of script.",
+                "type": "string"
+              },
+              "configuration": {
+                "description": "The configuration object is a JSON scheme that describes the configuration needed to instantiate the script.",
+                "type": "object"
+              },
+              "version": {
+                "description": "Version of script.",
+                "$ref": "#/definitions/Version"
+              },
+              "metadata": {
+                "$ref": "#/definitions/ScriptMetadata"
+              }
+            },
+            "required": [
+              "description",
+              "configuration",
+              "version",
+              "metadata"
+            ],
+            "type": "object"
+          }
+        ]
+      },
+      "ScriptInstance": {
+        "description": "Representation of active script. Script are instantiated using the id and configuration of the ScriptDefinition.",
+        "allOf": [
+          {
+            "$ref": "#/definitions/Resource"
+          },
+          {
+            "properties": {
+              "type": {
+                "$ref": "#/definitions/ResourceTypes"
+              },
+              "script_id": {
+                "description": "Identifier to ScriptDefinition.",
+                "$ref": "#/definitions/GUID"
+              },
+              "enabled": {
+                "description": "Indicated whether a scripts is enabled.",
+                "type": "boolean"
+              },
+              "state": {
+                "description": "State of the instance according json-schema in corresponding state attribute in the ScriptDefinition.",
+                "type": "object"
+              },
+              "configuration": {
+                "description": "Configuration of the script according json-schema in corresponding config attribute in the ScriptDefinition.",
+                "type": "object"
+              },
+              "dependees": {
+                "description": "Represents all resources which this instance depends on.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/ResourceDependeeGet"
+                }
+              },
+              "status": {
+                "description": "Status",
+                "type": "string"
+              },
+              "status_data": {
+                "description": "Status_data",
+                "type": "object"
+              },
+              "metadata": {
+                "$ref": "#/definitions/InstanceMetadata"
+              }
+            },
+            "required": [
+              "script_id",
+              "enabled",
+              "configuration",
+              "dependees",
+              "status",
+              "status_data",
+              "metadata"
+            ],
+            "type": "object"
+          }
+        ]
+      },
+      "ScriptInstancePost": {
+        "description": "Representation of active script. Script are instantiated using the id and configuration of the ScriptDefinition.",
+        "allOf": [
+          {
+            "$ref": "#/definitions/ResourcePost"
+          },
+          {
+            "properties": {
+              "type": {
+                "$ref": "#/definitions/ResourceTypes"
+              },
+              "script_id": {
+                "description": "Identifier to ScriptDefinition.",
+                "$ref": "#/definitions/GUID"
+              },
+              "enabled": {
+                "description": "Indicated whether a scripts is enabled.",
+                "type": "boolean"
+              },
+              "configuration": {
+                "description": "Configuration of the script according json-schema in corresponding config attribute in the ScriptDefinition.",
+                "type": "object"
+              },
+              "metadata": {
+                "$ref": "#/definitions/InstanceMetadataPost"
+              }
+            },
+            "required": [
+              "script_id",
+              "enabled",
+              "configuration"
+            ],
+            "type": "object"
+          }
+        ]
+      },
+      "ScriptInstancePut": {
+        "description": "Representation of active script. Script are instantiated using the id and configuration of the ScriptDefinition.",
+        "allOf": [
+          {
+            "$ref": "#/definitions/ResourcePut"
+          },
+          {
+            "properties": {
+              "type": {
+                "$ref": "#/definitions/ResourceTypes"
+              },
+              "enabled": {
+                "description": "Indicated whether a scripts is enabled.",
+                "type": "boolean"
+              },
+              "configuration": {
+                "description": "Configuration of the script according json-schema in corresponding config attribute in the ScriptDefinition.",
+                "type": "object"
+              },
+              "metadata": {
+                "$ref": "#/definitions/InstanceMetadataPut"
+              }
+            },
+            "type": "object"
+          }
+        ]
+      },
+      "ScriptMetadata": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "$ref": "#/definitions/ResourceName"
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "Segment": {
+        "type": "object",
+        "properties": {
+          "start": {
+            "minimum": 0,
+            "type": "integer"
+          },
+          "length": {
+            "minimum": 1,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "start",
+          "length"
+        ]
+      },
+      "SegmentReference": {
+        "description": "From which entertainment_service, which segment is a member of this channel",
+        "type": "object",
+        "properties": {
+          "service": {
+            "$ref": "#/definitions/ResourceIdentifier"
+          },
+          "index": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "service",
+          "index"
+        ]
+      },
+      "SegmentationProperties": {
+        "description": "All properties regarding the segment capabilities of this device: the configuratibility,\nmax_segments and all segment tables ",
+        "type": "object",
+        "properties": {
+          "configurable": {
+            "description": "Defines if the segmentation of the device are configurable or not",
+            "type": "boolean"
+          },
+          "max_segments": {
+            "minimum": 1,
+            "type": "integer"
+          },
+          "segments": {
+            "minItems": 1,
+            "description": "Contains the segments configuration of the device for entertainment purposes.\nA device can be segmented in a single way ",
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/Segment"
+            }
+          }
+        },
+        "required": [
+          "configurable",
+          "max_segments",
+          "segments"
+        ]
+      },
+      "SensingService": {
+        "$ref": "#/definitions/Resource"
+      },
+      "SensingServicePut": {
+        "$ref": "#/definitions/ResourcePut"
+      },
+      "ServiceList": {
+        "description": "List the references to all services grouped by this group",
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/ResourceIdentifier"
+        }
+      },
+      "ServiceLocation": {
+        "type": "object",
+        "properties": {
+          "service": {
+            "$ref": "#/definitions/ResourceIdentifier"
+          },
+          "position": {
+            "$ref": "#/definitions/Position"
+          }
+        },
+        "required": [
+          "service",
+          "position"
+        ]
+      },
+      "StreamingProxy": {
+        "type": "object",
+        "properties": {
+          "mode": {
+            "enum": [
+              "auto",
+              "manual"
+            ],
+            "type": "string"
+          },
+          "node": {
+            "$ref": "#/definitions/ResourceIdentifier"
+          }
+        },
+        "required": [
+          "mode",
+          "node"
+        ]
+      },
+      "SwitchInputMetadata": {
+        "description": "Metadata describing this resource",
+        "type": "object",
+        "properties": {
+          "control_id": {
+            "minimum": 0,
+            "maximum": 8,
+            "description": "number of control within switch. Meaning in combination with type - dots   Number of dots - number Number printed on device - other  a logical order of controls in switch",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "control_id"
+        ]
+      },
+      "Version": {
+        "pattern": "^[1-9][0-9]{0,2}([.][0-9]{1,3}){1,2}",
+        "type": "string"
+      },
+      "ZigbeeConnectivity": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/ConnectivityService"
+          },
+          {
+            "properties": {
+              "type": {
+                "enum": [
+                  "zigbee_connectivity"
+                ],
+                "type": "string"
+              },
+              "mac_address": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "mac_address"
+            ],
+            "type": "object"
+          }
+        ]
+      },
+      "ZigbeeConnectivityPut": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/ConnectivityServicePut"
+          },
+          {
+            "properties": {
+              "type": {
+                "enum": [
+                  "zigbee_connectivity"
+                ],
+                "type": "string"
+              }
+            },
+            "type": "object"
+          }
+        ]
+      },
+      "Zone": {
+        "description": "A group grouping only services. A service can be in an arbitrary amount of groups.\nFollowing services are allowed: - light - relative_rotary - temperature - lightlevel - motion ",
+        "allOf": [
+          {
+            "$ref": "#/definitions/Group"
+          },
+          {
+            "properties": {
+              "type": {
+                "enum": [
+                  "zone"
+                ],
+                "type": "string"
+              },
+              "metadata": {
+                "$ref": "#/definitions/RoomMetadata"
+              }
+            },
+            "required": [
+              "metadata"
+            ],
+            "type": "object"
+          }
+        ]
+      },
+      "ZonePost": {
+        "description": "A group grouping only services. A service can be in an arbitrary amount of groups.\nFollowing services are allowed: - light - relative_rotary - temperature - lightlevel - motion ",
+        "allOf": [
+          {
+            "$ref": "#/definitions/GroupPost"
+          },
+          {
+            "properties": {
+              "type": {
+                "enum": [
+                  "zone"
+                ],
+                "type": "string"
+              },
+              "metadata": {
+                "$ref": "#/definitions/RoomMetadataPost"
+              }
+            },
+            "required": [
+              "metadata"
+            ],
+            "type": "object"
+          }
+        ]
+      },
+      "ZonePut": {
+        "description": "A group grouping only services. A service can be in an arbitrary amount of groups.\nFollowing services are allowed: - light - relative_rotary - temperature - lightlevel - motion ",
+        "allOf": [
+          {
+            "$ref": "#/definitions/GroupPut"
+          },
+          {
+            "properties": {
+              "type": {
+                "enum": [
+                  "zone"
+                ],
+                "type": "string"
+              },
+              "metadata": {
+                "$ref": "#/definitions/RoomMetadataPut"
+              }
+            },
+            "required": [
+              "metadata"
+            ],
+            "type": "object"
+          }
+        ]
+      }
+    }
+  }
