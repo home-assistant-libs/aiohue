@@ -16,7 +16,6 @@ from ..models.feature import (
 from ..models.light import Light
 from ..models.resource import ResourceTypes
 from .base import BaseResourcesController
-from ...errors import AiohueException
 
 
 class LightsController(BaseResourcesController[Type[Light]]):
