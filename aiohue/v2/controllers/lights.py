@@ -75,10 +75,6 @@ class LightsController(BaseResourcesController[Type[Light]]):
         if color_temp is not None:
             update_obj.color_temperature = ColorTemperatureFeature(mirek=color_temp)
         if transition_time is not None:
-            if transition_time < 100:
-                raise AiohueException(
-                    "Transition needs to be specified in millisecond. Min 100, max 6000000"
-                )
             update_obj.dynamics = DynamicsFeature(duration=transition_time)
         if alert is not None:
             update_obj.alert = AlertFeature(action=alert)
