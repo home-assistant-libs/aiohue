@@ -117,17 +117,19 @@ class EventStream:
         """
         self._status = EventStreamStatus.CONNECTING
         headers = {"Accept": "text/event-stream", "Cache-Control": "no-cache"}
-        retries = 0
+        connect_attempts = 0
         while True:
+            connect_attempts += 1
+            reconnect_interval = min(2 * connect_attempts, 600)
             if self._last_event_id:
                 headers["Last-Event-ID"] = self._last_event_id
             try:
                 async with self._bridge.create_request(
-                    "get", "eventstream/clip/v2", timeout=0, headers=headers
+                    "get", "eventstream/clip/v2", timeout=10, headers=headers
                 ) as resp:
                     # update status to connected once we reach this point
                     self._status = EventStreamStatus.CONNECTED
-                    retries = 0  # reset on succesfull connect
+                    connect_attempts = 1  # reset on succesfull connect
                     self._logger.debug("Connected to EventStream")
                     # messages come in one by line, according to EventStream/SSE specs
                     # we iterate over the incoming lines in the streamreader.
@@ -148,10 +150,22 @@ class EventStream:
                 if status == 403:
                     raise Unauthorized from err
                 # pass all other errors because we will auto retry
+                self._logger.debug(
+                    "Disconnected from EventStream (%s)"
+                    " - Reconnect will be attempted in %s seconds",
+                    str(err),
+                    reconnect_interval,
+                )
+                # every 10 failed connect attempts log warning
+                if connect_attempts % 10 == 0:
+                    self._logger.debug(
+                        "%s Attempts to (re)connect to bridge failed"
+                        " - This might be an indication of connection issues.",
+                        connect_attempts,
+                    )
             finally:
                 self._status = EventStreamStatus.CONNECTING
-                retries += 1
-                await asyncio.sleep(2 * retries)
+                await asyncio.sleep(reconnect_interval)
 
     async def __event_processor(self) -> NoReturn:
         """Process incoming CLIPEvents on the Queue and distribute those."""
