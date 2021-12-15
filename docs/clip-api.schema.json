@@ -268,7 +268,7 @@
         ],
         "type": "string"
       },
-      "ButtOnFeature": {
+      "ButtonFeature": {
         "type": "object",
         "properties": {
           "last_event": {
@@ -296,7 +296,7 @@
                 "$ref": "#/definitions/SwitchInputMetadata"
               },
               "button": {
-                "$ref": "#/definitions/ButtOnFeature"
+                "$ref": "#/definitions/ButtonFeature"
               }
             },
             "required": [

@@ -29,11 +29,11 @@ class ButtonEvent(Enum):
 
 
 @dataclass
-class ButtOnFeature:
+class ButtonFeature:
     """
     Represent ButtonFeature object as used by the Hue api.
 
-    clip-api.schema.json#/definitions/ButtOnFeature
+    clip-api.schema.json#/definitions/ButtonFeature
     """
 
     last_event: ButtonEvent
@@ -64,5 +64,5 @@ class Button(Resource):
     """
 
     metadata: Optional[SwitchInputMetadata] = None
-    button: Optional[ButtOnFeature] = None
+    button: Optional[ButtonFeature] = None
     type: ResourceTypes = ResourceTypes.BUTTON
