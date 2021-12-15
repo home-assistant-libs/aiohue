@@ -175,6 +175,7 @@ class HueBridgeV2:
             kwargs["headers"] = {}
 
         kwargs["headers"]["hue-application-key"] = self._app_key
+        kwargs["headers"]["Connection"] = "keep alive"
 
         async with self._websession.request(method, url, **kwargs) as res:
             if res.status == 403:

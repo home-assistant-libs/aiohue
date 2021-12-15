@@ -1,20 +1,24 @@
 """Handle connecting to the HUE Eventstream and distribute events."""
 from __future__ import annotations
+
 import asyncio
 import json
+from asyncio.coroutines import iscoroutinefunction
 from enum import Enum
 from typing import TYPE_CHECKING, Callable, List, NoReturn, Tuple
 
 from aiohttp.client_exceptions import ClientError
-from asyncio.coroutines import iscoroutinefunction
+from async_timeout import timeout
 
 if TYPE_CHECKING:
     from .. import HueBridgeV2
 
-from ...util import NoneType
 from ...errors import InvalidAPIVersion, InvalidEvent, Unauthorized
-from ..models.clip import CLIPEvent, CLIPEventType, CLIPResource
+from ...util import NoneType
+from ..models.clip import CLIPEvent, CLIPEventType, CLIPResource, parse_clip_resource
 from ..models.resource import ResourceTypes
+
+CONNECTION_TIMEOUT = 60 * 60  # 1 hour
 
 
 class EventStreamStatus(Enum):
@@ -116,56 +120,71 @@ class EventStream:
         https://html.spec.whatwg.org/multipage/server-sent-events.html#event-stream-interpretation
         """
         self._status = EventStreamStatus.CONNECTING
-        headers = {"Accept": "text/event-stream", "Cache-Control": "no-cache"}
+        headers = {
+            "Accept": "text/event-stream",
+            "Cache-Control": "no-cache",
+            "Connection": "close",
+        }
         connect_attempts = 0
+        loop = asyncio.get_running_loop()
         while True:
             connect_attempts += 1
             reconnect_interval = min(2 * connect_attempts, 600)
             if self._last_event_id:
                 headers["Last-Event-ID"] = self._last_event_id
+            # Messages come in line by line, according to EventStream/SSE specs
+            # we iterate over the incoming lines in the streamreader.
+            # To prevent a deadlock waiting for a message while the connection is dead,
+            # we have a timeout guard in place.
+            # If no message is received within CONNECTION_TIMEOUT seconds,
+            # a Timeout error will be raised and so the connection re-established.
             try:
-                async with self._bridge.create_request(
-                    "get", "eventstream/clip/v2", timeout=10, headers=headers
-                ) as resp:
-                    # update status to connected once we reach this point
-                    self._status = EventStreamStatus.CONNECTED
-                    connect_attempts = 1  # reset on succesfull connect
-                    self._logger.debug("Connected to EventStream")
-                    # messages come in one by line, according to EventStream/SSE specs
-                    # we iterate over the incoming lines in the streamreader.
-                    # To prevent a deadlock waiting for a message while the connection is dead
-                    # we have a simple timeout guard in place.
-                    # If no message is received in 30 minutes, a Timeout error will be raised
-                    # and thus the connection re-established.
-                    iterator = resp.content.__aiter__()
-                    while True:
-                        line = await asyncio.wait_for(
-                            iterator.__anext__(), timeout=30 * 60
-                        )
-                        self.__parse_message(line)
+                # use initial connect timeout of 10 seconds
+                async with timeout(10) as timeout_mgr:
+                    # The aiohttp request itself intentionally has a timeout of 0
+                    # because of the longrunning nature of SSE
+                    async with self._bridge.create_request(
+                        "get", "eventstream/clip/v2", timeout=0, headers=headers
+                    ) as resp:
+                        # update status to connected once we reach this point
+                        self._status = EventStreamStatus.CONNECTED
+                        # if this is a reconnect we update the full state
+                        if connect_attempts > 1:
+                            asyncio.create_task(self.__on_reconnect())
+                        connect_attempts = 1
+                        self._logger.debug("Connected to EventStream")
+                        # read over incoming messages line by line
+                        async for line in resp.content:
+                            # process the message
+                            self.__parse_message(line)
+                            # change the timout to CONNECTION_TIMEOUT when a message is received
+                            timeout_mgr.update(loop.time() + CONNECTION_TIMEOUT)
             except (ClientError, asyncio.TimeoutError) as err:
+                # pass expected connection errors because we will auto retry
                 status = getattr(err, "status", None)
                 if status == 404:
                     raise InvalidAPIVersion from err
                 if status == 403:
                     raise Unauthorized from err
-                # pass all other errors because we will auto retry
+                elif status:
+                    # for debugging purpose only
+                    self._logger.debug(err)
+
+            # if we reach this point, the connection was lost
+            self._logger.debug(
+                "Disconnected from EventStream"
+                " - Reconnect will be attempted in %s seconds",
+                reconnect_interval,
+            )
+            # every 10 failed connect attempts log warning
+            if connect_attempts % 10 == 0:
                 self._logger.debug(
-                    "Disconnected from EventStream (%s)"
-                    " - Reconnect will be attempted in %s seconds",
-                    str(err),
-                    reconnect_interval,
+                    "%s Attempts to (re)connect to bridge failed"
+                    " - This might be an indication of connection issues.",
+                    connect_attempts,
                 )
-                # every 10 failed connect attempts log warning
-                if connect_attempts % 10 == 0:
-                    self._logger.debug(
-                        "%s Attempts to (re)connect to bridge failed"
-                        " - This might be an indication of connection issues.",
-                        connect_attempts,
-                    )
-            finally:
-                self._status = EventStreamStatus.CONNECTING
-                await asyncio.sleep(reconnect_interval)
+            self._status = EventStreamStatus.CONNECTING
+            await asyncio.sleep(reconnect_interval)
 
     async def __event_processor(self) -> NoReturn:
         """Process incoming CLIPEvents on the Queue and distribute those."""
@@ -205,3 +224,9 @@ class EventStream:
             self._logger.warning(
                 "Unable to parse Event message: %s", line, exc_info=exc
             )
+
+    async def __on_reconnect(self) -> None:
+        """Call on reconnect to publish current state as events."""
+        full_state = await self._bridge.request("get", "clip/v2/resource")
+        for item in full_state:
+            self.emit(EventType.RESOURCE_UPDATED, parse_clip_resource(item))
