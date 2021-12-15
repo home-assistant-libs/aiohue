@@ -166,7 +166,7 @@ class EventStream:
                     raise InvalidAPIVersion from err
                 if status == 403:
                     raise Unauthorized from err
-                elif status:
+                if status:
                     # for debugging purpose only
                     self._logger.debug(err)
 
