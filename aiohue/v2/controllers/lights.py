@@ -77,4 +77,4 @@ class LightsController(BaseResourcesController[Type[Light]]):
             update_obj.dynamics = DynamicsFeature(duration=transition_time)
         if alert is not None:
             update_obj.alert = AlertFeature(action=alert)
-        await self._send_put(id, update_obj)
+        await self.update(id, update_obj)

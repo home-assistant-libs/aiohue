@@ -124,17 +124,31 @@ class BaseResourcesController(Generic[CLIPResource]):
                     return device
         return None
 
-    async def _send_put(self, id: str, obj_in: CLIPResource) -> None:
+    async def update(self, id: str, obj_in: CLIPResource) -> None:
         """
         Update HUE resource with PUT command.
 
         Provide instance of object's class with only the changed keys set.
         Note that not all resources allow updating/setting of data.
+        Sending keys that are not allowed, results in an error from the bridge.
         """
         endpoint = f"clip/v2/resource/{self.item_type.value}/{id}"
         # create a clean dict with only the changed keys set.
         data = dataclass_to_dict(obj_in, skip_none=True)
         await self._bridge.request("put", endpoint, json=data)
+
+    async def create(self, id: str, obj_in: CLIPResource) -> None:
+        """
+        Create HUE resource with POST command.
+
+        Provide instance of object's class with only the required/allowed keys set.
+        Note that not all resources allow creating of items.
+        Sending keys that are not allowed, results in an error from the bridge.
+        """
+        endpoint = f"clip/v2/resource/{self.item_type.value}/{id}"
+        # create a clean dict with only the not None keys set.
+        data = dataclass_to_dict(obj_in, skip_none=True)
+        await self._bridge.request("post", endpoint, json=data)
 
     def get(self, id: str, default: Any = None) -> CLIPResource | None:
         """Get item by id of default if item does not exist."""
