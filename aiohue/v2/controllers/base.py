@@ -206,13 +206,13 @@ class BaseResourcesController(Generic[CLIPResource]):
             cur_ids.add(resource.id)
             if resource.id not in prev_ids:
                 # item added
-                self._handle_event(EventType.RESOURCE_ADDED, resource)
+                await self._handle_event(EventType.RESOURCE_ADDED, resource)
             else:
                 # work out if the item actually changed
                 prev_item = self._items[resource.id]
                 if dataclass_to_dict(prev_item) == dataclass_to_dict(resource):
                     continue
-                self._handle_event(EventType.RESOURCE_UPDATED, resource)
+                await self._handle_event(EventType.RESOURCE_UPDATED, resource)
         # work out item deletions
         deleted_ids = {x for x in prev_ids if x not in cur_ids}
         for resource_id in deleted_ids:
