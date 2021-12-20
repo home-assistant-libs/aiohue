@@ -7,16 +7,15 @@ from asyncio.coroutines import iscoroutinefunction
 from enum import Enum
 from typing import TYPE_CHECKING, Callable, List, NoReturn, Tuple
 
-from aiohttp.client_exceptions import ClientError
 from aiohttp import ClientTimeout
-from async_timeout import timeout
+from aiohttp.client_exceptions import ClientError
 
 if TYPE_CHECKING:
     from .. import HueBridgeV2
 
 from ...errors import InvalidAPIVersion, InvalidEvent, Unauthorized
 from ...util import NoneType
-from ..models.clip import CLIPEvent, CLIPEventType, CLIPResource, parse_clip_resource
+from ..models.clip import CLIPEvent, CLIPEventType, CLIPResource
 from ..models.resource import ResourceTypes
 
 CONNECTION_TIMEOUT = 30 * 60  # 30 minutes
@@ -161,7 +160,7 @@ class EventStream:
                 async with self._bridge.create_request(
                     "get",
                     "eventstream/clip/v2",
-                    timeout=ClientTimeout(total=0, sock_read=2),
+                    timeout=ClientTimeout(total=0, sock_read=CONNECTION_TIMEOUT),
                     headers=headers,
                 ) as resp:
                     # update status to connected once we reach this point
