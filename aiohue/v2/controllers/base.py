@@ -53,9 +53,11 @@ class BaseResourcesController(Generic[CLIPResource]):
             endpoint = f"clip/v2/resource/{self.item_type.value}"
             initial_data = await self._bridge.request("get", endpoint)
         else:
-            initial_data = [x for x in initial_data if x["type"] == self.item_type.value]
+            initial_data = [
+                x for x in initial_data if x["type"] == self.item_type.value
+            ]
         self._logger.debug("fetched %s items", len(initial_data))
-        
+
         if self._initialized:
             # we're already initialized, treat this as reconnect
             await self.__handle_reconnect(initial_data)

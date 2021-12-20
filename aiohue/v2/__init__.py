@@ -179,7 +179,7 @@ class HueBridgeV2:
                 if res.status == 503:
                     # 503 means the bridge is rate limiting, we should back off a bit.
                     retries += 1
-                    await asyncio.sleep(0.5*retries)
+                    await asyncio.sleep(0.5 * retries)
                     continue
                 res.raise_for_status()
                 yield res
