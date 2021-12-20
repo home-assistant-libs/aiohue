@@ -10,8 +10,10 @@ from typing import Callable, Generator, List, Optional, Type
 import aiohttp
 from aiohttp import ClientResponse
 
+from aiohue.v2.models.clip import CLIPResource
+
 from ..errors import Unauthorized, raise_from_error
-from .controllers.events import EventCallBackType, EventStream
+from .controllers.events import EventCallBackType, EventStream, EventType
 
 from .controllers.config import ConfigController
 from .controllers.sensors import SensorsController
@@ -102,18 +104,11 @@ class HueBridgeV2:
         """Initialize the connection to the bridge and fetch all data."""
         # Initialize all HUE resource controllers
         # fetch complete full state once and distribute to controllers
-        full_state = await self.request("get", "clip/v2/resource")
-
-        await asyncio.gather(
-            self._config.initialize(full_state),
-            self._devices.initialize(full_state),
-            self._lights.initialize(full_state),
-            self._scenes.initialize(full_state),
-            self._sensors.initialize(full_state),
-            self._groups.initialize(full_state),
-        )
+        await self.fetch_full_state()
         # start event listener
         await self._events.initialize()
+        # subscribe to reconnect event
+        self._events.subscribe(self._handle_event, EventType.RECONNECTED)
 
     async def close(self) -> None:
         """Close connection and cleanup."""
@@ -206,3 +201,21 @@ class HueBridgeV2:
         if exc_val:
             raise exc_val
         return exc_type
+
+    async def _handle_event(self, type: EventType, item: CLIPResource | None) -> None:
+        """Handle incoming event for this resource from the EventStream."""
+        if type != EventType.RECONNECTED:
+            return
+        await self.fetch_full_state()
+
+    async def fetch_full_state(self) -> None:
+        """Fetch state on all controllers."""
+        full_state = await self.request("get", "clip/v2/resource")
+        await asyncio.gather(
+            self._config.initialize(full_state),
+            self._devices.initialize(full_state),
+            self._lights.initialize(full_state),
+            self._scenes.initialize(full_state),
+            self._sensors.initialize(full_state),
+            self._groups.initialize(full_state),
+        )
