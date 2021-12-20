@@ -35,6 +35,7 @@ class BaseResourcesController(Generic[CLIPResource]):
         self._items: Dict[str, CLIPResource] = {}
         self._logger = bridge.logger.getChild(self.item_type.value)
         self._subscribers: Dict[str, EventSubscriptionType] = {ID_FILTER_ALL: []}
+        self._initialized = False
 
     @property
     def items(self) -> List[CLIPResource]:
@@ -51,18 +52,25 @@ class BaseResourcesController(Generic[CLIPResource]):
         if initial_data is None:
             endpoint = f"clip/v2/resource/{self.item_type.value}"
             initial_data = await self._bridge.request("get", endpoint)
-        item_count = 0
+        else:
+            initial_data = [
+                x for x in initial_data if x["type"] == self.item_type.value
+            ]
+        self._logger.debug("fetched %s items", len(initial_data))
+
+        if self._initialized:
+            # we're already initialized, treat this as reconnect
+            await self.__handle_reconnect(initial_data)
+            return
+
         for item in initial_data:
-            if ResourceTypes(item["type"]) != self.item_type:
-                continue
-            item_count += 1
             resource: CLIPResource = parse_clip_resource(item)
             self._items[resource.id] = resource
         # subscribe to item updates
         self._bridge.events.subscribe(
             self._handle_event, resource_filter=self.item_type
         )
-        self._logger.debug("fetched %s items", item_count)
+        self._initialized = True
 
     def subscribe(
         self,
@@ -166,7 +174,7 @@ class BaseResourcesController(Generic[CLIPResource]):
         """Return bool if id is in items."""
         return id in self._items
 
-    async def _handle_event(self, type: EventType, item: CLIPResource) -> None:
+    async def _handle_event(self, type: EventType, item: CLIPResource | None) -> None:
         """Handle incoming event for this resource from the EventStream."""
         if type == EventType.RESOURCE_ADDED:
             # new item added
@@ -174,7 +182,7 @@ class BaseResourcesController(Generic[CLIPResource]):
         elif type == EventType.RESOURCE_DELETED:
             # existing item deleted
             cur_item = self._items.pop(item.id, item)
-        else:
+        elif type == EventType.RESOURCE_UPDATED:
             # existing item updated
             cur_item = self._items.get(item.id)
             if cur_item is None:
@@ -184,6 +192,9 @@ class BaseResourcesController(Generic[CLIPResource]):
                 return
             # make sure we only update keys that are not None
             update_dataclass(cur_item, item)
+        else:
+            # ignore all other events
+            return
 
         subscribers = (
             self._subscribers.get(item.id, []) + self._subscribers[ID_FILTER_ALL]
@@ -195,6 +206,31 @@ class BaseResourcesController(Generic[CLIPResource]):
             if iscoroutinefunction(callback):
                 asyncio.create_task(callback(type, item))
             callback(type, cur_item)
+
+    async def __handle_reconnect(self, full_state: List[dict]) -> None:
+        """Force update of state (on reconnect)."""
+        # When a reconnect (of the eventstream) happens our state can't be trusted
+        # We need to fetch the full state to check what changed
+        # NOTE: This should actually be managed by the `Last-Event-ID` on the SSE
+        # but seems like Hue did not implement that on the bridge.
+        prev_ids = set(self._items.keys())
+        cur_ids = set()
+        for item in full_state:
+            resource: CLIPResource = parse_clip_resource(item)
+            cur_ids.add(resource.id)
+            if resource.id not in prev_ids:
+                # item added
+                await self._handle_event(EventType.RESOURCE_ADDED, resource)
+            else:
+                # work out if the item actually changed
+                prev_item = self._items[resource.id]
+                if dataclass_to_dict(prev_item) == dataclass_to_dict(resource):
+                    continue
+                await self._handle_event(EventType.RESOURCE_UPDATED, resource)
+        # work out item deletions
+        deleted_ids = {x for x in prev_ids if x not in cur_ids}
+        for resource_id in deleted_ids:
+            self._handle_event(EventType.RESOURCE_DELETED, self._items[resource_id])
 
 
 class GroupedControllerBase(Generic[CLIPResource]):

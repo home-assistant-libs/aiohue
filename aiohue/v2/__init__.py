@@ -10,8 +10,10 @@ from typing import Callable, Generator, List, Optional, Type
 import aiohttp
 from aiohttp import ClientResponse
 
+from aiohue.v2.models.clip import CLIPResource
+
 from ..errors import Unauthorized, raise_from_error
-from .controllers.events import EventCallBackType, EventStream
+from .controllers.events import EventCallBackType, EventStream, EventType
 
 from .controllers.config import ConfigController
 from .controllers.sensors import SensorsController
@@ -102,18 +104,11 @@ class HueBridgeV2:
         """Initialize the connection to the bridge and fetch all data."""
         # Initialize all HUE resource controllers
         # fetch complete full state once and distribute to controllers
-        full_state = await self.request("get", "clip/v2/resource")
-
-        await asyncio.gather(
-            self._config.initialize(full_state),
-            self._devices.initialize(full_state),
-            self._lights.initialize(full_state),
-            self._scenes.initialize(full_state),
-            self._sensors.initialize(full_state),
-            self._groups.initialize(full_state),
-        )
+        await self.fetch_full_state()
         # start event listener
         await self._events.initialize()
+        # subscribe to reconnect event
+        self._events.subscribe(self._handle_event, EventType.RECONNECTED)
 
     async def close(self) -> None:
         """Close connection and cleanup."""
@@ -175,13 +170,20 @@ class HueBridgeV2:
             kwargs["headers"] = {}
 
         kwargs["headers"]["hue-application-key"] = self._app_key
-        kwargs["headers"]["Connection"] = "keep alive"
 
-        async with self._websession.request(method, url, **kwargs) as res:
-            if res.status == 403:
-                raise Unauthorized
-            res.raise_for_status()
-            yield res
+        retries = 0
+        while retries <= 25:
+            async with self._websession.request(method, url, **kwargs) as res:
+                if res.status == 403:
+                    raise Unauthorized
+                if res.status == 503:
+                    # 503 means the bridge is rate limiting, we should back off a bit.
+                    retries += 1
+                    await asyncio.sleep(0.5 * retries)
+                    continue
+                res.raise_for_status()
+                yield res
+                break
 
     async def __aenter__(self) -> "HueBridgeV2":
         """Return Context manager."""
@@ -199,3 +201,21 @@ class HueBridgeV2:
         if exc_val:
             raise exc_val
         return exc_type
+
+    async def _handle_event(self, type: EventType, item: CLIPResource | None) -> None:
+        """Handle incoming event for this resource from the EventStream."""
+        if type != EventType.RECONNECTED:
+            return
+        await self.fetch_full_state()
+
+    async def fetch_full_state(self) -> None:
+        """Fetch state on all controllers."""
+        full_state = await self.request("get", "clip/v2/resource")
+        await asyncio.gather(
+            self._config.initialize(full_state),
+            self._devices.initialize(full_state),
+            self._lights.initialize(full_state),
+            self._scenes.initialize(full_state),
+            self._sensors.initialize(full_state),
+            self._groups.initialize(full_state),
+        )
