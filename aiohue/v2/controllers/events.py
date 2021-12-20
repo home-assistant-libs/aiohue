@@ -161,7 +161,7 @@ class EventStream:
                 async with self._bridge.create_request(
                     "get",
                     "eventstream/clip/v2",
-                    timeout=ClientTimeout(total=0, sock_read=CONNECTION_TIMEOUT),
+                    timeout=ClientTimeout(total=0, sock_read=2),
                     headers=headers,
                 ) as resp:
                     # update status to connected once we reach this point

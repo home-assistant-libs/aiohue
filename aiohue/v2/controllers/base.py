@@ -58,7 +58,7 @@ class BaseResourcesController(Generic[CLIPResource]):
         
         if self._initialized:
             # we're already initialized, treat this as reconnect
-            self.__handle_reconnect(initial_data)
+            await self.__handle_reconnect(initial_data)
             return
 
         for item in initial_data:
