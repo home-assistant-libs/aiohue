@@ -53,7 +53,7 @@ class LightLevelController(BaseResourcesController[Type[LightLevel]]):
 
     async def set_enabled(self, id: str, enabled: bool) -> None:
         """Enable/Disable sensor."""
-        await self._send_put(id, LightLevel(id=id, enabled=enabled))
+        await self.update(id, LightLevel(id=id, enabled=enabled))
 
 
 class MotionController(BaseResourcesController[Type[Motion]]):
@@ -63,7 +63,7 @@ class MotionController(BaseResourcesController[Type[Motion]]):
 
     async def set_enabled(self, id: str, enabled: bool) -> None:
         """Enable/Disable sensor."""
-        await self._send_put(id, Motion(id=id, enabled=enabled))
+        await self.update(id, Motion(id=id, enabled=enabled))
 
 
 class TemperatureController(BaseResourcesController[Type[Temperature]]):

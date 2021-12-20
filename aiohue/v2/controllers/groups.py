@@ -64,7 +64,7 @@ class GroupedLightController(BaseResourcesController[Type[GroupedLight]]):
         NOTE: a grouped_light can only handle OnFeature
         To send other features, you'll have to control the underlying lights
         """
-        await self._send_put(id, GroupedLight(id, on=OnFeature(on=on)))
+        await self.update(id, GroupedLight(id, on=OnFeature(on=on)))
 
 
 class GroupsController(GroupedControllerBase[Union[Room, Group, GroupedLight]]):
