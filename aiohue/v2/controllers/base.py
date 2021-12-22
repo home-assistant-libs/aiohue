@@ -155,6 +155,7 @@ class BaseResourcesController(Generic[CLIPResource]):
         """
         endpoint = f"clip/v2/resource/{self.item_type.value}"
         # create a clean dict with only the not None keys set.
+        obj_in.id = None
         data = dataclass_to_dict(obj_in, skip_none=True)
         await self._bridge.request("post", endpoint, json=data)
 

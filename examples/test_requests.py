@@ -24,6 +24,7 @@ async def main():
             level=logging.DEBUG,
             format="%(asctime)-15s %(levelname)-5s %(name)s -- %(message)s",
         )
+        asyncio.get_running_loop().set_debug(True)
 
     async with HueBridgeV2(args.host, args.appkey) as bridge:
 
