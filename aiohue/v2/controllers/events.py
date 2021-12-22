@@ -9,6 +9,9 @@ from typing import TYPE_CHECKING, Callable, List, NoReturn, Tuple
 
 from aiohttp import ClientTimeout
 from aiohttp.client_exceptions import ClientError
+import random
+import string
+from aiohue.v2.models.geofence_client import GeofenceClient, GeofenceClientCreate
 
 if TYPE_CHECKING:
     from .. import HueBridgeV2
@@ -18,7 +21,7 @@ from ...util import NoneType
 from ..models.clip import CLIPEvent, CLIPEventType, CLIPResource
 from ..models.resource import ResourceTypes
 
-CONNECTION_TIMEOUT = 30 * 60  # 30 minutes
+CONNECTION_TIMEOUT = 5 * 60  # 5 minutes
 
 
 class EventStreamStatus(Enum):
@@ -62,6 +65,7 @@ class EventStream:
         self._bg_tasks: List[asyncio.Task] = []
         self._subscribers: List[EventSubscriptionType] = []
         self._logger = bridge.logger.getChild("events")
+        self._stop_requested = False
 
     @property
     def connected(self) -> bool:
@@ -81,11 +85,15 @@ class EventStream:
         Connection will be auto-reconnected if it gets lost.
         """
         assert len(self._bg_tasks) == 0
+        self._stop_requested = False
+        # __keepalive_workaround requires event reader to be first in the list.
         self._bg_tasks.append(asyncio.create_task(self.__event_reader()))
         self._bg_tasks.append(asyncio.create_task(self.__event_processor()))
+        self._bg_tasks.append(asyncio.create_task(self.__keepalive_workaround()))
 
     async def stop(self) -> None:
         """Stop listening for events."""
+        self._stop_requested = True
         for task in self._bg_tasks:
             task.cancel()
         self._bg_tasks = []
@@ -185,6 +193,8 @@ class EventStream:
                 if status:
                     # for debugging purpose only
                     self._logger.debug(err)
+            except asyncio.CancelledError:
+                pass
             except Exception as err:
                 # for debugging purpose only
                 self._logger.exception(err)
@@ -192,6 +202,10 @@ class EventStream:
 
             # if we reach this point, the connection was lost
             self.emit(EventType.DISCONNECTED)
+
+            if self._stop_requested:
+                return
+
             reconnect_wait = min(2 * connect_attempts, 600)
             self._logger.debug(
                 "Disconnected from EventStream"
@@ -245,4 +259,49 @@ class EventStream:
         except Exception as exc:  # pylint: disable=broad-except
             self._logger.warning(
                 "Unable to parse Event message: %s", line, exc_info=exc
+            )
+
+    async def __keepalive_workaround(self, interval: int = 60) -> NoReturn:
+        """Send keepalive command to bridge, abusing geofence client."""
+        # Oh yeah, this is a major hack and hopefully it will only be temporary ;-)
+        # Signify forgot to implement some sort of periodic keep alive message on the EventBus
+        # so we have no way to determine if the connection is still alive.
+        # To workaround this, we create a geofence client (without a status)
+        # on the bridge for aiohue which will have its name updated every minute
+        # this will result in an event on the eventstream and thus a way to figure out
+        # if its still alive. It's not very pretty but at least it works.
+        # Now let's contact Signify if this can be solved.
+        prefix = "aiohue_"
+
+        expected_name = None
+
+        while True:
+            await asyncio.sleep(interval)
+
+            for client in self._bridge.sensors.geofence_client.items:
+                if client.name.startswith(prefix):
+                    hass_client = client
+                    break
+
+            else:
+                await self._bridge.sensors.geofence_client.create(
+                    GeofenceClientCreate(name=prefix)
+                )
+                expected_name = prefix
+                continue
+
+            if expected_name is not None and hass_client.name != expected_name:
+                self._logger.warning(
+                    "Detected stale event stream. Triggering reconnect."
+                )
+                self._bg_tasks[0].cancel()
+                continue
+
+            # simply update the name of the geofence client will result in an event message
+            random_str = "".join(
+                (random.choice(string.ascii_lowercase)) for x in range(10)
+            )
+            expected_name = hass_client.name = f"{prefix}{random_str}"
+            await self._bridge.sensors.geofence_client.update(
+                hass_client.id, hass_client
             )
