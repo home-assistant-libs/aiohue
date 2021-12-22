@@ -9,9 +9,6 @@ from typing import TYPE_CHECKING, Callable, List, NoReturn, Tuple
 
 from aiohttp import ClientTimeout
 from aiohttp.client_exceptions import ClientError
-import random
-import string
-from aiohue.v2.models.geofence_client import GeofenceClient, GeofenceClientCreate
 
 if TYPE_CHECKING:
     from .. import HueBridgeV2
@@ -21,7 +18,7 @@ from ...util import NoneType
 from ..models.clip import CLIPEvent, CLIPEventType, CLIPResource
 from ..models.resource import ResourceTypes
 
-CONNECTION_TIMEOUT = 5 * 60  # 5 minutes
+CONNECTION_TIMEOUT = 30 * 60  # 30 minutes
 
 
 class EventStreamStatus(Enum):
@@ -86,7 +83,6 @@ class EventStream:
         assert len(self._bg_tasks) == 0
         self._bg_tasks.append(asyncio.create_task(self.__event_reader()))
         self._bg_tasks.append(asyncio.create_task(self.__event_processor()))
-        asyncio.create_task(self.__keepalive_workaround())
 
     async def stop(self) -> None:
         """Stop listening for events."""
@@ -250,47 +246,3 @@ class EventStream:
             self._logger.warning(
                 "Unable to parse Event message: %s", line, exc_info=exc
             )
-
-    async def __keepalive_workaround(self, interval: int = 60) -> NoReturn:
-        """Send keepalive command to bridge, abusing geofence client."""
-        # Oh yeah, this is a major hack and hopefully it will only be temporary ;-)
-        # Signify forgot to implement some sort of periodic keep alive message on the EventBus
-        # so we have no way to determine if the connection is still alive.
-        # To workaround this, we create a geofence client (without a status)
-        # on the bridge for aiohue which will have its name updated every minute
-        # this will result in an event on the eventstream and thus a way to figure out
-        # if its still alive. It's not very pretty but at least it works.
-        # Now let's contact Signify if this can be solved.
-        prefix = "aiohue_"
-        hass_client = self.__get_keepalive_client(prefix)
-        if hass_client is None:
-            # the client does not yet exist,
-            # we must create it first and it will be available on next run
-            await self._bridge.sensors.geofence_client.create(
-                GeofenceClientCreate(name=prefix)
-            )
-        else:
-            # simply update the name of the geofence client will result in an event message
-            random_str = "".join(
-                (random.choice(string.ascii_lowercase)) for x in range(10)
-            )
-            hass_client.name = f"{prefix}{random_str}"
-            await self._bridge.sensors.geofence_client.update(
-                hass_client.id, hass_client
-            )
-        # schedule next run
-        def run_workaround():
-            asyncio.create_task(self.__keepalive_workaround(interval))
-
-        asyncio.get_running_loop().call_later(interval, run_workaround)
-
-    def __get_keepalive_client(self, prefix: str) -> GeofenceClient | None:
-        """Get the Geofence Client we (ab)use for status checking."""
-        return next(
-            (
-                x
-                for x in self._bridge.sensors.geofence_client.items
-                if x.name.startswith(prefix)
-            ),
-            None,
-        )
