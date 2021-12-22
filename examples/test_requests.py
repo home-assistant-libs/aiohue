@@ -39,7 +39,7 @@ async def main():
             await bridge.lights.turn_off(light.id)
 
         before = time.time()
-        await asyncio.gather(*[toggle_light() for i in range(0, 100)])
+        await asyncio.gather(*[toggle_light() for i in range(0, 50)])
         after = time.time()
         print(f"Completed in {after-before} seconds...")
 
