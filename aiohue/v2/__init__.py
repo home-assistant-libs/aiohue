@@ -9,10 +9,10 @@ from typing import Callable, Generator, List, Optional, Type
 
 import aiohttp
 from aiohttp import ClientResponse
+from asyncio_throttle import Throttler
+from aiohue.v2.models.clip import LOGGER, CLIPResource
 
-from aiohue.v2.models.clip import CLIPResource
-
-from ..errors import Unauthorized, raise_from_error
+from ..errors import Unauthorized, raise_from_error, BridgeBusy
 from .controllers.events import EventCallBackType, EventStream, EventType
 
 from .controllers.config import ConfigController
@@ -21,6 +21,10 @@ from .controllers.lights import LightsController
 from .controllers.groups import GroupsController
 from .controllers.scenes import ScenesController
 from .controllers.devices import DevicesController
+
+MAX_RETRIES = 25  # how many times do we retry on a 503 (bridge overload/rate limit)
+THROTTLE_CONCURRENT_REQUESTS = 2  # how many concurrent requests to the bridge
+THROTTLE_TIMESPAN = 0.25  # timespan/period (in seconds) for the rate limiting
 
 
 class HueBridgeV2:
@@ -54,6 +58,11 @@ class HueBridgeV2:
         self._scenes = ScenesController(self)
         self._groups = GroupsController(self)
         self._sensors = SensorsController(self)
+        # Setup the Throttler/rate limiter for requests to the bridge.
+        # NOTE: The EventStream also counts for 1 connection to the bridge.
+        self._throttler = Throttler(
+            rate_limit=THROTTLE_CONCURRENT_REQUESTS, period=THROTTLE_TIMESPAN
+        )
 
     @property
     def bridge_id(self) -> str | None:
@@ -142,13 +151,38 @@ class HueBridgeV2:
 
         return unsubscribe
 
-    async def request(self, method: str, path: str, **kwargs) -> dict | List[dict]:
+    async def request(
+        self, method: str, path: str, retries: int = 0, **kwargs
+    ) -> dict | List[dict]:
         """Make request on the api and return response data."""
-        async with self.create_request(method, path, **kwargs) as resp:
-            result = await resp.json()
-            if result.get("errors"):
-                raise_from_error(result["errors"][0])
-            return result["data"]
+        # The bridge will rate limit if we send more requests than about 2-5 per second
+        # we guard ourselves from hitting the rate limit by using a throttler
+        # but others apps/services are hitting the Hue bridge too so we still
+        # might hit the rate limit/overload at some point so we also retry if this happens.
+        async with self._throttler:
+            async with self.create_request(method, path, **kwargs) as resp:
+                # 503 means the bridge is rate limiting/overloaded, we should back off a bit.
+                if resp.status == 503 and retries >= MAX_RETRIES:
+                    raise BridgeBusy(
+                        f"{retries} requests to the bridge failed, "
+                        "its probably overloaded. Giving up."
+                    )
+                if resp.status == 503:
+                    retry_wait = 0.25 * retries
+                    LOGGER.debug(
+                        "Got 503 error from Hue bridge, retry request in %s seconds",
+                        retry_wait,
+                    )
+                    await asyncio.sleep(retry_wait)
+                    return await self.request(method, path, retries + 1, **kwargs)
+                if resp.status == 403:
+                    raise Unauthorized
+                # raise on all other error status codes
+                resp.raise_for_status()
+                result = await resp.json()
+                if result.get("errors"):
+                    raise_from_error(result["errors"][0])
+                return result["data"]
 
     @asynccontextmanager
     async def create_request(
@@ -171,19 +205,8 @@ class HueBridgeV2:
 
         kwargs["headers"]["hue-application-key"] = self._app_key
 
-        retries = 0
-        while retries <= 25:
-            async with self._websession.request(method, url, **kwargs) as res:
-                if res.status == 403:
-                    raise Unauthorized
-                if res.status == 503:
-                    # 503 means the bridge is rate limiting, we should back off a bit.
-                    retries += 1
-                    await asyncio.sleep(0.5 * retries)
-                    continue
-                res.raise_for_status()
-                yield res
-                break
+        async with self._websession.request(method, url, **kwargs) as res:
+            yield res
 
     async def __aenter__(self) -> "HueBridgeV2":
         """Return Context manager."""
