@@ -145,7 +145,7 @@ class BaseResourcesController(Generic[CLIPResource]):
         data = dataclass_to_dict(obj_in, skip_none=True)
         await self._bridge.request("put", endpoint, json=data)
 
-    async def create(self, id: str, obj_in: CLIPResource) -> None:
+    async def create(self, obj_in: CLIPResource) -> None:
         """
         Create HUE resource with POST command.
 
@@ -153,7 +153,7 @@ class BaseResourcesController(Generic[CLIPResource]):
         Note that not all resources allow creating of items.
         Sending keys that are not allowed, results in an error from the bridge.
         """
-        endpoint = f"clip/v2/resource/{self.item_type.value}/{id}"
+        endpoint = f"clip/v2/resource/{self.item_type.value}"
         # create a clean dict with only the not None keys set.
         data = dataclass_to_dict(obj_in, skip_none=True)
         await self._bridge.request("post", endpoint, json=data)
