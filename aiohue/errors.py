@@ -24,6 +24,10 @@ class InvalidAPIVersion(AiohueException):
     """Raised when we're trying to connect to an unsupported bridge version."""
 
 
+class BridgeBusy(AiohueException):
+    """Raised when multiple requests to the bridge failed."""
+
+
 ERRORS = {1: Unauthorized, 101: LinkButtonNotPressed}
 
 
