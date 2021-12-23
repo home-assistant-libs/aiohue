@@ -18,7 +18,7 @@ if TYPE_CHECKING:
 
 from ...errors import AiohueException, InvalidAPIVersion, InvalidEvent, Unauthorized
 from ...util import NoneType
-from ..models.clip import LOGGER, CLIPEvent, CLIPEventType, CLIPResource
+from ..models.clip import CLIPEvent, CLIPEventType, CLIPResource
 from ..models.resource import ResourceTypes
 
 CONNECTION_TIMEOUT = 90  # 90 seconds
@@ -299,4 +299,4 @@ class EventStream:
                 )
             except (ClientError, asyncio.TimeoutError, AiohueException) as err:
                 # might happen on connection error, we don't want the retry logic to bail out
-                LOGGER.debug("Error while sending keepalive: %s", str(err))
+                self._logger.debug("Error while sending keepalive: %s", str(err))
