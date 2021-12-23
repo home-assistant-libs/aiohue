@@ -33,7 +33,7 @@ async def main():
 
         # pick a random light
         light = bridge.lights.items[0]
-        print("Sending 100 requests to bridge...")
+        print(f"Sending 100 requests to bridge for {light.name}...")
 
         async def toggle_light():
             await bridge.lights.turn_on(light.id)

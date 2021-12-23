@@ -151,30 +151,31 @@ class HueBridgeV2:
 
         return unsubscribe
 
-    async def request(
-        self, method: str, path: str, retries: int = 0, **kwargs
-    ) -> dict | List[dict]:
+    async def request(self, method: str, path: str, **kwargs) -> dict | List[dict]:
         """Make request on the api and return response data."""
         # The bridge will rate limit if we send more requests than about 2-5 per second
         # we guard ourselves from hitting the rate limit by using a throttler
         # but others apps/services are hitting the Hue bridge too so we still
         # might hit the rate limit/overload at some point so we also retry if this happens.
-        async with self._throttler:
-            async with self.create_request(method, path, **kwargs) as resp:
+        retries = 0
+
+        while retries < MAX_RETRIES:
+            retries += 1
+
+            if retries > 1:
+                retry_wait = 0.25 * retries
+                LOGGER.debug(
+                    "Got 503 error from Hue bridge, retry request in %s seconds",
+                    retry_wait,
+                )
+                await asyncio.sleep(retry_wait)
+
+            async with self._throttler, self.create_request(
+                method, path, **kwargs
+            ) as resp:
                 # 503 means the bridge is rate limiting/overloaded, we should back off a bit.
-                if resp.status == 503 and retries >= MAX_RETRIES:
-                    raise BridgeBusy(
-                        f"{retries} requests to the bridge failed, "
-                        "its probably overloaded. Giving up."
-                    )
                 if resp.status == 503:
-                    retry_wait = 0.25 * retries
-                    LOGGER.debug(
-                        "Got 503 error from Hue bridge, retry request in %s seconds",
-                        retry_wait,
-                    )
-                    await asyncio.sleep(retry_wait)
-                    return await self.request(method, path, retries + 1, **kwargs)
+                    continue
                 if resp.status == 403:
                     raise Unauthorized
                 # raise on all other error status codes
@@ -183,6 +184,11 @@ class HueBridgeV2:
                 if result.get("errors"):
                     raise_from_error(result["errors"][0])
                 return result["data"]
+
+        raise BridgeBusy(
+            f"{retries} requests to the bridge failed, "
+            "its probably overloaded. Giving up."
+        )
 
     @asynccontextmanager
     async def create_request(
