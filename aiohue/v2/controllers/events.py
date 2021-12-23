@@ -66,7 +66,6 @@ class EventStream:
         self._bg_tasks: List[asyncio.Task] = []
         self._subscribers: List[EventSubscriptionType] = []
         self._logger = bridge.logger.getChild("events")
-        self._stop_requested = False
 
     @property
     def connected(self) -> bool:
@@ -86,15 +85,12 @@ class EventStream:
         Connection will be auto-reconnected if it gets lost.
         """
         assert len(self._bg_tasks) == 0
-        self._stop_requested = False
-        # __keepalive_workaround requires event reader to be first in the list.
         self._bg_tasks.append(asyncio.create_task(self.__event_reader()))
         self._bg_tasks.append(asyncio.create_task(self.__event_processor()))
         self._bg_tasks.append(asyncio.create_task(self.__keepalive_workaround()))
 
     async def stop(self) -> None:
         """Stop listening for events."""
-        self._stop_requested = True
         for task in self._bg_tasks:
             task.cancel()
         self._bg_tasks = []
@@ -194,8 +190,6 @@ class EventStream:
                 if status:
                     # for debugging purpose only
                     self._logger.debug(err)
-            except asyncio.CancelledError:
-                pass
             except Exception as err:
                 # for debugging purpose only
                 self._logger.exception(err)
@@ -203,9 +197,6 @@ class EventStream:
 
             # if we reach this point, the connection was lost
             self.emit(EventType.DISCONNECTED)
-
-            if self._stop_requested:
-                return
 
             reconnect_wait = min(2 * connect_attempts, 600)
             self._logger.debug(
