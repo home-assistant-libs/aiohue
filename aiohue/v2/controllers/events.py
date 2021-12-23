@@ -21,7 +21,8 @@ from ...util import NoneType
 from ..models.clip import CLIPEvent, CLIPEventType, CLIPResource
 from ..models.resource import ResourceTypes
 
-CONNECTION_TIMEOUT = 5 * 60  # 5 minutes
+CONNECTION_TIMEOUT = 90  # 90 seconds
+KEEPALIVE_INTERVAL = 60  # every minute
 
 
 class EventStreamStatus(Enum):
@@ -242,6 +243,7 @@ class EventStream:
                 return
             if key == "id":
                 self._last_event_id = value.replace(":0", "")
+                print(self._last_event_id)
                 return
             if key == "data":
                 # events is array with multiple events
@@ -261,7 +263,7 @@ class EventStream:
                 "Unable to parse Event message: %s", line, exc_info=exc
             )
 
-    async def __keepalive_workaround(self, interval: int = 60) -> NoReturn:
+    async def __keepalive_workaround(self) -> NoReturn:
         """Send keepalive command to bridge, abusing geofence client."""
         # Oh yeah, this is a major hack and hopefully it will only be temporary ;-)
         # Signify forgot to implement some sort of periodic keep alive message on the EventBus
@@ -273,35 +275,25 @@ class EventStream:
         # Now let's contact Signify if this can be solved.
         prefix = "aiohue_"
 
-        expected_name = None
-
         while True:
-            await asyncio.sleep(interval)
+            await asyncio.sleep(KEEPALIVE_INTERVAL)
 
             for client in self._bridge.sensors.geofence_client.items:
                 if client.name.startswith(prefix):
                     hass_client = client
                     break
-
             else:
                 await self._bridge.sensors.geofence_client.create(
                     GeofenceClientCreate(name=prefix)
                 )
-                expected_name = prefix
                 continue
 
-            if expected_name is not None and hass_client.name != expected_name:
-                self._logger.warning(
-                    "Detected stale event stream. Triggering reconnect."
-                )
-                self._bg_tasks[0].cancel()
-                continue
-
-            # simply update the name of the geofence client will result in an event message
+            # simply updating the name of the geofence client will result in an event message
+            # the eventstream timeout will detect if our keepalive message was not received
             random_str = "".join(
                 (random.choice(string.ascii_lowercase)) for x in range(10)
             )
-            expected_name = hass_client.name = f"{prefix}{random_str}"
+            hass_client.name = f"{prefix}{random_str}"
             await self._bridge.sensors.geofence_client.update(
                 hass_client.id, hass_client
             )
