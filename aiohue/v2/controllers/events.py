@@ -3,20 +3,20 @@ from __future__ import annotations
 
 import asyncio
 import json
+import random
+import string
 from asyncio.coroutines import iscoroutinefunction
 from enum import Enum
 from typing import TYPE_CHECKING, Callable, List, NoReturn, Tuple
 
 from aiohttp import ClientTimeout
 from aiohttp.client_exceptions import ClientError
-import random
-import string
 from aiohue.v2.models.geofence_client import GeofenceClientCreate
 
 if TYPE_CHECKING:
     from .. import HueBridgeV2
 
-from ...errors import InvalidAPIVersion, InvalidEvent, Unauthorized
+from ...errors import AiohueException, InvalidAPIVersion, InvalidEvent, Unauthorized
 from ...util import NoneType
 from ..models.clip import CLIPEvent, CLIPEventType, CLIPResource
 from ..models.resource import ResourceTypes
@@ -243,7 +243,6 @@ class EventStream:
                 return
             if key == "id":
                 self._last_event_id = value.replace(":0", "")
-                print(self._last_event_id)
                 return
             if key == "data":
                 # events is array with multiple events
@@ -278,22 +277,26 @@ class EventStream:
         while True:
             await asyncio.sleep(KEEPALIVE_INTERVAL)
 
-            for client in self._bridge.sensors.geofence_client.items:
-                if client.name.startswith(prefix):
-                    hass_client = client
-                    break
-            else:
-                await self._bridge.sensors.geofence_client.create(
-                    GeofenceClientCreate(name=prefix)
-                )
-                continue
+            try:
+                for client in self._bridge.sensors.geofence_client.items:
+                    if client.name.startswith(prefix):
+                        hass_client = client
+                        break
+                else:
+                    await self._bridge.sensors.geofence_client.create(
+                        GeofenceClientCreate(name=prefix)
+                    )
+                    continue
 
-            # simply updating the name of the geofence client will result in an event message
-            # the eventstream timeout will detect if our keepalive message was not received
-            random_str = "".join(
-                (random.choice(string.ascii_lowercase)) for x in range(10)
-            )
-            hass_client.name = f"{prefix}{random_str}"
-            await self._bridge.sensors.geofence_client.update(
-                hass_client.id, hass_client
-            )
+                # simply updating the name of the geofence client will result in an event message
+                # the eventstream timeout will detect if our keepalive message was not received
+                random_str = "".join(
+                    (random.choice(string.ascii_lowercase)) for x in range(10)
+                )
+                hass_client.name = f"{prefix}{random_str}"
+                await self._bridge.sensors.geofence_client.update(
+                    hass_client.id, hass_client
+                )
+            except (ClientError, asyncio.TimeoutError, AiohueException) as err:
+                # might happen on connection error, we don't want the retry logic to bail out
+                self._logger.debug("Error while sending keepalive: %s", str(err))
