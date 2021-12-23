@@ -11,7 +11,7 @@ from aiohttp import ClientTimeout
 from aiohttp.client_exceptions import ClientError
 import random
 import string
-from aiohue.v2.models.geofence_client import GeofenceClient, GeofenceClientCreate
+from aiohue.v2.models.geofence_client import GeofenceClientCreate
 
 if TYPE_CHECKING:
     from .. import HueBridgeV2
