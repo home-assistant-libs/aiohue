@@ -3,7 +3,8 @@ from __future__ import annotations
 
 import asyncio
 from asyncio.coroutines import iscoroutinefunction
-from typing import TYPE_CHECKING, Any, Callable, Dict, Generic, Iterator, List, Tuple
+from typing import (TYPE_CHECKING, Any, Callable, Dict, Generic, Iterator,
+                    List, Tuple)
 
 from aiohue.v2.models.device import Device
 
@@ -175,7 +176,9 @@ class BaseResourcesController(Generic[CLIPResource]):
         """Return bool if id is in items."""
         return id in self._items
 
-    async def _handle_event(self, type: EventType, item: CLIPResource | None) -> None:
+    async def _handle_event(
+        self, type: EventType, item: CLIPResource | None, skip_forward: bool = False
+    ) -> None:
         """Handle incoming event for this resource from the EventStream."""
         if type == EventType.RESOURCE_ADDED:
             # new item added
@@ -197,6 +200,9 @@ class BaseResourcesController(Generic[CLIPResource]):
             # ignore all other events
             return
 
+        if skip_forward:
+            return
+
         subscribers = (
             self._subscribers.get(item.id, []) + self._subscribers[ID_FILTER_ALL]
         )
@@ -210,10 +216,9 @@ class BaseResourcesController(Generic[CLIPResource]):
 
     async def __handle_reconnect(self, full_state: List[dict]) -> None:
         """Force update of state (on reconnect)."""
-        # When a reconnect (of the eventstream) happens our state can't be trusted
-        # We need to fetch the full state to check what changed
-        # NOTE: This should actually be managed by the `Last-Event-ID` on the SSE
-        # but seems like Hue did not implement that on the bridge.
+        # When the connection to the eventstream was lost for a longer time
+        # we fetch the full state to check what changed
+        # NOTE: Short connection drops are handled by the `Last-Event-Id` mechanism.
         prev_ids = set(self._items.keys())
         cur_ids = set()
         for item in full_state:
@@ -227,7 +232,12 @@ class BaseResourcesController(Generic[CLIPResource]):
                 prev_item = self._items[resource.id]
                 if dataclass_to_dict(prev_item) == dataclass_to_dict(resource):
                     continue
-                await self._handle_event(EventType.RESOURCE_UPDATED, resource)
+                # its pointless to emit events for button devices at reconnect
+                # so we prevent those from being forwarded
+                skip_forward = self.item_type == ResourceTypes.BUTTON
+                await self._handle_event(
+                    EventType.RESOURCE_UPDATED, resource, skip_forward
+                )
         # work out item deletions
         deleted_ids = {x for x in prev_ids if x not in cur_ids}
         for resource_id in deleted_ids:
