@@ -159,6 +159,8 @@ class EventStream:
 
         while True:
             connect_attempts += 1
+            if self._last_event_id:
+                headers["last-event-id"] = self._last_event_id
             # Messages come in line by line, according to EventStream/SSE specs
             # we iterate over the incoming lines in the streamreader.
             try:
@@ -233,7 +235,7 @@ class EventStream:
             if not key:
                 return
             if key == "id":
-                self._last_event_id = value.replace(":0", "")
+                self._last_event_id = value
                 return
             if key == "data":
                 # events is array with multiple events
