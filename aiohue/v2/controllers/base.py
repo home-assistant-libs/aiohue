@@ -3,8 +3,7 @@ from __future__ import annotations
 
 import asyncio
 from asyncio.coroutines import iscoroutinefunction
-from typing import (TYPE_CHECKING, Any, Callable, Dict, Generic, Iterator,
-                    List, Tuple)
+from typing import TYPE_CHECKING, Any, Callable, Dict, Generic, Iterator, List, Tuple
 
 from aiohue.v2.models.device import Device
 
