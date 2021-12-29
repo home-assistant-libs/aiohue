@@ -2,8 +2,7 @@
 from __future__ import annotations
 
 import asyncio
-from contextlib import suppress
-from typing import TYPE_CHECKING, Type, Union
+from typing import TYPE_CHECKING, Dict, Type, Union
 
 from ..models.button import Button, ButtonEvent
 from ..models.connectivity import ZigbeeConnectivity
@@ -43,7 +42,7 @@ class ButtonController(BaseResourcesController[Type[Button]]):
 
     item_type = ResourceTypes.BUTTON
 
-    _workaround_task: asyncio.Task | None = None
+    _workaround_tasks: Dict[str, asyncio.Task] = {}
 
     async def _handle_event(self, type: EventType, item: Button | None) -> None:
         """Handle incoming event for this resource from the EventStream."""
@@ -62,19 +61,23 @@ class ButtonController(BaseResourcesController[Type[Button]]):
         if device is None or device.product_data.model_id not in BTN_WORKAROUND_NEEDED:
             return
 
-        if self._workaround_task is not None:
-            self._workaround_task.cancel()
-            with suppress(asyncio.CancelledError):
-                await self._workaround_task
-            self._workaround_task = None
+        if item.id in self._workaround_tasks:
+            # cancel existing task (if any)
+            # should not happen, but just in case
+            task = self._workaround_tasks.pop(item.id)
+            if not task.done():
+                task.cancel()
 
-        asyncio.create_task(self._handle_longpress_workaround(item.id))
+        self._workaround_tasks[item.id] = asyncio.create_task(
+            self._handle_longpress_workaround(item.id)
+        )
 
     async def _handle_longpress_workaround(self, id: int):
-        # Fake `held down` and `long press release` events
+        """Handle workaround for FOH switches."""
+        # Fake `held down` and `long press release` events.
         # This might need to be removed in a future release once/if Signify
         # adds this back in their API.
-        await asyncio.sleep(1.5)
+        await asyncio.sleep(1.5)  # time to initially wait for SHORT_RELEASE
         count = 0
         try:
             while count <= 20:  # = max 10 seconds
@@ -87,13 +90,16 @@ class ButtonController(BaseResourcesController[Type[Button]]):
                 await self._handle_event(EventType.RESOURCE_UPDATED, btn_resource)
                 await asyncio.sleep(0.5)
                 count += 1
-        except asyncio.CancelledError:
-            pass
-
-        if count > 1:
-            btn_resource = self._items[id]
-            btn_resource.button.last_event = ButtonEvent.LONG_RELEASE
-            await self._handle_event(EventType.RESOURCE_UPDATED, btn_resource)
+        finally:
+            # Fire LONG_RELEASE event if time between INITIAL_PRESS and SHORT_RELEASE
+            # is more than 1.5 seconds or 10 seconds expired.
+            # The button will not send SHORT_RELEASE if more than 10 seconds passed.
+            # Note that the button will also fire the SHORT_RELEASE event if it's released within
+            # those 10 seconds.
+            if count > 1:
+                btn_resource = self._items[id]
+                btn_resource.button.last_event = ButtonEvent.LONG_RELEASE
+                await self._handle_event(EventType.RESOURCE_UPDATED, btn_resource)
 
 
 class GeofenceClientController(BaseResourcesController[Type[GeofenceClient]]):
