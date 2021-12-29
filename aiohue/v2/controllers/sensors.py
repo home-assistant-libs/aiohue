@@ -42,7 +42,7 @@ class ButtonController(BaseResourcesController[Type[Button]]):
 
     item_type = ResourceTypes.BUTTON
 
-    _workaround_tasks: Dict[str, asyncio.Task] = {}
+    _workaround_tasks: Dict[str, asyncio.Task] = None
 
     async def _handle_event(self, type: EventType, item: Button | None) -> None:
         """Handle incoming event for this resource from the EventStream."""
@@ -60,6 +60,9 @@ class ButtonController(BaseResourcesController[Type[Button]]):
         device = self.get_device(item.id)
         if device is None or device.product_data.model_id not in BTN_WORKAROUND_NEEDED:
             return
+
+        if self._workaround_tasks is None:
+            self._workaround_tasks = {}
 
         if item.id in self._workaround_tasks:
             # cancel existing task (if any)
