@@ -1,18 +1,19 @@
 """Controller holding and managing HUE resources of sensor type."""
 from __future__ import annotations
 
+import asyncio
 from typing import TYPE_CHECKING, Type, Union
 
+from ..models.button import Button, ButtonEvent
 from ..models.connectivity import ZigbeeConnectivity
 from ..models.device_power import DevicePower
 from ..models.geofence_client import GeofenceClient
 from ..models.light_level import LightLevel
-from ..models.temperature import Temperature
-
-from ..models.button import Button
 from ..models.motion import Motion
 from ..models.resource import ResourceTypes
+from ..models.temperature import Temperature
 from .base import BaseResourcesController, GroupedControllerBase
+from .events import EventType
 
 if TYPE_CHECKING:
     from .. import HueBridgeV2
@@ -27,6 +28,8 @@ SENSOR_TYPES = Union[
     ZigbeeConnectivity,
 ]
 
+BTN_WORKAROUND_NEEDED = ("FOHSWITCH",)
+
 
 class DevicePowerController(BaseResourcesController[Type[DevicePower]]):
     """Controller holding and managing HUE resources of type `device_power`."""
@@ -38,6 +41,44 @@ class ButtonController(BaseResourcesController[Type[Button]]):
     """Controller holding and managing HUE resources of type `button`."""
 
     item_type = ResourceTypes.BUTTON
+
+    async def _handle_event(self, type: EventType, item: Button | None) -> None:
+        """Handle incoming event for this resource from the EventStream."""
+        await super()._handle_event(type, item)
+
+        # Handle longpress workaround if needed
+        if not item or type != EventType.RESOURCE_UPDATED:
+            return
+        device = self.get_device(item.id)
+        if not device or not item.button:
+            return
+        if (
+            device.product_data.model_id in BTN_WORKAROUND_NEEDED
+            and item.button.last_event == ButtonEvent.INITIAL_PRESS
+        ):
+            asyncio.create_task(self._handle_longpress_workaround(item.id))
+
+    async def _handle_longpress_workaround(self, id: int):
+        # Fake `held down` and `long press release` events
+        # This might need to be removed in a future release once/if Signify
+        # adds this back in their API.
+        await asyncio.sleep(1.5)
+        count = 0
+        while count <= 20:  # = max 10 seconds
+            btn_resource = self._items[id]
+            cur_event = btn_resource.button.last_event
+            if cur_event == ButtonEvent.SHORT_RELEASE:
+                break
+            # send REPEAT until short release is received
+            btn_resource.button.last_event = ButtonEvent.REPEAT
+            await self._handle_event(EventType.RESOURCE_UPDATED, btn_resource)
+            await asyncio.sleep(0.5)
+            count += 1
+
+        if count > 1:
+            btn_resource = self._items[id]
+            btn_resource.button.last_event = ButtonEvent.LONG_RELEASE
+            await self._handle_event(EventType.RESOURCE_UPDATED, btn_resource)
 
 
 class GeofenceClientController(BaseResourcesController[Type[GeofenceClient]]):
