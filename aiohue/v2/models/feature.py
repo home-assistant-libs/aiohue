@@ -1,6 +1,6 @@
 """Feature Schemas used by various Hue resources."""
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from enum import Enum
 
 
