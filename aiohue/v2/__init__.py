@@ -2,25 +2,25 @@
 from __future__ import annotations
 
 import asyncio
-from contextlib import asynccontextmanager
 import logging
+import time
+from contextlib import asynccontextmanager
 from types import TracebackType
 from typing import Callable, Generator, List, Optional, Type
 
 import aiohttp
 from aiohttp import ClientResponse
-from asyncio_throttle import Throttler
 from aiohue.v2.models.clip import LOGGER, CLIPResource
+from asyncio_throttle import Throttler
 
-from ..errors import Unauthorized, raise_from_error, BridgeBusy
-from .controllers.events import EventCallBackType, EventStream, EventType
-
+from ..errors import BridgeBusy, Unauthorized, raise_from_error
 from .controllers.config import ConfigController
-from .controllers.sensors import SensorsController
-from .controllers.lights import LightsController
-from .controllers.groups import GroupsController
-from .controllers.scenes import ScenesController
 from .controllers.devices import DevicesController
+from .controllers.events import EventCallBackType, EventStream, EventType
+from .controllers.groups import GroupsController
+from .controllers.lights import LightsController
+from .controllers.scenes import ScenesController
+from .controllers.sensors import SensorsController
 
 MAX_RETRIES = 25  # how many times do we retry on a 503 (bridge overload/rate limit)
 THROTTLE_CONCURRENT_REQUESTS = 2  # how many concurrent requests to the bridge
@@ -63,6 +63,7 @@ class HueBridgeV2:
         self._throttler = Throttler(
             rate_limit=THROTTLE_CONCURRENT_REQUESTS, period=THROTTLE_TIMESPAN
         )
+        self._disconnect_timestamp = 0
 
     @property
     def bridge_id(self) -> str | None:
@@ -117,7 +118,9 @@ class HueBridgeV2:
         # start event listener
         await self._events.initialize()
         # subscribe to reconnect event
-        self._events.subscribe(self._handle_event, EventType.RECONNECTED)
+        self._events.subscribe(
+            self._handle_connect_event, (EventType.RECONNECTED, EventType.DISCONNECTED)
+        )
 
     async def close(self) -> None:
         """Close connection and cleanup."""
@@ -231,11 +234,18 @@ class HueBridgeV2:
             raise exc_val
         return exc_type
 
-    async def _handle_event(self, type: EventType, item: CLIPResource | None) -> None:
-        """Handle incoming event for this resource from the EventStream."""
-        if type != EventType.RECONNECTED:
-            return
-        await self.fetch_full_state()
+    async def _handle_connect_event(
+        self, type: EventType, item: CLIPResource | None
+    ) -> None:
+        """Handle (disconnect) event from the EventStream."""
+        if type == EventType.DISCONNECTED:
+            # If we receive a disconnect event, we store the timestamp
+            self._disconnect_timestamp = time.time()
+        elif type == EventType.RECONNECTED:
+            # if the time between the disconnect and reconnect is more than 1 minute,
+            # we fetch the full state.
+            if (time.time() - self._disconnect_timestamp) > 60:
+                await self.fetch_full_state()
 
     async def fetch_full_state(self) -> None:
         """Fetch state on all controllers."""
