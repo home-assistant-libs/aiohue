@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import asyncio
+from contextlib import suppress
 from typing import TYPE_CHECKING, Type, Union
 
 from ..models.button import Button, ButtonEvent
@@ -42,21 +43,32 @@ class ButtonController(BaseResourcesController[Type[Button]]):
 
     item_type = ResourceTypes.BUTTON
 
+    _workaround_task: asyncio.Task | None = None
+
     async def _handle_event(self, type: EventType, item: Button | None) -> None:
         """Handle incoming event for this resource from the EventStream."""
         await super()._handle_event(type, item)
 
         # Handle longpress workaround if needed
-        if not item or type != EventType.RESOURCE_UPDATED:
-            return
-        device = self.get_device(item.id)
-        if not device or not item.button:
-            return
         if (
-            device.product_data.model_id in BTN_WORKAROUND_NEEDED
-            and item.button.last_event == ButtonEvent.INITIAL_PRESS
+            not item
+            or type != EventType.RESOURCE_UPDATED
+            or not item.button
+            or item.button.last_event != ButtonEvent.INITIAL_PRESS
         ):
-            asyncio.create_task(self._handle_longpress_workaround(item.id))
+            return
+
+        device = self.get_device(item.id)
+        if device is None or device.product_data.model_id not in BTN_WORKAROUND_NEEDED:
+            return
+
+        if self._workaround_task is not None:
+            self._workaround_task.cancel()
+            with suppress(asyncio.CancelledError):
+                await self._workaround_task
+            self._workaround_task = None
+
+        asyncio.create_task(self._handle_longpress_workaround(item.id))
 
     async def _handle_longpress_workaround(self, id: int):
         # Fake `held down` and `long press release` events
@@ -64,16 +76,19 @@ class ButtonController(BaseResourcesController[Type[Button]]):
         # adds this back in their API.
         await asyncio.sleep(1.5)
         count = 0
-        while count <= 20:  # = max 10 seconds
-            btn_resource = self._items[id]
-            cur_event = btn_resource.button.last_event
-            if cur_event == ButtonEvent.SHORT_RELEASE:
-                break
-            # send REPEAT until short release is received
-            btn_resource.button.last_event = ButtonEvent.REPEAT
-            await self._handle_event(EventType.RESOURCE_UPDATED, btn_resource)
-            await asyncio.sleep(0.5)
-            count += 1
+        try:
+            while count <= 20:  # = max 10 seconds
+                btn_resource = self._items[id]
+                cur_event = btn_resource.button.last_event
+                if cur_event == ButtonEvent.SHORT_RELEASE:
+                    break
+                # send REPEAT until short release is received
+                btn_resource.button.last_event = ButtonEvent.REPEAT
+                await self._handle_event(EventType.RESOURCE_UPDATED, btn_resource)
+                await asyncio.sleep(0.5)
+                count += 1
+        except asyncio.CancelledError:
+            pass
 
         if count > 1:
             btn_resource = self._items[id]
