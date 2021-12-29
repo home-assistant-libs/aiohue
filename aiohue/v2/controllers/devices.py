@@ -5,6 +5,7 @@ from typing import List, Type
 
 from ..models.connectivity import ZigbeeConnectivity
 from ..models.device import Device
+from ..models.feature import IdentifyFeature
 from ..models.light import Light
 from ..models.resource import ResourceTypes
 from ..models.room import Room
@@ -41,3 +42,15 @@ class DevicesController(BaseResourcesController[Type[Device]]):
             if service.rtype == ResourceTypes.ZIGBEE_CONNECTIVITY:
                 return self._bridge.sensors.zigbee_connectivity[service.rid]
         return None
+
+    async def set_identify(self, id: str) -> None:
+        """
+        Send identify command to the device.
+
+        Triggers a visual identification sequence, current implemented as
+        (which can change in the future):
+        - Bridge performs Zigbee LED identification cycles for 5 seconds
+        - Lights perform one breathe cycle
+        - Sensors perform LED identification cycles for 15 seconds
+        """
+        await self.update(id, Device(id, identify=IdentifyFeature()))

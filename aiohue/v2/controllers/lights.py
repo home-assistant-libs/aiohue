@@ -55,10 +55,18 @@ class LightsController(BaseResourcesController[Type[Light]]):
             id, on=True, color_temp=mirek, transition_time=transition_time
         )
 
+    async def set_flash(self, id: str, short: bool = False) -> None:
+        """Send Flash command to light."""
+        if short:
+            device = self.get_device(id)
+            await self._bridge.devices.set_identify(device.id)
+        else:
+            await self.set_state(id, on=True, alert=AlertEffectType.BREATHE)
+
     async def set_state(
         self,
         id: str,
-        on: bool = True,
+        on: Optional[bool] = None,
         brightness: Optional[float] = None,
         color_xy: Optional[Tuple[float, float]] = None,
         color_temp: Optional[int] = None,
@@ -66,7 +74,9 @@ class LightsController(BaseResourcesController[Type[Light]]):
         alert: AlertEffectType | None = None,
     ) -> None:
         """Set supported feature(s) to light resource."""
-        update_obj = Light(id=id, on=OnFeature(on=on))
+        update_obj = Light(id=id)
+        if on is not None:
+            update_obj.on = OnFeature(on=on)
         if brightness is not None:
             update_obj.dimming = DimmingFeature(brightness=brightness)
         if color_xy is not None:

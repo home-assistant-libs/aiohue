@@ -1,6 +1,6 @@
 """Feature Schemas used by various Hue resources."""
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from enum import Enum
 
 
@@ -79,7 +79,15 @@ class AlertFeature:
     """Represent AlertFeature object as used by the Hue api."""
 
     action: Optional[AlertEffectType] = None
-    action_values: List[AlertEffectType] = field(default_factory=list)
+    action_values: Optional[List[AlertEffectType]] = None
+
+
+@dataclass
+class IdentifyFeature:
+    """Represent IdentifyFeature object as used by the Hue api."""
+
+    # only used in PUT requests on device
+    action: str = "identify"
 
 
 @dataclass
