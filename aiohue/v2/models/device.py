@@ -1,9 +1,9 @@
 """Model(s) for device resource on HUE bridge."""
 from dataclasses import dataclass
 from enum import Enum
-
 from typing import Optional, Type
 
+from .feature import IdentifyFeature
 from .group import Group
 from .resource import NamedResourceMetadata, ResourceTypes
 
@@ -99,4 +99,5 @@ class Device(Group):
     product_data: Optional[DeviceProductData] = None
     metadata: Optional[DeviceMetaData] = None  # optional in put
     creation_time: Optional[str] = None
+    identify: Optional[IdentifyFeature] = None  # only allowed in put
     type: ResourceTypes = ResourceTypes.DEVICE
