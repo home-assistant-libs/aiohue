@@ -8,7 +8,7 @@ MIN_PY_VERSION = "3.8"
 
 setup(
     name="aiohue",
-    version="4.0.0",
+    version="4.0.1",
     license="Apache License 2.0",
     url="https://github.com/home-assistant-libs/aiohue",
     author="Paulus Schoutsen",
