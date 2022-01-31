@@ -27,11 +27,12 @@ MAX_RETRIES = 25  # how many times do we retry on a 503 (bridge overload/rate li
 class HueBridgeV2:
     """Control a Philips Hue bridge with V2 API."""
 
+    _websession: aiohttp.ClientSession | None = None
+
     def __init__(
         self,
         host: str,
         app_key: str,
-        websession: aiohttp.ClientSession | None = None,
     ) -> None:
         """
         Initialize the Bridge instance.
@@ -39,22 +40,9 @@ class HueBridgeV2:
         Parameters:
             `host`: the hostname or IP-address of the bridge as string.
             `app_key`: provide the hue appkey/username for authentication.
-            `websession`: optionally provide a aiohttp ClientSession.
         """
         self._host = host
         self._app_key = app_key
-        self._websession = websession
-        self._websession_provided = websession is not None
-        if websession and (
-            websession.connector.limit_per_host == 0
-            or websession.connector.limit_per_host > 3
-        ):
-            self._websession = None
-            self._websession_provided = False
-            LOGGER.debug(
-                "Provided aiohttp.ClientSession ignored because the "
-                "TCP Connector is not limited to 3 connections per host."
-            )
         self.logger = logging.getLogger(f"{__package__}[{host}]")
         self._events = EventStream(self)
         # all resource controllers
@@ -126,7 +114,7 @@ class HueBridgeV2:
     async def close(self) -> None:
         """Close connection and cleanup."""
         await self.events.stop()
-        if not self._websession_provided:
+        if self._websession:
             await self._websession.close()
         self.logger.info("Connection to bridge closed.")
 
