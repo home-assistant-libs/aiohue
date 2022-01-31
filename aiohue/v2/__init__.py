@@ -10,7 +10,6 @@ from typing import Callable, Generator, List, Optional, Type
 
 import aiohttp
 from aiohttp import ClientResponse
-from aiohue.v2.models.clip import LOGGER, CLIPResource
 
 from ..errors import BridgeBusy, Unauthorized, raise_from_error
 from .controllers.config import ConfigController
@@ -20,6 +19,7 @@ from .controllers.groups import GroupsController
 from .controllers.lights import LightsController
 from .controllers.scenes import ScenesController
 from .controllers.sensors import SensorsController
+from .models.clip import LOGGER, CLIPResource
 
 MAX_RETRIES = 25  # how many times do we retry on a 503 (bridge overload/rate limit)
 
