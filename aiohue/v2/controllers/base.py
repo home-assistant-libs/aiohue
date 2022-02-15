@@ -3,12 +3,23 @@ from __future__ import annotations
 
 import asyncio
 from asyncio.coroutines import iscoroutinefunction
-from typing import TYPE_CHECKING, Any, Callable, Dict, Generic, Iterator, List, Tuple
 
-from aiohue.v2.models.device import Device
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Callable,
+    Dict,
+    Generic,
+    Iterator,
+    List,
+    Optional,
+    Tuple,
+    TypeVar,
+)
 
-from ...util import NoneType, dataclass_to_dict, update_dataclass
-from ..models.clip import CLIPResource, parse_clip_resource
+from ..models.device import Device
+
+from ...util import NoneType, dataclass_from_dict, dataclass_to_dict, update_dataclass
 from ..models.resource import ResourceTypes
 from .events import EventCallBackType, EventType
 
@@ -23,13 +34,18 @@ EventSubscriptionType = Tuple[
 
 ID_FILTER_ALL = "*"
 
+CLIPResource = TypeVar("CLIPResource")
+
 
 class BaseResourcesController(Generic[CLIPResource]):
     """Holds and manages all items for a specific Hue resource type."""
 
-    item_type = ResourceTypes.UNKNOWN
+    item_type: Optional[ResourceTypes] = None
+    item_cls: Optional[CLIPResource] = None
 
-    def __init__(self, bridge: "HueBridgeV2") -> None:
+    def __init__(
+        self, bridge: "HueBridgeV2"
+    ) -> None:
         """Initialize instance."""
         self._bridge = bridge
         self._items: Dict[str, CLIPResource] = {}
@@ -64,7 +80,7 @@ class BaseResourcesController(Generic[CLIPResource]):
             return
 
         for item in initial_data:
-            resource: CLIPResource = parse_clip_resource(item)
+            resource: CLIPResource = dataclass_from_dict(self.item_cls, item)
             self._items[resource.id] = resource
         # subscribe to item updates
         self._bridge.events.subscribe(
@@ -155,7 +171,6 @@ class BaseResourcesController(Generic[CLIPResource]):
         """
         endpoint = f"clip/v2/resource/{self.item_type.value}"
         # create a clean dict with only the not None keys set.
-        obj_in.id = None
         data = dataclass_to_dict(obj_in, skip_none=True)
         await self._bridge.request("post", endpoint, json=data)
 
@@ -176,25 +191,29 @@ class BaseResourcesController(Generic[CLIPResource]):
         return id in self._items
 
     async def _handle_event(
-        self, type: EventType, item: CLIPResource | None, skip_forward: bool = False
+        self, evt_type: EventType, evt_data: dict | None, skip_forward: bool = False
     ) -> None:
         """Handle incoming event for this resource from the EventStream."""
-        if type == EventType.RESOURCE_ADDED:
+        if evt_data is None:
+            return
+        item_id = evt_data.get("rid", evt_data["id"])
+        if evt_type == EventType.RESOURCE_ADDED:
             # new item added
-            cur_item = self._items[item.id] = item
-        elif type == EventType.RESOURCE_DELETED:
+            cur_item = self._items[item_id] = dataclass_from_dict(self.item_cls, evt_data)
+        elif evt_type == EventType.RESOURCE_DELETED:
             # existing item deleted
-            cur_item = self._items.pop(item.id, item)
-        elif type == EventType.RESOURCE_UPDATED:
+            cur_item = self._items.pop(item_id, evt_data)
+        elif evt_type == EventType.RESOURCE_UPDATED:
             # existing item updated
-            cur_item = self._items.get(item.id)
+            cur_item = self._items.get(item_id)
             if cur_item is None:
                 # should not be possible but just in case
                 # if this does happen often we should consider fetching the full object
-                self._logger.warning("received update for unknown item %s", item.id)
+                self._logger.warning("received update for unknown item %s", item_id)
                 return
             # make sure we only update keys that are not None
-            update_dataclass(cur_item, item)
+            changed_keys = update_dataclass(cur_item, evt_data)
+            print(changed_keys)
         else:
             # ignore all other events
             return
@@ -203,15 +222,16 @@ class BaseResourcesController(Generic[CLIPResource]):
             return
 
         subscribers = (
-            self._subscribers.get(item.id, []) + self._subscribers[ID_FILTER_ALL]
+            self._subscribers.get(item_id, []) + self._subscribers[ID_FILTER_ALL]
         )
         for (callback, event_filter) in subscribers:
-            if event_filter is not None and type not in event_filter:
+            if event_filter is not None and evt_type not in event_filter:
                 continue
             # dispatch the full resource object to the callback
             if iscoroutinefunction(callback):
-                asyncio.create_task(callback(type, item))
-            callback(type, cur_item)
+                asyncio.create_task(callback(evt_type, cur_item))
+            else:
+                callback(evt_type, cur_item)
 
     async def __handle_reconnect(self, full_state: List[dict]) -> None:
         """Force update of state (on reconnect)."""
@@ -221,7 +241,7 @@ class BaseResourcesController(Generic[CLIPResource]):
         prev_ids = set(self._items.keys())
         cur_ids = set()
         for item in full_state:
-            resource: CLIPResource = parse_clip_resource(item)
+            resource: CLIPResource = dataclass_from_dict(self.item_cls, item)
             cur_ids.add(resource.id)
             if resource.id not in prev_ids:
                 # item added

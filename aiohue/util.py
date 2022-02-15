@@ -2,8 +2,9 @@
 from __future__ import annotations
 from enum import Enum
 import logging
-from dataclasses import asdict, fields, is_dataclass, dataclass
-from typing import Any, Type, Union, get_args, get_origin
+from dataclasses import asdict, fields, is_dataclass, dataclass, MISSING
+from types import UnionType
+from typing import Any, Set, Type, Union, get_args, get_origin
 from aiohttp import ClientSession
 from datetime import datetime
 
@@ -80,20 +81,29 @@ def normalize_bridge_id(bridge_id: str):
     return bridge_id
 
 
-def update_dataclass(org_obj: dataclass, new_obj: dataclass):
-    """Update instance of dataclass with another, skipping None values."""
-    for f in fields(new_obj):
-        new_val = getattr(new_obj, f.name, None)
-        cur_val = getattr(org_obj, f.name, None)
-        if new_val is None:
+def update_dataclass(cur_obj: dataclass, new_vals: dict) -> Set[str]:
+    """
+    Update instance of dataclass from (partial) dict.
+    
+    Returns: Set with changed keys.
+    """
+    changed_keys = set()
+    for f in fields(cur_obj):
+        cur_val = getattr(cur_obj, f.name, None)
+        new_val = new_vals.get(f.name)
+
+        # handle case where value is sub dataclass/model
+        if is_dataclass(cur_val) and isinstance(new_val, dict):
+            for subkey in update_dataclass(cur_val, new_val):
+                changed_keys.add(f"{f.name}.{subkey}")
             continue
+        # parse value from type annotations
+        new_val = _parse_value(f.name, new_val, f.type, cur_val)
         if cur_val == new_val:
             continue
-        if is_dataclass(new_val) and cur_val is not None:
-            # the None guard is in place for nested structures with optional data
-            update_dataclass(getattr(org_obj, f.name), new_val)
-        else:
-            setattr(org_obj, f.name, new_val)
+        setattr(cur_obj, f.name, new_val)
+        changed_keys.add(f.name)
+    return changed_keys
 
 
 def dataclass_to_dict(obj_in: dataclass, skip_none: bool = True) -> dict:
@@ -125,6 +135,60 @@ def parse_utc_timestamp(datetimestr: str):
     return datetime.fromisoformat(datetimestr.replace("Z", "+00:00"))
 
 
+def _parse_value(name: str, value: Any, value_type: Type, default: Any = MISSING):
+    """Try to parse a value from raw data and type definitions."""
+    if value is None and not isinstance(default, type(MISSING)):
+        return default
+    if value is None and value_type is NoneType:
+        return None
+    if is_dataclass(value_type) and isinstance(value, dict):
+        return dataclass_from_dict(value_type, value)
+    origin = get_origin(value_type)
+    if origin is list:
+        return [
+            _parse_value(name, subval, get_args(value_type)[0])
+            for subval in value
+            if subval is not None
+        ]
+    if origin in [UnionType, Union]:
+        # try all possible types
+        sub_value_types = get_args(value_type)
+        for sub_arg_type in sub_value_types:
+            if value is NoneType and sub_arg_type is NoneType:
+                return value
+            # try them all until one succeeds
+            try:
+                return _parse_value(name, value, sub_arg_type)
+            except (KeyError, TypeError, ValueError):
+                pass
+        # if we get to this point, all possibilities failed
+        # find out if we should raise or log this
+        err = (
+            f"Value {value} of type {type(value)} is invalid for {name}, "
+            f"expected value of type {value_type}"
+        )
+        if NoneType not in sub_value_types:
+            # raise exception, we have no idea how to handle this value
+            raise TypeError(err)
+        # failed to parse the (sub) value but None allowed, log only
+        logging.getLogger(__name__).warn(err)
+        return None
+    if value_type is Any:
+        return value
+    if value is None and value_type is not NoneType:
+        raise KeyError(f"`{name}` of type `{value_type}` is required.")
+    if issubclass(value_type, Enum):
+        return value_type(value)
+    if value_type is type(datetime):
+        return parse_utc_timestamp(value)
+    if not isinstance(value, value_type):
+        raise TypeError(
+            f"Value {value} of type {type(value)} is invalid for {name}, "
+            f"expected value of type {value_type}"
+        )
+    return value_type(value)
+
+
 def dataclass_from_dict(cls: dataclass, dict_obj: dict, strict=False):
     """
     Create (instance of) a dataclass by providing a dict with values.
@@ -139,60 +203,13 @@ def dataclass_from_dict(cls: dataclass, dict_obj: dict, strict=False):
                 "Extra key(s) %s not allowed for %s" % ",".join(extra_keys), (str(cls))
             )
 
-    def _get_val(name: str, value: Any, value_type: Type):
-        if value is None and value_type is NoneType:
-            return None
-        if is_dataclass(value_type) and isinstance(value, dict):
-            return dataclass_from_dict(value_type, value)
-        origin = get_origin(value_type)
-        if origin is list:
-            return [
-                _get_val(name, subval, get_args(value_type)[0])
-                for subval in value
-                if subval is not None
-            ]
-        if origin is Union:  # type: ignore
-            # try all possible types
-            sub_value_types = get_args(value_type)
-            for sub_arg_type in sub_value_types:
-                if value is NoneType and sub_arg_type is NoneType:
-                    return value
-                # try them all until one succeeds
-                try:
-                    return _get_val(name, value, sub_arg_type)
-                except (KeyError, TypeError, ValueError):
-                    pass
-            # if we get to this point, all possibilities failed
-            # find out if we should raise or log this
-            err = (
-                f"Value {value} of type {type(value)} is invalid for {name}, "
-                f"expected value of type {value_type}"
-            )
-            if NoneType not in sub_value_types:
-                # raise exception, we have no idea how to handle this value
-                raise TypeError(err)
-            # failed to parse the (sub) value but None allowed, log only
-            logging.getLogger(__name__).warn(err)
-            return None
-        if value_type is Any:
-            return value
-        if value is None and value_type is not NoneType:
-            raise KeyError(f"`{name}` of type `{value_type}` is required.")
-        if issubclass(value_type, Enum):
-            return value_type(value)
-        if value_type is type(datetime):
-            return parse_utc_timestamp(value)
-        if not isinstance(value, value_type):
-            raise TypeError(
-                f"Value {value} of type {type(value)} is invalid for {name}, "
-                f"expected value of type {value_type}"
-            )
-        return value_type(value)
-
     return cls(
         **{
-            field.name: _get_val(
-                f"{cls.__name__}.{field.name}", dict_obj.get(field.name), field.type
+            field.name: _parse_value(
+                f"{cls.__name__}.{field.name}",
+                dict_obj.get(field.name),
+                field.type,
+                field.default,
             )
             for field in fields(cls)
         }

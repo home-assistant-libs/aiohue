@@ -47,36 +47,36 @@ class ButtonController(BaseResourcesController[Type[Button]]):
     _workaround_tasks: Dict[str, asyncio.Task] = None
 
     async def _handle_event(
-        self, type: EventType, item: dict | None, skip_forward: bool = False
+        self, evt_type: EventType, evt_data: dict | None, skip_forward: bool = False
     ) -> None:
         """Handle incoming event for this resource from the EventStream."""
-        await super()._handle_event(type, item)
+        await super()._handle_event(type, evt_data)
 
         # Handle longpress workaround if needed
         if (
-            not item
-            or type != EventType.RESOURCE_UPDATED
-            or not item.get("button")
-            or item["button"].get("last_event") != ButtonEvent.INITIAL_PRESS
+            not evt_data
+            or evt_type != EventType.RESOURCE_UPDATED
+            or not evt_data.get("button")
+            or evt_data["button"].get("last_event") != ButtonEvent.INITIAL_PRESS
         ):
             return
 
-        device = self.get_device(item["id"])
+        device = self.get_device(evt_data["id"])
         if device is None or device.product_data.model_id not in BTN_WORKAROUND_NEEDED:
             return
 
         if self._workaround_tasks is None:
             self._workaround_tasks = {}
 
-        if item["id"] in self._workaround_tasks:
+        if evt_data["id"] in self._workaround_tasks:
             # cancel existing task (if any)
             # should not happen, but just in case
-            task = self._workaround_tasks.pop(item["id"])
+            task = self._workaround_tasks.pop(evt_data["id"])
             if not task.done():
                 task.cancel()
 
-        self._workaround_tasks[item["id"]] = asyncio.create_task(
-            self._handle_longpress_workaround(item["id"])
+        self._workaround_tasks[evt_data["id"]] = asyncio.create_task(
+            self._handle_longpress_workaround(evt_data["id"])
         )
 
     async def _handle_longpress_workaround(self, id: int):

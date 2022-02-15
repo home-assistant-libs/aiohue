@@ -6,11 +6,10 @@ import logging
 import time
 from contextlib import asynccontextmanager
 from types import TracebackType
-from typing import Callable, Generator, List, Optional, Type
+from typing import Any, Callable, Generator, List, Optional, Type
 
 import aiohttp
 from aiohttp import ClientResponse
-from aiohue.v2.models.clip import LOGGER, CLIPResource
 from asyncio_throttle import Throttler
 
 from ..errors import BridgeBusy, Unauthorized, raise_from_error
@@ -26,7 +25,7 @@ MAX_RETRIES = 25  # how many times do we retry on a 503 (bridge overload/rate li
 THROTTLE_CONCURRENT_REQUESTS = 2  # how many concurrent requests to the bridge
 THROTTLE_TIMESPAN = 0.25  # timespan/period (in seconds) for the rate limiting
 
-
+# pylint: disable = too-many-instance-attributes
 class HueBridgeV2:
     """Control a Philips Hue bridge with V2 API."""
 
@@ -167,7 +166,7 @@ class HueBridgeV2:
 
             if retries > 1:
                 retry_wait = 0.25 * retries
-                LOGGER.debug(
+                self.logger.debug(
                     "Got 503 error from Hue bridge, retry request in %s seconds",
                     retry_wait,
                 )
@@ -234,10 +233,9 @@ class HueBridgeV2:
             raise exc_val
         return exc_type
 
-    async def _handle_connect_event(
-        self, type: EventType, item: CLIPResource | None
-    ) -> None:
+    async def _handle_connect_event(self, type: EventType, item: Any = None) -> None:
         """Handle (disconnect) event from the EventStream."""
+        # pylint: disable=unused-argument
         if type == EventType.DISCONNECTED:
             # If we receive a disconnect event, we store the timestamp
             self._disconnect_timestamp = time.time()
