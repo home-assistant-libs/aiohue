@@ -13,7 +13,7 @@ from .behavior_script import BehaviorScript
 from .bridge import Bridge
 from .bridge_home import BridgeHome
 from .button import Button
-from .connectivity import ConnectivityService, ZigbeeConnectivity
+from .zigbee_connectivity import ConnectivityService, ZigbeeConnectivity
 from .depender import DependerGet
 from .device import Device
 from .device_power import DevicePower
@@ -101,11 +101,11 @@ class CLIPEvent:
     id: str  # UUID
     creationtime: datetime
     type: CLIPEventType
-    # data contains a list with resource objects
+    # data contains a list with (partial) resource objects
     # in case of add or update this is a full or partial resource object
     # in case of delete this will include only the
     # ResourceIndentifier (type and id) of the deleted object
-    data: List[Resource]
+    data: List[dict]
 
     @classmethod
     def from_dict(cls: "CLIPEvent", dict_in: dict):
@@ -114,7 +114,7 @@ class CLIPEvent:
             id=dict_in["id"],
             creationtime=parse_utc_timestamp(dict_in["creationtime"]),
             type=CLIPEventType(dict_in["type"]),
-            data=[parse_clip_resource(x) for x in dict_in["data"]],
+            data=dict_in["data"],
         )
 
 

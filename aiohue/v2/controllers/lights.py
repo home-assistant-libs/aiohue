@@ -6,14 +6,14 @@ from typing import Optional, Tuple, Type
 from ..models.feature import (
     AlertEffectType,
     AlertFeature,
-    ColorFeature,
+    ColorFeatureBase,
     ColorPoint,
     ColorTemperatureFeature,
-    DimmingFeature,
-    DynamicsFeature,
+    DimmingFeatureBase,
+    DynamicsFeaturePut,
     OnFeature,
 )
-from ..models.light import Light
+from ..models.light import Light, LightPut
 from ..models.resource import ResourceTypes
 from .base import BaseResourcesController
 
@@ -74,17 +74,17 @@ class LightsController(BaseResourcesController[Type[Light]]):
         alert: AlertEffectType | None = None,
     ) -> None:
         """Set supported feature(s) to light resource."""
-        update_obj = Light(id=id)
+        update_obj = LightPut()
         if on is not None:
             update_obj.on = OnFeature(on=on)
         if brightness is not None:
-            update_obj.dimming = DimmingFeature(brightness=brightness)
+            update_obj.dimming = DimmingFeatureBase(brightness=brightness)
         if color_xy is not None:
-            update_obj.color = ColorFeature(xy=ColorPoint(*color_xy))
+            update_obj.color = ColorFeatureBase(xy=ColorPoint(*color_xy))
         if color_temp is not None:
             update_obj.color_temperature = ColorTemperatureFeature(mirek=color_temp)
         if transition_time is not None:
-            update_obj.dynamics = DynamicsFeature(duration=transition_time)
+            update_obj.dynamics = DynamicsFeaturePut(duration=transition_time)
         if alert is not None:
             update_obj.alert = AlertFeature(action=alert)
         await self.update(id, update_obj)

@@ -1,10 +1,12 @@
-"""Model(s) for motion resource on HUE bridge."""
+"""
+Model(s) for motion resource on HUE bridge.
+
+https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_motion
+"""
 from dataclasses import dataclass
-
-
 from typing import Optional
 
-from .resource import SensingService, ResourceTypes
+from .resource import ResourceIdentifier, ResourceTypes
 
 
 @dataclass
@@ -12,20 +14,38 @@ class MotionSensingFeature:
     """
     Represent MotionSensingFeature as retrieved from api.
 
-    clip-api.schema.json#/definitions/MotionSensingFeatureGet
+    https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_motion_get
     """
 
-    motion: Optional[bool] = None
-    motion_valid: Optional[bool] = None
+    motion: bool
+    motion_valid: bool
 
 
 @dataclass
-class Motion(SensingService):
+class Motion:
     """
-    Represent a Motion resource, a service detecting motion.
+    Represent a (full) `Motion` resource when retrieved from the api.
 
-    clip-api.schema.json#/definitions/Motion
+    https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_motion_get
     """
 
-    motion: Optional[MotionSensingFeature] = None
+    id: str
+    owner: ResourceIdentifier
+    # enabled: required(boolean)
+    # true when sensor is activated, false when deactivated
+    enabled: bool
+    motion: MotionSensingFeature
+
+    id_v1: Optional[str] = None
     type: ResourceTypes = ResourceTypes.MOTION
+
+
+@dataclass
+class MotionPut:
+    """
+    Motion resource properties that can be set/updated with a PUT request.
+
+    https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_motion__id__put
+    """
+
+    enabled: Optional[bool] = None

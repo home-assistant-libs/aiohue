@@ -2,50 +2,40 @@
 
 from dataclasses import dataclass
 from enum import Enum
-
-
 from typing import List, Optional, Type
 
 
 @dataclass
-class OnFeatureBasic:
-    """
-    Represent OnFeatureBasic object as used by the Hue api.
-
-    clip-api.schema.json#/definitions/OnFeatureBasic
-    """
+class OnFeature:
+    """Represent `On` Feature object as used by various Hue resources."""
 
     on: bool
 
 
 @dataclass
-class OnFeature(OnFeatureBasic):
+class DimmingFeatureBase:
     """
-    Represent OnFeature object, inherited from OnFeatureBasic.
+    Represent `Dimming` Feature base properties.
 
-    clip-api.schema.json#/definitions/OnFeature
-    """
-
-
-@dataclass
-class DimmingFeatureBasic:
-    """
-    Represent DimmingFeatureBasic object as used by the Hue api.
-
-    clip-api.schema.json#/definitions/DimmingFeatureBasic
+    https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_light__id__put
     """
 
-    # Brightness percentage between 0 and 100.
+    # brightness: (number - maximum: 100)
+    # Brightness percentage. value cannot be 0, writing 0 changes it to lowest possible brightness
     brightness: float
 
 
 @dataclass
-class DimmingFeature(DimmingFeatureBasic):
-    """
-    Represent DimmingFeature object, inherits from DimmingFeatureBasic.
+class DimmingFeature(DimmingFeatureBase):
+    """Represent `Dimming` Feature object as used by various Hue resources."""
 
-    clip-api.schema.json#/definitions/DimmingFeature
-    """
+    # Percentage of the maximum lumen the device outputs on minimum brightness
+    min_dim_level: Optional[float] = None
+
+
+@dataclass
+class DimmingFeaturePut(DimmingFeatureBase):
+    """Represent `Dimming` Feature when updating/sending in PUT requests."""
 
 
 @dataclass
@@ -54,7 +44,6 @@ class Position:
     Represent Position object as used by the Hue api.
 
     Each Coordinate value is a float between -1 and 1.
-    clip-api.schema.json#/definitions/Position
     """
 
     x: float
@@ -76,10 +65,16 @@ class AlertEffectType(Enum):
 
 @dataclass
 class AlertFeature:
-    """Represent AlertFeature object as used by the Hue api."""
+    """Represent AlertFeature object when retrieved from the Hue API."""
 
-    action: Optional[AlertEffectType] = None
-    action_values: Optional[List[AlertEffectType]] = None
+    action_values: List[AlertEffectType]
+
+
+@dataclass
+class AlertFeaturePut:
+    """Represent AlertFeature object when sent to the Hue API."""
+
+    action: AlertEffectType
 
 
 @dataclass
@@ -104,12 +99,12 @@ class ColorPoint:
 
 
 @dataclass
-class ColorFeatureGamut:
+class ColorGamut:
     """
     Color gamut of color bulb.
 
     Some bulbs do not properly return the Gamut information. In this case this is not present.
-    clip-api.schema.json#/definitions/ColorFeatureGamut
+    clip-api.schema.json#/definitions/ColorGamut
     """
 
     red: ColorPoint
@@ -118,37 +113,40 @@ class ColorFeatureGamut:
 
 
 class GamutType(Enum):
-    """Enum with possible Gamut types."""
+    """
+    Enum with possible Gamut types.
+
+    The gammut types supported by hue.
+        A: Gamut of early Philips color-only products.
+        B: Limited gamut of first Hue color products.
+        C: Richer color gamut of Hue white and color ambiance products.
+        Other: Color gamut of non-hue products with non-hue gamuts resp w/o gamut.
+    """
 
     A = "A"
     B = "B"
     C = "C"
-    MIXED = "mixed"
     OTHER = "other"
 
 
 @dataclass
-class ColorFeatureBasic:
-    """
-    Represent ColorFeatureBasic object as used by the Hue api.
-
-    clip-api.schema.json#/definitions/ColorFeatureBasic
-    """
+class ColorFeatureBase:
+    """Represent `Color` Feature base/required properties."""
 
     xy: ColorPoint
 
 
 @dataclass
-class ColorFeature(ColorFeatureBasic):
-    """
-    Represent ColorFeature object as used by the Hue api.
+class ColorFeature(ColorFeatureBase):
+    """Represent `Color` Feature object as used by various Hue resources."""
 
-    inherited from ColorFeatureBasic
-    clip-api.schema.json#/definitions/ColorFeature
-    """
+    gamut_type: GamutType = GamutType.OTHER
+    gamut: Optional[ColorGamut] = None
 
-    gamut_type: Optional[GamutType] = None
-    gamut: Optional[ColorFeatureGamut] = None
+
+@dataclass
+class ColorFeaturePut(ColorFeatureBase):
+    """Represent `Color` Feature when updating/sending in PUT requests."""
 
 
 @dataclass
@@ -168,39 +166,28 @@ class MirekSchema:
 
 
 @dataclass
-class ColorTemperatureFeatureBasic:
-    """
-    Represent ColorTemperatureFeatureBasic object as used by the Hue api.
+class ColorTemperatureFeatureBase:
+    """Represent `ColorTemperature` Feature base/required properties."""
 
-    clip-api.schema.json#/definitions/ColorTemperatureFeatureBasic
-    """
-
-    # Color temperature in mirek (153-500) or None when the light color is not in the ct spectrum.
-    mirek: Optional[int] = None
-    mirek_schema: Optional[MirekSchema] = None
-    # mirek_valid will be false if light is currently not in the ct spectrum
-    mirek_valid: Optional[bool] = False
-
-    def __post_init__(self):
-        """Auto correct invalid values."""
-        if self.mirek is None or self.mirek_schema is None:
-            return
-        if self.mirek < self.mirek_schema.mirek_minimum:
-            self.mirek = self.mirek_schema.mirek_minimum
-        if self.mirek > self.mirek_schema.mirek_maximum:
-            self.mirek = self.mirek_schema.mirek_maximum
+    # Color temperature in mirek (153-500)
+    mirek: int
 
 
 @dataclass
-class ColorTemperatureFeature(ColorTemperatureFeatureBasic):
-    """
-    Represent ColorTemperatureFeature object, inherited from ColorTemperatureFeatureBasic.
+class ColorTemperatureFeature(ColorTemperatureFeatureBase):
+    """Represent `ColorTemperature` Feature object as used by various Hue resources."""
 
-    clip-api.schema.json#/definitions/ColorTemperatureFeature
-    """
+    mirek_schema: MirekSchema
+    # mirek_valid will be false if light is currently not in the ct spectrum
+    mirek_valid: bool
 
 
-class DynamicsFeatureStatus(Enum):
+@dataclass
+class ColorTemperatureFeaturePut(ColorTemperatureFeatureBase):
+    """Represent `ColorTemperature` Feature when updating/sending in PUT requests."""
+
+
+class DynamicStatus(Enum):
     """Enum with all possible dynamic statuses."""
 
     NONE = "none"
@@ -210,20 +197,49 @@ class DynamicsFeatureStatus(Enum):
     @classmethod
     def _missing_(cls: Type, value: str):
         """Set default enum member if an unknown value is provided."""
-        return DynamicsFeatureStatus.UNKNOWN
+        return DynamicStatus.UNKNOWN
 
 
 @dataclass
 class DynamicsFeature:
-    """Represent DynamicsFeature object as used by the Hue api."""
+    """
+    Represent `DynamicsFeature` object as used by various Hue resources.
 
-    status: Optional[DynamicsFeatureStatus] = None
-    status_values: Optional[List[DynamicsFeatureStatus]] = None
+    https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_light_get
+    """
+
+    # speed: required(number – minimum: 0 – maximum: 1)
+    # speed of dynamic palette or effect. The speed is valid for the dynamic palette
+    # if the status is dynamic_palette  or for the corresponding effect listed in status.
+    # In case of status none, the speed is not valid
+    speed: float
+    # speed_valid: required(boolean)
+    # Indicates whether the value presented in speed is valid
+    speed_valid: bool
+    # status: required(one of dynamic_palette, none)
+    # Current status of the lamp with dynamics.
+    status: DynamicStatus
+    # status_values: required(array of SupportedDynamicStatus)
+    # Statuses in which a lamp could be when playing dynamics.
+    status_values: List[DynamicStatus] = [DynamicStatus.NONE]
+
+
+@dataclass
+class DynamicsFeaturePut:
+    """
+    Represent `DynamicsFeature` object when sent to the API in PUT requests.
+
+    https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_light__id__put
+    """
+
+    # speed: (number – minimum: 0 – maximum: 1)
+    # speed of dynamic palette. The speed is valid for the dynamic palette if the status
+    # is dynamic_palette or for the corresponding effect listed in status.
+    # In case of status none, the speed is not valid
+    speed: float
+    # duration: (integer – maximum: 6000000)
     # Duration of a light transition in ms. Accuracy is in 100ms steps.
-    # minimal value 100, maximum 6000000
-    duration: Optional[int] = None  # transitionspeed: only sent on update/set
-    speed: Optional[float] = None  # speed for the dynamics
-    speed_valid: Optional[bool] = None  # speed for the dynamics
+    duration: int
 
 
 class RecallAction(Enum):
@@ -236,39 +252,82 @@ class RecallAction(Enum):
 @dataclass
 class RecallFeature:
     """
-    Properties to send when updating/setting RecallFeature on the api.
+    Properties to send when calling/setting the `Recall` feature (of a scene) on the api.
 
     clip-api.schema.json#/definitions/RecallFeature
+    https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_scene__id__put
     """
 
+    # action: (RecallAction)
+    # When writing active, the actions in the scene are executed on the target.
     action: Optional[RecallAction] = None
+    # status: (active)
+    # When writing active, the actions are executed on the target (legacy, use action insetad).
     status: Optional[str] = None
-    # Duration of transition in ms. Accuracy is in 100ms steps.
-    # minimal value 100, maximum 6000000
+    # duration: (integer – maximum: 6000000)
+    # transition to the scene within the timeframe given by duration. Accuracy is in 100ms steps.
     duration: Optional[int] = None
-    dimming: Optional[DimmingFeatureBasic] = None
+    # dimming: (DimmingFeature)
+    # override the scene dimming/brightness
+    dimming: Optional[DimmingFeature] = None
 
 
 @dataclass
-class PaletteColor:
-    """Represents PaletteColor feature used for PaletteFeature."""
+class PaletteFeatureColor:
+    """Represents Color object used in PaletteFeature."""
 
-    color: Optional[ColorFeatureBasic] = None
-    dimming: Optional[DimmingFeatureBasic] = None
+    color: ColorFeature
+    dimming: DimmingFeature
 
 
 @dataclass
-class PaletteColorTemperature:
-    """Represents PaletteColorTemperature feature used for PaletteFeature."""
+class PaletteFeatureColorTemperature:
+    """Represents ColorTemperature object used in PaletteFeature."""
 
-    color_temperature: Optional[ColorTemperatureFeatureBasic] = None
-    dimming: Optional[DimmingFeatureBasic] = None
+    color_temperature: ColorTemperatureFeature
+    dimming: DimmingFeature
 
 
 @dataclass
 class PaletteFeature:
-    """Represents Palette feature used for dynamic scenes."""
+    """
+    Group of colors that describe the palette of colors to be used when playing dynamics.
 
-    color: Optional[List[PaletteColor]] = None
-    color_temperature: Optional[List[PaletteColorTemperature]] = None
-    dimming: Optional[List[DimmingFeatureBasic]] = None
+    https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_scene__id__get
+    """
+
+    # color: required(array of PaletteFeatureColor – minItems: 0 – maxItems: 9)
+    color: List[PaletteFeatureColor]
+    # dimming: required(array of DimmingFeature – minItems: 0 – maxItems: 1)
+    dimming: List[DimmingFeature]
+    # color_temperature: required(array of PaletteFeatureColorTemperature – minItems: 0 – maxItems: 1)
+    color_temperature: List[PaletteFeatureColorTemperature]
+
+
+@dataclass
+class GradientPoint:
+    """Represent a single Gradient (color) Point."""
+
+    color: ColorFeatureBase
+
+
+@dataclass
+class GradientFeatureBase:
+    """Represent GradientFeature base properties."""
+
+    # points: Collection of gradients points.
+    # For control of the gradient points through a PUT a minimum of 2 points need to be provided.
+    points: List[GradientPoint]
+
+
+@dataclass
+class GradientFeature(GradientFeatureBase):
+    """
+    Represent GradientFeature as used by the lights entities.
+
+    https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_light_get
+    """
+
+    # points_capable: required(integer)
+    # Number of color points that gradient lamp is capable of showing with gradience.
+    points_capable: int

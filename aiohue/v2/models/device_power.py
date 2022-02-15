@@ -1,49 +1,50 @@
-"""Model(s) for device_power resource on HUE bridge."""
+"""
+Model(s) for device_power resource on HUE bridge.
+
+https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_device_power
+"""
 from dataclasses import dataclass
 from enum import Enum
 
 
-from typing import Optional, Type
+from typing import Optional
 
-from .resource import Resource, ResourceTypes
+from .resource import ResourceIdentifier, ResourceTypes
 
 
 class BatteryState(Enum):
     """
     Enum with all possible BatteryStates.
 
-    clip-api.schema.json#/definitions/TODO
+    - normal: battery level is sufficient
+    - low: battery level low, some features might stop working, please change battery soon
+    - critical: battery level critical, device can fail any moment
     """
 
-    UNKNOWN = "unknown"
     NORMAL = "normal"
     LOW = "low"
-
-    @classmethod
-    def _missing_(cls: Type, value: str):
-        """Set default enum member if an unknown value is provided."""
-        return BatteryState.UNKNOWN
+    CRITICAL = "critical"
 
 
 @dataclass
 class PowerState:
-    """
-    Represent PowerState as retrieved from api.
-
-    clip-api.schema.json#/definitions/TODO
-    """
+    """Represent PowerState as retrieved from api."""
 
     battery_level: Optional[int]
-    battery_state: BatteryState
+    battery_state: Optional[BatteryState]
 
 
 @dataclass
-class DevicePower(Resource):
+class DevicePower:
     """
-    Represent a DevicePower resource, a sensor with battery state.
+    Represent a (full) `DevicePower` resource when retrieved from the api.
 
-    clip-api.schema.json#/definitions/TODO
+    https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_device_power_get
     """
 
-    power_state: Optional[PowerState] = None
+    id: str
+    owner: ResourceIdentifier
+    power_state: PowerState
+
+    id_v1: Optional[str] = None
     type: ResourceTypes = ResourceTypes.DEVICE_POWER

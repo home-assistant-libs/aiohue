@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, List, Type, Union
 
 from ..models.feature import OnFeature
 from ..models.group import Group
-from ..models.grouped_light import GroupedLight
+from ..models.grouped_light import GroupedLight, GroupedLightPut
 from ..models.light import Light
 from ..models.resource import ResourceTypes
 from ..models.room import Room
@@ -64,7 +64,7 @@ class GroupedLightController(BaseResourcesController[Type[GroupedLight]]):
         NOTE: a grouped_light can only handle OnFeature
         To send other features, you'll have to control the underlying lights
         """
-        await self.update(id, GroupedLight(id, on=OnFeature(on=on)))
+        await self.update(id, GroupedLightPut(on=OnFeature(on=on)))
 
 
 class GroupsController(GroupedControllerBase[Union[Room, Group, GroupedLight]]):

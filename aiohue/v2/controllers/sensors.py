@@ -5,11 +5,11 @@ import asyncio
 from typing import TYPE_CHECKING, Dict, Type, Union
 
 from ..models.button import Button, ButtonEvent
-from ..models.connectivity import ZigbeeConnectivity
+from ..models.zigbee_connectivity import ZigbeeConnectivity
 from ..models.device_power import DevicePower
 from ..models.geofence_client import GeofenceClient
-from ..models.light_level import LightLevel
-from ..models.motion import Motion
+from ..models.light_level import LightLevel, LightLevelPut
+from ..models.motion import Motion, MotionPut
 from ..models.resource import ResourceTypes
 from ..models.temperature import Temperature
 from .base import BaseResourcesController, GroupedControllerBase
@@ -118,7 +118,7 @@ class LightLevelController(BaseResourcesController[Type[LightLevel]]):
 
     async def set_enabled(self, id: str, enabled: bool) -> None:
         """Enable/Disable sensor."""
-        await self.update(id, LightLevel(id=id, enabled=enabled))
+        await self.update(id, LightLevelPut(enabled=enabled))
 
 
 class MotionController(BaseResourcesController[Type[Motion]]):
@@ -128,7 +128,7 @@ class MotionController(BaseResourcesController[Type[Motion]]):
 
     async def set_enabled(self, id: str, enabled: bool) -> None:
         """Enable/Disable sensor."""
-        await self.update(id, Motion(id=id, enabled=enabled))
+        await self.update(id, MotionPut(enabled=enabled))
 
 
 class TemperatureController(BaseResourcesController[Type[Temperature]]):

@@ -3,8 +3,8 @@ from __future__ import annotations
 
 from typing import List, Type
 
-from ..models.connectivity import ZigbeeConnectivity
-from ..models.device import Device
+from ..models.zigbee_connectivity import ZigbeeConnectivity
+from ..models.device import Device, DevicePut
 from ..models.feature import IdentifyFeature
 from ..models.light import Light
 from ..models.resource import ResourceTypes
@@ -53,4 +53,4 @@ class DevicesController(BaseResourcesController[Type[Device]]):
         - Lights perform one breathe cycle
         - Sensors perform LED identification cycles for 15 seconds
         """
-        await self.update(id, Device(id, identify=IdentifyFeature()))
+        await self.update(id, DevicePut(identify=IdentifyFeature()))

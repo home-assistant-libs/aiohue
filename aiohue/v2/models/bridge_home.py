@@ -1,20 +1,35 @@
-"""Model(s) for bridge_home resource on HUE bridge."""
-from dataclasses import dataclass
+"""
+Model(s) for bridge_home resource on HUE bridge.
 
-from .resource import ResourceTypes
-from .group import Group
+https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_bridge_home
+"""
+from dataclasses import dataclass
+from typing import List, Optional
+
+from .resource import ResourceIdentifier, ResourceTypes
+
+
 
 
 @dataclass
-class BridgeHome(Group):
+class BridgeHome:
     """
-    Represent BridgeHome object as retrieved from the api.
+    Represent the (full) `BridgeHome` object as retrieved from the Hue api.
 
-    Home resource lists all rooms in a home and all devices which are not assigned to a room.
-    Home only contains resources of type "device" and "room"
-
-    clip-api.schema.json#/definitions/BridgeHomeGet
-    clip-api.schema.json#/definitions/BridgeHomePut
+    https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_bridge_home_get
     """
 
+    id: str
+    # services: required(array of ResourceIdentifier)
+    # References all services aggregating control and state of children in the group
+    # This includes all services grouped in the group hierarchy given by child relation
+    # This includes all services of a device grouped in the group hierarchy given by child relation
+    # Aggregation is per service type, ie every service type which can be grouped has a
+    # corresponding definition of grouped type
+    # Supported types “light”
+    services: List[ResourceIdentifier]
+    children: List[ResourceIdentifier]
+
+    id_v1: Optional[str] = None
+    grouped_services: Optional[List[ResourceIdentifier]] = None
     type: ResourceTypes = ResourceTypes.BRIDGE_HOME

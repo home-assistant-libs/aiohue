@@ -1,19 +1,17 @@
-"""Model(s) for button resource on HUE bridge."""
+"""
+Model(s) for button resource on HUE bridge.
+
+https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_button
+"""
 from dataclasses import dataclass
 from enum import Enum
-
-
 from typing import Optional, Type
 
-from .resource import Resource, ResourceTypes
+from .resource import ResourceIdentifier, ResourceTypes
 
 
 class ButtonEvent(Enum):
-    """
-    Enum with possible button events.
-
-    clip-api.schema.json#/definitions/ButtonEvent
-    """
+    """Enum with possible button events."""
 
     INITIAL_PRESS = "initial_press"
     REPEAT = "repeat"
@@ -30,22 +28,14 @@ class ButtonEvent(Enum):
 
 @dataclass
 class ButtonFeature:
-    """
-    Represent ButtonFeature object as used by the Hue api.
-
-    clip-api.schema.json#/definitions/ButtonFeature
-    """
+    """Represent ButtonFeature object as used by the Hue api."""
 
     last_event: ButtonEvent
 
 
 @dataclass
-class SwitchInputMetadata:
-    """
-    Represent SwitchInputMetadata object as used by the Hue api.
-
-    clip-api.schema.json#/definitions/SwitchInputMetadata
-    """
+class ButtonMetadata:
+    """Represent ButtonMetadata object as used by the Button resource."""
 
     # number of control within switch (value between 0..8).
     # Meaning in combination with type
@@ -56,13 +46,17 @@ class SwitchInputMetadata:
 
 
 @dataclass
-class Button(Resource):
+class Button:
     """
-    Represent Button object as used by the Hue api.
+    Represent a (full) `Button` resource when retrieved from the api.
 
-    clip-api.schema.json#/definitions/Button
+    https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_button_get
     """
 
-    metadata: Optional[SwitchInputMetadata] = None
-    button: Optional[ButtonFeature] = None
+    id: str
+    owner: ResourceIdentifier
+    metadata: ButtonMetadata
+    button: ButtonFeature
+
+    id_v1: Optional[str] = None
     type: ResourceTypes = ResourceTypes.BUTTON
