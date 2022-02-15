@@ -211,9 +211,8 @@ class BaseResourcesController(Generic[CLIPResource]):
                 # if this does happen often we should consider fetching the full object
                 self._logger.warning("received update for unknown item %s", item_id)
                 return
-            # make sure we only update keys that are not None
-            changed_keys = update_dataclass(cur_item, evt_data)
-            print(changed_keys)
+            # update the existing data with the changed keys/data
+            update_dataclass(cur_item, evt_data)
         else:
             # ignore all other events
             return
