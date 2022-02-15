@@ -1,17 +1,15 @@
 """Controller holding and managing HUE resources of sensor type."""
-from __future__ import annotations
-
 import asyncio
-from typing import TYPE_CHECKING, Dict, Type, Union
+from typing import TYPE_CHECKING, Dict, Optional, Type, Union
 
 from ..models.button import Button, ButtonEvent
-from ..models.zigbee_connectivity import ZigbeeConnectivity
 from ..models.device_power import DevicePower
 from ..models.geofence_client import GeofenceClient
 from ..models.light_level import LightLevel, LightLevelPut
 from ..models.motion import Motion, MotionPut
 from ..models.resource import ResourceTypes
 from ..models.temperature import Temperature
+from ..models.zigbee_connectivity import ZigbeeConnectivity
 from .base import BaseResourcesController, GroupedControllerBase
 from .events import EventType
 
@@ -47,7 +45,7 @@ class ButtonController(BaseResourcesController[Type[Button]]):
     _workaround_tasks: Dict[str, asyncio.Task] = None
 
     async def _handle_event(
-        self, evt_type: EventType, evt_data: dict | None, skip_forward: bool = False
+        self, evt_type: EventType, evt_data: Optional[dict], skip_forward: bool = False
     ) -> None:
         """Handle incoming event for this resource from the EventStream."""
         await super()._handle_event(type, evt_data)

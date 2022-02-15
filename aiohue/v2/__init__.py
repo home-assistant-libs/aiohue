@@ -1,12 +1,10 @@
 """Control a Philips Hue bridge with V2 API."""
-from __future__ import annotations
-
 import asyncio
 import logging
 import time
 from contextlib import asynccontextmanager
 from types import TracebackType
-from typing import Any, Callable, Generator, List, Optional, Type
+from typing import Any, Callable, Generator, List, Optional, Type, Union
 
 import aiohttp
 from aiohttp import ClientResponse
@@ -20,14 +18,13 @@ from .controllers.lights import LightsController
 from .controllers.scenes import ScenesController
 from .controllers.sensors import SensorsController
 
-
 MAX_RETRIES = 25  # how many times do we retry on a 503 (bridge overload/rate limit)
 
 
 class HueBridgeV2:
     """Control a Philips Hue bridge with V2 API."""
 
-    _websession: aiohttp.ClientSession | None = None
+    _websession: Optional[aiohttp.ClientSession] = None
 
     def __init__(
         self,
@@ -55,7 +52,7 @@ class HueBridgeV2:
         self._disconnect_timestamp = 0
 
     @property
-    def bridge_id(self) -> str | None:
+    def bridge_id(self) -> Optional[str]:
         """Return the ID of the bridge we're currently connected to."""
         return self._config.bridge_id
 
@@ -143,7 +140,9 @@ class HueBridgeV2:
 
         return unsubscribe
 
-    async def request(self, method: str, path: str, **kwargs) -> dict | List[dict]:
+    async def request(
+        self, method: str, path: str, **kwargs
+    ) -> Union[dict, List[dict]]:
         """Make request on the api and return response data."""
         # The bridge will deny more than 3 requests at the same time with a 503 error.
         # We guard ourselves from hitting this error by limiting the TCP Connector for aiohttp

@@ -1,7 +1,5 @@
 """Controller holding and managing HUE resources of type `scene`."""
-from __future__ import annotations
-
-from typing import Type
+from typing import Optional, Type, Union
 
 from ..models.feature import DimmingFeaturePut, RecallAction, RecallFeature
 from ..models.resource import ResourceTypes
@@ -21,8 +19,8 @@ class ScenesController(BaseResourcesController[Type[Scene]]):
         self,
         id: str,
         dynamic: bool = False,
-        duration: int | None = None,
-        brightness: float | None = None,
+        duration: Optional[int] = None,
+        brightness: Optional[float] = None,
     ) -> None:
         """Turn on / recall scene."""
         action = RecallAction.DYNAMIC_PALETTE if dynamic else RecallAction.ACTIVE
@@ -31,7 +29,7 @@ class ScenesController(BaseResourcesController[Type[Scene]]):
             update_obj.recall.dimming = DimmingFeaturePut(brightness=brightness)
         await self.update(id, update_obj)
 
-    def get_group(self, id: str) -> Zone | Room:
+    def get_group(self, id: str) -> Union[Room, Zone]:
         """Get group attached to given scene id."""
         scene = self[id]
         return next((x for x in self._bridge.groups if x.id == scene.group.rid))

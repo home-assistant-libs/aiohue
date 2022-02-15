@@ -1,7 +1,5 @@
 """Controller holding and managing HUE resources that are of the config type."""
-from __future__ import annotations
-
-from typing import TYPE_CHECKING, Type, Union
+from typing import TYPE_CHECKING, Optional, Type, Union
 
 from ...util import mac_from_bridge_id
 from ..models.bridge import Bridge
@@ -23,7 +21,7 @@ class BridgeController(BaseResourcesController[Type[Bridge]]):
     item_cls = Bridge
 
     @property
-    def id(self) -> str | None:
+    def id(self) -> Optional[str]:
         """Return id of the only/first bridge found in items."""
         for item in self.items:
             return item.id
