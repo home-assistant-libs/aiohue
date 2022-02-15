@@ -16,8 +16,6 @@ except:  # noqa
     # older python version
     NoneType = type(None)
 
-BUILTIN_TYPES = {"float": float, "int": int, "bool": bool}
-
 
 async def create_app_key(
     host: str, device_type: str, websession: Optional[ClientSession] = None
