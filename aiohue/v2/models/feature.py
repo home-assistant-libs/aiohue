@@ -5,7 +5,6 @@ from enum import Enum
 from typing import List, Optional, Type
 
 
-
 @dataclass
 class OnFeature:
     """Represent `On` Feature object as used by various Hue resources."""
@@ -244,6 +243,32 @@ class DynamicsFeaturePut:
     # duration: (integer – maximum: 6000000)
     # Duration of a light transition in ms. Accuracy is in 100ms steps.
     duration: Optional[int] = None
+
+
+class EffectStatus(Enum):
+    """Enum with possible effects."""
+
+    NO_EFFECT = "no_effect"
+    CANDLE = "candle"
+    FIRE = "fire"
+    UNKNOWN = "unknown"
+
+    @classmethod
+    def _missing_(cls: Type, value: str):
+        """Set default enum member if an unknown value is provided."""
+        return AlertEffectType.UNKNOWN
+
+
+@dataclass
+class EffectsFeature:
+    """
+    Represent `EffectsFeature` object as used by various Hue resources.
+
+    https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_light_get
+    """
+
+    status: EffectStatus
+    status_values: List[EffectStatus] = field(default_factory=list)
 
 
 class RecallAction(Enum):
