@@ -66,11 +66,11 @@ class EventType(Enum):
     RECONNECTED = "reconnected"
 
 
-EventCallBackType = Callable[[EventType, Union[dict, None]], None]
+EventCallBackType = Callable[[EventType, Optional[dict]], None]
 EventSubscriptionType = Tuple[
     EventCallBackType,
-    "Tuple[Union[EventType, None]]",
-    "Tuple[Union[ResourceTypes, None]]",
+    "Optional[Tuple[EventType]]",
+    "Optional[Tuple[ResourceTypes]]",
 ]
 
 
