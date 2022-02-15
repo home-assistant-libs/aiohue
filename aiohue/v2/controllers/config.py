@@ -7,7 +7,8 @@ from ...util import mac_from_bridge_id
 from ..models.bridge import Bridge
 from ..models.bridge_home import BridgeHome
 from ..models.device import Device
-from ..models.entertainment import Entertainment, EntertainmentConfiguration
+from ..models.entertainment import Entertainment
+from ..models.entertainment_configuration import EntertainmentConfiguration
 from ..models.resource import ResourceTypes
 from .base import BaseResourcesController, GroupedControllerBase
 
@@ -19,6 +20,7 @@ class BridgeController(BaseResourcesController[Type[Bridge]]):
     """Controller holding and managing HUE resources of type `bridge`."""
 
     item_type = ResourceTypes.BRIDGE
+    item_cls = Bridge
 
     @property
     def id(self) -> str | None:
@@ -32,12 +34,14 @@ class BridgeHomeController(BaseResourcesController[Type[BridgeHome]]):
     """Controller holding and managing HUE resources of type `bridge_home`."""
 
     item_type = ResourceTypes.BRIDGE_HOME
+    item_cls = BridgeHome
 
 
 class EntertainmentController(BaseResourcesController[Type[Entertainment]]):
     """Controller holding and managing HUE resources of type `entertainment`."""
 
     item_type = ResourceTypes.ENTERTAINMENT
+    item_cls = Entertainment
 
 
 class EntertainmentConfigurationController(
@@ -46,6 +50,7 @@ class EntertainmentConfigurationController(
     """Controller holding and managing HUE resources of type `entertainment_configuration`."""
 
     item_type = ResourceTypes.ENTERTAINMENT_CONFIGURATION
+    item_cls = EntertainmentConfiguration
 
 
 class ConfigController(

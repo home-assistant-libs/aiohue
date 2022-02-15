@@ -4,8 +4,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, List, Type, Union
 
 from ..models.feature import OnFeature
-from ..models.group import Group
-from ..models.grouped_light import GroupedLight
+from ..models.grouped_light import GroupedLight, GroupedLightPut
 from ..models.light import Light
 from ..models.resource import ResourceTypes
 from ..models.room import Room
@@ -21,6 +20,7 @@ class RoomController(BaseResourcesController[Type[Room]]):
     """Controller holding and managing HUE resources of type `room`."""
 
     item_type = ResourceTypes.ROOM
+    item_cls = Room
 
     def get_scenes(self, id: str) -> List[Scene]:
         """Get all scenes for this room."""
@@ -31,6 +31,7 @@ class ZoneController(BaseResourcesController[Type[Zone]]):
     """Controller holding and managing HUE resources of type `zone`."""
 
     item_type = ResourceTypes.ZONE
+    item_cls = Zone
 
     def get_scenes(self, id: str) -> List[Scene]:
         """Get all scenes for this zone."""
@@ -41,6 +42,7 @@ class GroupedLightController(BaseResourcesController[Type[GroupedLight]]):
     """Controller holding and managing HUE resources of type `grouped_light`."""
 
     item_type = ResourceTypes.GROUPED_LIGHT
+    item_cls = GroupedLight
 
     def get_zone(self, id: str) -> Room | Zone | None:
         """Get the zone or room connected to grouped light."""
@@ -64,10 +66,10 @@ class GroupedLightController(BaseResourcesController[Type[GroupedLight]]):
         NOTE: a grouped_light can only handle OnFeature
         To send other features, you'll have to control the underlying lights
         """
-        await self.update(id, GroupedLight(id, on=OnFeature(on=on)))
+        await self.update(id, GroupedLightPut(on=OnFeature(on=on)))
 
 
-class GroupsController(GroupedControllerBase[Union[Room, Group, GroupedLight]]):
+class GroupsController(GroupedControllerBase[Union[Room, Zone, GroupedLight]]):
     """Controller grouping resources of both room and zone."""
 
     def __init__(self, bridge: "HueBridgeV2") -> None:

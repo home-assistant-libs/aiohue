@@ -1,10 +1,12 @@
-"""Model(s) for bridge resource on HUE bridge."""
+"""
+Model(s) for bridge resource on HUE bridge.
+
+https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_bridge
+"""
 from dataclasses import dataclass
-
-
 from typing import Optional
 
-from .resource import Resource, ResourceTypes
+from .resource import ResourceTypes
 
 
 @dataclass
@@ -15,13 +17,16 @@ class TimeZone:
 
 
 @dataclass
-class Bridge(Resource):
+class Bridge:
     """
-    Represent Bridge object as retrieved from the api.
+    Represent a (full) `Bridge` resource when retrieved from the api.
 
-    clip-api.schema.json#/definitions/BridgeGet
+    https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_bridge_get
     """
 
-    bridge_id: Optional[str] = None  # sent on get, can not be updated
-    time_zone: Optional[TimeZone] = None
+    id: str
+    bridge_id: str
+    time_zone: TimeZone
+
+    id_v1: Optional[str] = None
     type: ResourceTypes = ResourceTypes.BRIDGE

@@ -3,12 +3,11 @@ from __future__ import annotations
 
 from typing import Type
 
-from aiohue.v2.models.room import Room
-from aiohue.v2.models.zone import Zone
-
-from ..models.feature import DimmingFeatureBasic, RecallAction, RecallFeature
+from ..models.feature import DimmingFeaturePut, RecallAction, RecallFeature
 from ..models.resource import ResourceTypes
-from ..models.scene import Scene
+from ..models.room import Room
+from ..models.scene import Scene, ScenePut
+from ..models.zone import Zone
 from .base import BaseResourcesController
 
 
@@ -16,6 +15,7 @@ class ScenesController(BaseResourcesController[Type[Scene]]):
     """Controller holding and managing HUE resources of type `scene`."""
 
     item_type = ResourceTypes.SCENE
+    item_cls = Scene
 
     async def recall(
         self,
@@ -26,11 +26,9 @@ class ScenesController(BaseResourcesController[Type[Scene]]):
     ) -> None:
         """Turn on / recall scene."""
         action = RecallAction.DYNAMIC_PALETTE if dynamic else RecallAction.ACTIVE
-        update_obj = Scene(
-            id=id, recall=RecallFeature(action=action, duration=duration)
-        )
+        update_obj = ScenePut(recall=RecallFeature(action=action, duration=duration))
         if brightness is not None:
-            update_obj.recall.dimming = DimmingFeatureBasic(brightness=brightness)
+            update_obj.recall.dimming = DimmingFeaturePut(brightness=brightness)
         await self.update(id, update_obj)
 
     def get_group(self, id: str) -> Zone | Room:

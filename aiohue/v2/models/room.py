@@ -1,15 +1,14 @@
-"""Model(s) for Room resource on HUE bridge."""
+"""
+Model(s) for Room resource on HUE bridge.
+
+https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_room
+"""
 from dataclasses import dataclass
 from enum import Enum
+from typing import List, Optional, Set, Type
 
 
-from typing import Optional, Set, Type
-
-from .group import Group
-from .resource import (
-    NamedResourceMetadata,
-    ResourceTypes,
-)
+from .resource import ResourceIdentifier, ResourceTypes
 
 
 class RoomArchetype(Enum):
@@ -63,52 +62,67 @@ class RoomArchetype(Enum):
 
 
 @dataclass
-class RoomMetadata(NamedResourceMetadata):
-    """
-    Represent RoomMetadata object as used by the Hue api.
+class RoomMetaData:
+    """Represent MetaData for a room resource."""
 
-    Configuration object for a room.
-
-    clip-api.schema.json#/definitions/RoomMetadataGet
-    clip-api.schema.json#/definitions/RoomMetadataPost
-    clip-api.schema.json#/definitions/RoomMetadataPut
-    """
-
-    archetype: Optional[RoomArchetype] = None  # required in post/get, optional in put
+    archetype: RoomArchetype
+    name: str
 
 
 @dataclass
-class Room(Group):
+class RoomMetaDataPut:
     """
-    Represent Room object as used by the Hue api.
+    Represent Room MetaData properties on update/PUT.
 
-    Room resources groups all devices within the same physical space of a room.
-    Room only allows resources of type "device" as childs.
-    A device can only be in at most one room.
-
-    clip-api.schema.json#/definitions/RoomGet
-    clip-api.schema.json#/definitions/RoomPost
-    clip-api.schema.json#/definitions/RoomPut
+    https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_device__id__put
     """
 
-    metadata: Optional[RoomMetadata] = None  # required in post/get, optional in put
+    archetype: Optional[RoomArchetype]
+    name: Optional[str]
+
+
+@dataclass
+class Room:
+    """
+    Represent a (full) `Room` object as retrieved from the Hue api.
+
+    https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_room_get
+    """
+
+    id: str
+    # services: required(array of ResourceIdentifier)
+    # References all services aggregating control and state of children in the group
+    # This includes all services grouped in the group hierarchy given by child relation
+    # This includes all services of a device grouped in the group hierarchy given by child relation
+    # Aggregation is per service type, ie every service type which can be grouped has a
+    # corresponding definition of grouped type
+    # Supported types “light”
+    services: List[ResourceIdentifier]
+    metadata: RoomMetaData
+
+    # children: required(array of ResourceIdentifier)
+    # Devices to group by the Room Following children are allowed: device
+    children: List[ResourceIdentifier]
+
+    id_v1: Optional[str] = None
     type: ResourceTypes = ResourceTypes.ROOM
 
     @property
     def devices(self) -> Set[str]:
         """Return set of device id's that belong to this room."""
-        return {x.rid for x in self.services}
+        return {x.rid for x in self.children}
+
+    @property
+    def lights(self) -> Set[str]:
+        """Return a set of light id's belonging to this zone."""
+        return {x.rid for x in self.services if x.rtype == ResourceTypes.LIGHT}
 
     @property
     def grouped_light(self) -> Optional[str]:
         """Return the grouped light id that is connected to this room (if any)."""
-        if not self.grouped_services:
+        if not self.services:
             return None
         return next(
-            (
-                x.rid
-                for x in self.grouped_services
-                if x.rtype == ResourceTypes.GROUPED_LIGHT
-            ),
+            (x.rid for x in self.services if x.rtype == ResourceTypes.GROUPED_LIGHT),
             None,
         )

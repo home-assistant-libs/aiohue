@@ -40,7 +40,7 @@ async def main():
             print(item.metadata.name)
 
         # turn on a light
-        light = bridge.lights.items[0]
+        light = next(x for x in bridge.lights.items if x.supports_color)
         print("Turning on light", light.name)
         await bridge.lights.turn_on(light.id)
         await asyncio.sleep(1)

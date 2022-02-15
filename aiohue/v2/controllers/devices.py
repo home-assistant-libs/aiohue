@@ -3,8 +3,8 @@ from __future__ import annotations
 
 from typing import List, Type
 
-from ..models.connectivity import ZigbeeConnectivity
-from ..models.device import Device
+from ..models.zigbee_connectivity import ZigbeeConnectivity
+from ..models.device import Device, DevicePut
 from ..models.feature import IdentifyFeature
 from ..models.light import Light
 from ..models.resource import ResourceTypes
@@ -17,6 +17,7 @@ class DevicesController(BaseResourcesController[Type[Device]]):
     """Controller holding and managing HUE resources of type `device`."""
 
     item_type = ResourceTypes.DEVICE
+    item_cls = Device
 
     def get_lights(self, id: str) -> List[Light]:
         """Return all lights belonging to given device."""
@@ -53,4 +54,4 @@ class DevicesController(BaseResourcesController[Type[Device]]):
         - Lights perform one breathe cycle
         - Sensors perform LED identification cycles for 15 seconds
         """
-        await self.update(id, Device(id, identify=IdentifyFeature()))
+        await self.update(id, DevicePut(identify=IdentifyFeature()))

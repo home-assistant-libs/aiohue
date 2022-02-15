@@ -7,19 +7,19 @@ import random
 import string
 from asyncio.coroutines import iscoroutinefunction
 from enum import Enum
-from typing import TYPE_CHECKING, Callable, List, NoReturn, Tuple
+from typing import TYPE_CHECKING, Callable, List, NoReturn, Tuple, TypedDict
 
 from aiohttp import ClientTimeout
 from aiohttp.client_exceptions import ClientError
-from aiohue.v2.models.geofence_client import GeofenceClientCreate
+
+from ...errors import AiohueException, InvalidAPIVersion, InvalidEvent, Unauthorized
+from ...util import NoneType
+from ..models.geofence_client import GeofenceClientPost, GeofenceClientPut
+from ..models.resource import ResourceTypes
 
 if TYPE_CHECKING:
     from .. import HueBridgeV2
 
-from ...errors import AiohueException, InvalidAPIVersion, InvalidEvent, Unauthorized
-from ...util import NoneType
-from ..models.clip import CLIPEvent, CLIPEventType, CLIPResource
-from ..models.resource import ResourceTypes
 
 CONNECTION_TIMEOUT = 90  # 90 seconds
 KEEPALIVE_INTERVAL = 60  # every minute
@@ -33,19 +33,33 @@ class EventStreamStatus(Enum):
     DISCONNECTED = 2
 
 
-class EventType(Enum):
-    """Enum with possible Events (based on CLIPEventType)."""
+class HueEvent(TypedDict):
+    """Hue Event message as emitted by the EventStream."""
 
-    # overriding Enum is not possible but we want the event names to match
-    RESOURCE_ADDED = CLIPEventType.RESOURCE_ADDED.value
-    RESOURCE_UPDATED = CLIPEventType.RESOURCE_UPDATED.value
-    RESOURCE_DELETED = CLIPEventType.RESOURCE_DELETED.value
+    id: str  # UUID
+    creationtime: str
+    type: str  # = EventType (add, update, delete)
+    # data contains a list with (partial) resource objects
+    # in case of add or update this is a full or partial resource object
+    # in case of delete this will include only the
+    # ResourceIndentifier (type and id) of the deleted object
+    data: List[dict]
+
+
+class EventType(Enum):
+    """Enum with possible Events."""
+
+    # resource events match those emitted by Hue eventstream
+    RESOURCE_ADDED = "add"
+    RESOURCE_UPDATED = "update"
+    RESOURCE_DELETED = "delete"
+    # connection events emitted by (this) events controller
     CONNECTED = "connected"
     DISCONNECTED = "disconnected"
     RECONNECTED = "reconnected"
 
 
-EventCallBackType = Callable[[EventType, CLIPResource], None]
+EventCallBackType = Callable[[EventType, dict | None], None]
 EventSubscriptionType = Tuple[
     EventCallBackType,
     "Tuple[EventType] | None",
@@ -97,7 +111,7 @@ class EventStream:
 
     def subscribe(
         self,
-        callback: Callable[[EventType, CLIPResource | None], None],
+        callback: EventCallBackType,
         event_filter: EventType | Tuple[EventType] | None = None,
         resource_filter: ResourceTypes | Tuple[ResourceTypes] | None = None,
     ) -> Callable:
@@ -124,7 +138,7 @@ class EventStream:
         self._subscribers.append(subscription)
         return unsubscribe
 
-    def emit(self, type: EventType, data: CLIPResource | None = None) -> None:
+    def emit(self, type: EventType, data: dict | None = None) -> None:
         """Emit event to all listeners."""
         for (callback, event_filter, resource_filter) in self._subscribers:
             if event_filter is not None and type not in event_filter:
@@ -132,7 +146,7 @@ class EventStream:
             if (
                 data is not None
                 and resource_filter is not None
-                and data.type not in resource_filter
+                and ResourceTypes(data.get("type")) not in resource_filter
             ):
                 continue
             if iscoroutinefunction(callback):
@@ -217,13 +231,13 @@ class EventStream:
             await asyncio.sleep(reconnect_wait)
 
     async def __event_processor(self) -> NoReturn:
-        """Process incoming CLIPEvents on the Queue and distribute those."""
+        """Process incoming Hue events on the Queue and distribute those."""
         while True:
-            event: CLIPEvent = await self._event_queue.get()
+            event: HueEvent = await self._event_queue.get()
             # each clip event has array of updated/added/deleted objects in data property
             # we fire an event for each object that was added/updated/deleted
-            for item in event.data:
-                self.emit(EventType(event.type.value), item)
+            for item in event["data"]:
+                self.emit(EventType(event["type"]), item)
 
     def __parse_message(self, msg: bytes) -> None:
         """Parse a plain message string as received from EventStream."""
@@ -239,14 +253,11 @@ class EventStream:
                 return
             if key == "data":
                 # events is array with multiple events
-                events: List[dict] = json.loads(value)
+                events: List[HueEvent] = json.loads(value)
                 for event in events:
-                    clip_event = CLIPEvent.from_dict(event)
-                    if clip_event.type == CLIPEventType.UNKNOWN:
-                        raise InvalidEvent(
-                            "Received invalid event %s", event.get("type")
-                        )
-                    self._event_queue.put_nowait(clip_event)
+                    if event.get("type") not in ["add", "update", "delete"]:
+                        raise InvalidEvent(f"Received invalid event {event}")
+                    self._event_queue.put_nowait(event)
                 return
             if key != "data":
                 self._logger.debug("Received unexpected message: %s - %s", key, value)
@@ -277,7 +288,7 @@ class EventStream:
                         break
                 else:
                     await self._bridge.sensors.geofence_client.create(
-                        GeofenceClientCreate(name=prefix)
+                        GeofenceClientPost(name=prefix)
                     )
                     continue
 
@@ -286,9 +297,8 @@ class EventStream:
                 random_str = "".join(
                     (random.choice(string.ascii_lowercase)) for x in range(10)
                 )
-                hass_client.name = f"{prefix}{random_str}"
                 await self._bridge.sensors.geofence_client.update(
-                    hass_client.id, hass_client
+                    hass_client.id, GeofenceClientPut(name=f"{prefix}{random_str}")
                 )
             except (ClientError, asyncio.TimeoutError, AiohueException) as err:
                 # might happen on connection error, we don't want the retry logic to bail out

@@ -1,32 +1,48 @@
-"""Model(s) for geofence_client resource on HUE bridge."""
+"""
+Model(s) for geofence_client resource on HUE bridge.
+
+https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_geofence_client
+"""
 from dataclasses import dataclass
 from typing import Optional
 
-from .resource import Resource, ResourceTypes
+from .resource import ResourceTypes
 
 
 @dataclass
-class GeofenceClient(Resource):
+class GeofenceClient:
     """
-    Representation of Geofence Client.
+    Represent a (full) `GeofenceClient` resource when retrieved from the api.
 
-    clip-api.schema.json#/definitions/GeofenceClientGet
-    clip-api.schema.json#/definitions/GeofenceClientPut
+    https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_geofence_client_get
     """
 
-    is_at_home: Optional[bool] = None  # Indicator if Geofence Client is at home.
-    name: Optional[str] = None
+    id: str
+    name: str
+    id_v1: Optional[str] = None
     type: ResourceTypes = ResourceTypes.GEOFENCE_CLIENT
 
 
 @dataclass
-class GeofenceClientCreate:
+class GeofenceClientPut:
     """
-    Representation of Geofence Client.
+    GeofenceClient resource properties that can be set/updated with a PUT request.
 
-    clip-api.schema.json#/definitions/GeofenceClientPost
+    https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_geofence_client__id__put
     """
 
-    is_at_home: Optional[bool] = None  # Indicator if Geofence Client is at home.
+    is_at_home: Optional[bool] = None
+    name: Optional[str] = None
+
+
+@dataclass
+class GeofenceClientPost:
+    """
+    GeofenceClient resource properties that can be set with a POST request.
+
+    https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_geofence_client_post
+    """
+
+    is_at_home: Optional[bool] = None
     name: Optional[str] = None
     type: ResourceTypes = ResourceTypes.GEOFENCE_CLIENT

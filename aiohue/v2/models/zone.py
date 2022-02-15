@@ -1,40 +1,22 @@
-"""Model(s) for Zone resource on HUE bridge."""
+"""
+Model(s) for Zone resource on HUE bridge.
+
+https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_zone
+"""
 from dataclasses import dataclass
 
 
-from typing import Optional
-
-from .group import Group
 from .resource import ResourceTypes
-from .room import RoomMetadata
+from .room import Room
 
 
 @dataclass
-class Zone(Group):
+class Zone(Room):
     """
-    Represent Zone object as used by the Hue api.
+    Represent a (full) `Zone` object as retrieved from the Hue api.
 
-    A group grouping only services.
-    A service can be in an arbitrary amount of groups.
-    Following services are allowed:
-        - light - relative_rotary - temperature - lightlevel - motion
-
-    clip-api.schema.json#/definitions/Zone
+    Zones group services and each service can be part of multiple zones.
+    https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_zone_get
     """
 
-    metadata: Optional[RoomMetadata] = None
     type: ResourceTypes = ResourceTypes.ZONE
-
-    @property
-    def grouped_light(self) -> Optional[str]:
-        """Return the grouped light id that is connected to this zone (if any)."""
-        if not self.grouped_services:
-            return None
-        return next(
-            (
-                x.rid
-                for x in self.grouped_services
-                if x.rtype == ResourceTypes.GROUPED_LIGHT
-            ),
-            None,
-        )

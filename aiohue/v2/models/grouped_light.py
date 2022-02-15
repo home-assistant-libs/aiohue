@@ -1,22 +1,37 @@
-"""Model(s) for grouped_light resource on HUE bridge."""
-from dataclasses import dataclass
+"""
+Model(s) for grouped_light resource on HUE bridge.
 
+https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_grouped_light
+"""
+from dataclasses import dataclass
 from typing import Optional
 
-from .feature import AlertFeature, OnFeatureBasic
-from .resource import Resource, ResourceTypes
+from .feature import AlertFeature, AlertFeaturePut, OnFeature
+from .resource import ResourceTypes
 
 
 @dataclass
-class GroupedLight(Resource):
+class GroupedLight:
     """
-    Represent a GroupedLight object as used by the Hue api.
+    Represent a (full) GroupedLight object when retrieved from the api.
 
-    clip-api.schema.json#/definitions/GroupedLightGet
-    clip-api.schema.json#/definitions/GroupedLightPost
-    clip-api.schema.json#/definitions/GroupedLightPut
+    https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_grouped_light_get
     """
 
-    on: Optional[OnFeatureBasic] = None
+    id: str
+    id_v1: Optional[str] = None
+    on: Optional[OnFeature] = None
     alert: Optional[AlertFeature] = None
     type: ResourceTypes = ResourceTypes.GROUPED_LIGHT
+
+
+@dataclass
+class GroupedLightPut:
+    """
+    Represent a GroupedLight model when sending a PUT request.
+
+    https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_grouped_light__id__put
+    """
+
+    on: Optional[OnFeature] = None
+    alert: Optional[AlertFeaturePut] = None
