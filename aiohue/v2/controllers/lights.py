@@ -5,11 +5,11 @@ from typing import Optional, Tuple, Type
 
 from ..models.feature import (
     AlertEffectType,
-    AlertFeature,
-    ColorFeatureBase,
+    AlertFeaturePut,
+    ColorFeaturePut,
     ColorPoint,
-    ColorTemperatureFeature,
-    DimmingFeatureBase,
+    ColorTemperatureFeaturePut,
+    DimmingFeaturePut,
     DynamicsFeaturePut,
     OnFeature,
 )
@@ -22,6 +22,7 @@ class LightsController(BaseResourcesController[Type[Light]]):
     """Controller holding and managing HUE resources of type `light`."""
 
     item_type = ResourceTypes.LIGHT
+    item_cls = Light
 
     async def turn_on(self, id: str, transition_time: int | None = None) -> None:
         """Turn on the light."""
@@ -78,13 +79,13 @@ class LightsController(BaseResourcesController[Type[Light]]):
         if on is not None:
             update_obj.on = OnFeature(on=on)
         if brightness is not None:
-            update_obj.dimming = DimmingFeatureBase(brightness=brightness)
+            update_obj.dimming = DimmingFeaturePut(brightness=brightness)
         if color_xy is not None:
-            update_obj.color = ColorFeatureBase(xy=ColorPoint(*color_xy))
+            update_obj.color = ColorFeaturePut(xy=ColorPoint(*color_xy))
         if color_temp is not None:
-            update_obj.color_temperature = ColorTemperatureFeature(mirek=color_temp)
+            update_obj.color_temperature = ColorTemperatureFeaturePut(mirek=color_temp)
         if transition_time is not None:
             update_obj.dynamics = DynamicsFeaturePut(duration=transition_time)
         if alert is not None:
-            update_obj.alert = AlertFeature(action=alert)
+            update_obj.alert = AlertFeaturePut(action=alert)
         await self.update(id, update_obj)

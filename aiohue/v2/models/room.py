@@ -105,7 +105,6 @@ class Room:
     children: List[ResourceIdentifier]
 
     id_v1: Optional[str] = None
-    grouped_services: Optional[List[ResourceIdentifier]] = None
     type: ResourceTypes = ResourceTypes.ROOM
 
     @property

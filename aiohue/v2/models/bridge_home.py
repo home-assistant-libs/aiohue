@@ -9,8 +9,6 @@ from typing import List, Optional
 from .resource import ResourceIdentifier, ResourceTypes
 
 
-
-
 @dataclass
 class BridgeHome:
     """
@@ -31,5 +29,4 @@ class BridgeHome:
     children: List[ResourceIdentifier]
 
     id_v1: Optional[str] = None
-    grouped_services: Optional[List[ResourceIdentifier]] = None
     type: ResourceTypes = ResourceTypes.BRIDGE_HOME

@@ -61,7 +61,6 @@ class Scene:
     """
 
     id: str
-    owner: ResourceIdentifier
     metadata: SceneMetadata
     # group: required(object)
     # Group associated with this Scene. All services in the group are part of this scene.

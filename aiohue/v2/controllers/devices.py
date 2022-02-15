@@ -17,6 +17,7 @@ class DevicesController(BaseResourcesController[Type[Device]]):
     """Controller holding and managing HUE resources of type `device`."""
 
     item_type = ResourceTypes.DEVICE
+    item_cls = Device
 
     def get_lights(self, id: str) -> List[Light]:
         """Return all lights belonging to given device."""

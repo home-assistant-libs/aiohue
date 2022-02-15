@@ -15,6 +15,7 @@ class ScenesController(BaseResourcesController[Type[Scene]]):
     """Controller holding and managing HUE resources of type `scene`."""
 
     item_type = ResourceTypes.SCENE
+    item_cls = Scene
 
     async def recall(
         self,

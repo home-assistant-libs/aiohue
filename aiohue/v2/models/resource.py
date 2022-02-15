@@ -2,7 +2,7 @@
 
 from dataclasses import dataclass
 from enum import Enum
-from typing import Optional, Type
+from typing import Type
 
 
 class ResourceTypes(Enum):
@@ -64,8 +64,6 @@ SENSOR_RESOURCE_TYPES = (
 )
 
 
-
-
 @dataclass
 class ResourceIdentifier:
     """
@@ -79,5 +77,3 @@ class ResourceIdentifier:
 
     rid: str  # UUID
     rtype: ResourceTypes
-
-

@@ -1,8 +1,9 @@
 """Feature Schemas used by various Hue resources."""
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from enum import Enum
 from typing import List, Optional, Type
+
 
 
 @dataclass
@@ -169,8 +170,8 @@ class MirekSchema:
 class ColorTemperatureFeatureBase:
     """Represent `ColorTemperature` Feature base/required properties."""
 
-    # Color temperature in mirek (153-500)
-    mirek: int
+    # Color temperature in mirek (153-500) or None if light not in CT spectrum
+    mirek: int | None
 
 
 @dataclass
@@ -183,8 +184,11 @@ class ColorTemperatureFeature(ColorTemperatureFeatureBase):
 
 
 @dataclass
-class ColorTemperatureFeaturePut(ColorTemperatureFeatureBase):
+class ColorTemperatureFeaturePut:
     """Represent `ColorTemperature` Feature when updating/sending in PUT requests."""
+
+    # Color temperature in mirek (153-500)
+    mirek: int
 
 
 class DynamicStatus(Enum):
@@ -221,7 +225,7 @@ class DynamicsFeature:
     status: DynamicStatus
     # status_values: required(array of SupportedDynamicStatus)
     # Statuses in which a lamp could be when playing dynamics.
-    status_values: List[DynamicStatus] = [DynamicStatus.NONE]
+    status_values: List[DynamicStatus] = field(default_factory=list)
 
 
 @dataclass
@@ -236,10 +240,10 @@ class DynamicsFeaturePut:
     # speed of dynamic palette. The speed is valid for the dynamic palette if the status
     # is dynamic_palette or for the corresponding effect listed in status.
     # In case of status none, the speed is not valid
-    speed: float
+    speed: Optional[float] = None
     # duration: (integer – maximum: 6000000)
     # Duration of a light transition in ms. Accuracy is in 100ms steps.
-    duration: int
+    duration: Optional[int] = None
 
 
 class RecallAction(Enum):
@@ -276,16 +280,16 @@ class RecallFeature:
 class PaletteFeatureColor:
     """Represents Color object used in PaletteFeature."""
 
-    color: ColorFeature
-    dimming: DimmingFeature
+    color: ColorFeatureBase
+    dimming: DimmingFeatureBase
 
 
 @dataclass
 class PaletteFeatureColorTemperature:
     """Represents ColorTemperature object used in PaletteFeature."""
 
-    color_temperature: ColorTemperatureFeature
-    dimming: DimmingFeature
+    color_temperature: ColorTemperatureFeatureBase
+    dimming: DimmingFeatureBase
 
 
 @dataclass
@@ -299,8 +303,8 @@ class PaletteFeature:
     # color: required(array of PaletteFeatureColor – minItems: 0 – maxItems: 9)
     color: List[PaletteFeatureColor]
     # dimming: required(array of DimmingFeature – minItems: 0 – maxItems: 1)
-    dimming: List[DimmingFeature]
-    # color_temperature: required(array of PaletteFeatureColorTemperature – minItems: 0 – maxItems: 1)
+    dimming: List[DimmingFeatureBase]
+    # color_temperature: (array of PaletteFeatureColorTemperature – minItems: 0 – maxItems: 1)
     color_temperature: List[PaletteFeatureColorTemperature]
 
 

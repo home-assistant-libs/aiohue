@@ -63,7 +63,6 @@ class DeviceProductData:
     """Represent a DeviceProductData object as used by the Hue api."""
 
     model_id: str
-    product_id: str
     manufacturer_name: str
     product_name: str
     product_archetype: DeviceArchetypes
@@ -106,12 +105,8 @@ class Device:
     services: List[ResourceIdentifier]
     product_data: DeviceProductData
     metadata: DeviceMetaData
-    creation_time: str
 
     id_v1: Optional[str] = None
-    grouped_services: Optional[
-        List[ResourceIdentifier]
-    ] = None  # Deprecated, use services instead
     type: ResourceTypes = ResourceTypes.DEVICE
 
     @property
@@ -133,5 +128,5 @@ class DevicePut:
     https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_device__id__put
     """
 
-    metadata: Optional[DeviceMetaDataPut]
-    identify: Optional[IdentifyFeature]
+    metadata: Optional[DeviceMetaDataPut] = None
+    identify: Optional[IdentifyFeature] = None

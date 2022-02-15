@@ -5,8 +5,6 @@ https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_entert
 """
 from dataclasses import dataclass
 from enum import Enum
-
-
 from typing import List, Optional
 
 from .feature import Position
@@ -36,20 +34,6 @@ class SegmentReference:
 
     service: ResourceIdentifier
     index: int
-
-
-@dataclass
-class SegmentationProperties:
-    """
-    Represent a SegmentationProperties dict type.
-
-    All properties regarding the segment capabilities of this device:
-    the configuratibility, max_segments and all segment tables.
-    """
-
-    configurable: bool
-    max_segments: int
-    segments: List[Segment]
 
 
 @dataclass
@@ -150,11 +134,11 @@ class EntertainmentConfiguration:
     metadata: EntertainmentConfigurationMetaData
     configuration_type: EntertainmentConfigurationType
     status: EntertainmentStatus
-    active_streamer: ResourceIdentifier
     stream_proxy: StreamingProxy
     channels: List[EntertainmentChannel]
     locations: EntertainmentLocations
     light_services: Optional[List[ResourceIdentifier]] = None
 
+    active_streamer: Optional[ResourceIdentifier] = None
     id_v1: Optional[str] = None
     type: ResourceTypes = ResourceTypes.ENTERTAINMENT_CONFIGURATION

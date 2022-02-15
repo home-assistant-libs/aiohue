@@ -56,7 +56,7 @@ class Button:
     id: str
     owner: ResourceIdentifier
     metadata: ButtonMetadata
-    button: ButtonFeature
-
+    
+    button: Optional[ButtonFeature] = None
     id_v1: Optional[str] = None
     type: ResourceTypes = ResourceTypes.BUTTON

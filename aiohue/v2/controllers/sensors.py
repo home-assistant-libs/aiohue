@@ -35,16 +35,20 @@ class DevicePowerController(BaseResourcesController[Type[DevicePower]]):
     """Controller holding and managing HUE resources of type `device_power`."""
 
     item_type = ResourceTypes.DEVICE_POWER
+    item_cls = DevicePower
 
 
 class ButtonController(BaseResourcesController[Type[Button]]):
     """Controller holding and managing HUE resources of type `button`."""
 
     item_type = ResourceTypes.BUTTON
+    item_cls = Button
 
     _workaround_tasks: Dict[str, asyncio.Task] = None
 
-    async def _handle_event(self, type: EventType, item: Button | None) -> None:
+    async def _handle_event(
+        self, type: EventType, item: dict | None, skip_forward: bool = False
+    ) -> None:
         """Handle incoming event for this resource from the EventStream."""
         await super()._handle_event(type, item)
 
@@ -52,27 +56,27 @@ class ButtonController(BaseResourcesController[Type[Button]]):
         if (
             not item
             or type != EventType.RESOURCE_UPDATED
-            or not item.button
-            or item.button.last_event != ButtonEvent.INITIAL_PRESS
+            or not item.get("button")
+            or item["button"].get("last_event") != ButtonEvent.INITIAL_PRESS
         ):
             return
 
-        device = self.get_device(item.id)
+        device = self.get_device(item["id"])
         if device is None or device.product_data.model_id not in BTN_WORKAROUND_NEEDED:
             return
 
         if self._workaround_tasks is None:
             self._workaround_tasks = {}
 
-        if item.id in self._workaround_tasks:
+        if item["id"] in self._workaround_tasks:
             # cancel existing task (if any)
             # should not happen, but just in case
-            task = self._workaround_tasks.pop(item.id)
+            task = self._workaround_tasks.pop(item["id"])
             if not task.done():
                 task.cancel()
 
-        self._workaround_tasks[item.id] = asyncio.create_task(
-            self._handle_longpress_workaround(item.id)
+        self._workaround_tasks[item["id"]] = asyncio.create_task(
+            self._handle_longpress_workaround(item["id"])
         )
 
     async def _handle_longpress_workaround(self, id: int):
@@ -109,12 +113,14 @@ class GeofenceClientController(BaseResourcesController[Type[GeofenceClient]]):
     """Controller holding and managing HUE resources of type `geofence_client`."""
 
     item_type = ResourceTypes.GEOFENCE_CLIENT
+    item_cls = GeofenceClient
 
 
 class LightLevelController(BaseResourcesController[Type[LightLevel]]):
     """Controller holding and managing HUE resources of type `light_level`."""
 
     item_type = ResourceTypes.LIGHT_LEVEL
+    item_cls = LightLevel
 
     async def set_enabled(self, id: str, enabled: bool) -> None:
         """Enable/Disable sensor."""
@@ -125,6 +131,7 @@ class MotionController(BaseResourcesController[Type[Motion]]):
     """Controller holding and managing HUE resources of type `motion`."""
 
     item_type = ResourceTypes.MOTION
+    item_cls = Motion
 
     async def set_enabled(self, id: str, enabled: bool) -> None:
         """Enable/Disable sensor."""
@@ -135,12 +142,14 @@ class TemperatureController(BaseResourcesController[Type[Temperature]]):
     """Controller holding and managing HUE resources of type `temperature`."""
 
     item_type = ResourceTypes.TEMPERATURE
+    item_cls = Temperature
 
 
 class ZigbeeConnectivityController(BaseResourcesController[Type[ZigbeeConnectivity]]):
     """Controller holding and managing HUE resources of type `zigbee_connectivity`."""
 
     item_type = ResourceTypes.ZIGBEE_CONNECTIVITY
+    item_cls = ZigbeeConnectivity
 
 
 class SensorsController(GroupedControllerBase[SENSOR_TYPES]):

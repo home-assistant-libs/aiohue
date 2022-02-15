@@ -6,20 +6,8 @@ https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_entert
 from dataclasses import dataclass
 from typing import List, Optional
 
+from .entertainment_configuration import Segment
 from .resource import ResourceIdentifier, ResourceTypes
-
-
-@dataclass
-class Segment:
-    """
-    Represent a Segment object.
-
-    Contains the segments configuration of the device for entertainment purposes.
-    A device can be segmented in a single way.
-    """
-
-    length: int
-    start: int
 
 
 @dataclass
