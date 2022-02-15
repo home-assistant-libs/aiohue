@@ -19,11 +19,11 @@ from .controllers.groups import GroupsController
 from .controllers.lights import LightsController
 from .controllers.scenes import ScenesController
 from .controllers.sensors import SensorsController
-from .models.clip import LOGGER, CLIPResource
+
 
 MAX_RETRIES = 25  # how many times do we retry on a 503 (bridge overload/rate limit)
 
-# pylint: disable = too-many-instance-attributes
+
 class HueBridgeV2:
     """Control a Philips Hue bridge with V2 API."""
 

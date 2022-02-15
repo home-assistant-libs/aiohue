@@ -84,7 +84,7 @@ def normalize_bridge_id(bridge_id: str):
 def update_dataclass(cur_obj: dataclass, new_vals: dict) -> Set[str]:
     """
     Update instance of dataclass from (partial) dict.
-    
+
     Returns: Set with changed keys.
     """
     changed_keys = set()
