@@ -43,9 +43,7 @@ class BaseResourcesController(Generic[CLIPResource]):
     item_type: Optional[ResourceTypes] = None
     item_cls: Optional[CLIPResource] = None
 
-    def __init__(
-        self, bridge: "HueBridgeV2"
-    ) -> None:
+    def __init__(self, bridge: "HueBridgeV2") -> None:
         """Initialize instance."""
         self._bridge = bridge
         self._items: Dict[str, CLIPResource] = {}
@@ -199,7 +197,9 @@ class BaseResourcesController(Generic[CLIPResource]):
         item_id = evt_data.get("rid", evt_data["id"])
         if evt_type == EventType.RESOURCE_ADDED:
             # new item added
-            cur_item = self._items[item_id] = dataclass_from_dict(self.item_cls, evt_data)
+            cur_item = self._items[item_id] = dataclass_from_dict(
+                self.item_cls, evt_data
+            )
         elif evt_type == EventType.RESOURCE_DELETED:
             # existing item deleted
             cur_item = self._items.pop(item_id, evt_data)
