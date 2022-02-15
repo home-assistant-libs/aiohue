@@ -38,5 +38,6 @@ class ZigbeeConnectivity:
     id: str
     owner: ResourceIdentifier
     status: ConnectivityServiceStatus
+    mac_address: str
     id_v1: Optional[str] = None
     type: ResourceTypes = ResourceTypes.ZIGBEE_CONNECTIVITY
