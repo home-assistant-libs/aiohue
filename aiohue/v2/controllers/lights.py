@@ -1,6 +1,4 @@
 """Controller holding and managing HUE resources of type `light`."""
-from __future__ import annotations
-
 from typing import Optional, Tuple, Type
 
 from ..models.feature import (
@@ -24,16 +22,16 @@ class LightsController(BaseResourcesController[Type[Light]]):
     item_type = ResourceTypes.LIGHT
     item_cls = Light
 
-    async def turn_on(self, id: str, transition_time: int | None = None) -> None:
+    async def turn_on(self, id: str, transition_time: Optional[int] = None) -> None:
         """Turn on the light."""
         await self.set_state(id, on=True, transition_time=transition_time)
 
-    async def turn_off(self, id: str, transition_time: int | None = None) -> None:
+    async def turn_off(self, id: str, transition_time: Optional[int] = None) -> None:
         """Turn off the light."""
         await self.set_state(id, on=False, transition_time=transition_time)
 
     async def set_brightness(
-        self, id: str, brightness: float, transition_time: int | None = None
+        self, id: str, brightness: float, transition_time: Optional[int] = None
     ) -> None:
         """Set brightness to light. Turn on light if it's currently off."""
         await self.set_state(
@@ -41,7 +39,7 @@ class LightsController(BaseResourcesController[Type[Light]]):
         )
 
     async def set_color(
-        self, id: str, x: float, y: float, transition_time: int | None = None
+        self, id: str, x: float, y: float, transition_time: Optional[int] = None
     ) -> None:
         """Set color to light. Turn on light if it's currently off."""
         await self.set_state(
@@ -49,7 +47,7 @@ class LightsController(BaseResourcesController[Type[Light]]):
         )
 
     async def set_color_temperature(
-        self, id: str, mirek: int, transition_time: int | None = None
+        self, id: str, mirek: int, transition_time: Optional[int] = None
     ) -> None:
         """Set Color Temperature to light. Turn on light if it's currently off."""
         await self.set_state(
@@ -71,8 +69,8 @@ class LightsController(BaseResourcesController[Type[Light]]):
         brightness: Optional[float] = None,
         color_xy: Optional[Tuple[float, float]] = None,
         color_temp: Optional[int] = None,
-        transition_time: int | None = None,
-        alert: AlertEffectType | None = None,
+        transition_time: Optional[int] = None,
+        alert: Optional[AlertEffectType] = None,
     ) -> None:
         """Set supported feature(s) to light resource."""
         update_obj = LightPut()

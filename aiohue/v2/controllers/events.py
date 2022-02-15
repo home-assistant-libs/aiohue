@@ -1,13 +1,20 @@
 """Handle connecting to the HUE Eventstream and distribute events."""
-from __future__ import annotations
-
 import asyncio
 import json
 import random
 import string
 from asyncio.coroutines import iscoroutinefunction
 from enum import Enum
-from typing import TYPE_CHECKING, Callable, List, NoReturn, Tuple, TypedDict
+from typing import (
+    TYPE_CHECKING,
+    Callable,
+    List,
+    NoReturn,
+    Optional,
+    Tuple,
+    TypedDict,
+    Union,
+)
 
 from aiohttp import ClientTimeout
 from aiohttp.client_exceptions import ClientError
@@ -59,11 +66,11 @@ class EventType(Enum):
     RECONNECTED = "reconnected"
 
 
-EventCallBackType = Callable[[EventType, dict | None], None]
+EventCallBackType = Callable[[EventType, Union[dict, None]], None]
 EventSubscriptionType = Tuple[
     EventCallBackType,
-    "Tuple[EventType] | None",
-    "Tuple[ResourceTypes] | None",
+    "Tuple[Union[EventType, None]]",
+    "Tuple[Union[ResourceTypes, None]]",
 ]
 
 
@@ -112,8 +119,8 @@ class EventStream:
     def subscribe(
         self,
         callback: EventCallBackType,
-        event_filter: EventType | Tuple[EventType] | None = None,
-        resource_filter: ResourceTypes | Tuple[ResourceTypes] | None = None,
+        event_filter: Union[EventType, Tuple[EventType], None] = None,
+        resource_filter: Union[ResourceTypes, Tuple[ResourceTypes], None] = None,
     ) -> Callable:
         """
         Subscribe to events emitted by the Hue bridge for resources.
@@ -138,7 +145,7 @@ class EventStream:
         self._subscribers.append(subscription)
         return unsubscribe
 
-    def emit(self, type: EventType, data: dict | None = None) -> None:
+    def emit(self, type: EventType, data: Optional[dict] = None) -> None:
         """Emit event to all listeners."""
         for (callback, event_filter, resource_filter) in self._subscribers:
             if event_filter is not None and type not in event_filter:

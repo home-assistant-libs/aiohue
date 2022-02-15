@@ -1,6 +1,4 @@
 """Controller holding and managing HUE group resources."""
-from __future__ import annotations
-
 from typing import TYPE_CHECKING, List, Type, Union
 
 from ..models.feature import OnFeature
@@ -44,7 +42,7 @@ class GroupedLightController(BaseResourcesController[Type[GroupedLight]]):
     item_type = ResourceTypes.GROUPED_LIGHT
     item_cls = GroupedLight
 
-    def get_zone(self, id: str) -> Room | Zone | None:
+    def get_zone(self, id: str) -> Union[Room, Zone, None]:
         """Get the zone or room connected to grouped light."""
         for group in self._bridge.groups:
             if group.type == ResourceTypes.GROUPED_LIGHT:

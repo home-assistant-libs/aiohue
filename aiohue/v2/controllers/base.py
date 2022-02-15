@@ -1,6 +1,4 @@
 """Base controller for HUE resources as retrieved from the Hue bridge."""
-from __future__ import annotations
-
 import asyncio
 from asyncio.coroutines import iscoroutinefunction
 
@@ -15,6 +13,7 @@ from typing import (
     Optional,
     Tuple,
     TypeVar,
+    Union,
 )
 
 from ..models.device import Device
@@ -29,7 +28,7 @@ if TYPE_CHECKING:
 
 EventSubscriptionType = Tuple[
     EventCallBackType,
-    "Tuple[EventType] | None",
+    "Optional[Tuple[EventType]]",
 ]
 
 ID_FILTER_ALL = "*"
@@ -56,7 +55,7 @@ class BaseResourcesController(Generic[CLIPResource]):
         """Return all items for this resource."""
         return list(self._items.values())
 
-    async def initialize(self, initial_data: List[dict] | None) -> None:
+    async def initialize(self, initial_data: Optional[List[dict]]) -> None:
         """
         Initialize controller by fetching all items for this resource type from bridge.
 
@@ -89,8 +88,8 @@ class BaseResourcesController(Generic[CLIPResource]):
     def subscribe(
         self,
         callback: EventCallBackType,
-        id_filter: str | Tuple[str] | None = None,
-        event_filter: EventType | Tuple[EventType] | None = None,
+        id_filter: Union[str, Tuple[str], None] = None,
+        event_filter: Union[EventType, Tuple[EventType], None] = None,
     ) -> Callable:
         """
         Subscribe to status changes for this resource type.
@@ -127,11 +126,11 @@ class BaseResourcesController(Generic[CLIPResource]):
 
         return unsubscribe
 
-    def get_by_v1_id(self, id: str) -> CLIPResource | None:
+    def get_by_v1_id(self, id: str) -> Optional[CLIPResource]:
         """Get item by it's legacy V1 id."""
         return next((item for item in self._items.values() if item.id_v1 == id), None)
 
-    def get_device(self, id: str) -> Device | None:
+    def get_device(self, id: str) -> Optional[Device]:
         """
         Return device the given resource belongs to.
 
@@ -172,7 +171,7 @@ class BaseResourcesController(Generic[CLIPResource]):
         data = dataclass_to_dict(obj_in, skip_none=True)
         await self._bridge.request("post", endpoint, json=data)
 
-    def get(self, id: str, default: Any = None) -> CLIPResource | None:
+    def get(self, id: str, default: Any = None) -> Optional[CLIPResource]:
         """Get item by id of default if item does not exist."""
         return self._items.get(id, default)
 
@@ -189,7 +188,7 @@ class BaseResourcesController(Generic[CLIPResource]):
         return id in self._items
 
     async def _handle_event(
-        self, evt_type: EventType, evt_data: dict | None, skip_forward: bool = False
+        self, evt_type: EventType, evt_data: Optional[dict], skip_forward: bool = False
     ) -> None:
         """Handle incoming event for this resource from the EventStream."""
         if evt_data is None:
@@ -272,7 +271,7 @@ class GroupedControllerBase(Generic[CLIPResource]):
         self._resources = resources
         self._bridge = bridge
         self._logger = bridge.logger.getChild(self.__class__.__name__.lower())
-        self._subscribers: List[Tuple[EventCallBackType, str | None]] = []
+        self._subscribers: List[Tuple[EventCallBackType, Optional[str]]] = []
 
     @property
     def resources(self) -> List[BaseResourcesController]:
@@ -287,8 +286,8 @@ class GroupedControllerBase(Generic[CLIPResource]):
     def subscribe(
         self,
         callback: EventCallBackType,
-        id_filter: str | Tuple[str] | None = None,
-        event_filter: EventType | Tuple[EventType] | None = None,
+        id_filter: Union[str, Tuple[str], None] = None,
+        event_filter: Union[EventType, Tuple[EventType],  None] = None,
     ) -> Callable:
         """Subscribe to status changes for all grouped resources."""
         unsubs = [
@@ -301,12 +300,12 @@ class GroupedControllerBase(Generic[CLIPResource]):
 
         return unsubscribe
 
-    async def initialize(self, initial_data: List[dict] | None) -> None:
+    async def initialize(self, initial_data: Optional[List[dict]]) -> None:
         """Initialize controller for all watched resources."""
         for resource_control in self._resources:
             await resource_control.initialize(initial_data)
 
-    def get(self, id: str, default: Any = None) -> CLIPResource | None:
+    def get(self, id: str, default: Any = None) -> Optional[CLIPResource]:
         """Get item by id of default if item does not exist."""
         return next((x for y in self._resources for x in y if x.id == id), default)
 

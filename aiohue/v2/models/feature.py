@@ -1,5 +1,4 @@
 """Feature Schemas used by various Hue resources."""
-
 from dataclasses import dataclass, field
 from enum import Enum
 from typing import List, Optional, Type
@@ -170,7 +169,7 @@ class ColorTemperatureFeatureBase:
     """Represent `ColorTemperature` Feature base/required properties."""
 
     # Color temperature in mirek (153-500) or None if light not in CT spectrum
-    mirek: int | None
+    mirek: Optional[int]
 
 
 @dataclass

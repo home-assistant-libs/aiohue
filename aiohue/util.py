@@ -1,12 +1,11 @@
 """Utils for aiohue."""
-from __future__ import annotations
-from enum import Enum
 import logging
-from dataclasses import asdict, fields, is_dataclass, dataclass, MISSING
-from types import UnionType
-from typing import Any, Set, Type, Union, get_args, get_origin
-from aiohttp import ClientSession
+from dataclasses import MISSING, asdict, dataclass, fields, is_dataclass
 from datetime import datetime
+from enum import Enum
+from typing import Any, Optional, Set, Type, Union, get_args, get_origin
+
+from aiohttp import ClientSession
 
 from aiohue.errors import raise_from_error
 
@@ -17,9 +16,14 @@ except:  # noqa
     # older python version
     NoneType = type(None)
 
+BUILTIN_TYPES = {
+    "float": float,
+    "int": int,
+    "bool": bool
+}
 
 async def create_app_key(
-    host: str, device_type: str, websession: ClientSession | None = None
+    host: str, device_type: str, websession: Optional[ClientSession] = None
 ) -> str:
     """
     Create a user on the Hue bridge and return it's app_key for authentication.
@@ -150,7 +154,7 @@ def _parse_value(name: str, value: Any, value_type: Type, default: Any = MISSING
             for subval in value
             if subval is not None
         ]
-    if origin in [UnionType, Union]:
+    if origin is Union:
         # try all possible types
         sub_value_types = get_args(value_type)
         for sub_arg_type in sub_value_types:
@@ -202,6 +206,19 @@ def dataclass_from_dict(cls: dataclass, dict_obj: dict, strict=False):
             raise KeyError(
                 "Extra key(s) %s not allowed for %s" % ",".join(extra_keys), (str(cls))
             )
+
+    res = {}
+    for field in fields(cls):
+        if not isinstance(field.type, str):
+            continue
+        val = _parse_value(
+                f"{cls.__name__}.{field.name}",
+                dict_obj.get(field.name),
+                field.type,
+                field.default,
+            )
+
+
 
     return cls(
         **{
