@@ -16,11 +16,8 @@ except:  # noqa
     # older python version
     NoneType = type(None)
 
-BUILTIN_TYPES = {
-    "float": float,
-    "int": int,
-    "bool": bool
-}
+BUILTIN_TYPES = {"float": float, "int": int, "bool": bool}
+
 
 async def create_app_key(
     host: str, device_type: str, websession: Optional[ClientSession] = None
@@ -206,19 +203,6 @@ def dataclass_from_dict(cls: dataclass, dict_obj: dict, strict=False):
             raise KeyError(
                 "Extra key(s) %s not allowed for %s" % ",".join(extra_keys), (str(cls))
             )
-
-    res = {}
-    for field in fields(cls):
-        if not isinstance(field.type, str):
-            continue
-        val = _parse_value(
-                f"{cls.__name__}.{field.name}",
-                dict_obj.get(field.name),
-                field.type,
-                field.default,
-            )
-
-
 
     return cls(
         **{

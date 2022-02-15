@@ -287,7 +287,7 @@ class GroupedControllerBase(Generic[CLIPResource]):
         self,
         callback: EventCallBackType,
         id_filter: Union[str, Tuple[str], None] = None,
-        event_filter: Union[EventType, Tuple[EventType],  None] = None,
+        event_filter: Union[EventType, Tuple[EventType], None] = None,
     ) -> Callable:
         """Subscribe to status changes for all grouped resources."""
         unsubs = [
