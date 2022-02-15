@@ -10,7 +10,6 @@ from typing import Any, Callable, Generator, List, Optional, Type
 
 import aiohttp
 from aiohttp import ClientResponse
-from asyncio_throttle import Throttler
 
 from ..errors import BridgeBusy, Unauthorized, raise_from_error
 from .controllers.config import ConfigController
@@ -20,20 +19,20 @@ from .controllers.groups import GroupsController
 from .controllers.lights import LightsController
 from .controllers.scenes import ScenesController
 from .controllers.sensors import SensorsController
+from .models.clip import LOGGER, CLIPResource
 
 MAX_RETRIES = 25  # how many times do we retry on a 503 (bridge overload/rate limit)
-THROTTLE_CONCURRENT_REQUESTS = 2  # how many concurrent requests to the bridge
-THROTTLE_TIMESPAN = 0.25  # timespan/period (in seconds) for the rate limiting
 
 # pylint: disable = too-many-instance-attributes
 class HueBridgeV2:
     """Control a Philips Hue bridge with V2 API."""
 
+    _websession: aiohttp.ClientSession | None = None
+
     def __init__(
         self,
         host: str,
         app_key: str,
-        websession: aiohttp.ClientSession | None = None,
     ) -> None:
         """
         Initialize the Bridge instance.
@@ -41,13 +40,9 @@ class HueBridgeV2:
         Parameters:
             `host`: the hostname or IP-address of the bridge as string.
             `app_key`: provide the hue appkey/username for authentication.
-            `websession`: optionally provide a aiohttp ClientSession.
         """
         self._host = host
         self._app_key = app_key
-        self._websession = websession
-        self._websession_provided = websession is not None
-
         self.logger = logging.getLogger(f"{__package__}[{host}]")
         self._events = EventStream(self)
         # all resource controllers
@@ -57,11 +52,6 @@ class HueBridgeV2:
         self._scenes = ScenesController(self)
         self._groups = GroupsController(self)
         self._sensors = SensorsController(self)
-        # Setup the Throttler/rate limiter for requests to the bridge.
-        # NOTE: The EventStream also counts for 1 connection to the bridge.
-        self._throttler = Throttler(
-            rate_limit=THROTTLE_CONCURRENT_REQUESTS, period=THROTTLE_TIMESPAN
-        )
         self._disconnect_timestamp = 0
 
     @property
@@ -124,7 +114,7 @@ class HueBridgeV2:
     async def close(self) -> None:
         """Close connection and cleanup."""
         await self.events.stop()
-        if not self._websession_provided:
+        if self._websession:
             await self._websession.close()
         self.logger.info("Connection to bridge closed.")
 
@@ -155,10 +145,10 @@ class HueBridgeV2:
 
     async def request(self, method: str, path: str, **kwargs) -> dict | List[dict]:
         """Make request on the api and return response data."""
-        # The bridge will rate limit if we send more requests than about 2-5 per second
-        # we guard ourselves from hitting the rate limit by using a throttler
-        # but others apps/services are hitting the Hue bridge too so we still
-        # might hit the rate limit/overload at some point so we also retry if this happens.
+        # The bridge will deny more than 3 requests at the same time with a 503 error.
+        # We guard ourselves from hitting this error by limiting the TCP Connector for aiohttp
+        # but other apps/services are hitting the Hue bridge too so we still
+        # might hit the rate limit/overload at some point so we have some retry logic if this happens.
         retries = 0
 
         while retries < MAX_RETRIES:
@@ -172,9 +162,7 @@ class HueBridgeV2:
                 )
                 await asyncio.sleep(retry_wait)
 
-            async with self._throttler, self.create_request(
-                method, path, **kwargs
-            ) as resp:
+            async with self.create_request(method, path, **kwargs) as resp:
                 # 503 means the bridge is rate limiting/overloaded, we should back off a bit.
                 if resp.status == 503:
                     continue
@@ -202,7 +190,10 @@ class HueBridgeV2:
         Returns a generator with aiohttp ClientResponse.
         """
         if self._websession is None:
-            self._websession = aiohttp.ClientSession()
+            connector = aiohttp.TCPConnector(
+                limit_per_host=3,
+            )
+            self._websession = aiohttp.ClientSession(connector=connector)
 
         url = f"https://{self._host}/{path}"
 
