@@ -266,14 +266,16 @@ class HueBridgeV2:
         full_state = await self.request("get", "clip/v2/resource")
         for item in full_state:
             _replace_id(item)
-
         result["full_state"] = full_state
 
         # add last event messages to result
-        last_events = list(self._events.last_events)
-        for item in last_events:
+        last_events = []
+        for item in self._events.last_events:
+            # copy the object so we're not modifying the original
+            item = {**item}
             if "id" in item or "rid" in item:
                 _replace_id(item)
+            last_events.append(item)
         result["events"] = last_events
 
         return result
