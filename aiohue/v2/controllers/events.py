@@ -4,6 +4,7 @@ import json
 import random
 import string
 from asyncio.coroutines import iscoroutinefunction
+from collections import deque
 from enum import Enum
 from typing import (
     TYPE_CHECKING,
@@ -20,7 +21,7 @@ from aiohttp import ClientTimeout
 from aiohttp.client_exceptions import ClientError
 
 from ...errors import AiohueException, InvalidAPIVersion, InvalidEvent, Unauthorized
-from ...util import LimitedList, NoneType
+from ...util import NoneType
 from ..models.geofence_client import GeofenceClientPost, GeofenceClientPut
 from ..models.resource import ResourceTypes
 
@@ -87,7 +88,7 @@ class EventStream:
         self._bg_tasks: List[asyncio.Task] = []
         self._subscribers: List[EventSubscriptionType] = []
         self._logger = bridge.logger.getChild("events")
-        self._event_history = LimitedList(25)
+        self._event_history = deque(maxlen=25)
 
     @property
     def connected(self) -> bool:
@@ -102,7 +103,7 @@ class EventStream:
     @property
     def last_events(self) -> List[dict]:
         """Return a list with the previous X messages."""
-        return self._event_history
+        return list(self._event_history)
 
     async def initialize(self) -> None:
         """
