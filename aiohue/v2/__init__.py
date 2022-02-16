@@ -4,7 +4,8 @@ import logging
 import time
 from contextlib import asynccontextmanager
 from types import TracebackType
-from typing import Any, Callable, Generator, List, Optional, Type, Union
+from typing import Any, Callable, Dict, Generator, List, Optional, Type, Union
+from uuid import uuid4
 
 import aiohttp
 from aiohttp import ClientResponse
@@ -246,3 +247,32 @@ class HueBridgeV2:
             self._sensors.initialize(full_state),
             self._groups.initialize(full_state),
         )
+
+    async def get_diagnostics(self) -> Dict[str, Any]:
+        """Return a dict with diagnostic information for debugging and support purposes."""
+        result = {}
+        subst_ids = {}
+
+        def _replace_id(item: dict):
+            """Replace ID with a random one for privacy reasons."""
+            id_key = "id" if "id" in item else "rid"
+            org_item_id = item[id_key]
+            new_id = subst_ids.get(org_item_id, f"redacted-{uuid4()}")
+            subst_ids[org_item_id] = new_id
+            item[id_key] = new_id
+
+        # add full state to result
+        full_state = await self.request("get", "clip/v2/resource")
+        for item in full_state:
+            _replace_id(item)
+
+        result["full_state"] = full_state
+
+        # add last event messages to result
+        last_events = list(self._events.last_events)
+        for item in last_events:
+            if "id" in item or "rid" in item:
+                _replace_id(item)
+        result["events"] = last_events
+
+        return result

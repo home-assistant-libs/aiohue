@@ -227,3 +227,48 @@ def mac_from_bridge_id(bridge_id: str) -> str:
         bridge_id[14:16],
     ]
     return ":".join(parts)
+
+
+class LimitedList(list):
+    """Implementation of a size limited list."""
+
+    @property
+    def max_len(self):
+        """Return list's max length."""
+        return self._max_len
+
+    def __init__(self, max_len=50):
+        """Initialize instance."""
+        self._max_len = max_len
+        super().__init__()
+
+    def _truncate(self):
+        """Call by various methods to reinforce the maximum length."""
+        dif = len(self) - self._max_len
+        if dif > 0:
+            self[:dif] = []
+
+    def append(self, x):
+        """Append item x to the list."""
+        super().append(x)
+        self._truncate()
+
+    def insert(self, *args):
+        """Insert items at position x to the list."""
+        super().insert(*args)
+        self._truncate()
+
+    def extend(self, x):
+        """Extend the list."""
+        super().extend(x)
+        self._truncate()
+
+    def __setitem__(self, *args):
+        """Internally set."""
+        super().__setitem__(*args)
+        self._truncate()
+
+    def __setslice__(self, *args):
+        """Internally set slice."""
+        super().__setslice__(*args)
+        self._truncate()

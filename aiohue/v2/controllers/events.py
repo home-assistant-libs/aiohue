@@ -20,7 +20,7 @@ from aiohttp import ClientTimeout
 from aiohttp.client_exceptions import ClientError
 
 from ...errors import AiohueException, InvalidAPIVersion, InvalidEvent, Unauthorized
-from ...util import NoneType
+from ...util import LimitedList, NoneType
 from ..models.geofence_client import GeofenceClientPost, GeofenceClientPut
 from ..models.resource import ResourceTypes
 
@@ -87,6 +87,7 @@ class EventStream:
         self._bg_tasks: List[asyncio.Task] = []
         self._subscribers: List[EventSubscriptionType] = []
         self._logger = bridge.logger.getChild("events")
+        self._event_history = LimitedList(25)
 
     @property
     def connected(self) -> bool:
@@ -97,6 +98,11 @@ class EventStream:
     def status(self) -> bool:
         """Return connection status."""
         return self._status
+
+    @property
+    def last_events(self) -> List[dict]:
+        """Return a list with the previous X messages."""
+        return self._event_history
 
     async def initialize(self) -> None:
         """
@@ -265,6 +271,7 @@ class EventStream:
                     if event.get("type") not in ["add", "update", "delete"]:
                         raise InvalidEvent(f"Received invalid event {event}")
                     self._event_queue.put_nowait(event)
+                    self._event_history.append(event)
                 return
             if key != "data":
                 self._logger.debug("Received unexpected message: %s - %s", key, value)
