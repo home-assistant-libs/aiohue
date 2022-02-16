@@ -7,14 +7,12 @@ from aiohue import HueBridgeV2
 from tests.common import load_fixture
 
 
-async def test_bridge_init():
+async def test_bridge_init(v2_resources):
     """Test v2 bridge."""
     bridge = HueBridgeV2("192.168.1.123", "mock-key")
     assert bridge.host == "192.168.1.123"
 
-    with patch.object(
-        bridge, "request", return_value=load_fixture("v2_resources.json")
-    ):
+    with patch.object(bridge, "request", return_value=v2_resources):
         await bridge.fetch_full_state()
 
     assert bridge.config is not None
