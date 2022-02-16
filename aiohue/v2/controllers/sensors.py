@@ -48,7 +48,7 @@ class ButtonController(BaseResourcesController[Type[Button]]):
         self, evt_type: EventType, evt_data: Optional[dict], skip_forward: bool = False
     ) -> None:
         """Handle incoming event for this resource from the EventStream."""
-        await super()._handle_event(type, evt_data)
+        await super()._handle_event(evt_type, evt_data)
 
         # Handle longpress workaround if needed
         if (
