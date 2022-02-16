@@ -25,7 +25,10 @@ jobs:
           pip install -r requirements-test.txt
       - name: Lint with flake8
         run: |
-          flake8 aiohue
+          flake8 aiohue tests
       - name: Check formatting with black
         run: |
-          black aiohue --check
+          black aiohue tests --check
+      - name: Run tests
+        run: |
+          pytest tests
