@@ -1,10 +1,7 @@
 """Test v2 bridge."""
-from pathlib import Path
 from unittest.mock import patch
 
 from aiohue import HueBridgeV2
-
-from tests.common import load_fixture
 
 
 async def test_bridge_init(v2_resources):
