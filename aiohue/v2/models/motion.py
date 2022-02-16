@@ -17,7 +17,7 @@ class MotionSensingFeature:
     https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_motion_get
     """
 
-    motion: bool
+    motion: Optional[bool]  # value is None/null when sensor is disabled!
     motion_valid: bool
 
 
