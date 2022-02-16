@@ -103,7 +103,7 @@ class EventStream:
     @property
     def last_events(self) -> List[dict]:
         """Return a list with the previous X messages."""
-        return list(self._event_history)
+        return self._event_history
 
     async def initialize(self) -> None:
         """
