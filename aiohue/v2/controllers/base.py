@@ -11,6 +11,7 @@ from typing import (
     Iterator,
     List,
     Optional,
+    Set,
     Tuple,
     TypeVar,
     Union,
@@ -188,7 +189,7 @@ class BaseResourcesController(Generic[CLIPResource]):
         return id in self._items
 
     async def _handle_event(
-        self, evt_type: EventType, evt_data: Optional[dict], skip_forward: bool = False
+        self, evt_type: EventType, evt_data: Optional[dict]
     ) -> None:
         """Handle incoming event for this resource from the EventStream."""
         if evt_data is None:
@@ -211,12 +212,20 @@ class BaseResourcesController(Generic[CLIPResource]):
                 self._logger.warning("received update for unknown item %s", item_id)
                 return
             # update the existing data with the changed keys/data
-            update_dataclass(cur_item, evt_data)
+            updated_keys = update_dataclass(cur_item, evt_data)
+            # do not forward update event if no keys were updated
+            if len(updated_keys) == 0 and self.item_type != ResourceTypes.BUTTON:
+                return
+            # Do not forward update events for button resource if
+            # the button feature is missing in event data in an attempt to prevent
+            # ghost events at bridge reboots/firmware updates.
+            # in fact this is a feature request to Signify to handle these stateless
+            # device events in a different way:
+            # https://developers.meethue.com/forum/t/differentiate-stateless-events/6627
+            if self.item_type != ResourceTypes.BUTTON and not evt_data.get("button"):
+                return
         else:
             # ignore all other events
-            return
-
-        if skip_forward:
             return
 
         subscribers = (
@@ -239,26 +248,24 @@ class BaseResourcesController(Generic[CLIPResource]):
         prev_ids = set(self._items.keys())
         cur_ids = set()
         for item in full_state:
-            resource: CLIPResource = dataclass_from_dict(self.item_cls, item)
-            cur_ids.add(resource.id)
-            if resource.id not in prev_ids:
+            cur_ids.add(item["id"])
+            if item["id"] not in prev_ids:
                 # item added
-                await self._handle_event(EventType.RESOURCE_ADDED, resource)
+                await self._handle_event(EventType.RESOURCE_ADDED, item)
             else:
-                # work out if the item actually changed
-                prev_item = self._items[resource.id]
-                if dataclass_to_dict(prev_item) == dataclass_to_dict(resource):
+                # work out if the item changed in the regular event logic
+                # ignore stateless (button) resources to prevent false positive state events
+                if item["type"] == ResourceTypes.BUTTON.value:
                     continue
-                # its pointless to emit events for button devices at reconnect
-                # so we prevent those from being forwarded
-                skip_forward = self.item_type == ResourceTypes.BUTTON
-                await self._handle_event(
-                    EventType.RESOURCE_UPDATED, resource, skip_forward
-                )
+                await self._handle_event(EventType.RESOURCE_UPDATED, item)
+
         # work out item deletions
         deleted_ids = {x for x in prev_ids if x not in cur_ids}
         for resource_id in deleted_ids:
-            self._handle_event(EventType.RESOURCE_DELETED, self._items[resource_id])
+            self._handle_event(
+                EventType.RESOURCE_DELETED,
+                {"rtype": self.item_type, "rid": resource_id},
+            )
 
 
 class GroupedControllerBase(Generic[CLIPResource]):
