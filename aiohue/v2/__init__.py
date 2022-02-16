@@ -257,8 +257,9 @@ class HueBridgeV2:
             """Replace ID with a random one for privacy reasons."""
             id_key = "id" if "id" in item else "rid"
             org_item_id = item[id_key]
-            new_id = subst_ids.get(org_item_id, f"redacted-{uuid4()}")
-            subst_ids[org_item_id] = new_id
+						if org_item_id not in subst_ids:
+								subst_ids[org_item_id] = f"redacted-{uuid4()}"
+            new_id = subst_ids[org_item_id]
             item[id_key] = new_id
 
         # add full state to result
