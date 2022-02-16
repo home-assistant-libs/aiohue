@@ -271,9 +271,9 @@ class HueBridgeV2:
         # add last event messages to result
         last_events = []
         for item in self._events.last_events:
-            # copy the object so we're not modifying the original
-            item = {**item}
             if "id" in item or "rid" in item:
+                # copy the object so we're not modifying the original
+                item = {**item}
                 _replace_id(item)
             last_events.append(item)
         result["events"] = last_events
