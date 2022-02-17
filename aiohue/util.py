@@ -135,7 +135,7 @@ def parse_utc_timestamp(datetimestr: str):
 
 
 def _parse_value(name: str, value: Any, value_type: Type, default: Any = MISSING):
-    """Try to parse a value from raw data and type definitions."""
+    """Try to parse a value from raw (json) data and type definitions."""
     if value is None and not isinstance(default, type(MISSING)):
         return default
     if value is None and value_type is NoneType:
@@ -180,12 +180,14 @@ def _parse_value(name: str, value: Any, value_type: Type, default: Any = MISSING
         return value_type(value)
     if value_type is type(datetime):
         return parse_utc_timestamp(value)
+    if value_type is float and isinstance(value, int):
+        value = float(value)
     if not isinstance(value, value_type):
         raise TypeError(
             f"Value {value} of type {type(value)} is invalid for {name}, "
             f"expected value of type {value_type}"
         )
-    return value_type(value)
+    return value
 
 
 def dataclass_from_dict(cls: dataclass, dict_obj: dict, strict=False):
@@ -199,7 +201,8 @@ def dataclass_from_dict(cls: dataclass, dict_obj: dict, strict=False):
         extra_keys = dict_obj.keys() - set([f.name for f in fields(cls)])
         if extra_keys:
             raise KeyError(
-                "Extra key(s) %s not allowed for %s" % ",".join(extra_keys), (str(cls))
+                "Extra key(s) %s not allowed for %s"
+                % (",".join(extra_keys), (str(cls)))
             )
 
     return cls(
