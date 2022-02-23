@@ -9,6 +9,8 @@ from ..models.feature import (
     ColorTemperatureFeaturePut,
     DimmingFeaturePut,
     DynamicsFeaturePut,
+    EffectsFeaturePut,
+    EffectStatus,
     OnFeature,
 )
 from ..models.light import Light, LightPut
@@ -71,6 +73,7 @@ class LightsController(BaseResourcesController[Type[Light]]):
         color_temp: Optional[int] = None,
         transition_time: Optional[int] = None,
         alert: Optional[AlertEffectType] = None,
+        effect: Optional[EffectStatus] = None,
     ) -> None:
         """Set supported feature(s) to light resource."""
         update_obj = LightPut()
@@ -86,4 +89,6 @@ class LightsController(BaseResourcesController[Type[Light]]):
             update_obj.dynamics = DynamicsFeaturePut(duration=transition_time)
         if alert is not None:
             update_obj.alert = AlertFeaturePut(action=alert)
+        if effect is not None:
+            update_obj.effects = EffectsFeaturePut(effect=effect)
         await self.update(id, update_obj)
