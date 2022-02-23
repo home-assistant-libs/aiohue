@@ -78,20 +78,7 @@ class BaseResourcesController(Generic[CLIPResource]):
             return
 
         for item in initial_data:
-            try:
-                resource: CLIPResource = dataclass_from_dict(self.item_cls, item)
-                self._items[resource.id] = resource
-            except (KeyError, ValueError) as exc:
-                # In an attempt to not completely crash when a single resource can't be parsed
-                # due to API schema mismatches, bugs in Hue or other factors,
-                # we allow some resources to be skipped. This only works that are not dependees
-                # for other resources so we define this in the controller level.
-                if not self.allow_parser_error:
-                    raise exc
-                self._logger.error(
-                    "Unable to parse resource, please report this to the authors of aiohue.",
-                    exc_info=exc,
-                )
+            await self._handle_event(EventType.RESOURCE_ADDED, item)
         # subscribe to item updates
         self._bridge.events.subscribe(
             self._handle_event, resource_filter=self.item_type
@@ -209,9 +196,22 @@ class BaseResourcesController(Generic[CLIPResource]):
         item_id = evt_data.get("rid", evt_data["id"])
         if evt_type == EventType.RESOURCE_ADDED:
             # new item added
-            cur_item = self._items[item_id] = dataclass_from_dict(
-                self.item_cls, evt_data
-            )
+            try:
+                cur_item = self._items[item_id] = dataclass_from_dict(
+                    self.item_cls, evt_data
+                )
+            except (KeyError, ValueError, TypeError) as exc:
+                # In an attempt to not completely crash when a single resource can't be parsed
+                # due to API schema mismatches, bugs in Hue or other factors, we allow some
+                # resources to be skipped. This only works for resources that are not dependees
+                # for other resources so we define this in the controller level.
+                if not self.allow_parser_error:
+                    raise exc
+                self._logger.error(
+                    "Unable to parse resource, please report this to the authors of aiohue.",
+                    exc_info=exc,
+                )
+                return
         elif evt_type == EventType.RESOURCE_DELETED:
             # existing item deleted
             cur_item = self._items.pop(item_id, evt_data)
