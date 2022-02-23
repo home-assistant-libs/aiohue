@@ -34,6 +34,7 @@ class DevicePowerController(BaseResourcesController[Type[DevicePower]]):
 
     item_type = ResourceTypes.DEVICE_POWER
     item_cls = DevicePower
+    allow_parser_error = True
 
 
 class ButtonController(BaseResourcesController[Type[Button]]):
@@ -41,6 +42,7 @@ class ButtonController(BaseResourcesController[Type[Button]]):
 
     item_type = ResourceTypes.BUTTON
     item_cls = Button
+    allow_parser_error = True
 
     _workaround_tasks: Dict[str, asyncio.Task] = None
 
@@ -112,6 +114,7 @@ class GeofenceClientController(BaseResourcesController[Type[GeofenceClient]]):
 
     item_type = ResourceTypes.GEOFENCE_CLIENT
     item_cls = GeofenceClient
+    allow_parser_error = True
 
 
 class LightLevelController(BaseResourcesController[Type[LightLevel]]):
@@ -119,6 +122,7 @@ class LightLevelController(BaseResourcesController[Type[LightLevel]]):
 
     item_type = ResourceTypes.LIGHT_LEVEL
     item_cls = LightLevel
+    allow_parser_error = True
 
     async def set_enabled(self, id: str, enabled: bool) -> None:
         """Enable/Disable sensor."""
@@ -130,6 +134,7 @@ class MotionController(BaseResourcesController[Type[Motion]]):
 
     item_type = ResourceTypes.MOTION
     item_cls = Motion
+    allow_parser_error = True
 
     async def set_enabled(self, id: str, enabled: bool) -> None:
         """Enable/Disable sensor."""
@@ -141,6 +146,7 @@ class TemperatureController(BaseResourcesController[Type[Temperature]]):
 
     item_type = ResourceTypes.TEMPERATURE
     item_cls = Temperature
+    allow_parser_error = True
 
 
 class ZigbeeConnectivityController(BaseResourcesController[Type[ZigbeeConnectivity]]):
@@ -148,6 +154,7 @@ class ZigbeeConnectivityController(BaseResourcesController[Type[ZigbeeConnectivi
 
     item_type = ResourceTypes.ZIGBEE_CONNECTIVITY
     item_cls = ZigbeeConnectivity
+    allow_parser_error = True
 
 
 class SensorsController(GroupedControllerBase[SENSOR_TYPES]):

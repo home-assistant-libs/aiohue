@@ -14,6 +14,7 @@ class ScenesController(BaseResourcesController[Type[Scene]]):
 
     item_type = ResourceTypes.SCENE
     item_cls = Scene
+    allow_parser_error = True
 
     async def recall(
         self,

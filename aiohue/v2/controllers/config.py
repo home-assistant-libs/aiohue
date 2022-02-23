@@ -40,6 +40,7 @@ class EntertainmentController(BaseResourcesController[Type[Entertainment]]):
 
     item_type = ResourceTypes.ENTERTAINMENT
     item_cls = Entertainment
+    allow_parser_error = True
 
 
 class EntertainmentConfigurationController(
@@ -49,6 +50,7 @@ class EntertainmentConfigurationController(
 
     item_type = ResourceTypes.ENTERTAINMENT_CONFIGURATION
     item_cls = EntertainmentConfiguration
+    allow_parser_error = True
 
 
 class ConfigController(

@@ -41,6 +41,7 @@ class BaseResourcesController(Generic[CLIPResource]):
 
     item_type: Optional[ResourceTypes] = None
     item_cls: Optional[CLIPResource] = None
+    allow_parser_error = False
 
     def __init__(self, bridge: "HueBridgeV2") -> None:
         """Initialize instance."""
@@ -77,8 +78,20 @@ class BaseResourcesController(Generic[CLIPResource]):
             return
 
         for item in initial_data:
-            resource: CLIPResource = dataclass_from_dict(self.item_cls, item)
-            self._items[resource.id] = resource
+            try:
+                resource: CLIPResource = dataclass_from_dict(self.item_cls, item)
+                self._items[resource.id] = resource
+            except (KeyError, ValueError) as exc:
+                # In an attempt to not completely crash when a single resource can't be parsed
+                # due to API schema mismatches, bugs in Hue or other factors,
+                # we allow some resources to be skipped. This only works that are not dependees
+                # for other resources so we define this in the controller level.
+                if not self.allow_parser_error:
+                    raise exc
+                self._logger.error(
+                    "Unable to parse resource, please report this to the authors of aiohue.",
+                    exc_info=exc,
+                )
         # subscribe to item updates
         self._bridge.events.subscribe(
             self._handle_event, resource_filter=self.item_type
