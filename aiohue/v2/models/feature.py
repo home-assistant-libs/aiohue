@@ -270,6 +270,17 @@ class EffectsFeature:
     status_values: List[EffectStatus] = field(default_factory=list)
 
 
+@dataclass
+class EffectsFeaturePut:
+    """
+    Represent `EffectsFeature` object when sent to the API in PUT requests.
+
+    https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_light__id__put
+    """
+
+    effect: EffectStatus
+
+
 class RecallAction(Enum):
     """Enum with available recall actions."""
 

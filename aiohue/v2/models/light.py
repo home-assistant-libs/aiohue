@@ -20,6 +20,7 @@ from .feature import (
     DynamicsFeaturePut,
     DynamicStatus,
     EffectsFeature,
+    EffectsFeaturePut,
     GradientFeature,
     GradientFeatureBase,
     OnFeature,
@@ -140,3 +141,4 @@ class LightPut:
     dynamics: Optional[DynamicsFeaturePut] = None
     alert: Optional[AlertFeaturePut] = None
     gradient: Optional[GradientFeatureBase] = None
+    effects: Optional[EffectsFeaturePut] = None
