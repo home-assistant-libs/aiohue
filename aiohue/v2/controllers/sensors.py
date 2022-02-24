@@ -2,6 +2,8 @@
 import asyncio
 from typing import TYPE_CHECKING, Dict, Optional, Type, Union
 
+from aiohue.util import dataclass_to_dict
+
 from ..models.button import Button, ButtonEvent
 from ..models.device_power import DevicePower
 from ..models.geofence_client import GeofenceClient
@@ -82,16 +84,16 @@ class ButtonController(BaseResourcesController[Type[Button]]):
         # Fake `held down` and `long press release` events.
         # This might need to be removed in a future release once/if Signify
         # adds this back in their API.
+        btn_resource = dataclass_to_dict(self._items[id])
         await asyncio.sleep(1.5)  # time to initially wait for SHORT_RELEASE
         count = 0
         try:
             while count <= 20:  # = max 10 seconds
-                btn_resource = self._items[id]
-                cur_event = btn_resource.button.last_event
+                cur_event = self._items[id].button.last_event
                 if cur_event == ButtonEvent.SHORT_RELEASE:
                     break
                 # send REPEAT until short release is received
-                btn_resource.button.last_event = ButtonEvent.REPEAT
+                btn_resource["button"]["last_event"] = ButtonEvent.REPEAT.value
                 await self._handle_event(EventType.RESOURCE_UPDATED, btn_resource)
                 await asyncio.sleep(0.5)
                 count += 1
@@ -102,8 +104,7 @@ class ButtonController(BaseResourcesController[Type[Button]]):
             # Note that the button will also fire the SHORT_RELEASE event if it's released within
             # those 10 seconds.
             if count > 1:
-                btn_resource = self._items[id]
-                btn_resource.button.last_event = ButtonEvent.LONG_RELEASE
+                btn_resource["button"]["last_event"] = ButtonEvent.LONG_RELEASE.value
                 await self._handle_event(EventType.RESOURCE_UPDATED, btn_resource)
 
 
