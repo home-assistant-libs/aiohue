@@ -31,10 +31,12 @@ class RoomController(BaseResourcesController[Type[Room]]):
             return []
         result = []
         for dev_id in self._items[id].devices:
-            if dev := self._bridge.devices.get(dev_id):
-                for light_id in dev.lights:
-                    if light := self._bridge.lights.get(light_id):
-                        result.append(light)
+            if (dev := self._bridge.devices.get(dev_id)) is None:
+                continue
+
+            for light_id in dev.lights:
+                if light := self._bridge.lights.get(light_id):
+                    result.append(light)
         return result
 
 
