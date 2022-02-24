@@ -19,17 +19,11 @@ class DevicesController(BaseResourcesController[Type[Device]]):
 
     def get_lights(self, id: str) -> List[Light]:
         """Return all lights belonging to given device."""
-        return [
-            self._bridge.lights[x] for x in self[id].lights if x in self._bridge.lights
-        ]
+        return [x for x in self._bridge.lights if x.id in self[id].lights]
 
     def get_sensors(self, id: str) -> List[SENSOR_TYPES]:
         """Return all sensors belonging to given device."""
-        return [
-            self._bridge.sensors[x]
-            for x in self[id].sensors
-            if x in self._bridge.sensors
-        ]
+        return [x for x in self._bridge.sensors if x.id in self[id].sensors]
 
     def get_room(self, id: str) -> Optional[Room]:
         """Return room the given device belongs to (if any)."""
@@ -39,7 +33,7 @@ class DevicesController(BaseResourcesController[Type[Device]]):
         """Return the ZigbeeConnectivity resource connected to device."""
         for service in self._items[id].services:
             if service.rtype == ResourceTypes.ZIGBEE_CONNECTIVITY:
-                return self._bridge.sensors.zigbee_connectivity[service.rid]
+                return self._bridge.sensors.zigbee_connectivity.get(service.rid)
         return None
 
     async def set_identify(self, id: str) -> None:
