@@ -56,7 +56,7 @@ class GroupedLightController(BaseResourcesController[Type[GroupedLight]]):
     def get_lights(self, id: str) -> List[Light]:
         """Return all underlying lights of this grouped light."""
         if zone := self.get_zone(id):
-            return [self._bridge.lights[x] for x in zone.lights]
+            return [x for x in self._bridge.lights if x.id in zone.lights]
         return []  # fallback for a group without a zone (special 0 group)
 
     async def set_state(self, id: str, on: bool = True) -> None:
