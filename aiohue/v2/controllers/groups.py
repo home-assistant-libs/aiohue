@@ -25,6 +25,20 @@ class RoomController(BaseResourcesController[Type[Room]]):
         """Get all scenes for this room."""
         return [scene for scene in self._bridge.scenes if scene.group.rid == id]
 
+    def get_lights(self, id: str) -> List[Light]:
+        """Return all lights in given room."""
+        if id not in self._items:
+            return []
+        result = []
+        for dev_id in self._items[id].devices:
+            if (dev := self._bridge.devices.get(dev_id)) is None:
+                continue
+
+            for light_id in dev.lights:
+                if light := self._bridge.lights.get(light_id):
+                    result.append(light)
+        return result
+
 
 class ZoneController(BaseResourcesController[Type[Zone]]):
     """Controller holding and managing HUE resources of type `zone`."""
@@ -34,8 +48,17 @@ class ZoneController(BaseResourcesController[Type[Zone]]):
     allow_parser_error = True
 
     def get_scenes(self, id: str) -> List[Scene]:
-        """Get all scenes for this zone."""
+        """Get all scenes for this room."""
         return [scene for scene in self._bridge.scenes if scene.group.rid == id]
+
+    def get_lights(self, id: str) -> List[Light]:
+        """Return all lights in given zone."""
+        if id not in self._items:
+            return []
+        light_ids = {
+            x.rid for x in self._items[id].children if x.rtype == ResourceTypes.LIGHT
+        }
+        return [x for x in self._bridge.lights if x.id in light_ids]
 
 
 class GroupedLightController(BaseResourcesController[Type[GroupedLight]]):
@@ -54,10 +77,13 @@ class GroupedLightController(BaseResourcesController[Type[GroupedLight]]):
         return None
 
     def get_lights(self, id: str) -> List[Light]:
-        """Return all underlying lights of this grouped light."""
+        """Return lights of the connected room/zone."""
+        # Note that this is just a convenience method for backwards compatibility
         if zone := self.get_zone(id):
-            return [x for x in self._bridge.lights if x.id in zone.lights]
-        return []  # fallback for a group without a zone (special 0 group)
+            if zone.type == ResourceTypes.ROOM:
+                return self._bridge.groups.room.get_lights(zone.id)
+            return self._bridge.groups.zone.get_lights(zone.id)
+        return []
 
     async def set_state(self, id: str, on: bool = True) -> None:
         """

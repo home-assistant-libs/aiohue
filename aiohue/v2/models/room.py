@@ -113,11 +113,6 @@ class Room:
         return {x.rid for x in self.children}
 
     @property
-    def lights(self) -> Set[str]:
-        """Return a set of light id's belonging to this zone."""
-        return {x.rid for x in self.services if x.rtype == ResourceTypes.LIGHT}
-
-    @property
     def grouped_light(self) -> Optional[str]:
         """Return the grouped light id that is connected to this room (if any)."""
         if not self.services:
