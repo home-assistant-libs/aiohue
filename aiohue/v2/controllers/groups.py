@@ -19,6 +19,7 @@ class RoomController(BaseResourcesController[Type[Room]]):
 
     item_type = ResourceTypes.ROOM
     item_cls = Room
+    allow_parser_error = True
 
     def get_scenes(self, id: str) -> List[Scene]:
         """Get all scenes for this room."""
@@ -30,6 +31,7 @@ class ZoneController(BaseResourcesController[Type[Zone]]):
 
     item_type = ResourceTypes.ZONE
     item_cls = Zone
+    allow_parser_error = True
 
     def get_scenes(self, id: str) -> List[Scene]:
         """Get all scenes for this zone."""
