@@ -1,5 +1,6 @@
 """Controller holding and managing HUE resources of type `light`."""
-from typing import Optional, Tuple, Type
+
+from typing import Optional, Tuple, Type, Union
 
 from ..models.feature import (
     AlertEffectType,
@@ -12,6 +13,8 @@ from ..models.feature import (
     EffectsFeaturePut,
     EffectStatus,
     OnFeature,
+    TimedEffectStatus,
+    TimedEffectsFeaturePut,
 )
 from ..models.light import Light, LightPut
 from ..models.resource import ResourceTypes
@@ -73,7 +76,7 @@ class LightsController(BaseResourcesController[Type[Light]]):
         color_temp: Optional[int] = None,
         transition_time: Optional[int] = None,
         alert: Optional[AlertEffectType] = None,
-        effect: Optional[EffectStatus] = None,
+        effect: Union[EffectStatus, TimedEffectStatus, None] = None,
     ) -> None:
         """Set supported feature(s) to light resource."""
         update_obj = LightPut()
@@ -85,10 +88,16 @@ class LightsController(BaseResourcesController[Type[Light]]):
             update_obj.color = ColorFeaturePut(xy=ColorPoint(*color_xy))
         if color_temp is not None:
             update_obj.color_temperature = ColorTemperatureFeaturePut(mirek=color_temp)
-        if transition_time is not None:
+        if transition_time is not None and effect is None:
             update_obj.dynamics = DynamicsFeaturePut(duration=transition_time)
         if alert is not None:
             update_obj.alert = AlertFeaturePut(action=alert)
-        if effect is not None:
+
+        # for timed_effects feature, transition time is used for duration
+        if effect is not None and isinstance(effect, TimedEffectStatus):
+            update_obj.timed_effects = TimedEffectsFeaturePut(
+                effect=effect, duration=transition_time
+            )
+        elif effect is not None:
             update_obj.effects = EffectsFeaturePut(effect=effect)
         await self.update(id, update_obj)
