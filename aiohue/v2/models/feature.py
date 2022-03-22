@@ -37,6 +37,42 @@ class DimmingFeaturePut(DimmingFeatureBase):
     """Represent `Dimming` Feature when updating/sending in PUT requests."""
 
 
+class DeltaAction(Enum):
+    """Enum with delta actions for DimmingDelta and ColorDelta feature."""
+
+    UP = "up"
+    DOWN = "down"
+    STOP = "stop"
+
+
+@dataclass
+class DimmingDeltaFeaturePut:
+    """
+    Represent `DimmingDelta` Feature when updating/sending in PUT requests.
+
+    Brightness percentage of full-scale increase delta to current dimlevel. Clip at Max-level or Min-level.
+
+    https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_light__id__put
+    """
+
+    action: DeltaAction
+    brightness_delta: Optional[float] = None
+
+
+@dataclass
+class ColorTemperatureDeltaFeaturePut:
+    """
+    Represent `DimmingDelta` Feature when updating/sending in PUT requests.
+
+    Mirek delta to current mirek. Clip at mirek_minimum and mirek_maximum of mirek_schema.
+
+    https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_light__id__put
+    """
+
+    action: DeltaAction
+    mirek_delta: Optional[int] = None
+
+
 @dataclass
 class Position:
     """
@@ -279,6 +315,56 @@ class EffectsFeaturePut:
     """
 
     effect: EffectStatus
+
+
+class TimedEffectStatus(Enum):
+    """Enum with possible timed effects."""
+
+    NO_EFFECT = "no_effect"
+    SUNRISE = "sunrise"
+    UNKNOWN = "unknown"
+
+    @classmethod
+    def _missing_(cls: Type, value: str):
+        """Set default enum member if an unknown value is provided."""
+        return AlertEffectType.UNKNOWN
+
+
+@dataclass
+class TimedEffectsFeature:
+    """
+    Represent `TimedEffectsFeature` object as used by various Hue resources.
+
+    Basic feature containing timed effect properties.
+
+    https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_light_get
+    """
+
+    status: EffectStatus
+    status_values: List[EffectStatus] = field(default_factory=list)
+    # Duration is mandatory when timed effect is set except for no_effect.
+    # Resolution decreases for a larger duration. e.g Effects with duration smaller
+    # than a minute will be rounded to a resolution of 1s, while effects with duration
+    # larger than an hour will be arounded up to a resolution of 300s.
+    # Duration has a max of 21600000 ms.
+    duration: Optional[int] = None
+
+
+@dataclass
+class TimedEffectsFeaturePut:
+    """
+    Represent `TimedEffectsFeature` object when sent to the API in PUT requests.
+
+    https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_light__id__put
+    """
+
+    effect: Optional[TimedEffectStatus]
+    # Duration is mandatory when timed effect is set except for no_effect.
+    # Resolution decreases for a larger duration. e.g Effects with duration smaller
+    # than a minute will be rounded to a resolution of 1s, while effects with duration
+    # larger than an hour will be arounded up to a resolution of 300s.
+    # Duration has a max of 21600000 ms.
+    duration: Optional[int] = None
 
 
 class RecallAction(Enum):

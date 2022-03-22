@@ -1,6 +1,9 @@
 """Controller holding and managing HUE resources that are of the config type."""
 from typing import TYPE_CHECKING, Optional, Type, Union
 
+from awesomeversion import AwesomeVersion
+
+from ...errors import BridgeSoftwareOutdated
 from ...util import mac_from_bridge_id
 from ..models.bridge import Bridge
 from ..models.bridge_home import BridgeHome
@@ -111,6 +114,19 @@ class ConfigController(
                     if service.rid == bridge.id:
                         return device
         raise AttributeError("bridge_device")
+
+    def check_version(self, version: str) -> bool:
+        """Check if bridge version is equal to (or higher than) given version."""
+        current = AwesomeVersion(self.software_version)
+        required = AwesomeVersion(version)
+        return current >= required
+
+    def require_version(self, version: str) -> None:
+        """Raise exception if Bridge version is lower than given minimal version."""
+        if not self.require_version(version):
+            raise BridgeSoftwareOutdated(
+                f"Bridge software version outdated. Minimal required version is {version}"
+            )
 
     def __init__(self, bridge: "HueBridgeV2") -> None:
         """Initialize underlying controller instances."""
