@@ -3,6 +3,7 @@ from typing import TYPE_CHECKING, Optional, Type, Union
 
 from awesomeversion import AwesomeVersion
 
+from ...errors import BridgeSoftwareOutdated
 from ...util import mac_from_bridge_id
 from ..models.bridge import Bridge
 from ..models.bridge_home import BridgeHome
@@ -119,6 +120,13 @@ class ConfigController(
         current = AwesomeVersion(self.software_version)
         required = AwesomeVersion(version)
         return current >= required
+
+    def require_version(self, version: str) -> None:
+        """Raise exception if Bridge version is lower than given minimal version."""
+        if not self.require_version(version):
+            raise BridgeSoftwareOutdated(
+                f"Bridge software version outdated. Minimal required version is {version}"
+            )
 
     def __init__(self, bridge: "HueBridgeV2") -> None:
         """Initialize underlying controller instances."""

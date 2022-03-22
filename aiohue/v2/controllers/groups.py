@@ -86,12 +86,9 @@ class GroupedLightController(BaseResourcesController[Type[GroupedLight]]):
         return []
 
     async def set_state(self, id: str, on: bool = True) -> None:
-        """
-        Set supported feature(s) to grouped_light resource.
-
-        NOTE: a grouped_light can only handle OnFeature
-        To send other features, you'll have to control the underlying lights
-        """
+        """Set supported feature(s) to grouped_light resource."""
+        # Sending (color) commands to grouped_light was added in Bridge version 1.50.1950111030
+        self._bridge.config.require_version("1.50.1950111030")
         await self.update(id, GroupedLightPut(on=OnFeature(on=on)))
 
 

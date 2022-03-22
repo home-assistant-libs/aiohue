@@ -12,8 +12,10 @@ from .feature import (
     AlertFeaturePut,
     ColorFeature,
     ColorFeatureBase,
+    ColorTemperatureDeltaFeaturePut,
     ColorTemperatureFeature,
     ColorTemperatureFeatureBase,
+    DimmingDeltaFeaturePut,
     DimmingFeature,
     DimmingFeatureBase,
     DynamicsFeature,
@@ -24,6 +26,8 @@ from .feature import (
     GradientFeature,
     GradientFeatureBase,
     OnFeature,
+    TimedEffectsFeature,
+    TimedEffectsFeaturePut,
 )
 from .resource import ResourceIdentifier, ResourceTypes
 
@@ -74,6 +78,7 @@ class Light:
     alert: Optional[AlertFeature] = None
     gradient: Optional[GradientFeature] = None
     effects: Optional[EffectsFeature] = None
+    timed_effects: Optional[TimedEffectsFeature] = None
 
     type: ResourceTypes = ResourceTypes.LIGHT
 
@@ -136,9 +141,12 @@ class LightPut:
 
     on: Optional[OnFeature] = None
     dimming: Optional[DimmingFeatureBase] = None
+    dimming_delta: Optional[DimmingDeltaFeaturePut] = None
     color_temperature: Optional[ColorTemperatureFeatureBase] = None
+    color_temperature_delta: Optional[ColorTemperatureDeltaFeaturePut] = None
     color: Optional[ColorFeatureBase] = None
     dynamics: Optional[DynamicsFeaturePut] = None
     alert: Optional[AlertFeaturePut] = None
     gradient: Optional[GradientFeatureBase] = None
     effects: Optional[EffectsFeaturePut] = None
+    timed_effects: Optional[TimedEffectsFeaturePut] = None
