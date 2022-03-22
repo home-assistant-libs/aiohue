@@ -1,7 +1,6 @@
 """Feature Schemas used by various Hue resources."""
 from dataclasses import dataclass, field
 from enum import Enum
-from optparse import Option
 from typing import List, Optional, Type
 
 

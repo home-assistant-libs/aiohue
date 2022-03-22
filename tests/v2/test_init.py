@@ -25,6 +25,6 @@ async def test_bridge_init(v2_resources):
     assert bridge.groups is not None
 
     # test required version check
-    assert bridge.config.check_version("1.50.1950111030") == False
-    assert bridge.config.check_version("1.48.1948086000") == True
-    assert bridge.config.check_version("1.48.1948085000") == True
+    assert bridge.config.check_version("1.50.1950111030") is False
+    assert bridge.config.check_version("1.48.1948086000") is True
+    assert bridge.config.check_version("1.48.1948085000") is True
