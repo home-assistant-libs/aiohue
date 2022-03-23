@@ -65,7 +65,7 @@ class LightsController(BaseResourcesController[Type[Light]]):
             device = self.get_device(id)
             await self._bridge.devices.set_identify(device.id)
         else:
-            await self.set_state(id, on=True, alert=AlertEffectType.BREATHE)
+            await self.set_state(id, alert=AlertEffectType.BREATHE)
 
     async def set_state(
         self,

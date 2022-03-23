@@ -1,7 +1,17 @@
 """Controller holding and managing HUE group resources."""
-from typing import TYPE_CHECKING, List, Type, Union
+import asyncio
+from typing import TYPE_CHECKING, List, Optional, Tuple, Type, Union
 
-from ..models.feature import OnFeature
+from ..models.feature import (
+    AlertEffectType,
+    AlertFeaturePut,
+    ColorFeaturePut,
+    ColorPoint,
+    ColorTemperatureFeaturePut,
+    DimmingFeaturePut,
+    DynamicsFeaturePut,
+    OnFeature,
+)
 from ..models.grouped_light import GroupedLight, GroupedLightPut
 from ..models.light import Light
 from ..models.resource import ResourceTypes
@@ -85,11 +95,50 @@ class GroupedLightController(BaseResourcesController[Type[GroupedLight]]):
             return self._bridge.groups.zone.get_lights(zone.id)
         return []
 
-    async def set_state(self, id: str, on: bool = True) -> None:
+    async def set_flash(self, id: str, short: bool = False) -> None:
+        """Send Flash command to grouped_light."""
+        if short:
+            # redirect command to underlying lights
+            await asyncio.gather(
+                *[
+                    self._bridge.lights.set_flash(
+                        id=light.id,
+                        short=True,
+                    )
+                    for light in self.get_lights(id)
+                ]
+            )
+            return
+        await self.set_state(id, alert=AlertEffectType.BREATHE)
+
+    async def set_state(
+        self,
+        id: str,
+        on: Optional[bool] = None,
+        brightness: Optional[float] = None,
+        color_xy: Optional[Tuple[float, float]] = None,
+        color_temp: Optional[int] = None,
+        transition_time: Optional[int] = None,
+        alert: Optional[AlertEffectType] = None,
+    ) -> None:
         """Set supported feature(s) to grouped_light resource."""
         # Sending (color) commands to grouped_light was added in Bridge version 1.50.1950111030
         self._bridge.config.require_version("1.50.1950111030")
-        await self.update(id, GroupedLightPut(on=OnFeature(on=on)))
+        update_obj = GroupedLightPut()
+        if on is not None:
+            update_obj.on = OnFeature(on=on)
+        if brightness is not None:
+            update_obj.dimming = DimmingFeaturePut(brightness=brightness)
+        if color_xy is not None:
+            update_obj.color = ColorFeaturePut(xy=ColorPoint(*color_xy))
+        if color_temp is not None:
+            update_obj.color_temperature = ColorTemperatureFeaturePut(mirek=color_temp)
+        if transition_time is not None:
+            update_obj.dynamics = DynamicsFeaturePut(duration=transition_time)
+        if alert is not None:
+            update_obj.alert = AlertFeaturePut(action=alert)
+
+        await self.update(id, update_obj)
 
 
 class GroupsController(GroupedControllerBase[Union[Room, Zone, GroupedLight]]):

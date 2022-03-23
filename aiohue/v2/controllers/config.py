@@ -123,7 +123,7 @@ class ConfigController(
 
     def require_version(self, version: str) -> None:
         """Raise exception if Bridge version is lower than given minimal version."""
-        if not self.require_version(version):
+        if not self.check_version(version):
             raise BridgeSoftwareOutdated(
                 f"Bridge software version outdated. Minimal required version is {version}"
             )
