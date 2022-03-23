@@ -49,17 +49,19 @@ class ButtonController(BaseResourcesController[Type[Button]]):
     _workaround_tasks: Dict[str, asyncio.Task] = None
 
     async def _handle_event(
-        self, evt_type: EventType, evt_data: Optional[dict], skip_forward: bool = False
+        self, evt_type: EventType, evt_data: Optional[dict]
     ) -> None:
         """Handle incoming event for this resource from the EventStream."""
         await super()._handle_event(evt_type, evt_data)
 
+        if not evt_data:
+            return
+
         # Handle longpress workaround if needed
-        if (
-            not evt_data
-            or evt_type != EventType.RESOURCE_UPDATED
-            or not evt_data.get("button")
-            or evt_data["button"].get("last_event") != ButtonEvent.INITIAL_PRESS
+        if not (
+            evt_type == EventType.RESOURCE_UPDATED
+            and evt_data.get("button", {}).get("last_event")
+            == ButtonEvent.INITIAL_PRESS.value
         ):
             return
 
@@ -70,12 +72,11 @@ class ButtonController(BaseResourcesController[Type[Button]]):
         if self._workaround_tasks is None:
             self._workaround_tasks = {}
 
-        if evt_data["id"] in self._workaround_tasks:
-            # cancel existing task (if any)
-            # should not happen, but just in case
-            task = self._workaround_tasks.pop(evt_data["id"])
-            if not task.done():
-                task.cancel()
+        # cancel existing task (if any)
+        # should not happen, but just in case
+        task = self._workaround_tasks.pop(evt_data["id"], None)
+        if task and not task.done():
+            task.cancel()
 
         self._workaround_tasks[evt_data["id"]] = asyncio.create_task(
             self._handle_longpress_workaround(evt_data["id"])
@@ -86,6 +87,7 @@ class ButtonController(BaseResourcesController[Type[Button]]):
         # Fake `held down` and `long press release` events.
         # This might need to be removed in a future release once/if Signify
         # adds this back in their API.
+        self._logger.debug("Long press workaround for FOH switch initiated.")
         btn_resource = dataclass_to_dict(self._items[id])
         await asyncio.sleep(1.5)  # time to initially wait for SHORT_RELEASE
         count = 0
@@ -108,6 +110,7 @@ class ButtonController(BaseResourcesController[Type[Button]]):
             if count > 1:
                 btn_resource["button"]["last_event"] = ButtonEvent.LONG_RELEASE.value
                 await self._handle_event(EventType.RESOURCE_UPDATED, btn_resource)
+            self._logger.debug("Long press workaround for FOH switch completed.")
 
 
 class GeofenceClientController(BaseResourcesController[Type[GeofenceClient]]):
