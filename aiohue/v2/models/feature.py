@@ -291,7 +291,7 @@ class EffectStatus(Enum):
     @classmethod
     def _missing_(cls: Type, value: str):
         """Set default enum member if an unknown value is provided."""
-        return AlertEffectType.UNKNOWN
+        return EffectStatus.UNKNOWN
 
 
 @dataclass
@@ -327,7 +327,7 @@ class TimedEffectStatus(Enum):
     @classmethod
     def _missing_(cls: Type, value: str):
         """Set default enum member if an unknown value is provided."""
-        return AlertEffectType.UNKNOWN
+        return TimedEffectStatus.UNKNOWN
 
 
 @dataclass
