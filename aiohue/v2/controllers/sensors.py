@@ -61,7 +61,7 @@ class ButtonController(BaseResourcesController[Type[Button]]):
         if not (
             evt_type == EventType.RESOURCE_UPDATED
             and evt_data.get("button", {}).get("last_event")
-            == ButtonEvent.INITIAL_PRESS
+            == ButtonEvent.INITIAL_PRESS.value
         ):
             return
 
@@ -87,7 +87,7 @@ class ButtonController(BaseResourcesController[Type[Button]]):
         # Fake `held down` and `long press release` events.
         # This might need to be removed in a future release once/if Signify
         # adds this back in their API.
-        self._logger.info("Long press workaround for FOH switch initiated.")
+        self._logger.debug("Long press workaround for FOH switch initiated.")
         btn_resource = dataclass_to_dict(self._items[id])
         await asyncio.sleep(1.5)  # time to initially wait for SHORT_RELEASE
         count = 0
@@ -110,7 +110,7 @@ class ButtonController(BaseResourcesController[Type[Button]]):
             if count > 1:
                 btn_resource["button"]["last_event"] = ButtonEvent.LONG_RELEASE.value
                 await self._handle_event(EventType.RESOURCE_UPDATED, btn_resource)
-            self._logger.info("Long press workaround for FOH switch completed.")
+            self._logger.debug("Long press workaround for FOH switch completed.")
 
 
 class GeofenceClientController(BaseResourcesController[Type[GeofenceClient]]):
