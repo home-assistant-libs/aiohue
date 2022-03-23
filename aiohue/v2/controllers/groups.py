@@ -1,4 +1,5 @@
 """Controller holding and managing HUE group resources."""
+import asyncio
 from typing import TYPE_CHECKING, List, Optional, Tuple, Type, Union
 
 from ..models.feature import (
@@ -93,6 +94,22 @@ class GroupedLightController(BaseResourcesController[Type[GroupedLight]]):
                 return self._bridge.groups.room.get_lights(zone.id)
             return self._bridge.groups.zone.get_lights(zone.id)
         return []
+
+    async def set_flash(self, id: str, short: bool = False) -> None:
+        """Send Flash command to light."""
+        if short:
+            # redirect command to underlying lights
+            await asyncio.gather(
+                *[
+                    self._bridge.lights.set_flash(
+                        id=light.id,
+                        short=True,
+                    )
+                    for light in self.get_lights(id)
+                ]
+            )
+            return
+        await self.set_state(id, alert=AlertEffectType.BREATHE)
 
     async def set_state(
         self,
