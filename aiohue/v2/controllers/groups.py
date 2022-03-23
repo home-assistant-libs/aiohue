@@ -96,7 +96,7 @@ class GroupedLightController(BaseResourcesController[Type[GroupedLight]]):
         return []
 
     async def set_flash(self, id: str, short: bool = False) -> None:
-        """Send Flash command to light."""
+        """Send Flash command to grouped_light."""
         if short:
             # redirect command to underlying lights
             await asyncio.gather(
