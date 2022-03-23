@@ -340,8 +340,8 @@ class TimedEffectsFeature:
     https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_light_get
     """
 
-    status: EffectStatus
-    status_values: List[EffectStatus] = field(default_factory=list)
+    status: TimedEffectStatus
+    status_values: List[TimedEffectStatus] = field(default_factory=list)
     # Duration is mandatory when timed effect is set except for no_effect.
     # Resolution decreases for a larger duration. e.g Effects with duration smaller
     # than a minute will be rounded to a resolution of 1s, while effects with duration
