@@ -3,7 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import List
 
-from aiohttp import ClientSession
+from aiohttp import ClientSession, ClientError
 
 from .util import normalize_bridge_id
 
@@ -58,6 +58,8 @@ async def discover_nupnp(
                     result.append(await discover_bridge(host, websession))
                 except Exception:  # noqa
                     pass
+        return result
+    except ClientError:
         return result
     finally:
         if not websession_provided:
