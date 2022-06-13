@@ -60,7 +60,7 @@ async def discover_nupnp(
                     pass
         return result
     except ClientError:
-        return None
+        return result
     finally:
         if not websession_provided:
             await websession.close()
