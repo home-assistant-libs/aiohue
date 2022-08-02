@@ -16,7 +16,9 @@ from .lights import Lights
 from .scenes import Scenes
 from .sensors import Sensors
 
-MAX_RETRIES = 25  # how many times do we retry on a 503 (bridge overload/rate limit)
+MAX_RETRIES = (
+    25  # how many times do we retry on a 503 or 429 (bridge overload/rate limit)
+)
 THROTTLE_CONCURRENT_REQUESTS = 1  # how many concurrent requests to the bridge
 THROTTLE_TIMESPAN = 0.25  # timespan/period (in seconds) for the rate limiting
 
@@ -128,14 +130,17 @@ class HueBridgeV1:
             if retries > 1:
                 retry_wait = 0.25 * retries
                 self.logger.debug(
-                    "Got 503 error from Hue bridge, retry request in %s seconds",
+                    "Got 503 or 429 error from Hue bridge, retry request in %s seconds",
                     retry_wait,
                 )
                 await asyncio.sleep(retry_wait)
 
             async with self._websession.request(method, url, json=json) as resp:
-                # 503 means the bridge is rate limiting/overloaded, we should back off a bit.
+                # 503 means the service is temporarily unavailable, back off a bit.
                 if resp.status == 503:
+                    continue
+                # 429 means the bridge is rate limiting/overloaded, we should back off a bit.
+                if resp.status == 429:
                     continue
                 if resp.status == 403:
                     raise Unauthorized
