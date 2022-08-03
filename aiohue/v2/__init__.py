@@ -19,7 +19,8 @@ from .controllers.lights import LightsController
 from .controllers.scenes import ScenesController
 from .controllers.sensors import SensorsController
 
-MAX_RETRIES = 25  # how many times do we retry on a 503 (bridge overload/rate limit)
+# how many times do we retry on a 503 or 429 (bridge overload/rate limit)
+MAX_RETRIES = 25
 
 
 class HueBridgeV2:
@@ -145,7 +146,7 @@ class HueBridgeV2:
         self, method: str, path: str, **kwargs
     ) -> Union[dict, List[dict]]:
         """Make request on the api and return response data."""
-        # The bridge will deny more than 3 requests at the same time with a 503 error.
+        # The bridge will deny more than 3 requests at the same time with a 429 error.
         # We guard ourselves from hitting this error by limiting the TCP Connector for aiohttp
         # but other apps/services are hitting the Hue bridge too so we still
         # might hit the rate limit/overload at some point so we have some retry logic if this happens.
@@ -157,14 +158,17 @@ class HueBridgeV2:
             if retries > 1:
                 retry_wait = 0.25 * retries
                 self.logger.debug(
-                    "Got 503 error from Hue bridge, retry request in %s seconds",
+                    "Got 503 or 429 error from Hue bridge, retry request in %s seconds",
                     retry_wait,
                 )
                 await asyncio.sleep(retry_wait)
 
             async with self.create_request(method, path, **kwargs) as resp:
-                # 503 means the bridge is rate limiting/overloaded, we should back off a bit.
+                # 503 means the service is temporarily unavailable, back off a bit.
                 if resp.status == 503:
+                    continue
+                # 429 means the bridge is rate limiting/overloaded, we should back off a bit.
+                if resp.status == 429:
                     continue
                 if resp.status == 403:
                     raise Unauthorized
