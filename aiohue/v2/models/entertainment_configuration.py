@@ -58,6 +58,7 @@ class EntertainmentConfigurationType(Enum):
     MUSIC = "music"  # Channels are organized for music synchronization
     THREEDEESPACE = "3dspace"  # Channels are organized to provide 3d spacial effects
     OTHER = "other"  # General use case "
+    MONITOR = "monitor"  # Channels are organized around content from monitors
 
 
 class EntertainmentStatus(Enum):
