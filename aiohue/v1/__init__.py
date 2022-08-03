@@ -16,9 +16,8 @@ from .lights import Lights
 from .scenes import Scenes
 from .sensors import Sensors
 
-MAX_RETRIES = (
-    25  # how many times do we retry on a 503 or 429 (bridge overload/rate limit)
-)
+# how many times do we retry on a 503 or 429 (bridge overload/rate limit)
+MAX_RETRIES = 25
 THROTTLE_CONCURRENT_REQUESTS = 1  # how many concurrent requests to the bridge
 THROTTLE_TIMESPAN = 0.25  # timespan/period (in seconds) for the rate limiting
 

@@ -19,9 +19,8 @@ from .controllers.lights import LightsController
 from .controllers.scenes import ScenesController
 from .controllers.sensors import SensorsController
 
-MAX_RETRIES = (
-    25  # how many times do we retry on a 503 or 429 (bridge overload/rate limit)
-)
+# how many times do we retry on a 503 or 429 (bridge overload/rate limit)
+MAX_RETRIES = 25
 
 
 class HueBridgeV2:
