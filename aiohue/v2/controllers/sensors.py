@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING, Dict, Optional, Type, Union
 from aiohue.util import dataclass_to_dict
 
 from ..models.button import Button, ButtonEvent
+from ..models.relative_rotary import RelativeRotary
 from ..models.device_power import DevicePower
 from ..models.geofence_client import GeofenceClient
 from ..models.light_level import LightLevel, LightLevelPut
@@ -24,6 +25,7 @@ SENSOR_TYPES = Union[
     GeofenceClient,
     LightLevel,
     Motion,
+    RelativeRotary,
     Temperature,
     ZigbeeConnectivity,
 ]
@@ -145,6 +147,14 @@ class MotionController(BaseResourcesController[Type[Motion]]):
         await self.update(id, MotionPut(enabled=enabled))
 
 
+class RelativeRotaryController(BaseResourcesController[Type[Button]]):
+    """Controller holding and managing HUE resources of type `relative_rotary`."""
+
+    item_type = ResourceTypes.RELATIVE_ROTARY
+    item_cls = RelativeRotary
+    allow_parser_error = True
+
+
 class TemperatureController(BaseResourcesController[Type[Temperature]]):
     """Controller holding and managing HUE resources of type `temperature`."""
 
@@ -171,6 +181,7 @@ class SensorsController(GroupedControllerBase[SENSOR_TYPES]):
         self.geofence_client = GeofenceClientController(bridge)
         self.light_level = LightLevelController(bridge)
         self.motion = MotionController(bridge)
+        self.relative_rotary = RelativeRotaryController(bridge)
         self.temperature = TemperatureController(bridge)
         self.zigbee_connectivity = ZigbeeConnectivityController(bridge)
         super().__init__(
@@ -181,6 +192,7 @@ class SensorsController(GroupedControllerBase[SENSOR_TYPES]):
                 self.geofence_client,
                 self.light_level,
                 self.motion,
+                self.relative_rotary,
                 self.temperature,
                 self.zigbee_connectivity,
             ],
