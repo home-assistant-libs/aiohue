@@ -1,9 +1,10 @@
 """Various helper utility for Hue bridge discovery."""
 from __future__ import annotations
+
 from dataclasses import dataclass
 from typing import List
 
-from aiohttp import ClientSession, ClientError
+from aiohttp import ClientConnectionError, ClientError, ClientSession
 
 from .util import normalize_bridge_id
 
@@ -81,6 +82,13 @@ async def is_hue_bridge(host: str, websession: ClientSession | None = None) -> s
         async with websession.get(url, timeout=30) as res:
             res.raise_for_status()
             data = await res.json()
+            if "bridgeid" not in data:
+                # there are some emulator projects out there that emulate a Hue bridge
+                # in a sloppy way, ignore them.
+                # https://github.com/home-assistant-libs/aiohue/issues/134
+                raise ClientConnectionError(
+                    "Invalid API response, not a real Hue bridge?"
+                )
             return normalize_bridge_id(data["bridgeid"])
     finally:
         if not websession_provided:
