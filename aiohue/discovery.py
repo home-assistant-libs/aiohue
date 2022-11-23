@@ -102,7 +102,7 @@ async def is_v2_bridge(host: str, websession: ClientSession | None = None) -> bo
         websession = ClientSession()
     try:
         # v2 api is https only and returns a 403 forbidden when no key provided
-        url = f"https://{host}/clip/v2/resources"
+        url = f"https://{host}/clip/v2/resource"
         async with websession.get(
             url, ssl=False, raise_for_status=False, timeout=30
         ) as res:
