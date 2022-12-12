@@ -315,7 +315,8 @@ class EventStream:
                     (random.choice(string.ascii_lowercase)) for x in range(10)
                 )
                 await self._bridge.sensors.geofence_client.update(
-                    hass_client.id, GeofenceClientPut(name=f"{prefix}{random_str}", is_at_home=False)
+                    hass_client.id,
+                    GeofenceClientPut(name=f"{prefix}{random_str}", is_at_home=False),
                 )
             except (ClientError, asyncio.TimeoutError, AiohueException) as err:
                 # might happen on connection error, we don't want the retry logic to bail out
