@@ -286,7 +286,7 @@ class EventStream:
         # Oh yeah, this is a major hack and hopefully it will only be temporary ;-)
         # Signify forgot to implement some sort of periodic keep alive message on the EventBus
         # so we have no way to determine if the connection is still alive.
-        # To workaround this, we create a geofence client (without a status)
+        # To workaround this, we create a geofence client (with status not at home)
         # on the bridge for aiohue which will have its name updated every minute
         # this will result in an event on the eventstream and thus a way to figure out
         # if its still alive. It's not very pretty but at least it works.
