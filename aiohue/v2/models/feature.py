@@ -286,6 +286,7 @@ class EffectStatus(Enum):
     NO_EFFECT = "no_effect"
     CANDLE = "candle"
     FIRE = "fire"
+    SPARKLE = "sparkle"
     UNKNOWN = "unknown"
 
     @classmethod
