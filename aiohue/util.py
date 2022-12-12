@@ -155,6 +155,9 @@ def _parse_value(name: str, value: Any, value_type: Type, default: Any = MISSING
         for sub_arg_type in sub_value_types:
             if value is NoneType and sub_arg_type is NoneType:
                 return value
+            if value == {} and sub_arg_type is NoneType:
+                # handle case where optional value is received as empty dict from api
+                return None
             # try them all until one succeeds
             try:
                 return _parse_value(name, value, sub_arg_type)
