@@ -188,7 +188,7 @@ class BaseResourcesController(Generic[CLIPResource]):
         return id in self._items
 
     async def _handle_event(
-        self, evt_type: EventType, evt_data: Optional[dict]
+        self, evt_type: EventType, evt_data: Optional[dict], is_reconnect: bool = False
     ) -> None:
         """Handle incoming event for this resource from the EventStream."""
         if evt_data is None:
@@ -225,8 +225,8 @@ class BaseResourcesController(Generic[CLIPResource]):
                 return
             # update the existing data with the changed keys/data
             updated_keys = update_dataclass(cur_item, evt_data)
-            # do not forward update event if no keys were updated
-            if len(updated_keys) == 0 and self.item_type != ResourceTypes.BUTTON:
+            # do not forward update event at reconnects if no keys were updated
+            if len(updated_keys) == 0 and is_reconnect:
                 return
             # Do not forward update events for button resource if
             # the button feature is missing in event data in an attempt to prevent
@@ -235,6 +235,10 @@ class BaseResourcesController(Generic[CLIPResource]):
             # device events in a different way:
             # https://developers.meethue.com/forum/t/differentiate-stateless-events/6627
             if self.item_type == ResourceTypes.BUTTON and not evt_data.get("button"):
+                return
+            if self.item_type == ResourceTypes.RELATIVE_ROTARY and not evt_data.get(
+                "relative_rotary"
+            ):
                 return
         else:
             # ignore all other events
@@ -267,9 +271,14 @@ class BaseResourcesController(Generic[CLIPResource]):
             else:
                 # work out if the item changed in the regular event logic
                 # ignore stateless (button) resources to prevent false positive state events
-                if item["type"] == ResourceTypes.BUTTON.value:
+                if item["type"] in (
+                    ResourceTypes.BUTTON.value,
+                    ResourceTypes.RELATIVE_ROTARY.value,
+                ):
                     continue
-                await self._handle_event(EventType.RESOURCE_UPDATED, item)
+                await self._handle_event(
+                    EventType.RESOURCE_UPDATED, item, is_reconnect=True
+                )
 
         # work out item deletions
         deleted_ids = {x for x in prev_ids if x not in cur_ids}
