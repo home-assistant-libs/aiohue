@@ -286,11 +286,13 @@ class EventStream:
         # Oh yeah, this is a major hack and hopefully it will only be temporary ;-)
         # Signify forgot to implement some sort of periodic keep alive message on the EventBus
         # so we have no way to determine if the connection is still alive.
-        # To workaround this, we create a geofence client (without a status)
+        # To workaround this, we create a geofence client (with status not at home)
         # on the bridge for aiohue which will have its name updated every minute
         # this will result in an event on the eventstream and thus a way to figure out
         # if its still alive. It's not very pretty but at least it works.
         # Now let's contact Signify if this can be solved.
+        # Update 2022-12-12: Still no solution and apparently no real need for signify to fix this
+        # https://developers.meethue.com/forum/t/several-issues-and-questions-about-the-v2-api/6586/35
         prefix = "aiohue_"
 
         while True:
@@ -303,7 +305,7 @@ class EventStream:
                         break
                 else:
                     await self._bridge.sensors.geofence_client.create(
-                        GeofenceClientPost(name=prefix)
+                        GeofenceClientPost(name=prefix, is_at_home=False)
                     )
                     continue
 
@@ -313,7 +315,8 @@ class EventStream:
                     (random.choice(string.ascii_lowercase)) for x in range(10)
                 )
                 await self._bridge.sensors.geofence_client.update(
-                    hass_client.id, GeofenceClientPut(name=f"{prefix}{random_str}")
+                    hass_client.id,
+                    GeofenceClientPut(name=f"{prefix}{random_str}", is_at_home=False),
                 )
             except (ClientError, asyncio.TimeoutError, AiohueException) as err:
                 # might happen on connection error, we don't want the retry logic to bail out
