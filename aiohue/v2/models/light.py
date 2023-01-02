@@ -66,7 +66,6 @@ class Light:
 
     id: str
     owner: ResourceIdentifier
-    metadata: LightMetaData
     on: OnFeature
     mode: LightMode
 
@@ -96,13 +95,6 @@ class Light:
     def supports_color_temperature(self) -> bool:
         """Return if this light supports color_temperature control."""
         return self.color_temperature is not None
-
-    @property
-    def name(self) -> Optional[str]:
-        """Return name from metadata."""
-        if self.metadata is not None:
-            return self.metadata.name
-        return None
 
     @property
     def is_on(self) -> bool:
