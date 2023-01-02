@@ -11,6 +11,8 @@ from ..models.device import Device
 from ..models.entertainment import Entertainment
 from ..models.entertainment_configuration import EntertainmentConfiguration
 from ..models.homekit import Homekit
+from ..models.matter import Matter
+from ..models.matter_fabric import MatterFabric
 from ..models.resource import ResourceTypes
 from .base import BaseResourcesController, GroupedControllerBase
 
@@ -62,6 +64,22 @@ class HomekitController(BaseResourcesController[Type[Homekit]]):
 
     item_type = ResourceTypes.HOMEKIT
     item_cls = Homekit
+    allow_parser_error = True
+
+
+class MatterController(BaseResourcesController[Type[Matter]]):
+    """Controller holding and managing HUE resources of type `matter`."""
+
+    item_type = ResourceTypes.MATTER
+    item_cls = Matter
+    allow_parser_error = True
+
+
+class MatterFabricController(BaseResourcesController[Type[MatterFabric]]):
+    """Controller holding and managing HUE resources of type `matter_fabric`."""
+
+    item_type = ResourceTypes.MATTER_FABRIC
+    item_cls = MatterFabric
     allow_parser_error = True
 
 
@@ -144,6 +162,8 @@ class ConfigController(
         self.entertainment = EntertainmentController(bridge)
         self.entertainment_configuration = EntertainmentConfigurationController(bridge)
         self.homekit = HomekitController(bridge)
+        self.matter = MatterController(bridge)
+        self.matter_fabric = MatterFabricController(bridge)
         super().__init__(
             bridge,
             [
@@ -152,5 +172,7 @@ class ConfigController(
                 self.entertainment,
                 self.entertainment_configuration,
                 self.homekit,
+                self.matter,
+                self.matter_fabric,
             ],
         )

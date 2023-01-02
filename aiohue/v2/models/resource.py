@@ -44,6 +44,8 @@ class ResourceTypes(Enum):
     GEOFENCE_CLIENT = "geofence_client"
     DEPENDER = "depender"
     HOMEKIT = "homekit"
+    MATTER = "matter"
+    MATTER_FABRIC = "matter_fabric"
     UNKNOWN = "unknown"
 
     @classmethod
