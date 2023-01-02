@@ -438,6 +438,14 @@ class GradientPoint:
     color: ColorFeatureBase
 
 
+class GradientMode:
+    """Mode of the Gradient feature."""
+
+    INTERPOLATED_PALETTE = "interpolated_palette"
+    INTERPOLATED_PALETTE_MIRRORED = "interpolated_palette_mirrored"
+    RANDOM_PIXELATED = "random_pixelated"
+
+
 @dataclass
 class GradientFeatureBase:
     """Represent GradientFeature base properties."""
@@ -458,6 +466,11 @@ class GradientFeature(GradientFeatureBase):
     # points_capable: required(integer)
     # Number of color points that gradient lamp is capable of showing with gradience.
     points_capable: int
+    # mode: Mode in which the points are currently being deployed.
+    # If not provided during PUT/POST it will be defaulted to interpolated_palette
+    mode: GradientMode = GradientMode.INTERPOLATED_PALETTE
+    mode_values: List[GradientMode] = field(default_factory=list)
+    pixel_count: Optional[int] = None  # Number of pixels in the device
 
 
 class Signal(Enum):
