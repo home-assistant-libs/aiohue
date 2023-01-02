@@ -35,6 +35,7 @@ class ResourceTypes(Enum):
     DEVICE_DISCOVERY = "device_discovery"
     SYSTEM_UPDATE = "system_update"
     SCENE = "scene"
+    SMART_SCENE = "smart_scene"
     ENTERTAINMENT_CONFIGURATION = "entertainment_configuration"
     PUBLIC_IMAGE = "public_image"
     AUTH_V1 = "auth_v1"
