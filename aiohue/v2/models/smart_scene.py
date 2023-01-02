@@ -7,7 +7,6 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import List, Optional, Type
 
-from .feature import RecallFeature
 from .resource import ResourceIdentifier, ResourceTypes
 from .scene import SceneMetadata, SceneMetadataPut
 
@@ -47,11 +46,11 @@ class TimeslotStartTimeTime:
     def __post_init__(self):
         """Validate values."""
         if self.hour < 0 or self.hour > 23:
-            raise ValueError(f"Hour must be a value within range of 0 and 23")
+            raise ValueError("Hour must be a value within range of 0 and 23")
         if self.minute < 0 or self.minute > 59:
-            raise ValueError(f"Minute must be a value within range of 0 and 59")
+            raise ValueError("Minute must be a value within range of 0 and 59")
         if self.second < 0 or self.second > 59:
-            raise ValueError(f"Second must be a value within range of 0 and 59")
+            raise ValueError("Second must be a value within range of 0 and 59")
 
 
 @dataclass
