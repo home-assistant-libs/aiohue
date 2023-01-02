@@ -7,7 +7,7 @@ from dataclasses import dataclass
 
 
 from .resource import ResourceTypes
-from .room import Room
+from .room import Room, RoomPut, RoomPost
 
 
 @dataclass
@@ -20,3 +20,21 @@ class Zone(Room):
     """
 
     type: ResourceTypes = ResourceTypes.ZONE
+
+
+@dataclass
+class ZonePut(RoomPut):
+    """
+    Properties to send when updating/setting a `Zone` object on the api.
+
+    https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_zone__id__put
+    """
+
+
+@dataclass
+class ZonePost(RoomPost):
+    """
+    Properties to send when creating a `Zone` object on the api.
+
+    https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_zone_post
+    """

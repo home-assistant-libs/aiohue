@@ -121,3 +121,27 @@ class Room:
             (x.rid for x in self.services if x.rtype == ResourceTypes.GROUPED_LIGHT),
             None,
         )
+
+
+@dataclass
+class RoomPut:
+    """
+    Properties to send when updating/setting a `Room` object on the api.
+
+    https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_room__id__put
+    """
+
+    children: Optional[List[ResourceIdentifier]] = None
+    metadata: Optional[RoomMetaDataPut] = None
+
+
+@dataclass
+class RoomPost:
+    """
+    Properties to send when creating a `Room` object on the api.
+
+    https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_room_post
+    """
+
+    children: List[ResourceIdentifier]
+    metadata: RoomMetaData

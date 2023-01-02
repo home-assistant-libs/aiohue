@@ -402,8 +402,8 @@ class RecallFeature:
     # action: (RecallAction)
     # When writing active, the actions in the scene are executed on the target.
     action: Optional[RecallAction] = None
-    # status: (active)
-    # When writing active, the actions are executed on the target (legacy, use action insetad).
+    # status: (active, dynamic_palette)
+    # When writing active, the actions are executed on the target (legacy, use action instead).
     status: Optional[str] = None
     # duration: (integer – maximum: 6000000)
     # transition to the scene within the timeframe given by duration. Accuracy is in 100ms steps.
