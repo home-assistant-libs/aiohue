@@ -297,14 +297,23 @@ class EffectStatus(Enum):
 
 
 @dataclass
-class EffectsFeature:
+class EffectsFeatureBase:
+    """
+    Represent `EffectsFeature` base object as used by various Hue resources.
+
+    https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_light_get
+    """
+
+    effect: EffectStatus
+
+@dataclass
+class EffectsFeature(EffectsFeatureBase):
     """
     Represent `EffectsFeature` object as used by various Hue resources.
 
     https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_light_get
     """
 
-    effect: EffectStatus
     status: EffectStatus
     effect_values: List[EffectStatus] = field(default_factory=list)
     status_values: List[EffectStatus] = field(default_factory=list)
@@ -377,6 +386,7 @@ class RecallAction(Enum):
     """Enum with available recall actions."""
 
     ACTIVE = "active"
+    STATIC = "static"
     DYNAMIC_PALETTE = "dynamic_palette"
 
 
@@ -400,7 +410,7 @@ class RecallFeature:
     duration: Optional[int] = None
     # dimming: (DimmingFeature)
     # override the scene dimming/brightness
-    dimming: Optional[DimmingFeature] = None
+    dimming: Optional[DimmingFeatureBase] = None
 
 
 @dataclass
