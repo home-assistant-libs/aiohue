@@ -1,5 +1,5 @@
 """Controller holding and managing HUE resources of type `scene`."""
-from typing import TYPE_CHECKING, Optional, Type, Union
+from typing import TYPE_CHECKING, Any, Optional, Type, Union
 
 from ..models.feature import DimmingFeaturePut, RecallAction, RecallFeature
 from ..models.resource import ResourceTypes
