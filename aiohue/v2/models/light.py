@@ -26,6 +26,7 @@ from .feature import (
     GradientFeature,
     GradientFeatureBase,
     OnFeature,
+    SignalingFeature,
     TimedEffectsFeature,
     TimedEffectsFeaturePut,
 )
@@ -75,6 +76,7 @@ class Light:
     color: Optional[ColorFeature] = None
     dynamics: Optional[DynamicsFeature] = None
     alert: Optional[AlertFeature] = None
+    signaling: Optional[SignalingFeature] = None
     gradient: Optional[GradientFeature] = None
     effects: Optional[EffectsFeature] = None
     timed_effects: Optional[TimedEffectsFeature] = None

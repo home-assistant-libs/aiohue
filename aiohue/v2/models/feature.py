@@ -2,6 +2,7 @@
 from dataclasses import dataclass, field
 from enum import Enum
 from typing import List, Optional, Type
+from datetime import datetime
 
 
 @dataclass
@@ -457,3 +458,31 @@ class GradientFeature(GradientFeatureBase):
     # points_capable: required(integer)
     # Number of color points that gradient lamp is capable of showing with gradience.
     points_capable: int
+
+
+class Signal(Enum):
+    """Enum with various signals."""
+
+    NO_SIGNAL = "no_signal"
+    ON_OFF = "on_off"
+    UNKNOWN = "unknown"
+
+    @classmethod
+    def _missing_(cls: Type, value: str):
+        """Set default enum member if an unknown value is provided."""
+        return AlertEffectType.UNKNOWN
+
+
+@dataclass
+class SignalingFeatureStatus:
+    """Indicates status of active signal. Not available when inactive."""
+
+    signal: Signal
+    estimated_end: datetime
+
+
+@dataclass
+class SignalingFeature:
+    """Feature containing signaling properties."""
+
+    status: SignalingFeatureStatus
