@@ -10,6 +10,7 @@ from ..models.bridge_home import BridgeHome
 from ..models.device import Device
 from ..models.entertainment import Entertainment
 from ..models.entertainment_configuration import EntertainmentConfiguration
+from ..models.homekit import Homekit
 from ..models.resource import ResourceTypes
 from .base import BaseResourcesController, GroupedControllerBase
 
@@ -53,6 +54,14 @@ class EntertainmentConfigurationController(
 
     item_type = ResourceTypes.ENTERTAINMENT_CONFIGURATION
     item_cls = EntertainmentConfiguration
+    allow_parser_error = True
+
+
+class HomekitController(BaseResourcesController[Type[Homekit]]):
+    """Controller holding and managing HUE resources of type `homekit`."""
+
+    item_type = ResourceTypes.HOMEKIT
+    item_cls = Homekit
     allow_parser_error = True
 
 
@@ -134,6 +143,7 @@ class ConfigController(
         self.bridge_home = BridgeHomeController(bridge)
         self.entertainment = EntertainmentController(bridge)
         self.entertainment_configuration = EntertainmentConfigurationController(bridge)
+        self.homekit = HomekitController(bridge)
         super().__init__(
             bridge,
             [
@@ -141,5 +151,6 @@ class ConfigController(
                 self.bridge_home,
                 self.entertainment,
                 self.entertainment_configuration,
+                self.homekit,
             ],
         )
