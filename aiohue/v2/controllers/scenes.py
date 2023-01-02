@@ -82,7 +82,7 @@ class ScenesController(GroupedControllerBase[SCENE_TYPES]):
             ],
         )
 
-    async def recall(self, id: str, *args, **kwargs) -> None:
+    async def recall(self, id: str, *args: Any, **kwargs: Any) -> None:
         """Turn on / recall scene."""
         scene = self[id]
         # forward call to correct controller
