@@ -52,7 +52,7 @@ class SmartScenesController(BaseResourcesController[Type[SmartScene]]):
 
     item_type = ResourceTypes.SMART_SCENE
     item_cls = SmartScene
-    allow_parser_error = False
+    allow_parser_error = True
 
     async def recall(
         self, id: str, action: SmartSceneRecallAction = SmartSceneRecallAction.ACTIVATE
