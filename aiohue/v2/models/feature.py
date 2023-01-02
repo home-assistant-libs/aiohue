@@ -1,8 +1,8 @@
 """Feature Schemas used by various Hue resources."""
 from dataclasses import dataclass, field
+from datetime import datetime
 from enum import Enum
 from typing import List, Optional, Type
-from datetime import datetime
 
 
 @dataclass
@@ -303,6 +303,7 @@ class EffectsFeature:
 
     https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_light_get
     """
+
     effect: EffectStatus
     status: EffectStatus
     effect_values: List[EffectStatus] = field(default_factory=list)
@@ -502,3 +503,118 @@ class SignalingFeature:
     """Feature containing signaling properties."""
 
     status: SignalingFeatureStatus
+
+
+class PowerUpPreset(Enum):
+    """Enum with available powerup presets."""
+
+    SAFETY = "safety"
+    POWERFAIL = "powerfail"
+    LAST_ON_STATE = "last_on_state"
+    CUSTOM = "custom"
+    UNKNOWN = "unknown"
+
+    @classmethod
+    def _missing_(cls: Type, value: str):
+        """Set default enum member if an unknown value is provided."""
+        return AlertEffectType.UNKNOWN
+
+
+class PowerUpFeatureOnMode(Enum):
+    """Enum with available powerup on modes."""
+
+    ON = "on"
+    TOGGLE = "toggle"
+    PREVIOUS = "previous"
+
+
+@dataclass
+class PowerUpFeatureOnState:
+    """
+    State to activate after powerup.
+
+    On will use the value specified in the “on” property.
+    When setting mode “on”, the on property must be included.
+    Toggle will alternate between on and off on each subsequent power toggle.
+    Previous will return to the state it was in before powering off.
+    """
+
+    mode: PowerUpFeatureOnMode
+    on: Optional[OnFeature] = None
+
+
+class PowerUpFeatureDimmingMode(Enum):
+    """Enum with available powerup dimming modes."""
+
+    DIMMING = "dimming"
+    PREVIOUS = "previous"
+
+
+@dataclass
+class PowerUpFeatureDimmingState:
+    """
+    Dimming will set the brightness to the specified value after power up.
+
+    When setting mode “dimming”, the dimming property must be included.
+    Previous will set brightness to the state it was in before powering off.
+    """
+
+    mode: PowerUpFeatureDimmingMode
+    dimming: Optional[DimmingFeatureBase] = None
+
+
+class PowerUpFeatureColorMode(Enum):
+    """Enum with available powerup color modes."""
+
+    COLOR_TEMPERATURE = "color_temperature"
+    COLOR = "color"
+    PREVIOUS = "previous"
+
+
+@dataclass
+class PowerUpFeatureColorState:
+    """
+    Color state to activate after powerup.
+
+    Availability of “color_temperature” and “color” modes depend on the capabilities of the lamp.
+    Colortemperature will set the colortemperature to the specified value after power up.
+    When setting color_temperature, the color_temperature property must be included Color will
+    set the color tot he specified value after power up. When setting color mode,
+    the color property must be included Previous will set color to the state
+    it was in before powering off.
+    """
+
+    mode: PowerUpFeatureColorMode
+    color_temperature: Optional[ColorTemperatureFeatureBase] = None
+    color: Optional[ColorFeatureBase] = None
+
+
+@dataclass
+class PowerUpFeature:
+    """
+    Feature containing properties to configure powerup behaviour of a lightsource.
+
+    https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_light_get
+    """
+
+    # NOTE: When setting the custom preset the additional properties can be set.
+    # For all other presets, no other properties can be included.
+    preset: PowerUpPreset
+    configured: bool
+    on: PowerUpFeatureOnState
+    dimming: Optional[PowerUpFeatureDimmingState] = None
+    color: Optional[PowerUpFeatureColorState] = None
+
+
+@dataclass
+class PowerUpFeaturePut:
+    """
+    PowerUp feature properties that can be set/updated with a PUT request.
+
+    https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_light__id__put
+    """
+
+    preset: PowerUpPreset
+    on: Optional[PowerUpFeatureOnState] = None
+    dimming: Optional[PowerUpFeatureDimmingState] = None
+    color: Optional[PowerUpFeatureColorState] = None

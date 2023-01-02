@@ -26,6 +26,8 @@ from .feature import (
     GradientFeature,
     GradientFeatureBase,
     OnFeature,
+    PowerUpFeature,
+    PowerUpFeaturePut,
     SignalingFeature,
     TimedEffectsFeature,
     TimedEffectsFeaturePut,
@@ -80,6 +82,7 @@ class Light:
     gradient: Optional[GradientFeature] = None
     effects: Optional[EffectsFeature] = None
     timed_effects: Optional[TimedEffectsFeature] = None
+    powerup: Optional[PowerUpFeature] = None
 
     type: ResourceTypes = ResourceTypes.LIGHT
 
@@ -144,3 +147,4 @@ class LightPut:
     gradient: Optional[GradientFeatureBase] = None
     effects: Optional[EffectsFeaturePut] = None
     timed_effects: Optional[TimedEffectsFeaturePut] = None
+    powerup: Optional[PowerUpFeaturePut] = None
