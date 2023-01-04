@@ -31,6 +31,7 @@ class GroupedLight:
     id: str
     id_v1: Optional[str] = None
     on: Optional[OnFeature] = None
+    dimming: Optional[DimmingFeatureBase] = None
     alert: Optional[AlertFeature] = None
     type: ResourceTypes = ResourceTypes.GROUPED_LIGHT
 
