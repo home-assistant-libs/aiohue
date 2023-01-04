@@ -115,7 +115,15 @@ class AlertFeaturePut:
 
 @dataclass
 class IdentifyFeature:
-    """Represent IdentifyFeature object as used by the Hue api."""
+    """
+    Represent IdentifyFeature object as used by the Hue api.
+
+    https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_device__id__put
+    identify: Triggers a visual identification sequence, current implemented as
+    (which can change in the future):
+    Bridge performs Zigbee LED identification cycles for 5 seconds Lights perform one breathe
+    cycle Sensors perform LED identification cycles for 15 seconds
+    """
 
     # only used in PUT requests on device
     action: str = "identify"
@@ -305,6 +313,7 @@ class EffectsFeatureBase:
     """
 
     effect: EffectStatus
+
 
 @dataclass
 class EffectsFeature(EffectsFeatureBase):

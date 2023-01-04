@@ -75,6 +75,8 @@ class DeviceProductData:
     product_archetype: DeviceArchetypes
     certified: bool
     software_version: str
+    # Hardware type; identified by Manufacturer code and ImageType
+    hardware_platform_type: Optional[str] = None
 
 
 @dataclass
