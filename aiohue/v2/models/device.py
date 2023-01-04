@@ -49,8 +49,15 @@ class DeviceArchetypes(Enum):
     HUE_PLAY = "hue_play"
     VINTAGE_BULB = "vintage_bulb"
     CHRISTMAS_TREE = "christmas_tree"
+    STRING_LIGHT = "string_light"
     HUE_CENTRIS = "hue_centris"
     HUE_LIGHTSTRIP_TV = "hue_lightstrip_tv"
+    HUE_LIGHTSTRIP_PC = "hue_lightstrip_pc"
+    HUE_TUBE = "hue_tube"
+    HUE_SIGNE = "hue_signe"
+    PENDANT_SPOT = "pendant_spot"
+    CEILING_HORIZONTAL = "ceiling_horizontal"
+    CEILING_TUBE = "ceiling_tube"
 
     @classmethod
     def _missing_(cls: Type, value: str):
