@@ -14,6 +14,8 @@ from ..models.homekit import Homekit
 from ..models.matter import Matter
 from ..models.matter_fabric import MatterFabric
 from ..models.resource import ResourceTypes
+from ..models.behavior_script import BehaviorScript
+from ..models.behavior_instance import BehaviorInstance
 from .base import BaseResourcesController, GroupedControllerBase
 
 if TYPE_CHECKING:
@@ -82,6 +84,27 @@ class MatterFabricController(BaseResourcesController[Type[MatterFabric]]):
     item_cls = MatterFabric
     allow_parser_error = True
 
+
+class MatterFabricController(BaseResourcesController[Type[MatterFabric]]):
+    """Controller holding and managing HUE resources of type `matter_fabric`."""
+
+    item_type = ResourceTypes.MATTER_FABRIC
+    item_cls = MatterFabric
+    allow_parser_error = True
+
+class BehaviorScriptController(BaseResourcesController[Type[BehaviorScript]]):
+    """Controller holding and managing HUE resources of type `behavior_script`."""
+
+    item_type = ResourceTypes.BEHAVIOR_SCRIPT
+    item_cls = BehaviorScript
+    allow_parser_error = True
+
+class BehaviorInstanceController(BaseResourcesController[Type[BehaviorInstance]]):
+    """Controller holding and managing HUE resources of type `behavior_instance`."""
+
+    item_type = ResourceTypes.BEHAVIOR_INSTANCE
+    item_cls = BehaviorInstance
+    allow_parser_error = True
 
 class ConfigController(
     GroupedControllerBase[
@@ -164,6 +187,7 @@ class ConfigController(
         self.homekit = HomekitController(bridge)
         self.matter = MatterController(bridge)
         self.matter_fabric = MatterFabricController(bridge)
+        self.behavior_script = BehaviorScriptController(bridge)
         super().__init__(
             bridge,
             [
@@ -174,5 +198,6 @@ class ConfigController(
                 self.homekit,
                 self.matter,
                 self.matter_fabric,
+                self.behavior_script
             ],
         )

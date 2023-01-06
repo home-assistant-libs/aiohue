@@ -1,13 +1,13 @@
 """
 Model(s) for behavior_instance resource on HUE bridge.
 
+API to manage instances of script.
 https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_behavior_instance
 """
 from dataclasses import dataclass
 from enum import Enum
 from typing import List, Optional
 
-from .behavior_script import BehaviorScriptMetadata
 from .resource import ResourceIdentifier, ResourceTypes
 
 
@@ -18,6 +18,13 @@ class BehaviorInstanceStatus(Enum):
     RUNNING = "running"
     DISABLED = "disabled"
     ERRORED = "errored"
+
+
+@dataclass
+class BehaviorInstanceMetadata:
+    """Represent BehaviorInstance Metadata object as used by BehaviorInstance resource."""
+
+    name: Optional[str] = None
 
 
 class DependencyLevel(Enum):
@@ -80,7 +87,7 @@ class BehaviorInstance:
 
     # last_error: required(string) - Last error happened while executing the script.
     last_error: str
-    metadata: BehaviorScriptMetadata
+    metadata: BehaviorInstanceMetadata
 
     # state: (object)
     # Script instance state.
@@ -90,3 +97,36 @@ class BehaviorInstance:
     id_v1: Optional[str] = None
     migrated_from: Optional[str] = None
     type: ResourceTypes = ResourceTypes.BEHAVIOR_INSTANCE
+
+
+@dataclass
+class BehaviorInstancePut:
+    """
+    Properties to send when updating/setting a `BehaviorInstance` object on the api.
+
+    https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_behavior_instance__put
+    """
+
+    enabled: Optional[bool] = None
+    # configuration: (object) Script configuration.
+    # This property is validated using ScriptDefinition.configuration_schema JSON schema.
+    configuration: Optional[dict] = None
+    # trigger: (object) Action that needs to be taken by this script instance.
+    # This property is validated using ScriptDefinition.trigger_schema JSON schema.
+    trigger: Optional[dict] = None
+    metadata: Optional[BehaviorInstanceMetadata] = None
+
+
+@dataclass
+class BehaviorInstancePost:
+    """
+    Properties to send when creating a `BehaviorInstance` object on the api.
+
+    https://developers.meethue.com/develop/hue-api-v2/api-reference/#behavior_instance_post
+    """
+
+    script_id: str
+    enabled: bool
+    configuration: dict
+    metadata: Optional[BehaviorInstanceMetadata] = None
+    migrated_from: Optional[str] = None

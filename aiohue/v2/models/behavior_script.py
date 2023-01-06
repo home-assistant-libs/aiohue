@@ -1,6 +1,7 @@
 """
 Model(s) for behavior_script resource on HUE bridge.
 
+API to discover available scripts that can be instantiated
 https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_behavior_script
 """
 from dataclasses import dataclass
@@ -35,7 +36,7 @@ class BehaviorScriptMetadata:
 @dataclass
 class BehaviorScript:
     """
-    Represent a (full) `Button` resource when retrieved from the api.
+    Represent a (full) `BehaviorScript` resource when retrieved from the api.
 
     Available scripts that can be instantiated.
     https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_behavior_script_get
