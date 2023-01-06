@@ -30,27 +30,22 @@ async def main():
         print(bridge.config.bridge_device)
 
         print()
-        print("found lights:")
-        for item in bridge.lights:
-            print(item.metadata.name)
-
-        print()
         print("found devices:")
         for item in bridge.devices:
             print(item.metadata.name)
 
         # turn on a light
         light = next(x for x in bridge.lights.items if x.supports_color)
-        print("Turning on light", light.name)
+        print("Turning on light", light.id)
         await bridge.lights.turn_on(light.id)
         await asyncio.sleep(1)
-        print("Set brightness 100 to light", light.name)
+        print("Set brightness 100 to light", light.id)
         await bridge.lights.set_brightness(light.id, 100, 2000)
         await asyncio.sleep(2)
-        print("Set color to light", light.name)
+        print("Set color to light", light.id)
         await bridge.lights.set_color(light.id, 0.141, 0.123, 2000)
         await asyncio.sleep(1)
-        print("Turning off light", light.name)
+        print("Turning off light", light.id)
         await bridge.lights.turn_off(light.id, 2000)
 
         print()
