@@ -30,7 +30,7 @@ class SmartSceneState(Enum):
     INACTIVE = "inactive"
 
     @classmethod
-    def _missing_(cls: Type, value: str):
+    def _missing_(cls: Type, value: object):
         """Set default enum member if an unknown value is provided."""
         return SmartSceneState.INACTIVE
 

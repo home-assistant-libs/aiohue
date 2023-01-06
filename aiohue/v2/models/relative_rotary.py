@@ -18,7 +18,7 @@ class RelativeRotaryAction(Enum):
     UNKNOWN = "unknown"
 
     @classmethod
-    def _missing_(cls: Type, value: str):
+    def _missing_(cls: Type, value: object):
         """Set default enum member if an unknown value is provided."""
         return RelativeRotaryAction.UNKNOWN
 

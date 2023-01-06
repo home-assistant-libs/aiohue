@@ -94,7 +94,7 @@ class AlertEffectType(Enum):
     UNKNOWN = "unknown"
 
     @classmethod
-    def _missing_(cls: Type, value: str):
+    def _missing_(cls: Type, value: object):
         """Set default enum member if an unknown value is provided."""
         return AlertEffectType.UNKNOWN
 
@@ -242,7 +242,7 @@ class DynamicStatus(Enum):
     UNKNOWN = "unknown"
 
     @classmethod
-    def _missing_(cls: Type, value: str):
+    def _missing_(cls: Type, value: object):
         """Set default enum member if an unknown value is provided."""
         return DynamicStatus.UNKNOWN
 
@@ -299,7 +299,7 @@ class EffectStatus(Enum):
     UNKNOWN = "unknown"
 
     @classmethod
-    def _missing_(cls: Type, value: str):
+    def _missing_(cls: Type, value: object):
         """Set default enum member if an unknown value is provided."""
         return EffectStatus.UNKNOWN
 
@@ -347,7 +347,7 @@ class TimedEffectStatus(Enum):
     UNKNOWN = "unknown"
 
     @classmethod
-    def _missing_(cls: Type, value: str):
+    def _missing_(cls: Type, value: object):
         """Set default enum member if an unknown value is provided."""
         return TimedEffectStatus.UNKNOWN
 
@@ -504,7 +504,7 @@ class Signal(Enum):
     UNKNOWN = "unknown"
 
     @classmethod
-    def _missing_(cls: Type, value: str):
+    def _missing_(cls: Type, value: object):
         """Set default enum member if an unknown value is provided."""
         return AlertEffectType.UNKNOWN
 
@@ -534,7 +534,7 @@ class PowerUpPreset(Enum):
     UNKNOWN = "unknown"
 
     @classmethod
-    def _missing_(cls: Type, value: str):
+    def _missing_(cls: Type, value: object):
         """Set default enum member if an unknown value is provided."""
         return AlertEffectType.UNKNOWN
 
