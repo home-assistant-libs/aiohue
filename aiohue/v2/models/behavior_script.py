@@ -11,7 +11,7 @@ from typing import List, Optional, Type
 from .resource import ResourceTypes
 
 
-class BehaviorScriptCategory:
+class BehaviorScriptCategory(Enum):
     """Enum with various Bahavior Script Categories."""
 
     AUTOMATION = "automation"

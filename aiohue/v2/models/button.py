@@ -21,7 +21,7 @@ class ButtonEvent(Enum):
     UNKNOWN = "unknown"
 
     @classmethod
-    def _missing_(cls: "ButtonEvent", value: object):
+    def _missing_(cls: Type, value: object):
         """Set default enum member if an unknown value is provided."""
         return ButtonEvent.UNKNOWN
 
