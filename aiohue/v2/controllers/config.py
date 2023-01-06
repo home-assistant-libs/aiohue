@@ -85,14 +85,6 @@ class MatterFabricController(BaseResourcesController[Type[MatterFabric]]):
     allow_parser_error = True
 
 
-class MatterFabricController(BaseResourcesController[Type[MatterFabric]]):
-    """Controller holding and managing HUE resources of type `matter_fabric`."""
-
-    item_type = ResourceTypes.MATTER_FABRIC
-    item_cls = MatterFabric
-    allow_parser_error = True
-
-
 class BehaviorScriptController(BaseResourcesController[Type[BehaviorScript]]):
     """Controller holding and managing HUE resources of type `behavior_script`."""
 
