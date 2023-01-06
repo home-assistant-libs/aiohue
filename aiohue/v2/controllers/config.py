@@ -92,6 +92,7 @@ class MatterFabricController(BaseResourcesController[Type[MatterFabric]]):
     item_cls = MatterFabric
     allow_parser_error = True
 
+
 class BehaviorScriptController(BaseResourcesController[Type[BehaviorScript]]):
     """Controller holding and managing HUE resources of type `behavior_script`."""
 
@@ -99,12 +100,14 @@ class BehaviorScriptController(BaseResourcesController[Type[BehaviorScript]]):
     item_cls = BehaviorScript
     allow_parser_error = True
 
+
 class BehaviorInstanceController(BaseResourcesController[Type[BehaviorInstance]]):
     """Controller holding and managing HUE resources of type `behavior_instance`."""
 
     item_type = ResourceTypes.BEHAVIOR_INSTANCE
     item_cls = BehaviorInstance
     allow_parser_error = True
+
 
 class ConfigController(
     GroupedControllerBase[
@@ -198,6 +201,6 @@ class ConfigController(
                 self.homekit,
                 self.matter,
                 self.matter_fabric,
-                self.behavior_script
+                self.behavior_script,
             ],
         )
