@@ -305,18 +305,18 @@ class EffectStatus(Enum):
 
 
 @dataclass
-class EffectsFeatureBase:
+class SceneEffectsFeature:
     """
-    Represent `EffectsFeature` base object as used by various Hue resources.
+    Represent `EffectsFeature` base object as used by scenes.
 
-    https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_light_get
+    https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_scene_get
     """
 
     effect: EffectStatus
 
 
 @dataclass
-class EffectsFeature(EffectsFeatureBase):
+class EffectsFeature:
     """
     Represent `EffectsFeature` object as used by various Hue resources.
 

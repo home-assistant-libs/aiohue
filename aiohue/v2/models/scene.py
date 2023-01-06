@@ -11,11 +11,11 @@ from .feature import (
     ColorTemperatureFeatureBase,
     DimmingFeatureBase,
     DynamicsFeaturePut,
-    EffectsFeatureBase,
     GradientFeatureBase,
     OnFeature,
     PaletteFeature,
     RecallFeature,
+    SceneEffectsFeature,
 )
 from .resource import ResourceIdentifier, ResourceTypes
 
@@ -29,7 +29,7 @@ class ActionAction:
     color: Optional[ColorFeatureBase] = None
     color_temperature: Optional[ColorTemperatureFeatureBase] = None
     gradient: Optional[GradientFeatureBase] = None
-    effects: Optional[EffectsFeatureBase] = None
+    effects: Optional[SceneEffectsFeature] = None
     dynamics: Optional[DynamicsFeaturePut] = None
 
 
