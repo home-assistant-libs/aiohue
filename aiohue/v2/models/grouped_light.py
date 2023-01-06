@@ -9,9 +9,9 @@ from typing import Optional
 from .feature import (
     AlertFeature,
     AlertFeaturePut,
-    ColorFeatureBase,
+    ColorFeaturePut,
     ColorTemperatureDeltaFeaturePut,
-    ColorTemperatureFeatureBase,
+    ColorTemperatureFeaturePut,
     DimmingDeltaFeaturePut,
     DimmingFeatureBase,
     DynamicsFeaturePut,
@@ -47,8 +47,8 @@ class GroupedLightPut:
     on: Optional[OnFeature] = None
     dimming: Optional[DimmingFeatureBase] = None
     dimming_delta: Optional[DimmingDeltaFeaturePut] = None
-    color_temperature: Optional[ColorTemperatureFeatureBase] = None
+    color_temperature: Optional[ColorTemperatureFeaturePut] = None
     color_temperature_delta: Optional[ColorTemperatureDeltaFeaturePut] = None
-    color: Optional[ColorFeatureBase] = None
+    color: Optional[ColorFeaturePut] = None
     dynamics: Optional[DynamicsFeaturePut] = None
     alert: Optional[AlertFeaturePut] = None
