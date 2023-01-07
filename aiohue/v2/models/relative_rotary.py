@@ -18,7 +18,7 @@ class RelativeRotaryAction(Enum):
     UNKNOWN = "unknown"
 
     @classmethod
-    def _missing_(cls: Type, value: str):
+    def _missing_(cls: Type, value: object):
         """Set default enum member if an unknown value is provided."""
         return RelativeRotaryAction.UNKNOWN
 
@@ -32,7 +32,21 @@ class RelativeRotaryDirection(Enum):
 
 @dataclass
 class RelativeRotaryRotation:
-    """Represent Rotation object as used by the Hue api."""
+    """
+    Represent Rotation object as used by the Hue api.
+
+    direction: required(one of clock_wise, counter_clock_wise)
+    A rotation opposite to the previous rotation, will always start with new start command.
+
+    steps: required(integer - minimum: 0 - maximum: 32767)
+    amount of rotation since previous event in case of repeat,
+    amount of rotation since start in case of a start_event.
+    Resolution = 1000 steps / 360 degree rotation.
+
+    duration: required(integer - minimum: 0 - maximum: 65534)
+    duration of rotation since previous event in case of repeat,
+    amount of rotation since start in case of a start_event. duration is specified in miliseconds.
+    """
 
     direction: RelativeRotaryDirection
     duration: int

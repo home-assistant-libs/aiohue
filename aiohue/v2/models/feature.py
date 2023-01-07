@@ -1,5 +1,6 @@
 """Feature Schemas used by various Hue resources."""
 from dataclasses import dataclass, field
+from datetime import datetime
 from enum import Enum
 from typing import List, Optional, Type
 
@@ -93,7 +94,7 @@ class AlertEffectType(Enum):
     UNKNOWN = "unknown"
 
     @classmethod
-    def _missing_(cls: Type, value: str):
+    def _missing_(cls: Type, value: object):
         """Set default enum member if an unknown value is provided."""
         return AlertEffectType.UNKNOWN
 
@@ -114,7 +115,15 @@ class AlertFeaturePut:
 
 @dataclass
 class IdentifyFeature:
-    """Represent IdentifyFeature object as used by the Hue api."""
+    """
+    Represent IdentifyFeature object as used by the Hue api.
+
+    https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_device__id__put
+    identify: Triggers a visual identification sequence, current implemented as
+    (which can change in the future):
+    Bridge performs Zigbee LED identification cycles for 5 seconds Lights perform one breathe
+    cycle Sensors perform LED identification cycles for 15 seconds
+    """
 
     # only used in PUT requests on device
     action: str = "identify"
@@ -233,7 +242,7 @@ class DynamicStatus(Enum):
     UNKNOWN = "unknown"
 
     @classmethod
-    def _missing_(cls: Type, value: str):
+    def _missing_(cls: Type, value: object):
         """Set default enum member if an unknown value is provided."""
         return DynamicStatus.UNKNOWN
 
@@ -290,9 +299,20 @@ class EffectStatus(Enum):
     UNKNOWN = "unknown"
 
     @classmethod
-    def _missing_(cls: Type, value: str):
+    def _missing_(cls: Type, value: object):
         """Set default enum member if an unknown value is provided."""
         return EffectStatus.UNKNOWN
+
+
+@dataclass
+class SceneEffectsFeature:
+    """
+    Represent `EffectsFeature` base object as used by scenes.
+
+    https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_scene_get
+    """
+
+    effect: EffectStatus
 
 
 @dataclass
@@ -304,6 +324,7 @@ class EffectsFeature:
     """
 
     status: EffectStatus
+    effect_values: List[EffectStatus] = field(default_factory=list)
     status_values: List[EffectStatus] = field(default_factory=list)
 
 
@@ -326,7 +347,7 @@ class TimedEffectStatus(Enum):
     UNKNOWN = "unknown"
 
     @classmethod
-    def _missing_(cls: Type, value: str):
+    def _missing_(cls: Type, value: object):
         """Set default enum member if an unknown value is provided."""
         return TimedEffectStatus.UNKNOWN
 
@@ -341,8 +362,10 @@ class TimedEffectsFeature:
     https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_light_get
     """
 
+    effect: TimedEffectStatus
     status: TimedEffectStatus
     status_values: List[TimedEffectStatus] = field(default_factory=list)
+    effect_values: List[TimedEffectStatus] = field(default_factory=list)
     # Duration is mandatory when timed effect is set except for no_effect.
     # Resolution decreases for a larger duration. e.g Effects with duration smaller
     # than a minute will be rounded to a resolution of 1s, while effects with duration
@@ -372,6 +395,7 @@ class RecallAction(Enum):
     """Enum with available recall actions."""
 
     ACTIVE = "active"
+    STATIC = "static"
     DYNAMIC_PALETTE = "dynamic_palette"
 
 
@@ -387,15 +411,15 @@ class RecallFeature:
     # action: (RecallAction)
     # When writing active, the actions in the scene are executed on the target.
     action: Optional[RecallAction] = None
-    # status: (active)
-    # When writing active, the actions are executed on the target (legacy, use action insetad).
+    # status: (active, dynamic_palette)
+    # When writing active, the actions are executed on the target (legacy, use action instead).
     status: Optional[str] = None
     # duration: (integer – maximum: 6000000)
     # transition to the scene within the timeframe given by duration. Accuracy is in 100ms steps.
     duration: Optional[int] = None
     # dimming: (DimmingFeature)
     # override the scene dimming/brightness
-    dimming: Optional[DimmingFeature] = None
+    dimming: Optional[DimmingFeatureBase] = None
 
 
 @dataclass
@@ -437,6 +461,14 @@ class GradientPoint:
     color: ColorFeatureBase
 
 
+class GradientMode:
+    """Mode of the Gradient feature."""
+
+    INTERPOLATED_PALETTE = "interpolated_palette"
+    INTERPOLATED_PALETTE_MIRRORED = "interpolated_palette_mirrored"
+    RANDOM_PIXELATED = "random_pixelated"
+
+
 @dataclass
 class GradientFeatureBase:
     """Represent GradientFeature base properties."""
@@ -457,3 +489,151 @@ class GradientFeature(GradientFeatureBase):
     # points_capable: required(integer)
     # Number of color points that gradient lamp is capable of showing with gradience.
     points_capable: int
+    # mode: Mode in which the points are currently being deployed.
+    # If not provided during PUT/POST it will be defaulted to interpolated_palette
+    mode: GradientMode = GradientMode.INTERPOLATED_PALETTE
+    mode_values: List[GradientMode] = field(default_factory=list)
+    pixel_count: Optional[int] = None  # Number of pixels in the device
+
+
+class Signal(Enum):
+    """Enum with various signals."""
+
+    NO_SIGNAL = "no_signal"
+    ON_OFF = "on_off"
+    UNKNOWN = "unknown"
+
+    @classmethod
+    def _missing_(cls: Type, value: object):
+        """Set default enum member if an unknown value is provided."""
+        return AlertEffectType.UNKNOWN
+
+
+@dataclass
+class SignalingFeatureStatus:
+    """Indicates status of active signal. Not available when inactive."""
+
+    signal: Signal
+    estimated_end: datetime
+
+
+@dataclass
+class SignalingFeature:
+    """Feature containing signaling properties."""
+
+    status: SignalingFeatureStatus
+
+
+class PowerUpPreset(Enum):
+    """Enum with available powerup presets."""
+
+    SAFETY = "safety"
+    POWERFAIL = "powerfail"
+    LAST_ON_STATE = "last_on_state"
+    CUSTOM = "custom"
+    UNKNOWN = "unknown"
+
+    @classmethod
+    def _missing_(cls: Type, value: object):
+        """Set default enum member if an unknown value is provided."""
+        return AlertEffectType.UNKNOWN
+
+
+class PowerUpFeatureOnMode(Enum):
+    """Enum with available powerup on modes."""
+
+    ON = "on"
+    TOGGLE = "toggle"
+    PREVIOUS = "previous"
+
+
+@dataclass
+class PowerUpFeatureOnState:
+    """
+    State to activate after powerup.
+
+    On will use the value specified in the “on” property.
+    When setting mode “on”, the on property must be included.
+    Toggle will alternate between on and off on each subsequent power toggle.
+    Previous will return to the state it was in before powering off.
+    """
+
+    mode: PowerUpFeatureOnMode
+    on: Optional[OnFeature] = None
+
+
+class PowerUpFeatureDimmingMode(Enum):
+    """Enum with available powerup dimming modes."""
+
+    DIMMING = "dimming"
+    PREVIOUS = "previous"
+
+
+@dataclass
+class PowerUpFeatureDimmingState:
+    """
+    Dimming will set the brightness to the specified value after power up.
+
+    When setting mode “dimming”, the dimming property must be included.
+    Previous will set brightness to the state it was in before powering off.
+    """
+
+    mode: PowerUpFeatureDimmingMode
+    dimming: Optional[DimmingFeatureBase] = None
+
+
+class PowerUpFeatureColorMode(Enum):
+    """Enum with available powerup color modes."""
+
+    COLOR_TEMPERATURE = "color_temperature"
+    COLOR = "color"
+    PREVIOUS = "previous"
+
+
+@dataclass
+class PowerUpFeatureColorState:
+    """
+    Color state to activate after powerup.
+
+    Availability of “color_temperature” and “color” modes depend on the capabilities of the lamp.
+    Colortemperature will set the colortemperature to the specified value after power up.
+    When setting color_temperature, the color_temperature property must be included Color will
+    set the color tot he specified value after power up. When setting color mode,
+    the color property must be included Previous will set color to the state
+    it was in before powering off.
+    """
+
+    mode: PowerUpFeatureColorMode
+    color_temperature: Optional[ColorTemperatureFeatureBase] = None
+    color: Optional[ColorFeatureBase] = None
+
+
+@dataclass
+class PowerUpFeature:
+    """
+    Feature containing properties to configure powerup behaviour of a lightsource.
+
+    https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_light_get
+    """
+
+    # NOTE: When setting the custom preset the additional properties can be set.
+    # For all other presets, no other properties can be included.
+    preset: PowerUpPreset
+    configured: bool
+    on: PowerUpFeatureOnState
+    dimming: Optional[PowerUpFeatureDimmingState] = None
+    color: Optional[PowerUpFeatureColorState] = None
+
+
+@dataclass
+class PowerUpFeaturePut:
+    """
+    PowerUp feature properties that can be set/updated with a PUT request.
+
+    https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_light__id__put
+    """
+
+    preset: PowerUpPreset
+    on: Optional[PowerUpFeatureOnState] = None
+    dimming: Optional[PowerUpFeatureDimmingState] = None
+    color: Optional[PowerUpFeatureColorState] = None

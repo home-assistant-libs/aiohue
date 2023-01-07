@@ -10,10 +10,12 @@ from .feature import (
     ColorFeatureBase,
     ColorTemperatureFeatureBase,
     DimmingFeatureBase,
+    DynamicsFeaturePut,
     GradientFeatureBase,
     OnFeature,
     PaletteFeature,
     RecallFeature,
+    SceneEffectsFeature,
 )
 from .resource import ResourceIdentifier, ResourceTypes
 
@@ -27,6 +29,8 @@ class ActionAction:
     color: Optional[ColorFeatureBase] = None
     color_temperature: Optional[ColorTemperatureFeatureBase] = None
     gradient: Optional[GradientFeatureBase] = None
+    effects: Optional[SceneEffectsFeature] = None
+    dynamics: Optional[DynamicsFeaturePut] = None
 
 
 @dataclass
@@ -72,6 +76,8 @@ class Scene:
     palette: PaletteFeature
     # speed: required(number – minimum: 0 – maximum: 1)
     speed: float
+    # auto_dynamic: whether to automatically start the scene dynamically on active recall
+    auto_dynamic: bool
 
     # optional params
     id_v1: Optional[str] = None
@@ -95,6 +101,7 @@ class ScenePut:
     # speed: (number – minimum: 0 – maximum: 1)
     # Speed of dynamic palette for this scene
     speed: Optional[float] = None
+    auto_dynamic: Optional[bool] = None
 
 
 @dataclass
@@ -110,4 +117,5 @@ class ScenePost:
     actions: List[Action]
     palette: Optional[PaletteFeature] = None
     speed: Optional[float] = None
+    auto_dynamic: Optional[bool] = None
     type: ResourceTypes = ResourceTypes.SCENE

@@ -26,6 +26,9 @@ from .feature import (
     GradientFeature,
     GradientFeatureBase,
     OnFeature,
+    PowerUpFeature,
+    PowerUpFeaturePut,
+    SignalingFeature,
     TimedEffectsFeature,
     TimedEffectsFeaturePut,
 )
@@ -66,7 +69,6 @@ class Light:
 
     id: str
     owner: ResourceIdentifier
-    metadata: LightMetaData
     on: OnFeature
     mode: LightMode
 
@@ -76,9 +78,11 @@ class Light:
     color: Optional[ColorFeature] = None
     dynamics: Optional[DynamicsFeature] = None
     alert: Optional[AlertFeature] = None
+    signaling: Optional[SignalingFeature] = None
     gradient: Optional[GradientFeature] = None
     effects: Optional[EffectsFeature] = None
     timed_effects: Optional[TimedEffectsFeature] = None
+    powerup: Optional[PowerUpFeature] = None
 
     type: ResourceTypes = ResourceTypes.LIGHT
 
@@ -96,13 +100,6 @@ class Light:
     def supports_color_temperature(self) -> bool:
         """Return if this light supports color_temperature control."""
         return self.color_temperature is not None
-
-    @property
-    def name(self) -> Optional[str]:
-        """Return name from metadata."""
-        if self.metadata is not None:
-            return self.metadata.name
-        return None
 
     @property
     def is_on(self) -> bool:
@@ -150,3 +147,4 @@ class LightPut:
     gradient: Optional[GradientFeatureBase] = None
     effects: Optional[EffectsFeaturePut] = None
     timed_effects: Optional[TimedEffectsFeaturePut] = None
+    powerup: Optional[PowerUpFeaturePut] = None

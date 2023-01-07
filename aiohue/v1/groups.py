@@ -19,7 +19,7 @@ class Groups(APIItems):
 
     async def get_all_lights_group(self) -> "Group":
         """Return special all lights group."""
-        return Group("0", await self._request("get", "groups/0"), [], self._request)
+        return Group("0", await self._request("get", "groups/0"), self._request)
 
 
 class GroupState(TypedDict):
