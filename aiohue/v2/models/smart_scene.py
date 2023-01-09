@@ -124,13 +124,14 @@ class SmartScene:
     # actions: required(array of Action)
     # List of actions to be executed synchronously on recal
     week_timeslots: List[DayTimeSlots]
-    # active_timeslot: information on what is the light state for every timeslot of the day
-    active_timeslot: SmartSceneActiveTimeslot
     # state: the current state of the smart scene.
     # The default state is inactive if no recall is provided
     state: SmartSceneState
 
     # optional params
+
+    # active_timeslot: information on what is the light state for every timeslot of the day
+    active_timeslot: Optional[SmartSceneActiveTimeslot] = None
     id_v1: Optional[str] = None
 
     type: ResourceTypes = ResourceTypes.SMART_SCENE
