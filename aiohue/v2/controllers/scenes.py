@@ -68,7 +68,7 @@ class SmartScenesController(BaseResourcesController[Type[SmartScene]]):
 
 
 class ScenesController(GroupedControllerBase[SCENE_TYPES]):
-    """Controller grouping resources of all sensor resources."""
+    """Controller grouping resources of all scene resources."""
 
     def __init__(self, bridge: "HueBridgeV2") -> None:
         """Initialize instance."""
