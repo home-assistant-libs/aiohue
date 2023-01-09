@@ -91,3 +91,8 @@ class ScenesController(GroupedControllerBase[SCENE_TYPES]):
             await self.smart_scene.recall(id, *args, **kwargs)
             return
         await self.scene.recall(id, *args, **kwargs)
+
+    def get_group(self, id: str) -> Union[Room, Zone]:
+        """Get group attached to given scene id."""
+        scene = self[id]
+        return next((x for x in self._bridge.groups if x.id == scene.group.rid))
