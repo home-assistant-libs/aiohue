@@ -333,6 +333,18 @@ class GroupedControllerBase(Generic[CLIPResource]):
         for resource_control in self._resources:
             await resource_control.initialize(initial_data)
 
+    def get_device(self, id: str) -> Optional[Device]:
+        """
+        Return device the given resource belongs to.
+
+        Returns None if the resource id is (no longer) valid
+        or does not belong to a device.
+        """
+        for ctrl in self._resources:
+            if id in ctrl:
+                return ctrl.get_device(id)
+        return None
+
     def get(self, id: str, default: Any = None) -> Optional[CLIPResource]:
         """Get item by id of default if item does not exist."""
         return next((x for y in self._resources for x in y if x.id == id), default)
