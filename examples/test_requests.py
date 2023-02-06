@@ -27,7 +27,6 @@ async def main():
         asyncio.get_running_loop().set_debug(True)
 
     async with HueBridgeV2(args.host, args.appkey) as bridge:
-
         print("Connected to bridge: ", bridge.bridge_id)
         print(bridge.config.bridge_device)
 

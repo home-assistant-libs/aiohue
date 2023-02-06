@@ -154,7 +154,7 @@ class EventStream:
 
     def emit(self, type: EventType, data: Optional[dict] = None) -> None:
         """Emit event to all listeners."""
-        for (callback, event_filter, resource_filter) in self._subscribers:
+        for callback, event_filter, resource_filter in self._subscribers:
             if event_filter is not None and type not in event_filter:
                 continue
             if (
