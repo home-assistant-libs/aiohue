@@ -26,7 +26,6 @@ async def main():
         )
 
     async with HueBridgeV1(args.host, args.appkey) as bridge:
-
         print("Connected to bridge: ", bridge.bridge_id)
 
         print()
