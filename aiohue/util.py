@@ -181,7 +181,7 @@ def _parse_value(name: str, value: Any, value_type: Type, default: Any = MISSING
         raise KeyError(f"`{name}` of type `{value_type}` is required.")
     if issubclass(value_type, Enum):
         return value_type(value)
-    if value_type is type(datetime):
+    if value_type is datetime:
         return parse_utc_timestamp(value)
     if value_type is float and isinstance(value, int):
         value = float(value)
