@@ -16,6 +16,7 @@ class ButtonEvent(Enum):
     INITIAL_PRESS = "initial_press"
     REPEAT = "repeat"
     SHORT_RELEASE = "short_release"
+    LONG_PRESS = "long_press"
     LONG_RELEASE = "long_release"
     DOUBLE_SHORT_RELEASE = "double_short_release"
     UNKNOWN = "unknown"
