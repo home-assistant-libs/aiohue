@@ -362,8 +362,8 @@ class TimedEffectsFeature:
     https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_light_get
     """
 
-    effect: TimedEffectStatus
     status: TimedEffectStatus
+    effect: Optional[TimedEffectStatus] = None  # seems to be replaced by 'status'
     status_values: List[TimedEffectStatus] = field(default_factory=list)
     effect_values: List[TimedEffectStatus] = field(default_factory=list)
     # Duration is mandatory when timed effect is set except for no_effect.
@@ -461,7 +461,7 @@ class GradientPoint:
     color: ColorFeatureBase
 
 
-class GradientMode:
+class GradientMode(Enum):
     """Mode of the Gradient feature."""
 
     INTERPOLATED_PALETTE = "interpolated_palette"
@@ -513,15 +513,16 @@ class Signal(Enum):
 class SignalingFeatureStatus:
     """Indicates status of active signal. Not available when inactive."""
 
-    signal: Signal
-    estimated_end: datetime
+    signal: Signal = Signal.UNKNOWN
+    estimated_end: Optional[datetime] = None
 
 
 @dataclass
 class SignalingFeature:
     """Feature containing signaling properties."""
 
-    status: SignalingFeatureStatus
+    status: SignalingFeatureStatus = field(default=SignalingFeatureStatus)
+    signal_values: List[Signal] = field(default_factory=list)
 
 
 class PowerUpPreset(Enum):
