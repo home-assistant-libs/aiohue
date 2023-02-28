@@ -77,7 +77,7 @@ class Scene:
     # speed: required(number – minimum: 0 – maximum: 1)
     speed: float
     # auto_dynamic: whether to automatically start the scene dynamically on active recall
-    auto_dynamic: bool
+    auto_dynamic: Optional[bool] = None
 
     # optional params
     id_v1: Optional[str] = None
