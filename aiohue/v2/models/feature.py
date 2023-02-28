@@ -362,8 +362,8 @@ class TimedEffectsFeature:
     https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_light_get
     """
 
-    effect: TimedEffectStatus
     status: TimedEffectStatus
+    effect: Optional[TimedEffectStatus] = None  # seems to be replaced by 'status'
     status_values: List[TimedEffectStatus] = field(default_factory=list)
     effect_values: List[TimedEffectStatus] = field(default_factory=list)
     # Duration is mandatory when timed effect is set except for no_effect.
