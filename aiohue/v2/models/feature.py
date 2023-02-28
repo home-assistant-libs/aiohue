@@ -513,15 +513,16 @@ class Signal(Enum):
 class SignalingFeatureStatus:
     """Indicates status of active signal. Not available when inactive."""
 
-    signal: Signal
-    estimated_end: datetime
+    signal: Signal = Signal.UNKNOWN
+    estimated_end: Optional[datetime] = None
 
 
 @dataclass
 class SignalingFeature:
     """Feature containing signaling properties."""
 
-    status: SignalingFeatureStatus
+    status: SignalingFeatureStatus = field(default=SignalingFeatureStatus)
+    signal_values: List[Signal] = field(default_factory=list)
 
 
 class PowerUpPreset(Enum):
