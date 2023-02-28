@@ -461,7 +461,7 @@ class GradientPoint:
     color: ColorFeatureBase
 
 
-class GradientMode:
+class GradientMode(Enum):
     """Mode of the Gradient feature."""
 
     INTERPOLATED_PALETTE = "interpolated_palette"
