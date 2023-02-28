@@ -173,7 +173,7 @@ def _parse_value(name: str, value: Any, value_type: Type, default: Any = MISSING
             # raise exception, we have no idea how to handle this value
             raise TypeError(err)
         # failed to parse the (sub) value but None allowed, log only
-        logging.getLogger(__name__).warn(err)
+        logging.getLogger(__name__).debug(err)
         return None
     if value_type is Any:
         return value
