@@ -638,3 +638,65 @@ class PowerUpFeaturePut:
     on: Optional[PowerUpFeatureOnState] = None
     dimming: Optional[PowerUpFeatureDimmingState] = None
     color: Optional[PowerUpFeatureColorState] = None
+
+
+@dataclass
+class MotionReport:
+    """
+    Represent MotionReport as retrieved from api.
+
+    Used by `motion` and `camera_motion` resources.
+    """
+
+    changed: datetime
+    motion: bool
+
+
+@dataclass
+class MotionSensingFeature:
+    """
+    Represent MotionSensingFeature object as retrieved from api.
+
+    Used by `motion` and `camera_motion` resources.
+    """
+
+    motion_report: MotionReport
+    motion: Optional[bool] = None  # deprecated
+    motion_valid: Optional[bool] = None  # deprecated
+
+
+class MotionSensingFeatureSensitivityStatus(Enum):
+    """Enum with possible Sensitivity statuses."""
+
+    SET = "set"
+    CHANGING = "changing"
+    UNKNOWN = "unknown"
+
+    @classmethod
+    def _missing_(cls: Type, value: object):
+        """Set default enum member if an unknown value is provided."""
+        return MotionSensingFeatureSensitivityStatus.UNKNOWN
+
+
+@dataclass
+class MotionSensingFeatureSensitivity:
+    """
+    Represent MotionSensingFeatureSensitivity as retrieved from api.
+
+    Used by `motion` and `camera_motion` resources.
+    """
+
+    status: MotionSensingFeatureSensitivityStatus
+    sensitivity: int
+    sensitivity_max: int = 10
+
+
+@dataclass
+class MotionSensingFeatureSensitivityPut:
+    """
+    Represent MotionSensingFeatureSensitivity when set/updated with a PUT rquest.
+
+    Used by `motion` and `camera_motion` resources.
+    """
+
+    sensitivity: int
