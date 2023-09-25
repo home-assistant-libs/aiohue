@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING, Dict, Optional, Type, Union
 from aiohue.util import dataclass_to_dict
 
 from ..models.button import Button, ButtonEvent
+from ..models.contact import Contact, ContactPut
 from ..models.relative_rotary import RelativeRotary
 from ..models.device_power import DevicePower
 from ..models.geofence_client import GeofenceClient
@@ -22,6 +23,7 @@ if TYPE_CHECKING:
 SENSOR_TYPES = Union[
     DevicePower,
     Button,
+    Contact,
     GeofenceClient,
     LightLevel,
     Motion,
@@ -114,6 +116,17 @@ class ButtonController(BaseResourcesController[Type[Button]]):
                 await self._handle_event(EventType.RESOURCE_UPDATED, btn_resource)
             self._logger.debug("Long press workaround for FOH switch completed.")
 
+class ContactController(BaseResourcesController[Type[Contact]]):
+    """Controller holding and managing HUE resources of type `contact`."""
+
+    item_type = ResourceTypes.CONTACT
+    item_cls = Contact
+    allow_parser_error = True
+
+    async def set_enabled(self, id: str, enabled: bool) -> None:
+        """Enable/Disable sensor."""
+        await self.update(id, ContactPut(enabled=enabled))
+
 
 class GeofenceClientController(BaseResourcesController[Type[GeofenceClient]]):
     """Controller holding and managing HUE resources of type `geofence_client`."""
@@ -177,6 +190,7 @@ class SensorsController(GroupedControllerBase[SENSOR_TYPES]):
     def __init__(self, bridge: "HueBridgeV2") -> None:
         """Initialize instance."""
         self.button = ButtonController(bridge)
+        self.contact = ContactController(bridge)
         self.device_power = DevicePowerController(bridge)
         self.geofence_client = GeofenceClientController(bridge)
         self.light_level = LightLevelController(bridge)
@@ -188,6 +202,7 @@ class SensorsController(GroupedControllerBase[SENSOR_TYPES]):
             bridge,
             [
                 self.button,
+                self.contact,
                 self.device_power,
                 self.geofence_client,
                 self.light_level,

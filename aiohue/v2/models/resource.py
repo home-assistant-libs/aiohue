@@ -47,6 +47,7 @@ class ResourceTypes(Enum):
     HOMEKIT = "homekit"
     MATTER = "matter"
     MATTER_FABRIC = "matter_fabric"
+    CONTACT = "contact"
     UNKNOWN = "unknown"
 
     @classmethod
