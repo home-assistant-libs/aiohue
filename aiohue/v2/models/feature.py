@@ -501,12 +501,14 @@ class Signal(Enum):
 
     NO_SIGNAL = "no_signal"
     ON_OFF = "on_off"
+    ON_OFF_COLOR = "on_off_color"
+    ALTERNATING = "alternating"
     UNKNOWN = "unknown"
 
     @classmethod
     def _missing_(cls: Type, value: object):
         """Set default enum member if an unknown value is provided."""
-        return AlertEffectType.UNKNOWN
+        return Signal.UNKNOWN
 
 
 @dataclass
@@ -515,6 +517,7 @@ class SignalingFeatureStatus:
 
     signal: Signal = Signal.UNKNOWN
     estimated_end: Optional[datetime] = None
+    colors: Optional[List[ColorFeatureBase]] = None
 
 
 @dataclass
@@ -537,7 +540,7 @@ class PowerUpPreset(Enum):
     @classmethod
     def _missing_(cls: Type, value: object):
         """Set default enum member if an unknown value is provided."""
-        return AlertEffectType.UNKNOWN
+        return PowerUpPreset.UNKNOWN
 
 
 class PowerUpFeatureOnMode(Enum):
@@ -638,3 +641,73 @@ class PowerUpFeaturePut:
     on: Optional[PowerUpFeatureOnState] = None
     dimming: Optional[PowerUpFeatureDimmingState] = None
     color: Optional[PowerUpFeatureColorState] = None
+
+
+@dataclass
+class MotionReport:
+    """
+    Represent MotionReport as retrieved from api.
+
+    Used by `motion` and `camera_motion` resources.
+    """
+
+    changed: datetime
+    motion: bool
+
+
+@dataclass
+class MotionSensingFeature:
+    """
+    Represent MotionSensingFeature object as retrieved from api.
+
+    Used by `motion` and `camera_motion` resources.
+    """
+
+    motion_report: MotionReport
+    motion: Optional[bool] = None  # deprecated
+    motion_valid: Optional[bool] = None  # deprecated
+
+    @property
+    def value(self) -> Optional[bool]:
+        """Return the actual/current value."""
+        # prefer new style attribute (not available on older firmware versions)
+        if self.motion_report is not None:
+            return self.motion_report.motion
+        return self.motion
+
+
+class MotionSensingFeatureSensitivityStatus(Enum):
+    """Enum with possible Sensitivity statuses."""
+
+    SET = "set"
+    CHANGING = "changing"
+    UNKNOWN = "unknown"
+
+    @classmethod
+    def _missing_(cls: Type, value: object):
+        """Set default enum member if an unknown value is provided."""
+        return MotionSensingFeatureSensitivityStatus.UNKNOWN
+
+
+@dataclass
+class MotionSensingFeatureSensitivity:
+    """
+    Represent MotionSensingFeatureSensitivity as retrieved from api.
+
+    Used by `motion` and `camera_motion` resources.
+    """
+
+    status: MotionSensingFeatureSensitivityStatus
+    sensitivity: int
+    sensitivity_max: int = 10
+
+
+@dataclass
+class MotionSensingFeatureSensitivityPut:
+    """
+    Represent MotionSensingFeatureSensitivity when set/updated with a PUT rquest.
+
+    Used by `motion` and `camera_motion` resources.
+    """
+
+    sensitivity: int

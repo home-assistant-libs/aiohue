@@ -4,8 +4,9 @@ Model(s) for relative_rotary resource on HUE bridge.
 https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_relative_rotary
 """
 from dataclasses import dataclass
+from datetime import datetime
 from enum import Enum
-from typing import Optional, Type
+from typing import Optional, Type, Union
 
 from .resource import ResourceIdentifier, ResourceTypes
 
@@ -62,10 +63,28 @@ class RelativeRotaryEvent:
 
 
 @dataclass
+class RelativeRotaryReport:
+    """Represent RelativeRotaryReport object as used by the Hue api."""
+
+    action: RelativeRotaryAction
+    rotation: RelativeRotaryRotation
+    updated: datetime
+
+
+@dataclass
 class RelativeRotaryFeature:
     """Represent RelativeRotaryFeature object as used by the Hue api."""
 
-    last_event: RelativeRotaryEvent
+    rotary_report: Optional[RelativeRotaryReport] = None
+    last_event: Optional[RelativeRotaryEvent] = None  # deprecated
+
+    @property
+    def value(self) -> Union[RelativeRotaryReport, RelativeRotaryEvent, None]:
+        """Return the actual/current value."""
+        # prefer new style attribute (not available on older firmware versions)
+        if self.rotary_report is not None:
+            return self.rotary_report
+        return self.last_event
 
 
 @dataclass

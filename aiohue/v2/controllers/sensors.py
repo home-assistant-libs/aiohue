@@ -5,12 +5,15 @@ from typing import TYPE_CHECKING, Dict, Optional, Type, Union
 from aiohue.util import dataclass_to_dict
 
 from ..models.button import Button, ButtonEvent
+from ..models.camera_motion import CameraMotion, CameraMotionPut
+from ..models.contact import Contact, ContactPut
 from ..models.relative_rotary import RelativeRotary
 from ..models.device_power import DevicePower
 from ..models.geofence_client import GeofenceClient
 from ..models.light_level import LightLevel, LightLevelPut
 from ..models.motion import Motion, MotionPut
 from ..models.resource import ResourceTypes
+from ..models.tamper import Tamper
 from ..models.temperature import Temperature
 from ..models.zigbee_connectivity import ZigbeeConnectivity
 from .base import BaseResourcesController, GroupedControllerBase
@@ -22,10 +25,13 @@ if TYPE_CHECKING:
 SENSOR_TYPES = Union[
     DevicePower,
     Button,
+    CameraMotion,
+    Contact,
     GeofenceClient,
     LightLevel,
     Motion,
     RelativeRotary,
+    Tamper,
     Temperature,
     ZigbeeConnectivity,
 ]
@@ -115,6 +121,34 @@ class ButtonController(BaseResourcesController[Type[Button]]):
             self._logger.debug("Long press workaround for FOH switch completed.")
 
 
+class CameraMotionController(BaseResourcesController[Type[CameraMotion]]):
+    """Controller holding and managing HUE resources of type `camera_motion`."""
+
+    item_type = ResourceTypes.CAMERA_MOTION
+    item_cls = CameraMotion
+    allow_parser_error = True
+
+    async def set_enabled(self, id: str, enabled: bool) -> None:
+        """Enable/Disable sensor."""
+        await self.update(id, MotionPut(enabled=enabled))
+
+    async def set_sensitivity(self, id: str, sensitivity: int) -> None:
+        """Enable/Disable sensor."""
+        await self.update(id, CameraMotionPut(sensitivity=sensitivity))
+
+
+class ContactController(BaseResourcesController[Type[Contact]]):
+    """Controller holding and managing HUE resources of type `contact`."""
+
+    item_type = ResourceTypes.CONTACT
+    item_cls = Contact
+    allow_parser_error = True
+
+    async def set_enabled(self, id: str, enabled: bool) -> None:
+        """Enable/Disable sensor."""
+        await self.update(id, ContactPut(enabled=enabled))
+
+
 class GeofenceClientController(BaseResourcesController[Type[GeofenceClient]]):
     """Controller holding and managing HUE resources of type `geofence_client`."""
 
@@ -155,6 +189,14 @@ class RelativeRotaryController(BaseResourcesController[Type[Button]]):
     allow_parser_error = True
 
 
+class TamperController(BaseResourcesController[Type[Tamper]]):
+    """Controller holding and managing HUE resources of type `tamper`."""
+
+    item_type = ResourceTypes.TAMPER
+    item_cls = Tamper
+    allow_parser_error = True
+
+
 class TemperatureController(BaseResourcesController[Type[Temperature]]):
     """Controller holding and managing HUE resources of type `temperature`."""
 
@@ -177,22 +219,28 @@ class SensorsController(GroupedControllerBase[SENSOR_TYPES]):
     def __init__(self, bridge: "HueBridgeV2") -> None:
         """Initialize instance."""
         self.button = ButtonController(bridge)
+        self.camera_motion = CameraMotionController(bridge)
+        self.contact = ContactController(bridge)
         self.device_power = DevicePowerController(bridge)
         self.geofence_client = GeofenceClientController(bridge)
         self.light_level = LightLevelController(bridge)
         self.motion = MotionController(bridge)
         self.relative_rotary = RelativeRotaryController(bridge)
+        self.tamper = TamperController(bridge)
         self.temperature = TemperatureController(bridge)
         self.zigbee_connectivity = ZigbeeConnectivityController(bridge)
         super().__init__(
             bridge,
             [
                 self.button,
+                self.camera_motion,
+                self.contact,
                 self.device_power,
                 self.geofence_client,
                 self.light_level,
                 self.motion,
                 self.relative_rotary,
+                self.tamper,
                 self.temperature,
                 self.zigbee_connectivity,
             ],

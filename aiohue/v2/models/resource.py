@@ -47,6 +47,9 @@ class ResourceTypes(Enum):
     HOMEKIT = "homekit"
     MATTER = "matter"
     MATTER_FABRIC = "matter_fabric"
+    CONTACT = "contact"
+    TAMPER = "tamper"
+    CAMERA_MOTION = "camera_motion"
     UNKNOWN = "unknown"
 
     @classmethod

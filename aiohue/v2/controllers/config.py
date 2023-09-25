@@ -15,7 +15,7 @@ from ..models.matter import Matter
 from ..models.matter_fabric import MatterFabric
 from ..models.resource import ResourceTypes
 from ..models.behavior_script import BehaviorScript
-from ..models.behavior_instance import BehaviorInstance
+from ..models.behavior_instance import BehaviorInstance, BehaviorInstancePut
 from .base import BaseResourcesController, GroupedControllerBase
 
 if TYPE_CHECKING:
@@ -100,6 +100,10 @@ class BehaviorInstanceController(BaseResourcesController[Type[BehaviorInstance]]
     item_cls = BehaviorInstance
     allow_parser_error = True
 
+    async def set_enabled(self, id: str, enabled: bool) -> None:
+        """Enable/Disable sensor."""
+        await self.update(id, BehaviorInstancePut(enabled=enabled))
+
 
 class ConfigController(
     GroupedControllerBase[
@@ -183,6 +187,7 @@ class ConfigController(
         self.matter = MatterController(bridge)
         self.matter_fabric = MatterFabricController(bridge)
         self.behavior_script = BehaviorScriptController(bridge)
+        self.behavior_instance = BehaviorInstanceController(bridge)
         super().__init__(
             bridge,
             [
@@ -194,5 +199,6 @@ class ConfigController(
                 self.matter,
                 self.matter_fabric,
                 self.behavior_script,
+                self.behavior_instance,
             ],
         )

@@ -4,8 +4,9 @@ Model(s) for button resource on HUE bridge.
 https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_button
 """
 from dataclasses import dataclass
+from datetime import datetime
 from enum import Enum
-from typing import Optional, Type
+from typing import List, Optional, Type
 
 from .resource import ResourceIdentifier, ResourceTypes
 
@@ -28,10 +29,35 @@ class ButtonEvent(Enum):
 
 
 @dataclass
+class ButtonReport:
+    """
+    Represent ButtonReport as retrieved from api.
+
+    https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_button_get
+    """
+
+    updated: datetime
+    event: ButtonEvent
+
+
+@dataclass
 class ButtonFeature:
     """Represent ButtonFeature object as used by the Hue api."""
 
-    last_event: ButtonEvent
+    button_report: Optional[ButtonReport] = None
+    last_event: Optional[ButtonEvent] = None  # deprecated
+    repeat_interval: Optional[int] = None
+    event_values: Optional[List[ButtonEvent]] = None
+
+    @property
+    def value(self) -> ButtonEvent:
+        """Return the actual/current value."""
+        # prefer new style attribute (not available on older firmware versions)
+        if self.button_report is not None:
+            return self.button_report.event
+        if self.last_event is not None:
+            return self.last_event
+        return ButtonEvent.UNKNOWN
 
 
 @dataclass
