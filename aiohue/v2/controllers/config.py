@@ -183,6 +183,7 @@ class ConfigController(
         self.matter = MatterController(bridge)
         self.matter_fabric = MatterFabricController(bridge)
         self.behavior_script = BehaviorScriptController(bridge)
+        self.behavior_instance = BehaviorInstanceController(bridge)
         super().__init__(
             bridge,
             [
@@ -194,5 +195,6 @@ class ConfigController(
                 self.matter,
                 self.matter_fabric,
                 self.behavior_script,
+                self.behavior_instance,
             ],
         )
