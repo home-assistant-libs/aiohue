@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING, Dict, Optional, Type, Union
 from aiohue.util import dataclass_to_dict
 
 from ..models.button import Button, ButtonEvent
+from ..models.camera_motion import CameraMotion, CameraMotionPut
 from ..models.contact import Contact, ContactPut
 from ..models.relative_rotary import RelativeRotary
 from ..models.device_power import DevicePower
@@ -24,6 +25,7 @@ if TYPE_CHECKING:
 SENSOR_TYPES = Union[
     DevicePower,
     Button,
+    CameraMotion,
     Contact,
     GeofenceClient,
     LightLevel,
@@ -119,6 +121,22 @@ class ButtonController(BaseResourcesController[Type[Button]]):
             self._logger.debug("Long press workaround for FOH switch completed.")
 
 
+class CameraMotionController(BaseResourcesController[Type[CameraMotion]]):
+    """Controller holding and managing HUE resources of type `camera_motion`."""
+
+    item_type = ResourceTypes.CAMERA_MOTION
+    item_cls = CameraMotion
+    allow_parser_error = True
+
+    async def set_enabled(self, id: str, enabled: bool) -> None:
+        """Enable/Disable sensor."""
+        await self.update(id, MotionPut(enabled=enabled))
+
+    async def set_sensitivity(self, id: str, sensitivity: int) -> None:
+        """Enable/Disable sensor."""
+        await self.update(id, CameraMotionPut(sensitivity=sensitivity))
+
+
 class ContactController(BaseResourcesController[Type[Contact]]):
     """Controller holding and managing HUE resources of type `contact`."""
 
@@ -201,6 +219,7 @@ class SensorsController(GroupedControllerBase[SENSOR_TYPES]):
     def __init__(self, bridge: "HueBridgeV2") -> None:
         """Initialize instance."""
         self.button = ButtonController(bridge)
+        self.camera_motion = CameraMotionController(bridge)
         self.contact = ContactController(bridge)
         self.device_power = DevicePowerController(bridge)
         self.geofence_client = GeofenceClientController(bridge)
@@ -214,6 +233,7 @@ class SensorsController(GroupedControllerBase[SENSOR_TYPES]):
             bridge,
             [
                 self.button,
+                self.camera_motion,
                 self.contact,
                 self.device_power,
                 self.geofence_client,
