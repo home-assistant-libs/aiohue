@@ -668,7 +668,7 @@ class MotionSensingFeature:
     motion_valid: Optional[bool] = None  # deprecated
 
     @property
-    def value(self) -> bool | None:
+    def value(self) -> Optional[bool]:
         """Return the actual/current value."""
         # prefer new style attribute (not available on older firmware versions)
         if self.motion_report is not None:
