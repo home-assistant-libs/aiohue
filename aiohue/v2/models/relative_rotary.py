@@ -6,7 +6,7 @@ https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_relati
 from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
-from typing import Optional, Type
+from typing import Optional, Type, Union
 
 from .resource import ResourceIdentifier, ResourceTypes
 
@@ -79,7 +79,7 @@ class RelativeRotaryFeature:
     last_event: Optional[RelativeRotaryEvent] = None  # deprecated
 
     @property
-    def value(self) -> RelativeRotaryReport | RelativeRotaryEvent | None:
+    def value(self) -> Union[RelativeRotaryReport, RelativeRotaryEvent, None]:
         """Return the actual/current value."""
         # prefer new style attribute (not available on older firmware versions)
         if self.rotary_report is not None:
