@@ -501,12 +501,13 @@ class Signal(Enum):
 
     NO_SIGNAL = "no_signal"
     ON_OFF = "on_off"
+    ON_OFF_COLOR = "on_off_color"
     UNKNOWN = "unknown"
 
     @classmethod
     def _missing_(cls: Type, value: object):
         """Set default enum member if an unknown value is provided."""
-        return AlertEffectType.UNKNOWN
+        return Signal.UNKNOWN
 
 
 @dataclass
@@ -537,7 +538,7 @@ class PowerUpPreset(Enum):
     @classmethod
     def _missing_(cls: Type, value: object):
         """Set default enum member if an unknown value is provided."""
-        return AlertEffectType.UNKNOWN
+        return PowerUpPreset.UNKNOWN
 
 
 class PowerUpFeatureOnMode(Enum):

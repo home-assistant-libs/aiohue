@@ -27,7 +27,7 @@ class TamperSource(Enum):
     @classmethod
     def _missing_(cls: Type, value: object):
         """Set default enum member if an unknown value is provided."""
-        return ResourceTypes.UNKNOWN
+        return TamperSource.UNKNOWN
 
 
 @dataclass
