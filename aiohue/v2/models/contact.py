@@ -13,9 +13,9 @@ from .resource import ResourceIdentifier, ResourceTypes
 
 class ContactState(Enum):
     """State of a Contact sensor."""
+
     CONTACT = "contact"
     NO_CONTACT = "no_contact"
-
 
 
 @dataclass
@@ -28,7 +28,6 @@ class ContactReport:
 
     changed: datetime
     state: ContactState
-
 
 
 @dataclass
