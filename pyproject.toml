@@ -1,0 +1,110 @@
+[build-system]
+requires = ["setuptools~=62.3", "wheel~=0.37.1"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "aiohue"
+# The version is set by GH action on release
+version = "0.0.0"
+license     = {text = "Apache-2.0"}
+description = "MPython module to talk to Philips Hue."
+readme = "README.md"
+requires-python = ">=3.8"
+authors     = [
+    {name = "Paulus Schoutsen", email = "paulus@paulusschoutsen.nl"},
+    {name = "Marcel van der Veldt", email = "m.vanderveldt@outlook.com"}
+]
+classifiers = [
+  "Environment :: Console",
+  "Programming Language :: Python :: 3",
+]
+dependencies = [
+  "aiohttp",
+  "asyncio-throttle",
+  "awesomeversion"
+]
+
+[project.optional-dependencies]
+test = [
+  "black==23.7.0",
+  "codespell==2.2.5",
+  "mypy==1.5.0",
+  "ruff==0.0.284",
+  "pytest==7.4.0",
+  "pytest-asyncio==0.21.1",
+  "pytest-aiohttp==1.0.4",
+  "pytest-cov==4.1.0",
+  "pre-commit==3.3.3"
+]
+
+[tool.black]
+target-version = ['py311']
+line-length = 100
+
+[tool.mypy]
+python_version = "3.11"
+check_untyped_defs = true
+#disallow_any_generics = true
+disallow_incomplete_defs = true
+disallow_untyped_calls = false
+disallow_untyped_defs = true
+mypy_path = "aiohue/"
+no_implicit_optional = true
+show_error_codes = true
+warn_incomplete_stub = true
+warn_redundant_casts = true
+warn_return_any = true
+warn_unreachable = true
+warn_unused_configs = true
+warn_unused_ignores = true
+
+[[tool.mypy.overrides]]
+ignore_missing_imports = true
+module = [
+  "aiorun",
+]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+pythonpath = [
+  "."
+]
+
+[tool.setuptools]
+platforms = ["any"]
+zip-safe  = false
+packages = ["aiohue"]
+include-package-data = true
+
+[tool.setuptools.package-data]
+aiohue = ["py.typed"]
+
+[tool.ruff]
+fix = true
+show-fixes = true
+
+# enable later: "C90", "PTH", "TCH", "RET", "ANN"
+select = ["E", "F", "W", "I", "N", "D", "UP", "PL", "Q", "SIM", "TID", "ARG"]
+ignore = ["PLR2004", "N818"]
+extend-exclude = ["app_vars.py"]
+unfixable = ["F841"]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.flake8-annotations]
+allow-star-arg-any = true
+suppress-dummy-args = true
+
+[tool.ruff.flake8-builtins]
+builtins-ignorelist = ["id"]
+
+[tool.ruff.pydocstyle]
+# Use Google-style docstrings.
+convention = "pep257"
+
+[tool.ruff.pylint]
+
+max-branches=25
+max-returns=15
+max-args=10
+max-statements=50
