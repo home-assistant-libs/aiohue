@@ -664,6 +664,14 @@ class MotionSensingFeature:
     motion: Optional[bool] = None  # deprecated
     motion_valid: Optional[bool] = None  # deprecated
 
+    @property
+    def value(self) -> bool | None:
+        """Return the actual/current value."""
+        # prefer new style attribute (not available on older firmware versions)
+        if self.motion_report is not None:
+            return self.motion_report.motion
+        return self.motion
+
 
 class MotionSensingFeatureSensitivityStatus(Enum):
     """Enum with possible Sensitivity statuses."""
