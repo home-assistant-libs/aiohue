@@ -31,7 +31,7 @@ class LightLevelFeature:
     light_level_valid: Optional[bool] = None  # deprecated
 
     @property
-    def value(self) -> int | None:
+    def value(self) -> Optional[int]:
         """Return the actual/current value."""
         # prefer new style attribute (not available on older firmware versions)
         if self.light_level_report is not None:

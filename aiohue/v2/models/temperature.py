@@ -32,7 +32,7 @@ class TemperatureSensingFeature:
     temperature_valid: Optional[bool] = None  # deprecated
 
     @property
-    def value(self) -> float | None:
+    def value(self) -> Optional[float]:
         """Return the actual/current value."""
         # prefer new style attribute (not available on older firmware versions)
         if self.temperature_report is not None:
