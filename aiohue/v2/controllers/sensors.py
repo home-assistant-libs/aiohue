@@ -12,6 +12,7 @@ from ..models.geofence_client import GeofenceClient
 from ..models.light_level import LightLevel, LightLevelPut
 from ..models.motion import Motion, MotionPut
 from ..models.resource import ResourceTypes
+from ..models.tamper import Tamper
 from ..models.temperature import Temperature
 from ..models.zigbee_connectivity import ZigbeeConnectivity
 from .base import BaseResourcesController, GroupedControllerBase
@@ -28,6 +29,7 @@ SENSOR_TYPES = Union[
     LightLevel,
     Motion,
     RelativeRotary,
+    Tamper,
     Temperature,
     ZigbeeConnectivity,
 ]
@@ -116,6 +118,7 @@ class ButtonController(BaseResourcesController[Type[Button]]):
                 await self._handle_event(EventType.RESOURCE_UPDATED, btn_resource)
             self._logger.debug("Long press workaround for FOH switch completed.")
 
+
 class ContactController(BaseResourcesController[Type[Contact]]):
     """Controller holding and managing HUE resources of type `contact`."""
 
@@ -168,6 +171,14 @@ class RelativeRotaryController(BaseResourcesController[Type[Button]]):
     allow_parser_error = True
 
 
+class TamperController(BaseResourcesController[Type[Tamper]]):
+    """Controller holding and managing HUE resources of type `tamper`."""
+
+    item_type = ResourceTypes.TAMPER
+    item_cls = Tamper
+    allow_parser_error = True
+
+
 class TemperatureController(BaseResourcesController[Type[Temperature]]):
     """Controller holding and managing HUE resources of type `temperature`."""
 
@@ -196,6 +207,7 @@ class SensorsController(GroupedControllerBase[SENSOR_TYPES]):
         self.light_level = LightLevelController(bridge)
         self.motion = MotionController(bridge)
         self.relative_rotary = RelativeRotaryController(bridge)
+        self.tamper = TamperController(bridge)
         self.temperature = TemperatureController(bridge)
         self.zigbee_connectivity = ZigbeeConnectivityController(bridge)
         super().__init__(
@@ -208,6 +220,7 @@ class SensorsController(GroupedControllerBase[SENSOR_TYPES]):
                 self.light_level,
                 self.motion,
                 self.relative_rotary,
+                self.tamper,
                 self.temperature,
                 self.zigbee_connectivity,
             ],

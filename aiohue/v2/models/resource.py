@@ -48,6 +48,7 @@ class ResourceTypes(Enum):
     MATTER = "matter"
     MATTER_FABRIC = "matter_fabric"
     CONTACT = "contact"
+    TAMPER = "tamper"
     UNKNOWN = "unknown"
 
     @classmethod
