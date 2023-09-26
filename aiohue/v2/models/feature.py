@@ -296,6 +296,9 @@ class EffectStatus(Enum):
     CANDLE = "candle"
     FIRE = "fire"
     SPARKLE = "sparkle"
+    GLISTEN = "glisten"
+    OPAL = "opal"
+    PRISM = "prism"
     UNKNOWN = "unknown"
 
     @classmethod
