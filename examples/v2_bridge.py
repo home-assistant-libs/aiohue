@@ -1,15 +1,10 @@
 """Example script for using AIOHue connecting to a V2 Hue bridge."""
 import argparse
 import asyncio
+import contextlib
 import logging
-from os.path import abspath, dirname
-from sys import path
 
-path.insert(1, dirname(dirname(abspath(__file__))))
-
-import contextlib  # noqa: E402
-
-from aiohue import HueBridgeV2  # noqa: E402
+from aiohue import HueBridgeV2
 
 parser = argparse.ArgumentParser(description="AIOHue Example")
 parser.add_argument("host", help="hostname of Hue bridge")

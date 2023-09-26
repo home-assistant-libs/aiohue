@@ -1,14 +1,9 @@
 """AIOHue example for HUE bridge authentication."""
 import argparse
 import asyncio
-from os.path import abspath, dirname
-from sys import path
+import contextlib
 
-path.insert(1, dirname(dirname(abspath(__file__))))
-
-import contextlib  # noqa: E402
-
-from aiohue import create_app_key  # noqa: E402
+from aiohue import create_app_key
 
 parser = argparse.ArgumentParser(description="AIOHue Authentication Example")
 parser.add_argument("host", help="hostname of Hue bridge")
