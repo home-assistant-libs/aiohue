@@ -96,7 +96,7 @@ line-length = 100
 target-version = "py311"
 
 [tool.ruff.per-file-ignores]
-"aiohue/v1/*" = ["D100", "D101", "D102", "D105", "D107", "PLR0913"]
+"aiohue/v1/*" = ["D100", "D101", "D102", "D103", "D105", "D107", "PLR0911", "PLR0913"]
 
 [tool.ruff.flake8-annotations]
 allow-star-arg-any = true
