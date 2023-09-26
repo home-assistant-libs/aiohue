@@ -3,18 +3,12 @@ import logging
 from dataclasses import MISSING, asdict, dataclass, fields, is_dataclass
 from datetime import datetime
 from enum import Enum
-from typing import Any, Union, get_args, get_origin
+from types import NoneType, UnionType
+from typing import Any, Union, get_args, get_origin, get_type_hints
 
 from aiohttp import ClientSession
 
 from aiohue.errors import raise_from_error
-
-try:
-    # python 3.10
-    from types import NoneType
-except:  # noqa
-    # older python version
-    NoneType = type(None)
 
 
 async def create_app_key(
@@ -132,22 +126,43 @@ def parse_utc_timestamp(datetimestr: str):
     return datetime.fromisoformat(datetimestr.replace("Z", "+00:00"))
 
 
-def _parse_value(name: str, value: Any, value_type: type, default: Any = MISSING):
-    """Try to parse a value from raw (json) data and type definitions."""
+def _parse_value(name: str, value: Any, value_type: Any, default: Any = MISSING) -> Any:
+    """Try to parse a value from raw (json) data and type annotations."""
+    # ruff: noqa: PLR0911, PLR0912
+    if isinstance(value_type, str):
+        # this shouldn't happen, but just in case
+        value_type = get_type_hints(value_type, globals(), locals())
+
+    if isinstance(value, dict) and hasattr(value_type, "from_dict"):
+        # always prefer classes that have a from_dict
+        return value_type.from_dict(value)
+
     if value is None and not isinstance(default, type(MISSING)):
         return default
     if value is None and value_type is NoneType:
         return None
     if is_dataclass(value_type) and isinstance(value, dict):
         return dataclass_from_dict(value_type, value)
-    origin = get_origin(value_type)
-    if origin is list:
-        return [
-            _parse_value(name, subval, get_args(value_type)[0])
-            for subval in value
-            if subval is not None
-        ]
-    if origin is Union:
+    # get origin value type and inspect one-by-one
+    origin: Any = get_origin(value_type)
+    if origin in (list, tuple, set) and isinstance(value, list | tuple | set):
+        return origin(
+            _parse_value(name, subvalue, get_args(value_type)[0])
+            for subvalue in value
+            if subvalue is not None
+        )
+    # handle dictionary where we should inspect all values
+    if origin is dict:
+        subkey_type = get_args(value_type)[0]
+        subvalue_type = get_args(value_type)[1]
+        return {
+            _parse_value(subkey, subkey, subkey_type): _parse_value(
+                f"{subkey}.value", subvalue, subvalue_type
+            )
+            for subkey, subvalue in value.items()
+        }
+    # handle Union type
+    if origin is Union or origin is UnionType:
         # try all possible types
         sub_value_types = get_args(value_type)
         for sub_arg_type in sub_value_types:
@@ -171,18 +186,33 @@ def _parse_value(name: str, value: Any, value_type: type, default: Any = MISSING
             # raise exception, we have no idea how to handle this value
             raise TypeError(err)
         # failed to parse the (sub) value but None allowed, log only
-        logging.getLogger(__name__).debug(err)
+        logging.getLogger(__name__).warning(err)
         return None
+    if origin is type:
+        return get_type_hints(value, globals(), locals())
+    # handle Any as value type (which is basically unprocessable)
     if value_type is Any:
         return value
+    # raise if value is None and the value is required according to annotations
     if value is None and value_type is not NoneType:
         raise KeyError(f"`{name}` of type `{value_type}` is required.")
-    if issubclass(value_type, Enum):
-        return value_type(value)
-    if value_type is datetime:
-        return parse_utc_timestamp(value)
+
+    try:
+        if issubclass(value_type, Enum):
+            return value_type(value)
+        if issubclass(value_type, datetime):
+            return parse_utc_timestamp(value)
+    except TypeError:
+        # happens if value_type is not a class
+        pass
+
+    # common type conversions (e.g. int as string)
     if value_type is float and isinstance(value, int):
-        value = float(value)
+        return float(value)
+    if value_type is int and isinstance(value, str) and value.isnumeric():
+        return int(value)
+
+    # If we reach this point, we could not match the value with the type and we raise
     if not isinstance(value, value_type):
         raise TypeError(
             f"Value {value} of type {type(value)} is invalid for {name}, "

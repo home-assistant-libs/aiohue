@@ -9,7 +9,12 @@ from typing import (
     TypeVar,
 )
 
-from aiohue.util import NoneType, dataclass_from_dict, dataclass_to_dict, update_dataclass
+from aiohue.util import (
+    NoneType,
+    dataclass_from_dict,
+    dataclass_to_dict,
+    update_dataclass,
+)
 from aiohue.v2.models.device import Device
 from aiohue.v2.models.resource import ResourceTypes
 
@@ -91,7 +96,7 @@ class BaseResourcesController(Generic[CLIPResource]):
         Returns:
             function to unsubscribe.
         """
-        if not isinstance(event_filter, NoneType | (list, tuple)):
+        if not isinstance(event_filter, NoneType | list | tuple):
             event_filter = (event_filter,)
 
         if id_filter is None:
