@@ -5,8 +5,6 @@ https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_room
 """
 from dataclasses import dataclass
 from enum import Enum
-from typing import List, Optional, Set, Type
-
 
 from .resource import ResourceIdentifier, ResourceTypes
 
@@ -56,7 +54,7 @@ class RoomArchetype(Enum):
     OTHER = "other"
 
     @classmethod
-    def _missing_(cls: Type, value: object):
+    def _missing_(cls: type, value: object):  # noqa: ARG003
         """Set default enum member if an unknown value is provided."""
         return RoomArchetype.OTHER
 
@@ -77,8 +75,8 @@ class RoomMetaDataPut:
     https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_device__id__put
     """
 
-    archetype: Optional[RoomArchetype]
-    name: Optional[str]
+    archetype: RoomArchetype | None
+    name: str | None
 
 
 @dataclass
@@ -97,23 +95,23 @@ class Room:
     # Aggregation is per service type, ie every service type which can be grouped has a
     # corresponding definition of grouped type
     # Supported types “light”
-    services: List[ResourceIdentifier]
+    services: list[ResourceIdentifier]
     metadata: RoomMetaData
 
     # children: required(array of ResourceIdentifier)
     # Devices to group by the Room Following children are allowed: device
-    children: List[ResourceIdentifier]
+    children: list[ResourceIdentifier]
 
-    id_v1: Optional[str] = None
+    id_v1: str | None = None
     type: ResourceTypes = ResourceTypes.ROOM
 
     @property
-    def devices(self) -> Set[str]:
+    def devices(self) -> set[str]:
         """Return set of device id's that belong to this room."""
         return {x.rid for x in self.children}
 
     @property
-    def grouped_light(self) -> Optional[str]:
+    def grouped_light(self) -> str | None:
         """Return the grouped light id that is connected to this room (if any)."""
         if not self.services:
             return None
@@ -131,8 +129,8 @@ class RoomPut:
     https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_room__id__put
     """
 
-    children: Optional[List[ResourceIdentifier]] = None
-    metadata: Optional[RoomMetaDataPut] = None
+    children: list[ResourceIdentifier] | None = None
+    metadata: RoomMetaDataPut | None = None
 
 
 @dataclass
@@ -143,5 +141,5 @@ class RoomPost:
     https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_room_post
     """
 
-    children: List[ResourceIdentifier]
+    children: list[ResourceIdentifier]
     metadata: RoomMetaData

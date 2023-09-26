@@ -1,9 +1,14 @@
 from __future__ import annotations
+
 from collections import namedtuple
+from collections.abc import Coroutine
 from logging import Logger
-from typing import Any, Coroutine, Dict
+from typing import Any
 
 from .api import APIItems
+
+# ruff: noqa: D100,D101,D102,D105,D107,PLR0913
+
 
 # Represents a CIE 1931 XY coordinate pair.
 XYPoint = namedtuple("XYPoint", ["x", "y"])
@@ -20,7 +25,7 @@ class Lights(APIItems):
     https://developers.meethue.com/documentation/lights-api
     """
 
-    def __init__(self, logger: Logger, raw: Dict[str, Any], request: Coroutine) -> None:
+    def __init__(self, logger: Logger, raw: dict[str, Any], request: Coroutine) -> None:
         """Initialize instance."""
         super().__init__(logger, raw, request, "lights", Light)
 
@@ -30,7 +35,7 @@ class Light:
 
     ITEM_TYPE = "lights"
 
-    def __init__(self, id: str, raw: Dict[str, Any], request: Coroutine) -> None:
+    def __init__(self, id: str, raw: dict[str, Any], request: Coroutine) -> None:
         """Initialize instance."""
         self.id = id
         self.raw = raw
@@ -137,4 +142,4 @@ class Light:
             if value is not None
         }
 
-        await self._request("put", "lights/{}/state".format(self.id), json=data)
+        await self._request("put", f"lights/{self.id}/state", json=data)

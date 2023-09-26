@@ -2,7 +2,6 @@
 
 from dataclasses import dataclass
 from enum import Enum
-from typing import Type
 
 
 class ResourceTypes(Enum):
@@ -53,7 +52,7 @@ class ResourceTypes(Enum):
     UNKNOWN = "unknown"
 
     @classmethod
-    def _missing_(cls: Type, value: object):
+    def _missing_(cls: type, value: object):  # noqa: ARG003
         """Set default enum member if an unknown value is provided."""
         return ResourceTypes.UNKNOWN
 

@@ -5,7 +5,9 @@ from sys import path
 
 path.insert(1, dirname(dirname(abspath(__file__))))
 
-from aiohue.discovery import discover_nupnp
+import contextlib  # noqa: E402
+
+from aiohue.discovery import discover_nupnp  # noqa: E402
 
 
 async def main():
@@ -19,7 +21,5 @@ async def main():
         print()
 
 
-try:
+with contextlib.suppress(KeyboardInterrupt):
     asyncio.run(main())
-except KeyboardInterrupt:
-    pass

@@ -1,6 +1,9 @@
 """Hue sensor resources."""
 from __future__ import annotations
+
 from .api import APIItems
+
+# ruff: noqa: D100,D101,D102,D103,D105,D107,PLR0913,PLR0911
 
 TYPE_DAYLIGHT = "Daylight"
 
@@ -136,11 +139,11 @@ class GenericCLIPSensor(GenericSensor):
 
     async def set_config(self, config):
         """Change config of a CLIP sensor."""
-        await self._request("put", "sensors/{}/config".format(self.id), json=config)
+        await self._request("put", f"sensors/{self.id}/config", json=config)
 
     async def set_state(self, state):
         """Change state of a CLIP sensor."""
-        await self._request("put", "sensors/{}/state".format(self.id), json=state)
+        await self._request("put", f"sensors/{self.id}/state", json=state)
 
 
 class GenericZLLSensor(GenericSensor):
@@ -174,7 +177,7 @@ class GenericSwitchSensor:
         """Change config of a Switch sensor."""
         data = {} if on is None else {"on": on}
 
-        await self._request("put", "sensors/{}/config".format(self.id), json=data)
+        await self._request("put", f"sensors/{self.id}/config", json=data)
 
 
 class DaylightSensor(GenericSensor):
@@ -198,9 +201,7 @@ class DaylightSensor(GenericSensor):
     def sunsetoffset(self):
         return self.raw["config"]["sunsetoffset"]
 
-    async def set_config(
-        self, on=None, long=None, lat=None, sunriseoffset=None, sunsetoffset=None
-    ):
+    async def set_config(self, on=None, long=None, lat=None, sunriseoffset=None, sunsetoffset=None):
         """Change config of a Daylight sensor."""
         data = {
             key: value
@@ -214,7 +215,7 @@ class DaylightSensor(GenericSensor):
             if value is not None
         }
 
-        await self._request("put", "sensors/{}/config".format(self.id), json=data)
+        await self._request("put", f"sensors/{self.id}/config", json=data)
 
 
 class GeofenceSensor(GenericSensor):
@@ -234,7 +235,7 @@ class GeofenceSensor(GenericSensor):
         """Change config of the Geofence sensor."""
         data = {} if on is None else {"on": on}
 
-        await self._request("put", "sensors/{}/config".format(self.id), json=data)
+        await self._request("put", f"sensors/{self.id}/config", json=data)
 
 
 class CLIPPresenceSensor(GenericCLIPSensor):
@@ -246,7 +247,7 @@ class CLIPPresenceSensor(GenericCLIPSensor):
         """Change config of a CLIP Presence sensor."""
         data = {} if on is None else {"on": on}
 
-        await self._request("put", "sensors/{}/config".format(self.id), json=data)
+        await self._request("put", f"sensors/{self.id}/config", json=data)
 
 
 class ZLLPresenceSensor(GenericZLLSensor):
@@ -266,7 +267,7 @@ class ZLLPresenceSensor(GenericZLLSensor):
             if value is not None
         }
 
-        await self._request("put", "sensors/{}/config".format(self.id), json=data)
+        await self._request("put", f"sensors/{self.id}/config", json=data)
 
 
 class ZLLRotarySensor(GenericZLLSensor):
@@ -286,7 +287,7 @@ class ZLLRotarySensor(GenericZLLSensor):
         """Change config of a ZLL Rotary sensor."""
         data = {} if on is None else {"on": on}
 
-        await self._request("put", "sensors/{}/config".format(self.id), json=data)
+        await self._request("put", f"sensors/{self.id}/config", json=data)
 
 
 class CLIPSwitchSensor(GenericCLIPSensor):
@@ -298,7 +299,7 @@ class CLIPSwitchSensor(GenericCLIPSensor):
         """Change config of a CLIP Switch sensor."""
         data = {} if on is None else {"on": on}
 
-        await self._request("put", "sensors/{}/config".format(self.id), json=data)
+        await self._request("put", f"sensors/{self.id}/config", json=data)
 
 
 class ZGPSwitchSensor(GenericSensor, GenericSwitchSensor):
@@ -348,7 +349,7 @@ class CLIPLightLevelSensor(GenericCLIPSensor):
             if value is not None
         }
 
-        await self._request("put", "sensors/{}/config".format(self.id), json=data)
+        await self._request("put", f"sensors/{self.id}/config", json=data)
 
 
 class ZLLLightLevelSensor(GenericZLLSensor):
@@ -384,7 +385,7 @@ class ZLLLightLevelSensor(GenericZLLSensor):
             if value is not None
         }
 
-        await self._request("put", "sensors/{}/config".format(self.id), json=data)
+        await self._request("put", f"sensors/{self.id}/config", json=data)
 
 
 class CLIPTemperatureSensor(GenericCLIPSensor):
@@ -396,7 +397,7 @@ class CLIPTemperatureSensor(GenericCLIPSensor):
         """Change config of a CLIP Temperature sensor."""
         data = {} if on is None else {"on": on}
 
-        await self._request("put", "sensors/{}/config".format(self.id), json=data)
+        await self._request("put", f"sensors/{self.id}/config", json=data)
 
 
 class ZLLTemperatureSensor(GenericZLLSensor):
@@ -408,7 +409,7 @@ class ZLLTemperatureSensor(GenericZLLSensor):
         """Change config of a ZLL Temperature sensor."""
         data = {} if on is None else {"on": on}
 
-        await self._request("put", "sensors/{}/config".format(self.id), json=data)
+        await self._request("put", f"sensors/{self.id}/config", json=data)
 
 
 class CLIPGenericFlagSensor(GenericCLIPSensor):
@@ -420,7 +421,7 @@ class CLIPGenericFlagSensor(GenericCLIPSensor):
         """Change config of a CLIP Generic Flag sensor."""
         data = {} if on is None else {"on": on}
 
-        await self._request("put", "sensors/{}/config".format(self.id), json=data)
+        await self._request("put", f"sensors/{self.id}/config", json=data)
 
 
 class CLIPGenericStatusSensor(GenericCLIPSensor):
@@ -432,7 +433,7 @@ class CLIPGenericStatusSensor(GenericCLIPSensor):
         """Change config of a CLIP Generic Status sensor."""
         data = {} if on is None else {"on": on}
 
-        await self._request("put", "sensors/{}/config".format(self.id), json=data)
+        await self._request("put", f"sensors/{self.id}/config", json=data)
 
 
 class CLIPHumiditySensor(GenericCLIPSensor):
@@ -444,7 +445,7 @@ class CLIPHumiditySensor(GenericCLIPSensor):
         """Change config of a CLIP Humidity sensor."""
         data = {} if on is None else {"on": on}
 
-        await self._request("put", "sensors/{}/config".format(self.id), json=data)
+        await self._request("put", f"sensors/{self.id}/config", json=data)
 
 
 class CLIPOpenCloseSensor(GenericCLIPSensor):
@@ -456,7 +457,7 @@ class CLIPOpenCloseSensor(GenericCLIPSensor):
         """Change config of a CLIP Open Close sensor."""
         data = {} if on is None else {"on": on}
 
-        await self._request("put", "sensors/{}/config".format(self.id), json=data)
+        await self._request("put", f"sensors/{self.id}/config", json=data)
 
 
 def create_sensor(id, raw, request):

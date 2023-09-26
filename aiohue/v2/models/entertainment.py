@@ -4,7 +4,6 @@ Model(s) for entertainment resource on HUE bridge.
 https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_entertainment
 """
 from dataclasses import dataclass
-from typing import List, Optional
 
 from .entertainment_configuration import Segment
 from .resource import ResourceIdentifier, ResourceTypes
@@ -21,7 +20,7 @@ class SegmentationProperties:
 
     configurable: bool
     max_segments: int
-    segments: List[Segment]
+    segments: list[Segment]
 
 
 @dataclass
@@ -40,9 +39,9 @@ class Entertainment:
     proxy: bool
     # max_streams: (integer – minimum: 1)
     # Indicates the maximum number of parallel streaming sessions the bridge supports
-    max_streams: Optional[int] = 1
+    max_streams: int | None = 1
     # segments: Holds all parameters concerning the segmentations capabilities of a device
-    segments: Optional[SegmentationProperties] = None
+    segments: SegmentationProperties | None = None
 
-    id_v1: Optional[str] = None
+    id_v1: str | None = None
     type: ResourceTypes = ResourceTypes.ENTERTAINMENT

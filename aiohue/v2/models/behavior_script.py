@@ -6,13 +6,12 @@ https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_behavi
 """
 from dataclasses import dataclass
 from enum import Enum
-from typing import List, Optional, Type
 
 from .resource import ResourceTypes
 
 
 class BehaviorScriptCategory(Enum):
-    """Enum with various Bahavior Script Categories."""
+    """Enum with various Behavior Script Categories."""
 
     AUTOMATION = "automation"
     ENTERTAINMENT = "entertainment"
@@ -20,7 +19,7 @@ class BehaviorScriptCategory(Enum):
     OTHER = "other"
 
     @classmethod
-    def _missing_(cls: Type, value: object):
+    def _missing_(cls: type, value: object):  # noqa: ARG003
         """Set default enum member if an unknown value is provided."""
         return BehaviorScriptCategory.OTHER
 
@@ -29,7 +28,7 @@ class BehaviorScriptCategory(Enum):
 class BehaviorScriptMetadata:
     """Represent BehaviorScript Metadata object as used by BehaviorScript resource."""
 
-    name: Optional[str] = None
+    name: str | None = None
     category: BehaviorScriptCategory = BehaviorScriptCategory.OTHER
 
 
@@ -55,8 +54,8 @@ class BehaviorScript:
     state_schema: dict
     version: str
     metadata: BehaviorScriptMetadata
-    supported_features: Optional[List[str]]
-    max_number_instances: Optional[int] = None
+    supported_features: list[str] | None
+    max_number_instances: int | None = None
 
-    id_v1: Optional[str] = None
+    id_v1: str | None = None
     type: ResourceTypes = ResourceTypes.BEHAVIOR_SCRIPT

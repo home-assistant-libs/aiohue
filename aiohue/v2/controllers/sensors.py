@@ -1,45 +1,46 @@
 """Controller holding and managing HUE resources of sensor type."""
 import asyncio
-from typing import TYPE_CHECKING, Dict, Optional, Type, Union
+from typing import TYPE_CHECKING
 
 from aiohue.util import dataclass_to_dict
+from aiohue.v2.models.button import Button, ButtonEvent
+from aiohue.v2.models.camera_motion import CameraMotion, CameraMotionPut
+from aiohue.v2.models.contact import Contact, ContactPut
+from aiohue.v2.models.device_power import DevicePower
+from aiohue.v2.models.geofence_client import GeofenceClient
+from aiohue.v2.models.light_level import LightLevel, LightLevelPut
+from aiohue.v2.models.motion import Motion, MotionPut
+from aiohue.v2.models.relative_rotary import RelativeRotary
+from aiohue.v2.models.resource import ResourceTypes
+from aiohue.v2.models.tamper import Tamper
+from aiohue.v2.models.temperature import Temperature
+from aiohue.v2.models.zigbee_connectivity import ZigbeeConnectivity
 
-from ..models.button import Button, ButtonEvent
-from ..models.camera_motion import CameraMotion, CameraMotionPut
-from ..models.contact import Contact, ContactPut
-from ..models.relative_rotary import RelativeRotary
-from ..models.device_power import DevicePower
-from ..models.geofence_client import GeofenceClient
-from ..models.light_level import LightLevel, LightLevelPut
-from ..models.motion import Motion, MotionPut
-from ..models.resource import ResourceTypes
-from ..models.tamper import Tamper
-from ..models.temperature import Temperature
-from ..models.zigbee_connectivity import ZigbeeConnectivity
 from .base import BaseResourcesController, GroupedControllerBase
 from .events import EventType
 
 if TYPE_CHECKING:
-    from .. import HueBridgeV2
+    from aiohue.v2 import HueBridgeV2
 
-SENSOR_TYPES = Union[
-    DevicePower,
-    Button,
-    CameraMotion,
-    Contact,
-    GeofenceClient,
-    LightLevel,
-    Motion,
-    RelativeRotary,
-    Tamper,
-    Temperature,
-    ZigbeeConnectivity,
-]
+SENSOR_TYPES = (
+    DevicePower
+    | Button
+    | CameraMotion
+    | Contact
+    | GeofenceClient
+    | LightLevel
+    | Motion
+    | RelativeRotary
+    | Tamper
+    | Temperature
+    | ZigbeeConnectivity
+)
+
 
 BTN_WORKAROUND_NEEDED = ("FOHSWITCH",)
 
 
-class DevicePowerController(BaseResourcesController[Type[DevicePower]]):
+class DevicePowerController(BaseResourcesController[type[DevicePower]]):
     """Controller holding and managing HUE resources of type `device_power`."""
 
     item_type = ResourceTypes.DEVICE_POWER
@@ -47,18 +48,16 @@ class DevicePowerController(BaseResourcesController[Type[DevicePower]]):
     allow_parser_error = True
 
 
-class ButtonController(BaseResourcesController[Type[Button]]):
+class ButtonController(BaseResourcesController[type[Button]]):
     """Controller holding and managing HUE resources of type `button`."""
 
     item_type = ResourceTypes.BUTTON
     item_cls = Button
     allow_parser_error = True
 
-    _workaround_tasks: Dict[str, asyncio.Task] = None
+    _workaround_tasks: dict[str, asyncio.Task] = None
 
-    async def _handle_event(
-        self, evt_type: EventType, evt_data: Optional[dict]
-    ) -> None:
+    async def _handle_event(self, evt_type: EventType, evt_data: dict | None) -> None:
         """Handle incoming event for this resource from the EventStream."""
         await super()._handle_event(evt_type, evt_data)
 
@@ -68,8 +67,7 @@ class ButtonController(BaseResourcesController[Type[Button]]):
         # Handle longpress workaround if needed
         if not (
             evt_type == EventType.RESOURCE_UPDATED
-            and evt_data.get("button", {}).get("last_event")
-            == ButtonEvent.INITIAL_PRESS.value
+            and evt_data.get("button", {}).get("last_event") == ButtonEvent.INITIAL_PRESS.value
         ):
             return
 
@@ -121,7 +119,7 @@ class ButtonController(BaseResourcesController[Type[Button]]):
             self._logger.debug("Long press workaround for FOH switch completed.")
 
 
-class CameraMotionController(BaseResourcesController[Type[CameraMotion]]):
+class CameraMotionController(BaseResourcesController[type[CameraMotion]]):
     """Controller holding and managing HUE resources of type `camera_motion`."""
 
     item_type = ResourceTypes.CAMERA_MOTION
@@ -137,7 +135,7 @@ class CameraMotionController(BaseResourcesController[Type[CameraMotion]]):
         await self.update(id, CameraMotionPut(sensitivity=sensitivity))
 
 
-class ContactController(BaseResourcesController[Type[Contact]]):
+class ContactController(BaseResourcesController[type[Contact]]):
     """Controller holding and managing HUE resources of type `contact`."""
 
     item_type = ResourceTypes.CONTACT
@@ -149,7 +147,7 @@ class ContactController(BaseResourcesController[Type[Contact]]):
         await self.update(id, ContactPut(enabled=enabled))
 
 
-class GeofenceClientController(BaseResourcesController[Type[GeofenceClient]]):
+class GeofenceClientController(BaseResourcesController[type[GeofenceClient]]):
     """Controller holding and managing HUE resources of type `geofence_client`."""
 
     item_type = ResourceTypes.GEOFENCE_CLIENT
@@ -157,7 +155,7 @@ class GeofenceClientController(BaseResourcesController[Type[GeofenceClient]]):
     allow_parser_error = True
 
 
-class LightLevelController(BaseResourcesController[Type[LightLevel]]):
+class LightLevelController(BaseResourcesController[type[LightLevel]]):
     """Controller holding and managing HUE resources of type `light_level`."""
 
     item_type = ResourceTypes.LIGHT_LEVEL
@@ -169,7 +167,7 @@ class LightLevelController(BaseResourcesController[Type[LightLevel]]):
         await self.update(id, LightLevelPut(enabled=enabled))
 
 
-class MotionController(BaseResourcesController[Type[Motion]]):
+class MotionController(BaseResourcesController[type[Motion]]):
     """Controller holding and managing HUE resources of type `motion`."""
 
     item_type = ResourceTypes.MOTION
@@ -181,7 +179,7 @@ class MotionController(BaseResourcesController[Type[Motion]]):
         await self.update(id, MotionPut(enabled=enabled))
 
 
-class RelativeRotaryController(BaseResourcesController[Type[Button]]):
+class RelativeRotaryController(BaseResourcesController[type[Button]]):
     """Controller holding and managing HUE resources of type `relative_rotary`."""
 
     item_type = ResourceTypes.RELATIVE_ROTARY
@@ -189,7 +187,7 @@ class RelativeRotaryController(BaseResourcesController[Type[Button]]):
     allow_parser_error = True
 
 
-class TamperController(BaseResourcesController[Type[Tamper]]):
+class TamperController(BaseResourcesController[type[Tamper]]):
     """Controller holding and managing HUE resources of type `tamper`."""
 
     item_type = ResourceTypes.TAMPER
@@ -197,7 +195,7 @@ class TamperController(BaseResourcesController[Type[Tamper]]):
     allow_parser_error = True
 
 
-class TemperatureController(BaseResourcesController[Type[Temperature]]):
+class TemperatureController(BaseResourcesController[type[Temperature]]):
     """Controller holding and managing HUE resources of type `temperature`."""
 
     item_type = ResourceTypes.TEMPERATURE
@@ -205,7 +203,7 @@ class TemperatureController(BaseResourcesController[Type[Temperature]]):
     allow_parser_error = True
 
 
-class ZigbeeConnectivityController(BaseResourcesController[Type[ZigbeeConnectivity]]):
+class ZigbeeConnectivityController(BaseResourcesController[type[ZigbeeConnectivity]]):
     """Controller holding and managing HUE resources of type `zigbee_connectivity`."""
 
     item_type = ResourceTypes.ZIGBEE_CONNECTIVITY

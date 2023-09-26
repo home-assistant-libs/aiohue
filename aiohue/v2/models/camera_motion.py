@@ -4,7 +4,7 @@ Model(s) for camera_motion resource on HUE bridge.
 https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_camera_motion
 """
 from dataclasses import dataclass
-from typing import Optional
+
 from .feature import (
     MotionSensingFeature,
     MotionSensingFeatureSensitivity,
@@ -27,9 +27,9 @@ class CameraMotion:
     # true when sensor is activated, false when deactivated
     enabled: bool
     motion: MotionSensingFeature
-    sensitivity: Optional[MotionSensingFeatureSensitivity]
+    sensitivity: MotionSensingFeatureSensitivity | None
 
-    id_v1: Optional[str] = None
+    id_v1: str | None = None
     type: ResourceTypes = ResourceTypes.CAMERA_MOTION
 
 
@@ -41,5 +41,5 @@ class CameraMotionPut:
     https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_camera_motion__id__put
     """
 
-    enabled: Optional[bool] = None
-    sensitivity: Optional[MotionSensingFeatureSensitivityPut] = None
+    enabled: bool | None = None
+    sensitivity: MotionSensingFeatureSensitivityPut | None = None

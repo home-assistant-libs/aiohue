@@ -6,7 +6,6 @@ https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_contac
 from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
-from typing import Optional
 
 from .resource import ResourceIdentifier, ResourceTypes
 
@@ -43,9 +42,9 @@ class Contact:
     # enabled: required(boolean)
     # true when sensor is activated, false when deactivated
     enabled: bool
-    contact_report: Optional[ContactReport] = None
+    contact_report: ContactReport | None = None
 
-    id_v1: Optional[str] = None
+    id_v1: str | None = None
     type: ResourceTypes = ResourceTypes.CONTACT
 
 
@@ -57,4 +56,4 @@ class ContactPut:
     https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_contact__id__put
     """
 
-    enabled: Optional[bool] = None
+    enabled: bool | None = None

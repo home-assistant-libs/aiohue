@@ -1,26 +1,27 @@
 """Controller holding and managing HUE resources of type `scene`."""
-from typing import TYPE_CHECKING, Any, Optional, Type, Union
+from typing import TYPE_CHECKING, Any
 
-from ..models.feature import DimmingFeaturePut, RecallAction, RecallFeature
-from ..models.resource import ResourceTypes
-from ..models.room import Room
-from ..models.scene import Scene, ScenePut
-from ..models.smart_scene import (
+from aiohue.v2.models.feature import DimmingFeaturePut, RecallAction, RecallFeature
+from aiohue.v2.models.resource import ResourceTypes
+from aiohue.v2.models.room import Room
+from aiohue.v2.models.scene import Scene, ScenePut
+from aiohue.v2.models.smart_scene import (
     SmartScene,
     SmartScenePut,
     SmartSceneRecall,
     SmartSceneRecallAction,
 )
-from ..models.zone import Zone
+from aiohue.v2.models.zone import Zone
+
 from .base import BaseResourcesController, GroupedControllerBase
 
 if TYPE_CHECKING:
-    from .. import HueBridgeV2
+    from aiohue.v2 import HueBridgeV2
 
-SCENE_TYPES = Union[Scene, SmartScene]
+SCENE_TYPES = Scene | SmartScene
 
 
-class RegularScenesController(BaseResourcesController[Type[Scene]]):
+class RegularScenesController(BaseResourcesController[type[Scene]]):
     """Controller holding and managing HUE resources of type `scene`."""
 
     item_type = ResourceTypes.SCENE
@@ -31,8 +32,8 @@ class RegularScenesController(BaseResourcesController[Type[Scene]]):
         self,
         id: str,
         dynamic: bool = False,
-        duration: Optional[int] = None,
-        brightness: Optional[float] = None,
+        duration: int | None = None,
+        brightness: float | None = None,
     ) -> None:
         """Turn on / recall scene."""
         action = RecallAction.DYNAMIC_PALETTE if dynamic else RecallAction.ACTIVE
@@ -41,13 +42,13 @@ class RegularScenesController(BaseResourcesController[Type[Scene]]):
             update_obj.recall.dimming = DimmingFeaturePut(brightness=brightness)
         await self.update(id, update_obj)
 
-    def get_group(self, id: str) -> Union[Room, Zone]:
+    def get_group(self, id: str) -> Room | Zone:
         """Get group attached to given scene id."""
         scene = self[id]
-        return next((x for x in self._bridge.groups if x.id == scene.group.rid))
+        return next(x for x in self._bridge.groups if x.id == scene.group.rid)
 
 
-class SmartScenesController(BaseResourcesController[Type[SmartScene]]):
+class SmartScenesController(BaseResourcesController[type[SmartScene]]):
     """Controller holding and managing HUE resources of type `smart_scene`."""
 
     item_type = ResourceTypes.SMART_SCENE
@@ -61,10 +62,10 @@ class SmartScenesController(BaseResourcesController[Type[SmartScene]]):
         update_obj = SmartScenePut(recall=SmartSceneRecall(action=action))
         await self.update(id, update_obj)
 
-    def get_group(self, id: str) -> Union[Room, Zone]:
+    def get_group(self, id: str) -> Room | Zone:
         """Get group attached to given scene id."""
         scene = self[id]
-        return next((x for x in self._bridge.groups if x.id == scene.group.rid))
+        return next(x for x in self._bridge.groups if x.id == scene.group.rid)
 
 
 class ScenesController(GroupedControllerBase[SCENE_TYPES]):
@@ -92,7 +93,7 @@ class ScenesController(GroupedControllerBase[SCENE_TYPES]):
             return
         await self.scene.recall(id, *args, **kwargs)
 
-    def get_group(self, id: str) -> Union[Room, Zone]:
+    def get_group(self, id: str) -> Room | Zone:
         """Get group attached to given scene id."""
         scene = self[id]
-        return next((x for x in self._bridge.groups if x.id == scene.group.rid))
+        return next(x for x in self._bridge.groups if x.id == scene.group.rid)

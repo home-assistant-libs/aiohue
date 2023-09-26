@@ -4,7 +4,6 @@ Model(s) for zigbee_connectivity resource on HUE bridge.
 https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_zgp_connectivity
 """
 from dataclasses import dataclass
-from typing import Optional
 
 from .resource import ResourceIdentifier, ResourceTypes
 from .zigbee_connectivity import ConnectivityServiceStatus
@@ -22,5 +21,5 @@ class ZgpConnectivity:
     owner: ResourceIdentifier
     status: ConnectivityServiceStatus
     source_id: str
-    id_v1: Optional[str] = None
+    id_v1: str | None = None
     type: ResourceTypes = ResourceTypes.ZGP_CONNECTIVITY

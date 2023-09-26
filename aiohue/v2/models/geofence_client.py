@@ -4,7 +4,6 @@ Model(s) for geofence_client resource on HUE bridge.
 https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_geofence_client
 """
 from dataclasses import dataclass
-from typing import Optional
 
 from .resource import ResourceTypes
 
@@ -19,7 +18,7 @@ class GeofenceClient:
 
     id: str
     name: str
-    id_v1: Optional[str] = None
+    id_v1: str | None = None
     type: ResourceTypes = ResourceTypes.GEOFENCE_CLIENT
 
 
@@ -31,8 +30,8 @@ class GeofenceClientPut:
     https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_geofence_client__id__put
     """
 
-    is_at_home: Optional[bool] = None
-    name: Optional[str] = None
+    is_at_home: bool | None = None
+    name: str | None = None
 
 
 @dataclass
@@ -43,6 +42,6 @@ class GeofenceClientPost:
     https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_geofence_client_post
     """
 
-    is_at_home: Optional[bool] = None
-    name: Optional[str] = None
+    is_at_home: bool | None = None
+    name: str | None = None
     type: ResourceTypes = ResourceTypes.GEOFENCE_CLIENT

@@ -6,9 +6,6 @@ https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_device
 from dataclasses import dataclass
 from enum import Enum
 
-
-from typing import Optional
-
 from .resource import ResourceIdentifier, ResourceTypes
 
 
@@ -30,8 +27,8 @@ class BatteryState(Enum):
 class PowerState:
     """Represent PowerState as retrieved from api."""
 
-    battery_level: Optional[int]
-    battery_state: Optional[BatteryState]
+    battery_level: int | None
+    battery_state: BatteryState | None
 
 
 @dataclass
@@ -46,5 +43,5 @@ class DevicePower:
     owner: ResourceIdentifier
     power_state: PowerState
 
-    id_v1: Optional[str] = None
+    id_v1: str | None = None
     type: ResourceTypes = ResourceTypes.DEVICE_POWER

@@ -7,8 +7,10 @@ from sys import path
 
 path.insert(1, dirname(dirname(abspath(__file__))))
 
-from aiohue import HueBridgeV1
-from aiohue.v1.lights import Light
+import contextlib  # noqa: E402
+
+from aiohue import HueBridgeV1  # noqa: E402
+from aiohue.v1.lights import Light  # noqa: E402
 
 parser = argparse.ArgumentParser(description="AIOHue Example")
 parser.add_argument("host", help="hostname of Hue bridge")
@@ -55,7 +57,5 @@ async def main():
         await bridge.lights.update()
 
 
-try:
+with contextlib.suppress(KeyboardInterrupt):
     asyncio.run(main())
-except KeyboardInterrupt:
-    pass

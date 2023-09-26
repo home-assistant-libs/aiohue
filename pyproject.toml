@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools~=62.3", "wheel~=0.37.1"]
+requires = ["setuptools>=62.3"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -9,7 +9,7 @@ version = "0.0.0"
 license     = {text = "Apache-2.0"}
 description = "MPython module to talk to Philips Hue."
 readme = "README.md"
-requires-python = ">=3.8"
+requires-python = ">=3.10"
 authors     = [
     {name = "Paulus Schoutsen", email = "paulus@paulusschoutsen.nl"},
     {name = "Marcel van der Veldt", email = "m.vanderveldt@outlook.com"}
@@ -34,8 +34,12 @@ test = [
   "pytest-asyncio==0.21.1",
   "pytest-aiohttp==1.0.4",
   "pytest-cov==4.1.0",
-  "pre-commit==3.3.3"
+  "pre-commit==3.3.3",
+  "pylint==2.17.6"
 ]
+
+[tool.codespell]
+ignore-words-list = "dependees,"
 
 [tool.black]
 target-version = ['py311']

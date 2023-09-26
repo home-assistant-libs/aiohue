@@ -1,9 +1,13 @@
 """Controller/model for Hue resource of type Group."""
 from __future__ import annotations
+
+from collections.abc import Coroutine
 from logging import Logger
-from typing import Any, Coroutine, Dict, List, TypedDict
+from typing import Any, TypedDict
 
 from .api import APIItems
+
+# ruff: noqa: D100,D101,D102,D105,D107,PLR0913
 
 
 class Groups(APIItems):
@@ -13,11 +17,11 @@ class Groups(APIItems):
     https://developers.meethue.com/documentation/groups-api
     """
 
-    def __init__(self, logger: Logger, raw: Dict[str, Any], request: Coroutine) -> None:
+    def __init__(self, logger: Logger, raw: dict[str, Any], request: Coroutine) -> None:
         """Initialize instance."""
         super().__init__(logger, raw, request, "groups", Group)
 
-    async def get_all_lights_group(self) -> "Group":
+    async def get_all_lights_group(self) -> Group:
         """Return special all lights group."""
         return Group("0", await self._request("get", "groups/0"), self._request)
 
@@ -37,7 +41,7 @@ class GroupAction(TypedDict, total=False):
     hue: int  # optional
     sat: int  # optional
     effect: str  # optional
-    xy: List[float]  # optional
+    xy: list[float]  # optional
     ct: int  # optional
     alert: str
     colormode: str  # optional
@@ -48,7 +52,7 @@ class Group:
 
     ITEM_TYPE = "groups"
 
-    def __init__(self, id: str, raw: Dict[str, Any], request: Coroutine) -> None:
+    def __init__(self, id: str, raw: dict[str, Any], request: Coroutine) -> None:
         """Initialize instance."""
         self.id = id
         self.raw = raw
@@ -85,13 +89,13 @@ class Group:
         return GroupState(self.raw["state"])
 
     @property
-    def lights(self) -> List[str]:
-        """Return id's of lights that are memebers of this group."""
+    def lights(self) -> list[str]:
+        """Return id's of lights that are members of this group."""
         return self.raw["lights"]
 
     @property
-    def sensors(self) -> List[str]:
-        """Return id's of sensors that are memebers of this group."""
+    def sensors(self) -> list[str]:
+        """Return id's of sensors that are members of this group."""
         return self.raw["sensors"]
 
     async def set_action(
@@ -135,4 +139,4 @@ class Group:
             if value is not None
         }
 
-        await self._request("put", "groups/{}/action".format(self.id), json=data)
+        await self._request("put", f"groups/{self.id}/action", json=data)

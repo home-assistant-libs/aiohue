@@ -6,7 +6,6 @@ https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_relati
 from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
-from typing import Optional, Type, Union
 
 from .resource import ResourceIdentifier, ResourceTypes
 
@@ -19,7 +18,7 @@ class RelativeRotaryAction(Enum):
     UNKNOWN = "unknown"
 
     @classmethod
-    def _missing_(cls: Type, value: object):
+    def _missing_(cls: type, value: object):  # noqa: ARG003
         """Set default enum member if an unknown value is provided."""
         return RelativeRotaryAction.UNKNOWN
 
@@ -46,7 +45,7 @@ class RelativeRotaryRotation:
 
     duration: required(integer - minimum: 0 - maximum: 65534)
     duration of rotation since previous event in case of repeat,
-    amount of rotation since start in case of a start_event. duration is specified in miliseconds.
+    amount of rotation since start in case of a start_event. duration is specified in milliseconds.
     """
 
     direction: RelativeRotaryDirection
@@ -75,11 +74,11 @@ class RelativeRotaryReport:
 class RelativeRotaryFeature:
     """Represent RelativeRotaryFeature object as used by the Hue api."""
 
-    rotary_report: Optional[RelativeRotaryReport] = None
-    last_event: Optional[RelativeRotaryEvent] = None  # deprecated
+    rotary_report: RelativeRotaryReport | None = None
+    last_event: RelativeRotaryEvent | None = None  # deprecated
 
     @property
-    def value(self) -> Union[RelativeRotaryReport, RelativeRotaryEvent, None]:
+    def value(self) -> RelativeRotaryReport | RelativeRotaryEvent | None:
         """Return the actual/current value."""
         # prefer new style attribute (not available on older firmware versions)
         if self.rotary_report is not None:
@@ -98,6 +97,6 @@ class RelativeRotary:
     id: str
     owner: ResourceIdentifier
 
-    relative_rotary: Optional[RelativeRotaryFeature] = None
-    id_v1: Optional[str] = None
+    relative_rotary: RelativeRotaryFeature | None = None
+    id_v1: str | None = None
     type: ResourceTypes = ResourceTypes.RELATIVE_ROTARY

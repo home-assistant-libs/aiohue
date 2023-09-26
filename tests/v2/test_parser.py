@@ -1,7 +1,6 @@
 """Test parser functions that converts the incoming json from API into dataclass models."""
 import datetime
 from dataclasses import dataclass
-from typing import Optional
 
 import pytest
 
@@ -15,7 +14,7 @@ class BasicModelChild:
     a: int
     b: str
     c: str
-    d: Optional[int]
+    d: int | None
 
 
 @dataclass
@@ -25,7 +24,7 @@ class BasicModel:
     a: int
     b: float
     c: str
-    d: Optional[int]
+    d: int | None
     e: BasicModelChild
     f: datetime.datetime
     g: str = "default"

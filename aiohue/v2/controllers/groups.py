@@ -1,8 +1,8 @@
 """Controller holding and managing HUE group resources."""
 import asyncio
-from typing import TYPE_CHECKING, List, Optional, Tuple, Type, Union
+from typing import TYPE_CHECKING, Union
 
-from ..models.feature import (
+from aiohue.v2.models.feature import (
     AlertEffectType,
     AlertFeaturePut,
     ColorFeaturePut,
@@ -12,30 +12,31 @@ from ..models.feature import (
     DynamicsFeaturePut,
     OnFeature,
 )
-from ..models.grouped_light import GroupedLight, GroupedLightPut
-from ..models.light import Light
-from ..models.resource import ResourceTypes
-from ..models.room import Room
-from ..models.scene import Scene
-from ..models.zone import Zone
+from aiohue.v2.models.grouped_light import GroupedLight, GroupedLightPut
+from aiohue.v2.models.light import Light
+from aiohue.v2.models.resource import ResourceTypes
+from aiohue.v2.models.room import Room
+from aiohue.v2.models.scene import Scene
+from aiohue.v2.models.zone import Zone
+
 from .base import BaseResourcesController, GroupedControllerBase
 
 if TYPE_CHECKING:
-    from .. import HueBridgeV2
+    from aiohue.v2 import HueBridgeV2
 
 
-class RoomController(BaseResourcesController[Type[Room]]):
+class RoomController(BaseResourcesController[type[Room]]):
     """Controller holding and managing HUE resources of type `room`."""
 
     item_type = ResourceTypes.ROOM
     item_cls = Room
     allow_parser_error = True
 
-    def get_scenes(self, id: str) -> List[Scene]:
+    def get_scenes(self, id: str) -> list[Scene]:
         """Get all scenes for this room."""
         return [scene for scene in self._bridge.scenes if scene.group.rid == id]
 
-    def get_lights(self, id: str) -> List[Light]:
+    def get_lights(self, id: str) -> list[Light]:
         """Return all lights in given room."""
         if id not in self._items:
             return []
@@ -50,34 +51,32 @@ class RoomController(BaseResourcesController[Type[Room]]):
         return result
 
 
-class ZoneController(BaseResourcesController[Type[Zone]]):
+class ZoneController(BaseResourcesController[type[Zone]]):
     """Controller holding and managing HUE resources of type `zone`."""
 
     item_type = ResourceTypes.ZONE
     item_cls = Zone
     allow_parser_error = True
 
-    def get_scenes(self, id: str) -> List[Scene]:
+    def get_scenes(self, id: str) -> list[Scene]:
         """Get all scenes for this room."""
         return [scene for scene in self._bridge.scenes if scene.group.rid == id]
 
-    def get_lights(self, id: str) -> List[Light]:
+    def get_lights(self, id: str) -> list[Light]:
         """Return all lights in given zone."""
         if id not in self._items:
             return []
-        light_ids = {
-            x.rid for x in self._items[id].children if x.rtype == ResourceTypes.LIGHT
-        }
+        light_ids = {x.rid for x in self._items[id].children if x.rtype == ResourceTypes.LIGHT}
         return [x for x in self._bridge.lights if x.id in light_ids]
 
 
-class GroupedLightController(BaseResourcesController[Type[GroupedLight]]):
+class GroupedLightController(BaseResourcesController[type[GroupedLight]]):
     """Controller holding and managing HUE resources of type `grouped_light`."""
 
     item_type = ResourceTypes.GROUPED_LIGHT
     item_cls = GroupedLight
 
-    def get_zone(self, id: str) -> Union[Room, Zone, None]:
+    def get_zone(self, id: str) -> Room | Zone | None:
         """Get the zone or room connected to grouped light."""
         for group in self._bridge.groups:
             if group.type == ResourceTypes.GROUPED_LIGHT:
@@ -86,7 +85,7 @@ class GroupedLightController(BaseResourcesController[Type[GroupedLight]]):
                 return group
         return None
 
-    def get_lights(self, id: str) -> List[Light]:
+    def get_lights(self, id: str) -> list[Light]:
         """Return lights of the connected room/zone."""
         # Note that this is just a convenience method for backwards compatibility
         if zone := self.get_zone(id):
@@ -114,12 +113,12 @@ class GroupedLightController(BaseResourcesController[Type[GroupedLight]]):
     async def set_state(
         self,
         id: str,
-        on: Optional[bool] = None,
-        brightness: Optional[float] = None,
-        color_xy: Optional[Tuple[float, float]] = None,
-        color_temp: Optional[int] = None,
-        transition_time: Optional[int] = None,
-        alert: Optional[AlertEffectType] = None,
+        on: bool | None = None,
+        brightness: float | None = None,
+        color_xy: tuple[float, float] | None = None,
+        color_temp: int | None = None,
+        transition_time: int | None = None,
+        alert: AlertEffectType | None = None,
     ) -> None:
         """Set supported feature(s) to grouped_light resource."""
         # Sending (color) commands to grouped_light was added in Bridge version 1.50.1950111030
@@ -141,7 +140,7 @@ class GroupedLightController(BaseResourcesController[Type[GroupedLight]]):
         await self.update(id, update_obj)
 
 
-class GroupsController(GroupedControllerBase[Union[Room, Zone, GroupedLight]]):
+class GroupsController(GroupedControllerBase[Union[Room, Zone, GroupedLight]]):  # noqa: UP007
     """Controller grouping resources of both room and zone."""
 
     def __init__(self, bridge: "HueBridgeV2") -> None:

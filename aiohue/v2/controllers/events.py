@@ -5,28 +5,20 @@ import random
 import string
 from asyncio.coroutines import iscoroutinefunction
 from collections import deque
+from collections.abc import Callable
 from enum import Enum
-from typing import (
-    TYPE_CHECKING,
-    Callable,
-    List,
-    NoReturn,
-    Optional,
-    Tuple,
-    TypedDict,
-    Union,
-)
+from typing import TYPE_CHECKING, NoReturn, TypedDict
 
 from aiohttp import ClientTimeout
 from aiohttp.client_exceptions import ClientError
 
-from ...errors import AiohueException, InvalidAPIVersion, InvalidEvent, Unauthorized
-from ...util import NoneType
-from ..models.geofence_client import GeofenceClientPost, GeofenceClientPut
-from ..models.resource import ResourceTypes
+from aiohue.errors import AiohueException, InvalidAPIVersion, InvalidEvent, Unauthorized
+from aiohue.util import NoneType
+from aiohue.v2.models.geofence_client import GeofenceClientPost, GeofenceClientPut
+from aiohue.v2.models.resource import ResourceTypes
 
 if TYPE_CHECKING:
-    from .. import HueBridgeV2
+    from aiohue.v2 import HueBridgeV2
 
 
 CONNECTION_TIMEOUT = 90  # 90 seconds
@@ -51,7 +43,7 @@ class HueEvent(TypedDict):
     # in case of add or update this is a full or partial resource object
     # in case of delete this will include only the
     # ResourceIndentifier (type and id) of the deleted object
-    data: List[dict]
+    data: list[dict]
 
 
 class EventType(Enum):
@@ -67,11 +59,11 @@ class EventType(Enum):
     RECONNECTED = "reconnected"
 
 
-EventCallBackType = Callable[[EventType, Optional[dict]], None]
-EventSubscriptionType = Tuple[
+EventCallBackType = Callable[[EventType, dict | None], None]
+EventSubscriptionType = tuple[
     EventCallBackType,
-    "Optional[Tuple[EventType]]",
-    "Optional[Tuple[ResourceTypes]]",
+    "tuple[EventType] | None",
+    "tuple[ResourceTypes] | None",
 ]
 
 
@@ -85,8 +77,8 @@ class EventStream:
         self._event_queue = asyncio.Queue()
         self._last_event_id = ""
         self._status = EventStreamStatus.DISCONNECTED
-        self._bg_tasks: List[asyncio.Task] = []
-        self._subscribers: List[EventSubscriptionType] = []
+        self._bg_tasks: list[asyncio.Task] = []
+        self._subscribers: list[EventSubscriptionType] = []
         self._logger = bridge.logger.getChild("events")
         self._event_history = deque(maxlen=25)
 
@@ -101,7 +93,7 @@ class EventStream:
         return self._status
 
     @property
-    def last_events(self) -> List[dict]:
+    def last_events(self) -> list[dict]:
         """Return a list with the previous X messages."""
         return self._event_history
 
@@ -126,8 +118,8 @@ class EventStream:
     def subscribe(
         self,
         callback: EventCallBackType,
-        event_filter: Union[EventType, Tuple[EventType], None] = None,
-        resource_filter: Union[ResourceTypes, Tuple[ResourceTypes], None] = None,
+        event_filter: EventType | tuple[EventType] | None = None,
+        resource_filter: ResourceTypes | tuple[ResourceTypes] | None = None,
     ) -> Callable:
         """
         Subscribe to events emitted by the Hue bridge for resources.
@@ -140,9 +132,9 @@ class EventStream:
         Returns:
             function to unsubscribe.
         """
-        if not isinstance(event_filter, (NoneType, tuple)):
+        if not isinstance(event_filter, NoneType | tuple):
             event_filter = (event_filter,)
-        if not isinstance(resource_filter, (NoneType, tuple)):
+        if not isinstance(resource_filter, NoneType | tuple):
             resource_filter = (resource_filter,)
         subscription = (callback, event_filter, resource_filter)
 
@@ -152,7 +144,7 @@ class EventStream:
         self._subscribers.append(subscription)
         return unsubscribe
 
-    def emit(self, type: EventType, data: Optional[dict] = None) -> None:
+    def emit(self, type: EventType, data: dict | None = None) -> None:
         """Emit event to all listeners."""
         for callback, event_filter, resource_filter in self._subscribers:
             if event_filter is not None and type not in event_filter:
@@ -173,7 +165,7 @@ class EventStream:
 
         Read incoming SSE messages and put them in a Queue to be processed.
 
-        Background task that keeps (re)connecting untill stopped.
+        Background task that keeps (re)connecting until stopped.
 
         https://html.spec.whatwg.org/multipage/server-sent-events.html#event-stream-interpretation
         """
@@ -204,7 +196,7 @@ class EventStream:
                         self.emit(EventType.CONNECTED)
                     else:
                         self.emit(EventType.RECONNECTED)
-                    connect_attempts = 1  # reset on succesfull connect
+                    connect_attempts = 1  # reset on successful connect
                     self._logger.debug("Connected to EventStream")
                     # read over incoming messages line by line
                     async for line in resp.content:
@@ -230,8 +222,7 @@ class EventStream:
 
             reconnect_wait = min(2 * connect_attempts, 600)
             self._logger.debug(
-                "Disconnected from EventStream"
-                " - Reconnect will be attempted in %s seconds",
+                "Disconnected from EventStream" " - Reconnect will be attempted in %s seconds",
                 reconnect_wait,
             )
             # every 10 failed connect attempts log warning
@@ -267,7 +258,7 @@ class EventStream:
                 return
             if key == "data":
                 # events is array with multiple events
-                events: List[HueEvent] = json.loads(value)
+                events: list[HueEvent] = json.loads(value)
                 for event in events:
                     if event.get("type") not in ["add", "update", "delete"]:
                         raise InvalidEvent(f"Received invalid event {event}")
@@ -277,9 +268,7 @@ class EventStream:
             if key != "data":
                 self._logger.debug("Received unexpected message: %s - %s", key, value)
         except Exception as exc:  # pylint: disable=broad-except
-            self._logger.warning(
-                "Unable to parse Event message: %s", line, exc_info=exc
-            )
+            self._logger.warning("Unable to parse Event message: %s", line, exc_info=exc)
 
     async def __keepalive_workaround(self) -> NoReturn:
         """Send keepalive command to bridge, abusing geofence client."""
@@ -311,9 +300,7 @@ class EventStream:
 
                 # simply updating the name of the geofence client will result in an event message
                 # the eventstream timeout will detect if our keepalive message was not received
-                random_str = "".join(
-                    (random.choice(string.ascii_lowercase)) for x in range(10)
-                )
+                random_str = "".join((random.choice(string.ascii_lowercase)) for x in range(10))
                 await self._bridge.sensors.geofence_client.update(
                     hass_client.id,
                     GeofenceClientPut(name=f"{prefix}{random_str}", is_at_home=False),

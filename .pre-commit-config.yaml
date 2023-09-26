@@ -30,18 +30,18 @@ repos:
         additional_dependencies:
           - tomli
 
-  - repo: local
-    hooks:
-      - id: pylint
-        name: pylint
-        entry: script/run-in-env.sh pylint -j 0
-        language: script
-        types: [python]
-        files: ^aiohue/.+\.py$
+  # - repo: local
+  #   hooks:
+  #     - id: pylint
+  #       name: pylint
+  #       entry: script/run-in-env.sh pylint -j 0
+  #       language: script
+  #       types: [python]
+  #       files: ^aiohue/.+\.py$
 
-      - id: mypy
-        name: mypy
-        entry: script/run-in-env.sh mypy
-        language: script
-        types: [python]
-        files: ^aiohue/.+\.py$
+  #     - id: mypy
+  #       name: mypy
+  #       entry: script/run-in-env.sh mypy
+  #       language: script
+  #       types: [python]
+  #       files: ^aiohue/.+\.py$

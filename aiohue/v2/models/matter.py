@@ -5,7 +5,6 @@ https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_matter
 """
 from dataclasses import dataclass
 from enum import Enum
-from typing import Optional
 
 from .resource import ResourceTypes
 
@@ -33,7 +32,7 @@ class Matter:
     max_fabrics: int  # Maximum number of fabrics that can exist at a time
     has_qr_code: bool  # Indicates whether a physical QR code is present
 
-    id_v1: Optional[str] = None
+    id_v1: str | None = None
     type: ResourceTypes = ResourceTypes.MATTER
 
 
@@ -45,4 +44,4 @@ class MatterPut:
     https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_matter__id__put
     """
 
-    action: Optional[MatterAction] = None
+    action: MatterAction | None = None

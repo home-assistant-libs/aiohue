@@ -2,13 +2,15 @@
 import argparse
 import asyncio
 import logging
+import time
 from os.path import abspath, dirname
 from sys import path
-import time
 
 path.insert(1, dirname(dirname(abspath(__file__))))
 
-from aiohue import HueBridgeV2
+import contextlib  # noqa: E402
+
+from aiohue import HueBridgeV2  # noqa: E402
 
 parser = argparse.ArgumentParser(description="AIOHue Example")
 parser.add_argument("host", help="hostname of Hue bridge")
@@ -44,7 +46,5 @@ async def main():
         print(f"Completed in {after-before} seconds...")
 
 
-try:
+with contextlib.suppress(KeyboardInterrupt):
     asyncio.run(main())
-except KeyboardInterrupt:
-    pass

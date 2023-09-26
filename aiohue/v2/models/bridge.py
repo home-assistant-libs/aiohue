@@ -4,7 +4,6 @@ Model(s) for bridge resource on HUE bridge.
 https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_bridge
 """
 from dataclasses import dataclass
-from typing import Optional
 
 from .resource import ResourceTypes
 
@@ -28,5 +27,5 @@ class Bridge:
     bridge_id: str
     time_zone: TimeZone
 
-    id_v1: Optional[str] = None
+    id_v1: str | None = None
     type: ResourceTypes = ResourceTypes.BRIDGE

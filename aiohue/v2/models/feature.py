@@ -2,7 +2,6 @@
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
-from typing import List, Optional, Type
 
 
 @dataclass
@@ -30,7 +29,7 @@ class DimmingFeature(DimmingFeatureBase):
     """Represent `Dimming` Feature object as used by various Hue resources."""
 
     # Percentage of the maximum lumen the device outputs on minimum brightness
-    min_dim_level: Optional[float] = None
+    min_dim_level: float | None = None
 
 
 @dataclass
@@ -51,13 +50,14 @@ class DimmingDeltaFeaturePut:
     """
     Represent `DimmingDelta` Feature when updating/sending in PUT requests.
 
-    Brightness percentage of full-scale increase delta to current dimlevel. Clip at Max-level or Min-level.
+    Brightness percentage of full-scale increase delta to current dimlevel.
+    Clip at Max-level or Min-level.
 
     https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_light__id__put
     """
 
     action: DeltaAction
-    brightness_delta: Optional[float] = None
+    brightness_delta: float | None = None
 
 
 @dataclass
@@ -71,7 +71,7 @@ class ColorTemperatureDeltaFeaturePut:
     """
 
     action: DeltaAction
-    mirek_delta: Optional[int] = None
+    mirek_delta: int | None = None
 
 
 @dataclass
@@ -94,7 +94,7 @@ class AlertEffectType(Enum):
     UNKNOWN = "unknown"
 
     @classmethod
-    def _missing_(cls: Type, value: object):
+    def _missing_(cls: type, value: object):  # noqa: ARG003
         """Set default enum member if an unknown value is provided."""
         return AlertEffectType.UNKNOWN
 
@@ -103,7 +103,7 @@ class AlertEffectType(Enum):
 class AlertFeature:
     """Represent AlertFeature object when retrieved from the Hue API."""
 
-    action_values: List[AlertEffectType]
+    action_values: list[AlertEffectType]
 
 
 @dataclass
@@ -185,7 +185,7 @@ class ColorFeature(ColorFeatureBase):
     """Represent `Color` Feature object as used by various Hue resources."""
 
     gamut_type: GamutType = GamutType.OTHER
-    gamut: Optional[ColorGamut] = None
+    gamut: ColorGamut | None = None
 
 
 @dataclass
@@ -214,7 +214,7 @@ class ColorTemperatureFeatureBase:
     """Represent `ColorTemperature` Feature base/required properties."""
 
     # Color temperature in mirek (153-500) or None if light not in CT spectrum
-    mirek: Optional[int]
+    mirek: int | None
 
 
 @dataclass
@@ -242,7 +242,7 @@ class DynamicStatus(Enum):
     UNKNOWN = "unknown"
 
     @classmethod
-    def _missing_(cls: Type, value: object):
+    def _missing_(cls: type, value: object):  # noqa: ARG003
         """Set default enum member if an unknown value is provided."""
         return DynamicStatus.UNKNOWN
 
@@ -268,7 +268,7 @@ class DynamicsFeature:
     status: DynamicStatus
     # status_values: required(array of SupportedDynamicStatus)
     # Statuses in which a lamp could be when playing dynamics.
-    status_values: List[DynamicStatus] = field(default_factory=list)
+    status_values: list[DynamicStatus] = field(default_factory=list)
 
 
 @dataclass
@@ -283,10 +283,10 @@ class DynamicsFeaturePut:
     # speed of dynamic palette. The speed is valid for the dynamic palette if the status
     # is dynamic_palette or for the corresponding effect listed in status.
     # In case of status none, the speed is not valid
-    speed: Optional[float] = None
+    speed: float | None = None
     # duration: (integer – maximum: 6000000)
     # Duration of a light transition in ms. Accuracy is in 100ms steps.
-    duration: Optional[int] = None
+    duration: int | None = None
 
 
 class EffectStatus(Enum):
@@ -299,7 +299,7 @@ class EffectStatus(Enum):
     UNKNOWN = "unknown"
 
     @classmethod
-    def _missing_(cls: Type, value: object):
+    def _missing_(cls: type, value: object):  # noqa: ARG003
         """Set default enum member if an unknown value is provided."""
         return EffectStatus.UNKNOWN
 
@@ -324,8 +324,8 @@ class EffectsFeature:
     """
 
     status: EffectStatus
-    effect_values: List[EffectStatus] = field(default_factory=list)
-    status_values: List[EffectStatus] = field(default_factory=list)
+    effect_values: list[EffectStatus] = field(default_factory=list)
+    status_values: list[EffectStatus] = field(default_factory=list)
 
 
 @dataclass
@@ -347,7 +347,7 @@ class TimedEffectStatus(Enum):
     UNKNOWN = "unknown"
 
     @classmethod
-    def _missing_(cls: Type, value: object):
+    def _missing_(cls: type, value: object):  # noqa: ARG003
         """Set default enum member if an unknown value is provided."""
         return TimedEffectStatus.UNKNOWN
 
@@ -363,15 +363,15 @@ class TimedEffectsFeature:
     """
 
     status: TimedEffectStatus
-    effect: Optional[TimedEffectStatus] = None  # seems to be replaced by 'status'
-    status_values: List[TimedEffectStatus] = field(default_factory=list)
-    effect_values: List[TimedEffectStatus] = field(default_factory=list)
+    effect: TimedEffectStatus | None = None  # seems to be replaced by 'status'
+    status_values: list[TimedEffectStatus] = field(default_factory=list)
+    effect_values: list[TimedEffectStatus] = field(default_factory=list)
     # Duration is mandatory when timed effect is set except for no_effect.
     # Resolution decreases for a larger duration. e.g Effects with duration smaller
     # than a minute will be rounded to a resolution of 1s, while effects with duration
     # larger than an hour will be arounded up to a resolution of 300s.
     # Duration has a max of 21600000 ms.
-    duration: Optional[int] = None
+    duration: int | None = None
 
 
 @dataclass
@@ -382,13 +382,13 @@ class TimedEffectsFeaturePut:
     https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_light__id__put
     """
 
-    effect: Optional[TimedEffectStatus]
+    effect: TimedEffectStatus | None
     # Duration is mandatory when timed effect is set except for no_effect.
     # Resolution decreases for a larger duration. e.g Effects with duration smaller
     # than a minute will be rounded to a resolution of 1s, while effects with duration
     # larger than an hour will be arounded up to a resolution of 300s.
     # Duration has a max of 21600000 ms.
-    duration: Optional[int] = None
+    duration: int | None = None
 
 
 class RecallAction(Enum):
@@ -410,16 +410,16 @@ class RecallFeature:
 
     # action: (RecallAction)
     # When writing active, the actions in the scene are executed on the target.
-    action: Optional[RecallAction] = None
+    action: RecallAction | None = None
     # status: (active, dynamic_palette)
     # When writing active, the actions are executed on the target (legacy, use action instead).
-    status: Optional[str] = None
+    status: str | None = None
     # duration: (integer – maximum: 6000000)
     # transition to the scene within the timeframe given by duration. Accuracy is in 100ms steps.
-    duration: Optional[int] = None
+    duration: int | None = None
     # dimming: (DimmingFeature)
     # override the scene dimming/brightness
-    dimming: Optional[DimmingFeatureBase] = None
+    dimming: DimmingFeatureBase | None = None
 
 
 @dataclass
@@ -447,11 +447,11 @@ class PaletteFeature:
     """
 
     # color: required(array of PaletteFeatureColor – minItems: 0 – maxItems: 9)
-    color: List[PaletteFeatureColor]
+    color: list[PaletteFeatureColor]
     # dimming: required(array of DimmingFeature – minItems: 0 – maxItems: 1)
-    dimming: List[DimmingFeatureBase]
+    dimming: list[DimmingFeatureBase]
     # color_temperature: (array of PaletteFeatureColorTemperature – minItems: 0 – maxItems: 1)
-    color_temperature: List[PaletteFeatureColorTemperature]
+    color_temperature: list[PaletteFeatureColorTemperature]
 
 
 @dataclass
@@ -475,7 +475,7 @@ class GradientFeatureBase:
 
     # points: Collection of gradients points.
     # For control of the gradient points through a PUT a minimum of 2 points need to be provided.
-    points: List[GradientPoint]
+    points: list[GradientPoint]
 
 
 @dataclass
@@ -492,8 +492,8 @@ class GradientFeature(GradientFeatureBase):
     # mode: Mode in which the points are currently being deployed.
     # If not provided during PUT/POST it will be defaulted to interpolated_palette
     mode: GradientMode = GradientMode.INTERPOLATED_PALETTE
-    mode_values: List[GradientMode] = field(default_factory=list)
-    pixel_count: Optional[int] = None  # Number of pixels in the device
+    mode_values: list[GradientMode] = field(default_factory=list)
+    pixel_count: int | None = None  # Number of pixels in the device
 
 
 class Signal(Enum):
@@ -506,7 +506,7 @@ class Signal(Enum):
     UNKNOWN = "unknown"
 
     @classmethod
-    def _missing_(cls: Type, value: object):
+    def _missing_(cls: type, value: object):  # noqa: ARG003
         """Set default enum member if an unknown value is provided."""
         return Signal.UNKNOWN
 
@@ -516,8 +516,8 @@ class SignalingFeatureStatus:
     """Indicates status of active signal. Not available when inactive."""
 
     signal: Signal = Signal.UNKNOWN
-    estimated_end: Optional[datetime] = None
-    colors: Optional[List[ColorFeatureBase]] = None
+    estimated_end: datetime | None = None
+    colors: list[ColorFeatureBase] | None = None
 
 
 @dataclass
@@ -525,7 +525,7 @@ class SignalingFeature:
     """Feature containing signaling properties."""
 
     status: SignalingFeatureStatus = field(default=SignalingFeatureStatus)
-    signal_values: List[Signal] = field(default_factory=list)
+    signal_values: list[Signal] = field(default_factory=list)
 
 
 class PowerUpPreset(Enum):
@@ -538,7 +538,7 @@ class PowerUpPreset(Enum):
     UNKNOWN = "unknown"
 
     @classmethod
-    def _missing_(cls: Type, value: object):
+    def _missing_(cls: type, value: object):  # noqa: ARG003
         """Set default enum member if an unknown value is provided."""
         return PowerUpPreset.UNKNOWN
 
@@ -563,7 +563,7 @@ class PowerUpFeatureOnState:
     """
 
     mode: PowerUpFeatureOnMode
-    on: Optional[OnFeature] = None
+    on: OnFeature | None = None
 
 
 class PowerUpFeatureDimmingMode(Enum):
@@ -583,7 +583,7 @@ class PowerUpFeatureDimmingState:
     """
 
     mode: PowerUpFeatureDimmingMode
-    dimming: Optional[DimmingFeatureBase] = None
+    dimming: DimmingFeatureBase | None = None
 
 
 class PowerUpFeatureColorMode(Enum):
@@ -608,8 +608,8 @@ class PowerUpFeatureColorState:
     """
 
     mode: PowerUpFeatureColorMode
-    color_temperature: Optional[ColorTemperatureFeatureBase] = None
-    color: Optional[ColorFeatureBase] = None
+    color_temperature: ColorTemperatureFeatureBase | None = None
+    color: ColorFeatureBase | None = None
 
 
 @dataclass
@@ -625,8 +625,8 @@ class PowerUpFeature:
     preset: PowerUpPreset
     configured: bool
     on: PowerUpFeatureOnState
-    dimming: Optional[PowerUpFeatureDimmingState] = None
-    color: Optional[PowerUpFeatureColorState] = None
+    dimming: PowerUpFeatureDimmingState | None = None
+    color: PowerUpFeatureColorState | None = None
 
 
 @dataclass
@@ -638,9 +638,9 @@ class PowerUpFeaturePut:
     """
 
     preset: PowerUpPreset
-    on: Optional[PowerUpFeatureOnState] = None
-    dimming: Optional[PowerUpFeatureDimmingState] = None
-    color: Optional[PowerUpFeatureColorState] = None
+    on: PowerUpFeatureOnState | None = None
+    dimming: PowerUpFeatureDimmingState | None = None
+    color: PowerUpFeatureColorState | None = None
 
 
 @dataclass
@@ -664,11 +664,11 @@ class MotionSensingFeature:
     """
 
     motion_report: MotionReport
-    motion: Optional[bool] = None  # deprecated
-    motion_valid: Optional[bool] = None  # deprecated
+    motion: bool | None = None  # deprecated
+    motion_valid: bool | None = None  # deprecated
 
     @property
-    def value(self) -> Optional[bool]:
+    def value(self) -> bool | None:
         """Return the actual/current value."""
         # prefer new style attribute (not available on older firmware versions)
         if self.motion_report is not None:
@@ -684,7 +684,7 @@ class MotionSensingFeatureSensitivityStatus(Enum):
     UNKNOWN = "unknown"
 
     @classmethod
-    def _missing_(cls: Type, value: object):
+    def _missing_(cls: type, value: object):  # noqa: ARG003
         """Set default enum member if an unknown value is provided."""
         return MotionSensingFeatureSensitivityStatus.UNKNOWN
 
@@ -705,7 +705,7 @@ class MotionSensingFeatureSensitivity:
 @dataclass
 class MotionSensingFeatureSensitivityPut:
     """
-    Represent MotionSensingFeatureSensitivity when set/updated with a PUT rquest.
+    Represent MotionSensingFeatureSensitivity when set/updated with a PUT request.
 
     Used by `motion` and `camera_motion` resources.
     """

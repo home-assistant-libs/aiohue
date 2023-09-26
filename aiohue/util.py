@@ -3,7 +3,7 @@ import logging
 from dataclasses import MISSING, asdict, dataclass, fields, is_dataclass
 from datetime import datetime
 from enum import Enum
-from typing import Any, Optional, Set, Type, Union, get_args, get_origin
+from typing import Any, Union, get_args, get_origin
 
 from aiohttp import ClientSession
 
@@ -18,7 +18,7 @@ except:  # noqa
 
 
 async def create_app_key(
-    host: str, device_type: str, websession: Optional[ClientSession] = None
+    host: str, device_type: str, websession: ClientSession | None = None
 ) -> str:
     """
     Create a user on the Hue bridge and return it's app_key for authentication.
@@ -80,7 +80,7 @@ def normalize_bridge_id(bridge_id: str):
     return bridge_id
 
 
-def update_dataclass(cur_obj: dataclass, new_vals: dict) -> Set[str]:
+def update_dataclass(cur_obj: dataclass, new_vals: dict) -> set[str]:
     """
     Update instance of dataclass from (partial) dict.
 
@@ -108,9 +108,7 @@ def update_dataclass(cur_obj: dataclass, new_vals: dict) -> Set[str]:
 def dataclass_to_dict(obj_in: dataclass, skip_none: bool = True) -> dict:
     """Convert dataclass instance to dict, optionally skip None values."""
     if skip_none:
-        dict_obj = asdict(
-            obj_in, dict_factory=lambda x: {k: v for (k, v) in x if v is not None}
-        )
+        dict_obj = asdict(obj_in, dict_factory=lambda x: {k: v for (k, v) in x if v is not None})
     else:
         dict_obj = asdict(obj_in)
 
@@ -120,9 +118,9 @@ def dataclass_to_dict(obj_in: dataclass, skip_none: bool = True) -> dict:
             if value is None and skip_none:
                 continue
             if isinstance(value, dict):
-                value = _clean_dict(value)
+                value = _clean_dict(value)  # noqa: PLW2901
             if isinstance(value, Enum):
-                value = value.value
+                value = value.value  # noqa: PLW2901
             final[key] = value
         return final
 
@@ -134,7 +132,7 @@ def parse_utc_timestamp(datetimestr: str):
     return datetime.fromisoformat(datetimestr.replace("Z", "+00:00"))
 
 
-def _parse_value(name: str, value: Any, value_type: Type, default: Any = MISSING):
+def _parse_value(name: str, value: Any, value_type: type, default: Any = MISSING):
     """Try to parse a value from raw (json) data and type definitions."""
     if value is None and not isinstance(default, type(MISSING)):
         return default
@@ -204,8 +202,7 @@ def dataclass_from_dict(cls: dataclass, dict_obj: dict, strict=False):
         extra_keys = dict_obj.keys() - set([f.name for f in fields(cls)])
         if extra_keys:
             raise KeyError(
-                "Extra key(s) %s not allowed for %s"
-                % (",".join(extra_keys), (str(cls)))
+                "Extra key(s) {} not allowed for {}".format(",".join(extra_keys), (str(cls)))
             )
 
     return cls(
