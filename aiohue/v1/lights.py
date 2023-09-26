@@ -7,9 +7,6 @@ from typing import Any
 
 from .api import APIItems
 
-# ruff: noqa: D100,D101,D102,D105,D107,PLR0913
-
-
 # Represents a CIE 1931 XY coordinate pair.
 XYPoint = namedtuple("XYPoint", ["x", "y"])
 

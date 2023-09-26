@@ -7,8 +7,6 @@ from typing import Any, TypedDict
 
 from .api import APIItems
 
-# ruff: noqa: D100,D101,D102,D105,D107,PLR0913
-
 
 class Groups(APIItems):
     """

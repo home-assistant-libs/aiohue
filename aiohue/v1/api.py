@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-# ruff: noqa: D100,D101,D102,D105,D107,PLR0913
-
 
 class APIItems:
     """Base class for a map of API Items."""

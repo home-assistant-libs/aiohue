@@ -3,8 +3,6 @@ from __future__ import annotations
 
 from .api import APIItems
 
-# ruff: noqa: D100,D101,D102,D103,D105,D107,PLR0913,PLR0911
-
 TYPE_DAYLIGHT = "Daylight"
 
 TYPE_CLIP_GENERICFLAG = "CLIPGenericFlag"

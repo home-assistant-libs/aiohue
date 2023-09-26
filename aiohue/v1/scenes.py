@@ -2,8 +2,6 @@ from __future__ import annotations
 
 from .api import APIItems
 
-# ruff: noqa: D100,D101,D102,D105,D107,PLR0913
-
 
 class Scenes(APIItems):
     """Represents Hue Scenes.

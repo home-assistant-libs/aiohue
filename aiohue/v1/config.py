@@ -4,8 +4,6 @@ from __future__ import annotations
 from collections.abc import Coroutine
 from typing import Any
 
-# ruff: noqa: D100,D101,D102,D105,D107,PLR0913
-
 
 class Config:
     """
