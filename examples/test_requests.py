@@ -1,12 +1,9 @@
 """Example/test script for (stress) testing multiple requests to the bridge."""
 import argparse
 import asyncio
+import contextlib
 import logging
-from os.path import abspath, dirname
-from sys import path
 import time
-
-path.insert(1, dirname(dirname(abspath(__file__))))
 
 from aiohue import HueBridgeV2
 
@@ -44,7 +41,5 @@ async def main():
         print(f"Completed in {after-before} seconds...")
 
 
-try:
+with contextlib.suppress(KeyboardInterrupt):
     asyncio.run(main())
-except KeyboardInterrupt:
-    pass

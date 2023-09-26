@@ -6,9 +6,6 @@ https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_zigbee
 from dataclasses import dataclass
 from enum import Enum
 
-
-from typing import Optional
-
 from .resource import ResourceIdentifier, ResourceTypes
 
 
@@ -39,5 +36,5 @@ class ZigbeeConnectivity:
     owner: ResourceIdentifier
     status: ConnectivityServiceStatus
     mac_address: str
-    id_v1: Optional[str] = None
+    id_v1: str | None = None
     type: ResourceTypes = ResourceTypes.ZIGBEE_CONNECTIVITY

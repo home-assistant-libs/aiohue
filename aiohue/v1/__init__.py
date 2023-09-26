@@ -4,12 +4,12 @@ from __future__ import annotations
 import asyncio
 import logging
 from types import TracebackType
-from typing import Optional, Type
 
 import aiohttp
 from asyncio_throttle import Throttler
 
-from ..errors import BridgeBusy, Unauthorized, raise_from_error
+from aiohue.errors import BridgeBusy, Unauthorized, raise_from_error
+
 from .config import Config
 from .groups import Groups
 from .lights import Lights
@@ -150,21 +150,20 @@ class HueBridgeV1:
                 return data
 
         raise BridgeBusy(
-            f"{retries} requests to the bridge failed, "
-            "its probably overloaded. Giving up."
+            f"{retries} requests to the bridge failed, " "its probably overloaded. Giving up."
         )
 
-    async def __aenter__(self) -> "HueBridgeV1":
+    async def __aenter__(self) -> HueBridgeV1:
         """Return Context manager."""
         await self.initialize()
         return self
 
     async def __aexit__(
         self,
-        exc_type: Type[BaseException],
+        exc_type: type[BaseException],
         exc_val: BaseException,
         exc_tb: TracebackType,
-    ) -> Optional[bool]:
+    ) -> bool | None:
         """Exit context manager."""
         await self.close()
         if exc_val:

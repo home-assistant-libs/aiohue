@@ -4,7 +4,6 @@ Model(s) for grouped_light resource on HUE bridge.
 https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_grouped_light
 """
 from dataclasses import dataclass
-from typing import Optional
 
 from .feature import (
     AlertFeature,
@@ -29,10 +28,10 @@ class GroupedLight:
     """
 
     id: str
-    id_v1: Optional[str] = None
-    on: Optional[OnFeature] = None
-    dimming: Optional[DimmingFeatureBase] = None
-    alert: Optional[AlertFeature] = None
+    id_v1: str | None = None
+    on: OnFeature | None = None
+    dimming: DimmingFeatureBase | None = None
+    alert: AlertFeature | None = None
     type: ResourceTypes = ResourceTypes.GROUPED_LIGHT
 
 
@@ -44,11 +43,11 @@ class GroupedLightPut:
     https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_grouped_light__id__put
     """
 
-    on: Optional[OnFeature] = None
-    dimming: Optional[DimmingFeatureBase] = None
-    dimming_delta: Optional[DimmingDeltaFeaturePut] = None
-    color_temperature: Optional[ColorTemperatureFeaturePut] = None
-    color_temperature_delta: Optional[ColorTemperatureDeltaFeaturePut] = None
-    color: Optional[ColorFeaturePut] = None
-    dynamics: Optional[DynamicsFeaturePut] = None
-    alert: Optional[AlertFeaturePut] = None
+    on: OnFeature | None = None
+    dimming: DimmingFeatureBase | None = None
+    dimming_delta: DimmingDeltaFeaturePut | None = None
+    color_temperature: ColorTemperatureFeaturePut | None = None
+    color_temperature_delta: ColorTemperatureDeltaFeaturePut | None = None
+    color: ColorFeaturePut | None = None
+    dynamics: DynamicsFeaturePut | None = None
+    alert: AlertFeaturePut | None = None

@@ -1,10 +1,7 @@
 """AIOHue example for HUE bridge authentication."""
 import argparse
 import asyncio
-from os.path import abspath, dirname
-from sys import path
-
-path.insert(1, dirname(dirname(abspath(__file__))))
+import contextlib
 
 from aiohue import create_app_key
 
@@ -34,7 +31,5 @@ async def main():
         print()
 
 
-try:
+with contextlib.suppress(KeyboardInterrupt):
     asyncio.run(main())
-except KeyboardInterrupt:
-    pass

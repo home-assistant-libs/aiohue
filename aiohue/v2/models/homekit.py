@@ -5,7 +5,6 @@ https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_homeki
 """
 from dataclasses import dataclass
 from enum import Enum
-from typing import Optional
 
 from .resource import ResourceTypes
 
@@ -38,7 +37,7 @@ class Homekit:
     id: str
     status: HomekitStatus
 
-    id_v1: Optional[str] = None
+    id_v1: str | None = None
     type: ResourceTypes = ResourceTypes.HOMEKIT
 
 
@@ -50,4 +49,4 @@ class HomekitPut:
     https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_homekit__id__put
     """
 
-    action: Optional[HomekitAction] = None
+    action: HomekitAction | None = None

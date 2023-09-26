@@ -4,7 +4,6 @@ Model(s) for bridge_home resource on HUE bridge.
 https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_bridge_home
 """
 from dataclasses import dataclass
-from typing import List, Optional
 
 from .resource import ResourceIdentifier, ResourceTypes
 
@@ -25,8 +24,8 @@ class BridgeHome:
     # Aggregation is per service type, ie every service type which can be grouped has a
     # corresponding definition of grouped type
     # Supported types “light”
-    services: List[ResourceIdentifier]
-    children: List[ResourceIdentifier]
+    services: list[ResourceIdentifier]
+    children: list[ResourceIdentifier]
 
-    id_v1: Optional[str] = None
+    id_v1: str | None = None
     type: ResourceTypes = ResourceTypes.BRIDGE_HOME

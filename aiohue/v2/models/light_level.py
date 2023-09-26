@@ -5,7 +5,6 @@ https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_light_
 """
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Optional
 
 from .resource import ResourceIdentifier, ResourceTypes
 
@@ -26,12 +25,12 @@ class LightLevelReport:
 class LightLevelFeature:
     """Represent LightLevel Feature used by Lightlevel resources."""
 
-    light_level_report: Optional[LightLevelReport]
-    light_level: Optional[int] = None  # deprecated
-    light_level_valid: Optional[bool] = None  # deprecated
+    light_level_report: LightLevelReport | None
+    light_level: int | None = None  # deprecated
+    light_level_valid: bool | None = None  # deprecated
 
     @property
-    def value(self) -> Optional[int]:
+    def value(self) -> int | None:
         """Return the actual/current value."""
         # prefer new style attribute (not available on older firmware versions)
         if self.light_level_report is not None:
@@ -52,7 +51,7 @@ class LightLevel:
     enabled: bool
     light: LightLevelFeature
 
-    id_v1: Optional[str] = None
+    id_v1: str | None = None
     type: ResourceTypes = ResourceTypes.LIGHT_LEVEL
 
 
@@ -64,4 +63,4 @@ class LightLevelPut:
     https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_light_level__id__put
     """
 
-    enabled: Optional[bool] = None
+    enabled: bool | None = None

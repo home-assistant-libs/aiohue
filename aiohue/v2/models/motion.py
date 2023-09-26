@@ -4,14 +4,13 @@ Model(s) for motion resource on HUE bridge.
 https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_motion
 """
 from dataclasses import dataclass
-from typing import Optional
 
-from .resource import ResourceIdentifier, ResourceTypes
 from .feature import (
     MotionSensingFeature,
     MotionSensingFeatureSensitivity,
     MotionSensingFeatureSensitivityPut,
 )
+from .resource import ResourceIdentifier, ResourceTypes
 
 
 @dataclass
@@ -28,9 +27,9 @@ class Motion:
     # true when sensor is activated, false when deactivated
     enabled: bool
     motion: MotionSensingFeature
-    sensitivity: Optional[MotionSensingFeatureSensitivity]
+    sensitivity: MotionSensingFeatureSensitivity | None
 
-    id_v1: Optional[str] = None
+    id_v1: str | None = None
     type: ResourceTypes = ResourceTypes.MOTION
 
 
@@ -42,5 +41,5 @@ class MotionPut:
     https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_motion__id__put
     """
 
-    enabled: Optional[bool] = None
-    sensitivity: Optional[MotionSensingFeatureSensitivityPut] = None
+    enabled: bool | None = None
+    sensitivity: MotionSensingFeatureSensitivityPut | None = None

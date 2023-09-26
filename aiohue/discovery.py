@@ -1,8 +1,8 @@
 """Various helper utility for Hue bridge discovery."""
 from __future__ import annotations
 
+import contextlib
 from dataclasses import dataclass
-from typing import List
 
 from aiohttp import ClientConnectionError, ClientError, ClientSession
 
@@ -43,7 +43,7 @@ async def discover_bridge(
 
 async def discover_nupnp(
     websession: ClientSession | None = None,
-) -> List[DiscoveredHueBridge]:
+) -> list[DiscoveredHueBridge]:
     """Discover bridges via NUPNP."""
     result = []
     websession_provided = websession is not None
@@ -55,10 +55,8 @@ async def discover_nupnp(
                 host = item["internalipaddress"]
                 # the nupnp discovery might return items that are not in local network
                 # connect to each bridge to find out if it's alive.
-                try:
+                with contextlib.suppress(Exception):
                     result.append(await discover_bridge(host, websession))
-                except Exception:  # noqa
-                    pass
         return result
     except ClientError:
         return result
@@ -86,9 +84,7 @@ async def is_hue_bridge(host: str, websession: ClientSession | None = None) -> s
                 # there are some emulator projects out there that emulate a Hue bridge
                 # in a sloppy way, ignore them.
                 # https://github.com/home-assistant-libs/aiohue/issues/134
-                raise ClientConnectionError(
-                    "Invalid API response, not a real Hue bridge?"
-                )
+                raise ClientConnectionError("Invalid API response, not a real Hue bridge?")
             return normalize_bridge_id(data["bridgeid"])
     finally:
         if not websession_provided:
@@ -103,9 +99,7 @@ async def is_v2_bridge(host: str, websession: ClientSession | None = None) -> bo
     try:
         # v2 api is https only and returns a 403 forbidden when no key provided
         url = f"https://{host}/clip/v2/resource"
-        async with websession.get(
-            url, ssl=False, raise_for_status=False, timeout=30
-        ) as res:
+        async with websession.get(url, ssl=False, raise_for_status=False, timeout=30) as res:
             return res.status == 403
     except Exception:  # pylint: disable=broad-except
         # all other status/exceptions means the bridge is not v2 or not reachable at this time

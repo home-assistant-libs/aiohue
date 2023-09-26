@@ -1,0 +1,47 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.4.0
+    hooks:
+      - id: check-yaml
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+      - id: no-commit-to-branch
+        args:
+          - --branch=main
+      - id: debug-statements
+  - repo: https://github.com/charliermarsh/ruff-pre-commit
+    rev: 'v0.0.284'
+    hooks:
+      - id: ruff
+  - repo: https://github.com/psf/black
+    rev: 23.7.0
+    hooks:
+      - id: black
+        args:
+          - --safe
+          - --quiet
+  - repo: https://github.com/codespell-project/codespell
+    rev: v2.2.5
+    hooks:
+      - id: codespell
+        args: []
+        exclude_types: [csv, json]
+        exclude: ^tests/fixtures/
+        additional_dependencies:
+          - tomli
+
+  # - repo: local
+  #   hooks:
+  #     - id: pylint
+  #       name: pylint
+  #       entry: script/run-in-env.sh pylint -j 0
+  #       language: script
+  #       types: [python]
+  #       files: ^aiohue/.+\.py$
+
+  #     - id: mypy
+  #       name: mypy
+  #       entry: script/run-in-env.sh mypy
+  #       language: script
+  #       types: [python]
+  #       files: ^aiohue/.+\.py$

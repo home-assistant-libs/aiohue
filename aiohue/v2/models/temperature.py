@@ -6,7 +6,6 @@ https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_temper
 
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Optional
 
 from .resource import ResourceIdentifier, ResourceTypes
 
@@ -27,12 +26,12 @@ class TemperatureReport:
 class TemperatureSensingFeature:
     """Represent TemperatureFeature."""
 
-    temperature_report: Optional[TemperatureReport] = None
-    temperature: Optional[float] = None  # deprecated
-    temperature_valid: Optional[bool] = None  # deprecated
+    temperature_report: TemperatureReport | None = None
+    temperature: float | None = None  # deprecated
+    temperature_valid: bool | None = None  # deprecated
 
     @property
-    def value(self) -> Optional[float]:
+    def value(self) -> float | None:
         """Return the actual/current value."""
         # prefer new style attribute (not available on older firmware versions)
         if self.temperature_report is not None:
@@ -53,7 +52,7 @@ class Temperature:
     enabled: bool
     temperature: TemperatureSensingFeature
 
-    id_v1: Optional[str] = None
+    id_v1: str | None = None
     type: ResourceTypes = ResourceTypes.TEMPERATURE
 
 
@@ -65,4 +64,4 @@ class TemperaturePut:
     https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_temperature__id__put
     """
 
-    enabled: Optional[bool] = None
+    enabled: bool | None = None

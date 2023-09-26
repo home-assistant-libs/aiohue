@@ -1,49 +1,50 @@
 """Controller holding and managing HUE resources that are of the config type."""
-from typing import TYPE_CHECKING, Optional, Type, Union
+from typing import TYPE_CHECKING, Union
 
 from awesomeversion import AwesomeVersion
 
-from ...errors import BridgeSoftwareOutdated
-from ...util import mac_from_bridge_id
-from ..models.bridge import Bridge
-from ..models.bridge_home import BridgeHome
-from ..models.device import Device
-from ..models.entertainment import Entertainment
-from ..models.entertainment_configuration import EntertainmentConfiguration
-from ..models.homekit import Homekit
-from ..models.matter import Matter
-from ..models.matter_fabric import MatterFabric
-from ..models.resource import ResourceTypes
-from ..models.behavior_script import BehaviorScript
-from ..models.behavior_instance import BehaviorInstance, BehaviorInstancePut
+from aiohue.errors import BridgeSoftwareOutdated
+from aiohue.util import mac_from_bridge_id
+from aiohue.v2.models.behavior_instance import BehaviorInstance, BehaviorInstancePut
+from aiohue.v2.models.behavior_script import BehaviorScript
+from aiohue.v2.models.bridge import Bridge
+from aiohue.v2.models.bridge_home import BridgeHome
+from aiohue.v2.models.device import Device
+from aiohue.v2.models.entertainment import Entertainment
+from aiohue.v2.models.entertainment_configuration import EntertainmentConfiguration
+from aiohue.v2.models.homekit import Homekit
+from aiohue.v2.models.matter import Matter
+from aiohue.v2.models.matter_fabric import MatterFabric
+from aiohue.v2.models.resource import ResourceTypes
+
 from .base import BaseResourcesController, GroupedControllerBase
 
 if TYPE_CHECKING:
-    from .. import HueBridgeV2
+    from aiohue.v2 import HueBridgeV2
 
 
-class BridgeController(BaseResourcesController[Type[Bridge]]):
+class BridgeController(BaseResourcesController[type[Bridge]]):
     """Controller holding and managing HUE resources of type `bridge`."""
 
     item_type = ResourceTypes.BRIDGE
     item_cls = Bridge
 
     @property
-    def id(self) -> Optional[str]:
+    def id(self) -> str | None:
         """Return id of the only/first bridge found in items."""
         for item in self.items:
             return item.id
         return None
 
 
-class BridgeHomeController(BaseResourcesController[Type[BridgeHome]]):
+class BridgeHomeController(BaseResourcesController[type[BridgeHome]]):
     """Controller holding and managing HUE resources of type `bridge_home`."""
 
     item_type = ResourceTypes.BRIDGE_HOME
     item_cls = BridgeHome
 
 
-class EntertainmentController(BaseResourcesController[Type[Entertainment]]):
+class EntertainmentController(BaseResourcesController[type[Entertainment]]):
     """Controller holding and managing HUE resources of type `entertainment`."""
 
     item_type = ResourceTypes.ENTERTAINMENT
@@ -52,7 +53,7 @@ class EntertainmentController(BaseResourcesController[Type[Entertainment]]):
 
 
 class EntertainmentConfigurationController(
-    BaseResourcesController[Type[EntertainmentConfiguration]]
+    BaseResourcesController[type[EntertainmentConfiguration]]
 ):
     """Controller holding and managing HUE resources of type `entertainment_configuration`."""
 
@@ -61,7 +62,7 @@ class EntertainmentConfigurationController(
     allow_parser_error = True
 
 
-class HomekitController(BaseResourcesController[Type[Homekit]]):
+class HomekitController(BaseResourcesController[type[Homekit]]):
     """Controller holding and managing HUE resources of type `homekit`."""
 
     item_type = ResourceTypes.HOMEKIT
@@ -69,7 +70,7 @@ class HomekitController(BaseResourcesController[Type[Homekit]]):
     allow_parser_error = True
 
 
-class MatterController(BaseResourcesController[Type[Matter]]):
+class MatterController(BaseResourcesController[type[Matter]]):
     """Controller holding and managing HUE resources of type `matter`."""
 
     item_type = ResourceTypes.MATTER
@@ -77,7 +78,7 @@ class MatterController(BaseResourcesController[Type[Matter]]):
     allow_parser_error = True
 
 
-class MatterFabricController(BaseResourcesController[Type[MatterFabric]]):
+class MatterFabricController(BaseResourcesController[type[MatterFabric]]):
     """Controller holding and managing HUE resources of type `matter_fabric`."""
 
     item_type = ResourceTypes.MATTER_FABRIC
@@ -85,7 +86,7 @@ class MatterFabricController(BaseResourcesController[Type[MatterFabric]]):
     allow_parser_error = True
 
 
-class BehaviorScriptController(BaseResourcesController[Type[BehaviorScript]]):
+class BehaviorScriptController(BaseResourcesController[type[BehaviorScript]]):
     """Controller holding and managing HUE resources of type `behavior_script`."""
 
     item_type = ResourceTypes.BEHAVIOR_SCRIPT
@@ -93,7 +94,7 @@ class BehaviorScriptController(BaseResourcesController[Type[BehaviorScript]]):
     allow_parser_error = True
 
 
-class BehaviorInstanceController(BaseResourcesController[Type[BehaviorInstance]]):
+class BehaviorInstanceController(BaseResourcesController[type[BehaviorInstance]]):
     """Controller holding and managing HUE resources of type `behavior_instance`."""
 
     item_type = ResourceTypes.BEHAVIOR_INSTANCE
@@ -107,11 +108,11 @@ class BehaviorInstanceController(BaseResourcesController[Type[BehaviorInstance]]
 
 class ConfigController(
     GroupedControllerBase[
-        Union[Bridge, BridgeHome, Entertainment, EntertainmentConfiguration]
+        Union[Bridge, BridgeHome, Entertainment, EntertainmentConfiguration]  # noqa: UP007
     ]
 ):
     """
-    Controller holding and managing HUE resources thare are of the config type.
+    Controller holding and managing HUE resources there are of the config type.
 
     Note that the properties will raise AttributeError if not connected to a bridge.
     """
@@ -147,7 +148,7 @@ class ConfigController(
         """Return the only/first bridge found in items of resource `bridge`."""
         # the Hue resource system in V2 is generic and even the bridge object is returned as array
         # there should be only one object returned here
-        return next((item for item in self.bridges))
+        return next(item for item in self.bridges)
 
     @property
     def bridge_device(self) -> Device:

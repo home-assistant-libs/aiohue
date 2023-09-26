@@ -6,7 +6,6 @@ https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_matter
 from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
-from typing import Optional
 
 from .resource import ResourceTypes
 
@@ -38,7 +37,7 @@ class MatterFabric:
     id: str
     status: MatterFabricStatus
     # NOTE: Only a fabric with status paired has fabric_data
-    fabric_data: Optional[MatterFabricData] = None
-    creation_time: Optional[datetime] = None
-    id_v1: Optional[str] = None
+    fabric_data: MatterFabricData | None = None
+    creation_time: datetime | None = None
+    id_v1: str | None = None
     type: ResourceTypes = ResourceTypes.MATTER_FABRIC

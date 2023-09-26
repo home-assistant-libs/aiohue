@@ -14,21 +14,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4.1.0
-      - name: Set up Python 3.8
+      - uses: actions/checkout@v4.0.0
+      - name: Set up Python 3.10
         uses: actions/setup-python@v4.7.0
         with:
-          python-version: 3.8
+          python-version: "3.10"
       - name: Install dependencies
-        run: |
-          pip install -r requirements.txt
-          pip install -r requirements-test.txt
-      - name: Lint with flake8
-        run: |
-          flake8 aiohue tests
-      - name: Check formatting with black
-        run: |
-          black aiohue tests --check
-      - name: Run tests
-        run: |
-          pytest tests
+        run: pip install . .[test]
+      - name: Lint/test with pre-commit
+        run: pre-commit run --all-files
+      - name: Pytest
+        run: pytest tests

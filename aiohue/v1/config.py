@@ -1,7 +1,8 @@
 """Controller/model for Hue resource of type Config."""
 from __future__ import annotations
 
-from typing import Any, Coroutine, Dict
+from collections.abc import Coroutine
+from typing import Any
 
 
 class Config:
@@ -11,14 +12,14 @@ class Config:
     https://developers.meethue.com/documentation/configuration-api#72_get_configuration
     """
 
-    def __init__(self, raw: Dict[str, Any], request: Coroutine) -> None:
+    def __init__(self, raw: dict[str, Any], request: Coroutine) -> None:
         """Initialize Config resource controller."""
         self.raw = raw
         self._request = request
-        self.bridgeid = self.bridge_id  # for backwards compatability
-        self.mac = self.mac_address  # for backwards compatability
-        self.modelid = self.model_id  # for backwards compatability
-        self.swversion = self.software_version  # for backwards compatability
+        self.bridgeid = self.bridge_id  # for backwards compatibility
+        self.mac = self.mac_address  # for backwards compatibility
+        self.modelid = self.model_id  # for backwards compatibility
+        self.swversion = self.software_version  # for backwards compatibility
 
     @property
     def bridge_id(self) -> str:

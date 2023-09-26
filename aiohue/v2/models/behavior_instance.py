@@ -6,7 +6,6 @@ https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_behavi
 """
 from dataclasses import dataclass
 from enum import Enum
-from typing import List, Optional
 
 from .resource import ResourceIdentifier, ResourceTypes
 
@@ -24,7 +23,7 @@ class BehaviorInstanceStatus(Enum):
 class BehaviorInstanceMetadata:
     """Represent BehaviorInstance Metadata object as used by BehaviorInstance resource."""
 
-    name: Optional[str] = None
+    name: str | None = None
 
 
 class DependencyLevel(Enum):
@@ -56,7 +55,7 @@ class ResourceDependee:
     # target: required(object - Id of the dependency resource (target).
     target: ResourceIdentifier
     level: DependencyLevel
-    type: Optional[str] = None
+    type: str | None = None
 
 
 @dataclass
@@ -79,7 +78,7 @@ class BehaviorInstance:
 
     # dependees: required(array of ResourceDependee)
     # Represents all resources which this instance depends on.
-    dependees: List[ResourceDependee]
+    dependees: list[ResourceDependee]
 
     # status: required(one of initializing, running, disabled, errored)
     # If the script is in the errored state then check errors for more details about the error.
@@ -92,10 +91,10 @@ class BehaviorInstance:
     # state: (object)
     # Script instance state.
     # This read-only property is according to ScriptDefinition.state_schema JSON schema.
-    state: Optional[dict] = None
+    state: dict | None = None
 
-    id_v1: Optional[str] = None
-    migrated_from: Optional[str] = None
+    id_v1: str | None = None
+    migrated_from: str | None = None
     type: ResourceTypes = ResourceTypes.BEHAVIOR_INSTANCE
 
 
@@ -107,14 +106,14 @@ class BehaviorInstancePut:
     https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_behavior_instance__put
     """
 
-    enabled: Optional[bool] = None
+    enabled: bool | None = None
     # configuration: (object) Script configuration.
     # This property is validated using ScriptDefinition.configuration_schema JSON schema.
-    configuration: Optional[dict] = None
+    configuration: dict | None = None
     # trigger: (object) Action that needs to be taken by this script instance.
     # This property is validated using ScriptDefinition.trigger_schema JSON schema.
-    trigger: Optional[dict] = None
-    metadata: Optional[BehaviorInstanceMetadata] = None
+    trigger: dict | None = None
+    metadata: BehaviorInstanceMetadata | None = None
 
 
 @dataclass
@@ -128,5 +127,5 @@ class BehaviorInstancePost:
     script_id: str
     enabled: bool
     configuration: dict
-    metadata: Optional[BehaviorInstanceMetadata] = None
-    migrated_from: Optional[str] = None
+    metadata: BehaviorInstanceMetadata | None = None
+    migrated_from: str | None = None

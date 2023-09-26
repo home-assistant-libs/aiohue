@@ -6,7 +6,6 @@ https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_button
 from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
-from typing import List, Optional, Type
 
 from .resource import ResourceIdentifier, ResourceTypes
 
@@ -23,7 +22,7 @@ class ButtonEvent(Enum):
     UNKNOWN = "unknown"
 
     @classmethod
-    def _missing_(cls: Type, value: object):
+    def _missing_(cls: type, value: object):  # noqa: ARG003
         """Set default enum member if an unknown value is provided."""
         return ButtonEvent.UNKNOWN
 
@@ -44,10 +43,10 @@ class ButtonReport:
 class ButtonFeature:
     """Represent ButtonFeature object as used by the Hue api."""
 
-    button_report: Optional[ButtonReport] = None
-    last_event: Optional[ButtonEvent] = None  # deprecated
-    repeat_interval: Optional[int] = None
-    event_values: Optional[List[ButtonEvent]] = None
+    button_report: ButtonReport | None = None
+    last_event: ButtonEvent | None = None  # deprecated
+    repeat_interval: int | None = None
+    event_values: list[ButtonEvent] | None = None
 
     @property
     def value(self) -> ButtonEvent:
@@ -84,6 +83,6 @@ class Button:
     owner: ResourceIdentifier
     metadata: ButtonMetadata
 
-    button: Optional[ButtonFeature] = None
-    id_v1: Optional[str] = None
+    button: ButtonFeature | None = None
+    id_v1: str | None = None
     type: ResourceTypes = ResourceTypes.BUTTON

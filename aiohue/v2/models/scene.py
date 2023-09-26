@@ -4,7 +4,6 @@ Model(s) for Scene resource on HUE bridge.
 https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_scene
 """
 from dataclasses import dataclass
-from typing import List, Optional
 
 from .feature import (
     ColorFeatureBase,
@@ -24,13 +23,13 @@ from .resource import ResourceIdentifier, ResourceTypes
 class ActionAction:
     """Represent (scene) `ActionAction` model."""
 
-    on: Optional[OnFeature] = None
-    dimming: Optional[DimmingFeatureBase] = None
-    color: Optional[ColorFeatureBase] = None
-    color_temperature: Optional[ColorTemperatureFeatureBase] = None
-    gradient: Optional[GradientFeatureBase] = None
-    effects: Optional[SceneEffectsFeature] = None
-    dynamics: Optional[DynamicsFeaturePut] = None
+    on: OnFeature | None = None
+    dimming: DimmingFeatureBase | None = None
+    color: ColorFeatureBase | None = None
+    color_temperature: ColorTemperatureFeatureBase | None = None
+    gradient: GradientFeatureBase | None = None
+    effects: SceneEffectsFeature | None = None
+    dynamics: DynamicsFeaturePut | None = None
 
 
 @dataclass
@@ -46,7 +45,7 @@ class SceneMetadata:
     """Represent SceneMetadata object as used by the Hue api."""
 
     name: str
-    image: Optional[ResourceIdentifier] = None
+    image: ResourceIdentifier | None = None
 
 
 @dataclass
@@ -71,16 +70,16 @@ class Scene:
     # If the group is changed the scene is updated (e.g. light added/removed)
     group: ResourceIdentifier
     # actions: required(array of Action)
-    # List of actions to be executed synchronously on recal
-    actions: List[Action]
+    # List of actions to be executed synchronously on recall
+    actions: list[Action]
     palette: PaletteFeature
     # speed: required(number – minimum: 0 – maximum: 1)
     speed: float
     # auto_dynamic: whether to automatically start the scene dynamically on active recall
-    auto_dynamic: Optional[bool] = None
+    auto_dynamic: bool | None = None
 
     # optional params
-    id_v1: Optional[str] = None
+    id_v1: str | None = None
 
     type: ResourceTypes = ResourceTypes.SCENE
 
@@ -93,15 +92,15 @@ class ScenePut:
     https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_scene__id__put
     """
 
-    metadata: Optional[SceneMetadataPut] = None
-    actions: Optional[List[Action]] = None
-    palette: Optional[PaletteFeature] = None
-    recall: Optional[RecallFeature] = None
-    palette: Optional[PaletteFeature] = None
+    metadata: SceneMetadataPut | None = None
+    actions: list[Action] | None = None
+    palette: PaletteFeature | None = None
+    recall: RecallFeature | None = None
+    palette: PaletteFeature | None = None
     # speed: (number – minimum: 0 – maximum: 1)
     # Speed of dynamic palette for this scene
-    speed: Optional[float] = None
-    auto_dynamic: Optional[bool] = None
+    speed: float | None = None
+    auto_dynamic: bool | None = None
 
 
 @dataclass
@@ -114,8 +113,8 @@ class ScenePost:
 
     metadata: SceneMetadata
     group: ResourceIdentifier
-    actions: List[Action]
-    palette: Optional[PaletteFeature] = None
-    speed: Optional[float] = None
-    auto_dynamic: Optional[bool] = None
+    actions: list[Action]
+    palette: PaletteFeature | None = None
+    speed: float | None = None
+    auto_dynamic: bool | None = None
     type: ResourceTypes = ResourceTypes.SCENE

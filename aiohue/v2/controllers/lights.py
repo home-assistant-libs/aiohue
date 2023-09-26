@@ -1,8 +1,7 @@
 """Controller holding and managing HUE resources of type `light`."""
 
-from typing import Optional, Tuple, Type, Union
 
-from ..models.feature import (
+from aiohue.v2.models.feature import (
     AlertEffectType,
     AlertFeaturePut,
     ColorFeaturePut,
@@ -13,51 +12,46 @@ from ..models.feature import (
     EffectsFeaturePut,
     EffectStatus,
     OnFeature,
-    TimedEffectStatus,
     TimedEffectsFeaturePut,
+    TimedEffectStatus,
 )
-from ..models.light import Light, LightPut
-from ..models.resource import ResourceTypes
+from aiohue.v2.models.light import Light, LightPut
+from aiohue.v2.models.resource import ResourceTypes
+
 from .base import BaseResourcesController
 
 
-class LightsController(BaseResourcesController[Type[Light]]):
+class LightsController(BaseResourcesController[type[Light]]):
     """Controller holding and managing HUE resources of type `light`."""
 
     item_type = ResourceTypes.LIGHT
     item_cls = Light
 
-    async def turn_on(self, id: str, transition_time: Optional[int] = None) -> None:
+    async def turn_on(self, id: str, transition_time: int | None = None) -> None:
         """Turn on the light."""
         await self.set_state(id, on=True, transition_time=transition_time)
 
-    async def turn_off(self, id: str, transition_time: Optional[int] = None) -> None:
+    async def turn_off(self, id: str, transition_time: int | None = None) -> None:
         """Turn off the light."""
         await self.set_state(id, on=False, transition_time=transition_time)
 
     async def set_brightness(
-        self, id: str, brightness: float, transition_time: Optional[int] = None
+        self, id: str, brightness: float, transition_time: int | None = None
     ) -> None:
         """Set brightness to light. Turn on light if it's currently off."""
-        await self.set_state(
-            id, on=True, brightness=brightness, transition_time=transition_time
-        )
+        await self.set_state(id, on=True, brightness=brightness, transition_time=transition_time)
 
     async def set_color(
-        self, id: str, x: float, y: float, transition_time: Optional[int] = None
+        self, id: str, x: float, y: float, transition_time: int | None = None
     ) -> None:
         """Set color to light. Turn on light if it's currently off."""
-        await self.set_state(
-            id, on=True, color_xy=(x, y), transition_time=transition_time
-        )
+        await self.set_state(id, on=True, color_xy=(x, y), transition_time=transition_time)
 
     async def set_color_temperature(
-        self, id: str, mirek: int, transition_time: Optional[int] = None
+        self, id: str, mirek: int, transition_time: int | None = None
     ) -> None:
         """Set Color Temperature to light. Turn on light if it's currently off."""
-        await self.set_state(
-            id, on=True, color_temp=mirek, transition_time=transition_time
-        )
+        await self.set_state(id, on=True, color_temp=mirek, transition_time=transition_time)
 
     async def set_flash(self, id: str, short: bool = False) -> None:
         """Send Flash command to light."""
@@ -70,13 +64,13 @@ class LightsController(BaseResourcesController[Type[Light]]):
     async def set_state(
         self,
         id: str,
-        on: Optional[bool] = None,
-        brightness: Optional[float] = None,
-        color_xy: Optional[Tuple[float, float]] = None,
-        color_temp: Optional[int] = None,
-        transition_time: Optional[int] = None,
-        alert: Optional[AlertEffectType] = None,
-        effect: Union[EffectStatus, TimedEffectStatus, None] = None,
+        on: bool | None = None,
+        brightness: float | None = None,
+        color_xy: tuple[float, float] | None = None,
+        color_temp: int | None = None,
+        transition_time: int | None = None,
+        alert: AlertEffectType | None = None,
+        effect: EffectStatus | TimedEffectStatus | None = None,
     ) -> None:
         """Set supported feature(s) to light resource."""
         update_obj = LightPut()

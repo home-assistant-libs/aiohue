@@ -1,11 +1,8 @@
 """Example script for using AIOHue connecting to a V1 Hue bridge."""
 import argparse
 import asyncio
+import contextlib
 import logging
-from os.path import abspath, dirname
-from sys import path
-
-path.insert(1, dirname(dirname(abspath(__file__))))
 
 from aiohue import HueBridgeV1
 from aiohue.v1.lights import Light
@@ -55,7 +52,5 @@ async def main():
         await bridge.lights.update()
 
 
-try:
+with contextlib.suppress(KeyboardInterrupt):
     asyncio.run(main())
-except KeyboardInterrupt:
-    pass

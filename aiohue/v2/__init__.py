@@ -2,15 +2,17 @@
 import asyncio
 import logging
 import time
+from collections.abc import Callable, Generator
 from contextlib import asynccontextmanager
 from types import TracebackType
-from typing import Any, Callable, Dict, Generator, List, Optional, Type, Union
+from typing import Any
 from uuid import uuid4
 
 import aiohttp
 from aiohttp import ClientResponse
 
-from ..errors import BridgeBusy, Unauthorized, raise_from_error
+from aiohue.errors import BridgeBusy, Unauthorized, raise_from_error
+
 from .controllers.config import ConfigController
 from .controllers.devices import DevicesController
 from .controllers.events import EventCallBackType, EventStream, EventType
@@ -26,7 +28,7 @@ MAX_RETRIES = 25
 class HueBridgeV2:
     """Control a Philips Hue bridge with V2 API."""
 
-    _websession: Optional[aiohttp.ClientSession] = None
+    _websession: aiohttp.ClientSession | None = None
 
     def __init__(
         self,
@@ -54,7 +56,7 @@ class HueBridgeV2:
         self._disconnect_timestamp = 0
 
     @property
-    def bridge_id(self) -> Optional[str]:
+    def bridge_id(self) -> str | None:
         """Return the ID of the bridge we're currently connected to."""
         return self._config.bridge_id
 
@@ -142,14 +144,13 @@ class HueBridgeV2:
 
         return unsubscribe
 
-    async def request(
-        self, method: str, path: str, **kwargs
-    ) -> Union[dict, List[dict]]:
+    async def request(self, method: str, path: str, **kwargs) -> dict | list[dict]:
         """Make request on the api and return response data."""
         # The bridge will deny more than 3 requests at the same time with a 429 error.
         # We guard ourselves from hitting this error by limiting the TCP Connector for aiohttp
         # but other apps/services are hitting the Hue bridge too so we still
-        # might hit the rate limit/overload at some point so we have some retry logic if this happens.
+        # might hit the rate limit/overload at some point
+        # so we have some retry logic if this happens.
         retries = 0
 
         while retries < MAX_RETRIES:
@@ -180,8 +181,7 @@ class HueBridgeV2:
                 return result["data"]
 
         raise BridgeBusy(
-            f"{retries} requests to the bridge failed, "
-            "its probably overloaded. Giving up."
+            f"{retries} requests to the bridge failed, " "its probably overloaded. Giving up."
         )
 
     @asynccontextmanager
@@ -218,23 +218,25 @@ class HueBridgeV2:
 
     async def __aexit__(
         self,
-        exc_type: Type[BaseException],
+        exc_type: type[BaseException],
         exc_val: BaseException,
         exc_tb: TracebackType,
-    ) -> Optional[bool]:
+    ) -> bool | None:
         """Exit context manager."""
         await self.close()
         if exc_val:
             raise exc_val
         return exc_type
 
-    async def _handle_connect_event(self, type: EventType, item: Any = None) -> None:
+    async def _handle_connect_event(
+        self, type: EventType, item: Any = None  # noqa: ARG002
+    ) -> None:
         """Handle (disconnect) event from the EventStream."""
         # pylint: disable=unused-argument
         if type == EventType.DISCONNECTED:
             # If we receive a disconnect event, we store the timestamp
             self._disconnect_timestamp = time.time()
-        elif type == EventType.RECONNECTED:
+        elif type == EventType.RECONNECTED:  # noqa: SIM102
             # if the time between the disconnect and reconnect is more than 1 minute,
             # we fetch the full state.
             if (time.time() - self._disconnect_timestamp) > 60:
@@ -252,7 +254,7 @@ class HueBridgeV2:
             self._groups.initialize(full_state),
         )
 
-    async def get_diagnostics(self) -> Dict[str, Any]:
+    async def get_diagnostics(self) -> dict[str, Any]:
         """Return a dict with diagnostic information for debugging and support purposes."""
         result = {}
         subst_ids = {}
@@ -277,7 +279,7 @@ class HueBridgeV2:
         for item in self._events.last_events:
             if "id" in item or "rid" in item:
                 # copy the object so we're not modifying the original
-                item = {**item}
+                item = {**item}  # noqa: PLW2901
                 _replace_id(item)
             last_events.append(item)
         result["events"] = last_events

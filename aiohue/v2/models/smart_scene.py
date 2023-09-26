@@ -5,7 +5,6 @@ https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_smart_
 """
 from dataclasses import dataclass
 from enum import Enum
-from typing import List, Optional, Type
 
 from .resource import ResourceIdentifier, ResourceTypes
 from .scene import SceneMetadata, SceneMetadataPut
@@ -30,7 +29,7 @@ class SmartSceneState(Enum):
     INACTIVE = "inactive"
 
     @classmethod
-    def _missing_(cls: Type, value: object):
+    def _missing_(cls: type, value: object):  # noqa: ARG003
         """Set default enum member if an unknown value is provided."""
         return SmartSceneState.INACTIVE
 
@@ -77,8 +76,8 @@ class SmartSceneTimeslot:
 class DayTimeSlots:
     """Represent DayTimeSlots information, used by Smart Scenes."""
 
-    timeslots: List[SmartSceneTimeslot]
-    recurrence: List[WeekDay]
+    timeslots: list[SmartSceneTimeslot]
+    recurrence: list[WeekDay]
 
 
 @dataclass
@@ -122,8 +121,8 @@ class SmartScene:
     # If the group is changed the scene is updated (e.g. light added/removed)
     group: ResourceIdentifier
     # actions: required(array of Action)
-    # List of actions to be executed synchronously on recal
-    week_timeslots: List[DayTimeSlots]
+    # List of actions to be executed synchronously on recall
+    week_timeslots: list[DayTimeSlots]
     # state: the current state of the smart scene.
     # The default state is inactive if no recall is provided
     state: SmartSceneState
@@ -131,8 +130,8 @@ class SmartScene:
     # optional params
 
     # active_timeslot: information on what is the light state for every timeslot of the day
-    active_timeslot: Optional[SmartSceneActiveTimeslot] = None
-    id_v1: Optional[str] = None
+    active_timeslot: SmartSceneActiveTimeslot | None = None
+    id_v1: str | None = None
 
     type: ResourceTypes = ResourceTypes.SMART_SCENE
 
@@ -145,9 +144,9 @@ class SmartScenePut:
     https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_smart_scene__id__put
     """
 
-    metadata: Optional[SceneMetadataPut] = None
-    week_timeslots: Optional[List[DayTimeSlots]] = None
-    recall: Optional[SmartSceneRecall] = None
+    metadata: SceneMetadataPut | None = None
+    week_timeslots: list[DayTimeSlots] | None = None
+    recall: SmartSceneRecall | None = None
 
 
 @dataclass
@@ -160,6 +159,6 @@ class SmartSceneScenePost:
 
     metadata: SceneMetadata
     group: ResourceIdentifier
-    week_timeslots: List[DayTimeSlots]
-    recall: Optional[SmartSceneRecall] = None
+    week_timeslots: list[DayTimeSlots]
+    recall: SmartSceneRecall | None = None
     type: ResourceTypes = ResourceTypes.SMART_SCENE

@@ -5,7 +5,6 @@ https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_light
 """
 from dataclasses import dataclass
 from enum import Enum
-from typing import Optional
 
 from .feature import (
     AlertFeature,
@@ -44,7 +43,7 @@ class LightMetaData:
     """
 
     # Light archetype Deprecated: use archetype on device level
-    archetype: Optional[str]
+    archetype: str | None
     name: str
 
 
@@ -72,17 +71,17 @@ class Light:
     on: OnFeature
     mode: LightMode
 
-    id_v1: Optional[str] = None
-    dimming: Optional[DimmingFeature] = None
-    color_temperature: Optional[ColorTemperatureFeature] = None
-    color: Optional[ColorFeature] = None
-    dynamics: Optional[DynamicsFeature] = None
-    alert: Optional[AlertFeature] = None
-    signaling: Optional[SignalingFeature] = None
-    gradient: Optional[GradientFeature] = None
-    effects: Optional[EffectsFeature] = None
-    timed_effects: Optional[TimedEffectsFeature] = None
-    powerup: Optional[PowerUpFeature] = None
+    id_v1: str | None = None
+    dimming: DimmingFeature | None = None
+    color_temperature: ColorTemperatureFeature | None = None
+    color: ColorFeature | None = None
+    dynamics: DynamicsFeature | None = None
+    alert: AlertFeature | None = None
+    signaling: SignalingFeature | None = None
+    gradient: GradientFeature | None = None
+    effects: EffectsFeature | None = None
+    timed_effects: TimedEffectsFeature | None = None
+    powerup: PowerUpFeature | None = None
 
     type: ResourceTypes = ResourceTypes.LIGHT
 
@@ -136,15 +135,15 @@ class LightPut:
     https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_light__id__put
     """
 
-    on: Optional[OnFeature] = None
-    dimming: Optional[DimmingFeatureBase] = None
-    dimming_delta: Optional[DimmingDeltaFeaturePut] = None
-    color_temperature: Optional[ColorTemperatureFeatureBase] = None
-    color_temperature_delta: Optional[ColorTemperatureDeltaFeaturePut] = None
-    color: Optional[ColorFeatureBase] = None
-    dynamics: Optional[DynamicsFeaturePut] = None
-    alert: Optional[AlertFeaturePut] = None
-    gradient: Optional[GradientFeatureBase] = None
-    effects: Optional[EffectsFeaturePut] = None
-    timed_effects: Optional[TimedEffectsFeaturePut] = None
-    powerup: Optional[PowerUpFeaturePut] = None
+    on: OnFeature | None = None
+    dimming: DimmingFeatureBase | None = None
+    dimming_delta: DimmingDeltaFeaturePut | None = None
+    color_temperature: ColorTemperatureFeatureBase | None = None
+    color_temperature_delta: ColorTemperatureDeltaFeaturePut | None = None
+    color: ColorFeatureBase | None = None
+    dynamics: DynamicsFeaturePut | None = None
+    alert: AlertFeaturePut | None = None
+    gradient: GradientFeatureBase | None = None
+    effects: EffectsFeaturePut | None = None
+    timed_effects: TimedEffectsFeaturePut | None = None
+    powerup: PowerUpFeaturePut | None = None

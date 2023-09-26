@@ -5,7 +5,6 @@ https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_entert
 """
 from dataclasses import dataclass
 from enum import Enum
-from typing import List, Optional
 
 from .feature import Position
 from .resource import ResourceIdentifier, ResourceTypes
@@ -48,7 +47,7 @@ class EntertainmentChannel:
     channel_id: int
     # xyz position of this channel. It is the average position of its members.
     position: Position
-    members: List[SegmentReference]
+    members: list[SegmentReference]
 
 
 class EntertainmentConfigurationType(Enum):
@@ -56,7 +55,7 @@ class EntertainmentConfigurationType(Enum):
 
     SCREEN = "screen"  # Channels are organized around content from a screen
     MUSIC = "music"  # Channels are organized for music synchronization
-    THREEDEESPACE = "3dspace"  # Channels are organized to provide 3d spacial effects
+    THREEDEESPACE = "3dspace"  # Channels are organized to provide 3d spatial effects
     OTHER = "other"  # General use case "
     MONITOR = "monitor"  # Channels are organized around content from monitors
 
@@ -88,8 +87,8 @@ class ServiceLocation:
     """Represent a ServiceLocation object as used by the Hue api."""
 
     service: ResourceIdentifier
-    positions: List[Position]
-    position: Optional[Position] = None
+    positions: list[Position]
+    position: Position | None = None
 
 
 @dataclass
@@ -101,7 +100,7 @@ class EntertainmentLocations:
     If the service has several segments, more than one x,y,z location may be needed
     """
 
-    service_locations: List[ServiceLocation]
+    service_locations: list[ServiceLocation]
 
 
 class EntertainmentConfigurationAction(Enum):
@@ -136,10 +135,10 @@ class EntertainmentConfiguration:
     configuration_type: EntertainmentConfigurationType
     status: EntertainmentStatus
     stream_proxy: StreamingProxy
-    channels: List[EntertainmentChannel]
+    channels: list[EntertainmentChannel]
     locations: EntertainmentLocations
-    light_services: Optional[List[ResourceIdentifier]] = None
+    light_services: list[ResourceIdentifier] | None = None
 
-    active_streamer: Optional[ResourceIdentifier] = None
-    id_v1: Optional[str] = None
+    active_streamer: ResourceIdentifier | None = None
+    id_v1: str | None = None
     type: ResourceTypes = ResourceTypes.ENTERTAINMENT_CONFIGURATION
