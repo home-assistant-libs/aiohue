@@ -666,7 +666,7 @@ class MotionSensingFeature:
     Used by `motion` and `camera_motion` resources.
     """
 
-    motion_report: MotionReport
+    motion_report: MotionReport | None = None
     motion: bool | None = None  # deprecated
     motion_valid: bool | None = None  # deprecated
 
