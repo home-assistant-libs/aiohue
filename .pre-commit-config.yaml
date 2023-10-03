@@ -10,7 +10,7 @@ repos:
           - --branch=main
       - id: debug-statements
   - repo: https://github.com/charliermarsh/ruff-pre-commit
-    rev: 'v0.0.291'
+    rev: 'v0.0.292'
     hooks:
       - id: ruff
   - repo: https://github.com/psf/black
@@ -21,7 +21,7 @@ repos:
           - --safe
           - --quiet
   - repo: https://github.com/codespell-project/codespell
-    rev: v2.2.5
+    rev: v2.2.6
     hooks:
       - id: codespell
         args: []
