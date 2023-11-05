@@ -70,6 +70,7 @@ class Light:
     owner: ResourceIdentifier
     on: OnFeature
     mode: LightMode
+    metadata: LightMetaData
 
     id_v1: str | None = None
     dimming: DimmingFeature | None = None
