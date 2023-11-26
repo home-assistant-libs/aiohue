@@ -72,7 +72,7 @@ class Scene:
     # actions: required(array of Action)
     # List of actions to be executed synchronously on recall
     actions: list[Action]
-    palette: PaletteFeature
+    palette: PaletteFeature | None
     # speed: required(number – minimum: 0 – maximum: 1)
     speed: float
     # auto_dynamic: whether to automatically start the scene dynamically on active recall
