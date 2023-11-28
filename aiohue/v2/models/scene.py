@@ -5,17 +5,10 @@ https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_scene
 """
 from dataclasses import dataclass
 
-from .feature import (
-    ColorFeatureBase,
-    ColorTemperatureFeatureBase,
-    DimmingFeatureBase,
-    DynamicsFeaturePut,
-    GradientFeatureBase,
-    OnFeature,
-    PaletteFeature,
-    RecallFeature,
-    SceneEffectsFeature,
-)
+from .feature import (ColorFeatureBase, ColorTemperatureFeatureBase,
+                      DimmingFeatureBase, DynamicsFeaturePut,
+                      GradientFeatureBase, OnFeature, PaletteFeature,
+                      RecallFeature, SceneEffectsFeature)
 from .resource import ResourceIdentifier, ResourceTypes
 
 
@@ -72,7 +65,6 @@ class Scene:
     # actions: required(array of Action)
     # List of actions to be executed synchronously on recall
     actions: list[Action]
-    palette: PaletteFeature | None
     # speed: required(number – minimum: 0 – maximum: 1)
     speed: float
     # auto_dynamic: whether to automatically start the scene dynamically on active recall
@@ -80,6 +72,7 @@ class Scene:
 
     # optional params
     id_v1: str | None = None
+    palette: PaletteFeature | None = None
 
     type: ResourceTypes = ResourceTypes.SCENE
 
