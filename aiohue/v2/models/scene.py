@@ -5,10 +5,17 @@ https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_scene
 """
 from dataclasses import dataclass
 
-from .feature import (ColorFeatureBase, ColorTemperatureFeatureBase,
-                      DimmingFeatureBase, DynamicsFeaturePut,
-                      GradientFeatureBase, OnFeature, PaletteFeature,
-                      RecallFeature, SceneEffectsFeature)
+from .feature import (
+    ColorFeatureBase,
+    ColorTemperatureFeatureBase,
+    DimmingFeatureBase,
+    DynamicsFeaturePut,
+    GradientFeatureBase,
+    OnFeature,
+    PaletteFeature,
+    RecallFeature,
+    SceneEffectsFeature,
+)
 from .resource import ResourceIdentifier, ResourceTypes
 
 
