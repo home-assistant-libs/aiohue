@@ -82,7 +82,7 @@ class LightsController(BaseResourcesController[type[Light]]):
             update_obj.color = ColorFeaturePut(xy=ColorPoint(*color_xy))
         if color_temp is not None:
             update_obj.color_temperature = ColorTemperatureFeaturePut(mirek=color_temp)
-        if transition_time is not None and effect is None:
+        if transition_time is not None and (effect is None or effect == EffectStatus.NO_EFFECT):
             update_obj.dynamics = DynamicsFeaturePut(duration=transition_time)
         if alert is not None:
             update_obj.alert = AlertFeaturePut(action=alert)
