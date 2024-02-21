@@ -203,7 +203,7 @@ class EventStream:
                     async for line in resp.content:
                         # process the message
                         self.__parse_message(line)
-            except (TimeoutError, ClientError) as err:
+            except (ClientError, asyncio.TimeoutError) as err:
                 # pass expected connection errors because we will auto retry
                 status = getattr(err, "status", None)
                 if status == 404:
@@ -306,6 +306,6 @@ class EventStream:
                     hass_client.id,
                     GeofenceClientPut(name=f"{prefix}{random_str}", is_at_home=False),
                 )
-            except (TimeoutError, ClientError, AiohueException) as err:
+            except (ClientError, asyncio.TimeoutError, AiohueException) as err:
                 # might happen on connection error, we don't want the retry logic to bail out
                 self._logger.debug("Error while sending keepalive: %s", str(err))
