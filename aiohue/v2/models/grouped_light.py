@@ -3,6 +3,7 @@ Model(s) for grouped_light resource on HUE bridge.
 
 https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_grouped_light
 """
+
 from dataclasses import dataclass
 
 from .feature import (

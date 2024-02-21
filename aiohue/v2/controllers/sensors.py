@@ -1,4 +1,5 @@
 """Controller holding and managing HUE resources of sensor type."""
+
 import asyncio
 from typing import TYPE_CHECKING
 

@@ -1,4 +1,5 @@
 """Controller holding and managing HUE resources of type `scene`."""
+
 from typing import TYPE_CHECKING, Any
 
 from aiohue.v2.models.feature import DimmingFeaturePut, RecallAction, RecallFeature

@@ -3,6 +3,7 @@ Model(s) for Room resource on HUE bridge.
 
 https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_room
 """
+
 from dataclasses import dataclass
 from enum import Enum
 

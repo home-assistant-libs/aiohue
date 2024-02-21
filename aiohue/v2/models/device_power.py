@@ -3,6 +3,7 @@ Model(s) for device_power resource on HUE bridge.
 
 https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_device_power
 """
+
 from dataclasses import dataclass
 from enum import Enum
 

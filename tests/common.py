@@ -1,4 +1,5 @@
 """Common utilities for fixtures."""
+
 import json
 import pathlib
 

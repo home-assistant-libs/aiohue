@@ -1,4 +1,5 @@
 """Controller holding and managing HUE resources that are of the config type."""
+
 from typing import TYPE_CHECKING, Union
 
 from awesomeversion import AwesomeVersion

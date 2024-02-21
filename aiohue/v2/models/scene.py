@@ -3,6 +3,7 @@ Model(s) for Scene resource on HUE bridge.
 
 https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_scene
 """
+
 from dataclasses import dataclass
 
 from .feature import (

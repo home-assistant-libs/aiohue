@@ -4,6 +4,7 @@ Model(s) for behavior_instance resource on HUE bridge.
 API to manage instances of script.
 https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_behavior_instance
 """
+
 from dataclasses import dataclass
 from enum import Enum
 

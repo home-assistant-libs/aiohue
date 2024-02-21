@@ -3,6 +3,7 @@ Model(s) for bridge resource on HUE bridge.
 
 https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_bridge
 """
+
 from dataclasses import dataclass
 
 from .resource import ResourceTypes

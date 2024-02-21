@@ -1,4 +1,5 @@
 """Example/test script for (stress) testing multiple requests to the bridge."""
+
 import argparse
 import asyncio
 import contextlib

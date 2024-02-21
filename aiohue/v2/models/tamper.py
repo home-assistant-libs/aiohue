@@ -3,6 +3,7 @@ Model(s) for tamper resource on HUE bridge.
 
 https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_tamper
 """
+
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum

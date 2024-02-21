@@ -1,4 +1,5 @@
 """Utils for aiohue."""
+
 import logging
 from dataclasses import MISSING, asdict, dataclass, fields, is_dataclass
 from datetime import datetime

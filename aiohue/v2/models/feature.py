@@ -1,4 +1,5 @@
 """Feature Schemas used by various Hue resources."""
+
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum

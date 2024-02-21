@@ -3,6 +3,7 @@ Model(s) for geofence_client resource on HUE bridge.
 
 https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_geofence_client
 """
+
 from dataclasses import dataclass
 
 from .resource import ResourceTypes

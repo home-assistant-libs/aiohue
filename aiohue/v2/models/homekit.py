@@ -3,6 +3,7 @@ Model(s) for homekit resource on HUE bridge.
 
 https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_homekit
 """
+
 from dataclasses import dataclass
 from enum import Enum
 
