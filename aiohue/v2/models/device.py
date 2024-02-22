@@ -3,6 +3,7 @@ Model(s) for device resource on HUE bridge.
 
 https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_device
 """
+
 from dataclasses import dataclass
 from enum import Enum
 

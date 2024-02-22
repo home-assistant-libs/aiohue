@@ -1,4 +1,5 @@
 """Test v2 bridge."""
+
 from unittest.mock import patch
 
 from aiohue import HueBridgeV2

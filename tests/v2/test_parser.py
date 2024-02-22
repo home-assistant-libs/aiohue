@@ -1,4 +1,5 @@
 """Test parser functions that converts the incoming json from API into dataclass models."""
+
 import datetime
 from dataclasses import dataclass
 

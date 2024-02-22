@@ -3,6 +3,7 @@ Model(s) for button resource on HUE bridge.
 
 https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_button
 """
+
 from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum

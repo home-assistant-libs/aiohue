@@ -1,4 +1,5 @@
 """AIOHue implementation for HueBridge over V1/legacy api."""
+
 from __future__ import annotations
 
 import asyncio

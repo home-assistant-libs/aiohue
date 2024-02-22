@@ -1,6 +1,5 @@
 """Controller holding and managing HUE resources of type `light`."""
 
-
 from aiohue.v2.models.feature import (
     AlertEffectType,
     AlertFeaturePut,

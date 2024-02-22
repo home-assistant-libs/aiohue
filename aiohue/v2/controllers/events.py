@@ -1,4 +1,5 @@
 """Handle connecting to the HUE Eventstream and distribute events."""
+
 import asyncio
 import json
 import random

@@ -1,4 +1,5 @@
 """Controller holding and managing HUE group resources."""
+
 import asyncio
 from typing import TYPE_CHECKING, Union
 

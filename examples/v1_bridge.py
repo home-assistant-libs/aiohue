@@ -1,4 +1,5 @@
 """Example script for using AIOHue connecting to a V1 Hue bridge."""
+
 import argparse
 import asyncio
 import contextlib

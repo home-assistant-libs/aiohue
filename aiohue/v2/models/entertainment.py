@@ -3,6 +3,7 @@ Model(s) for entertainment resource on HUE bridge.
 
 https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_entertainment
 """
+
 from dataclasses import dataclass
 
 from .entertainment_configuration import Segment

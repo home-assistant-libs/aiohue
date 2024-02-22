@@ -1,4 +1,5 @@
 """AIOHue example for HUE bridge discovery."""
+
 import asyncio
 import contextlib
 

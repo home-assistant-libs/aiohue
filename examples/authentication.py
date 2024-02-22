@@ -1,4 +1,5 @@
 """AIOHue example for HUE bridge authentication."""
+
 import argparse
 import asyncio
 import contextlib

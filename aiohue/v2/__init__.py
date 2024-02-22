@@ -1,4 +1,5 @@
 """Control a Philips Hue bridge with V2 API."""
+
 import asyncio
 import logging
 import time

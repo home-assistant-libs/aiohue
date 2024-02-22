@@ -3,6 +3,7 @@ Model(s) for Smart Scene resource on HUE bridge.
 
 https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_smart_scene
 """
+
 from dataclasses import dataclass
 from enum import Enum
 

@@ -42,11 +42,11 @@ test = [
 ignore-words-list = "dependees,"
 
 [tool.black]
-target-version = ['py311']
+target-version = ['py310']
 line-length = 100
 
 [tool.mypy]
-python_version = "3.11"
+python_version = "3.10"
 check_untyped_defs = true
 #disallow_any_generics = true
 disallow_incomplete_defs = true
@@ -93,7 +93,7 @@ ignore = ["PLR2004", "N818"]
 extend-exclude = ["app_vars.py"]
 unfixable = ["F841"]
 line-length = 100
-target-version = "py311"
+target-version = "py310"
 
 [tool.ruff.per-file-ignores]
 "aiohue/v1/*" = ["D100", "D101", "D102", "D103", "D105", "D107", "PLR0911", "PLR0913"]

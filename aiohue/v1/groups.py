@@ -1,4 +1,5 @@
 """Controller/model for Hue resource of type Group."""
+
 from __future__ import annotations
 
 from collections.abc import Coroutine

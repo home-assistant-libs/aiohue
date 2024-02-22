@@ -3,6 +3,7 @@ Model(s) for matter resource on HUE bridge.
 
 https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_matter
 """
+
 from dataclasses import dataclass
 from enum import Enum
 

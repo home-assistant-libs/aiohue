@@ -3,6 +3,7 @@ Model(s) for light_level resource on HUE bridge.
 
 https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_light_level
 """
+
 from dataclasses import dataclass
 from datetime import datetime
 
