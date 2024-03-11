@@ -49,6 +49,7 @@ class ResourceTypes(Enum):
     CONTACT = "contact"
     TAMPER = "tamper"
     CAMERA_MOTION = "camera_motion"
+    PRIVATE_GROUP = "private_group"
     UNKNOWN = "unknown"
 
     @classmethod
