@@ -182,7 +182,8 @@ class HueBridgeV2:
                 return result["data"]
 
         raise BridgeBusy(
-            f"{retries} requests to the bridge failed, " "its probably overloaded. Giving up."
+            f"{retries} requests to the bridge failed, "
+            "its probably overloaded. Giving up."
         )
 
     @asynccontextmanager
@@ -230,7 +231,9 @@ class HueBridgeV2:
         return exc_type
 
     async def _handle_connect_event(
-        self, type: EventType, item: Any = None  # noqa: ARG002
+        self,
+        type: EventType,
+        item: Any = None,  # noqa: ARG002
     ) -> None:
         """Handle (disconnect) event from the EventStream."""
         # pylint: disable=unused-argument

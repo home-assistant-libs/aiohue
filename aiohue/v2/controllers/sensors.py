@@ -68,7 +68,8 @@ class ButtonController(BaseResourcesController[type[Button]]):
         # Handle longpress workaround if needed
         if not (
             evt_type == EventType.RESOURCE_UPDATED
-            and evt_data.get("button", {}).get("last_event") == ButtonEvent.INITIAL_PRESS.value
+            and evt_data.get("button", {}).get("last_event")
+            == ButtonEvent.INITIAL_PRESS.value
         ):
             return
 

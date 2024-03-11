@@ -223,7 +223,8 @@ class EventStream:
 
             reconnect_wait = min(2 * connect_attempts, 600)
             self._logger.debug(
-                "Disconnected from EventStream" " - Reconnect will be attempted in %s seconds",
+                "Disconnected from EventStream"
+                " - Reconnect will be attempted in %s seconds",
                 reconnect_wait,
             )
             # every 10 failed connect attempts log warning
@@ -269,7 +270,9 @@ class EventStream:
             if key != "data":
                 self._logger.debug("Received unexpected message: %s - %s", key, value)
         except Exception as exc:  # pylint: disable=broad-except
-            self._logger.warning("Unable to parse Event message: %s", line, exc_info=exc)
+            self._logger.warning(
+                "Unable to parse Event message: %s", line, exc_info=exc
+            )
 
     async def __keepalive_workaround(self) -> NoReturn:
         """Send keepalive command to bridge, abusing geofence client."""
@@ -301,7 +304,9 @@ class EventStream:
 
                 # simply updating the name of the geofence client will result in an event message
                 # the eventstream timeout will detect if our keepalive message was not received
-                random_str = "".join((random.choice(string.ascii_lowercase)) for x in range(10))
+                random_str = "".join(
+                    (random.choice(string.ascii_lowercase)) for x in range(10)
+                )
                 await self._bridge.sensors.geofence_client.update(
                     hass_client.id,
                     GeofenceClientPut(name=f"{prefix}{random_str}", is_at_home=False),

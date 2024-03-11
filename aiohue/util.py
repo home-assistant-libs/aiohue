@@ -103,7 +103,9 @@ def update_dataclass(cur_obj: dataclass, new_vals: dict) -> set[str]:
 def dataclass_to_dict(obj_in: dataclass, skip_none: bool = True) -> dict:
     """Convert dataclass instance to dict, optionally skip None values."""
     if skip_none:
-        dict_obj = asdict(obj_in, dict_factory=lambda x: {k: v for (k, v) in x if v is not None})
+        dict_obj = asdict(
+            obj_in, dict_factory=lambda x: {k: v for (k, v) in x if v is not None}
+        )
     else:
         dict_obj = asdict(obj_in)
 
@@ -233,7 +235,9 @@ def dataclass_from_dict(cls: dataclass, dict_obj: dict, strict=False):
         extra_keys = dict_obj.keys() - set([f.name for f in fields(cls)])
         if extra_keys:
             raise KeyError(
-                "Extra key(s) {} not allowed for {}".format(",".join(extra_keys), (str(cls)))
+                "Extra key(s) {} not allowed for {}".format(
+                    ",".join(extra_keys), (str(cls))
+                )
             )
 
     return cls(

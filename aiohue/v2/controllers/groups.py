@@ -67,7 +67,9 @@ class ZoneController(BaseResourcesController[type[Zone]]):
         """Return all lights in given zone."""
         if id not in self._items:
             return []
-        light_ids = {x.rid for x in self._items[id].children if x.rtype == ResourceTypes.LIGHT}
+        light_ids = {
+            x.rid for x in self._items[id].children if x.rtype == ResourceTypes.LIGHT
+        }
         return [x for x in self._bridge.lights if x.id in light_ids]
 
 
