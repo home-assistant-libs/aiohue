@@ -503,10 +503,10 @@ class GradientFeature(GradientFeatureBase):
 class Signal(Enum):
     """Enum with various signals."""
 
-    NO_SIGNAL = "no_signal"
-    ON_OFF = "on_off"
-    ON_OFF_COLOR = "on_off_color"
-    ALTERNATING = "alternating"
+    NO_SIGNAL = "no_signal"  # No signal is active. Write “no_signal” to stop active signal.
+    ON_OFF = "on_off"  # Toggles between max brightness and Off in fixed color.
+    ON_OFF_COLOR = "on_off_color"  # Toggles between off and max brightness with color provided.
+    ALTERNATING = "alternating"  # Alternates between 2 provided colors.
     UNKNOWN = "unknown"
 
     @classmethod
@@ -528,8 +528,21 @@ class SignalingFeatureStatus:
 class SignalingFeature:
     """Feature containing signaling properties."""
 
-    status: SignalingFeatureStatus = field(default=SignalingFeatureStatus)
+    # status: Indicates status of active signal. Not available when inactive.
+    status: SignalingFeatureStatus | None = None
+    # signal_values: Signals that the light supports.
     signal_values: list[Signal] = field(default_factory=list)
+
+
+@dataclass
+class SignalingFeaturePut:
+    """Represent SignalingFeature object when sent to the Hue API."""
+
+    signal: Signal
+    # Duration has a max of 65534000 ms and a stepsize of 1 second.
+    # Values in between steps will be rounded. Duration is ignored for no_signal.
+    duration: int | None = None
+    colors: list[ColorFeaturePut] | None = None
 
 
 class PowerUpPreset(Enum):
