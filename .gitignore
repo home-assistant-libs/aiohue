@@ -8,3 +8,4 @@ aiohue.egg-info
 .DS_Store
 .idea
 *.code-workspace
+.coverage

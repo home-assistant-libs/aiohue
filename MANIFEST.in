@@ -1,5 +1,0 @@
-include README.md
-include requirements.txt
-include LICENSE
-graft aiohue
-recursive-exclude * *.py[co]

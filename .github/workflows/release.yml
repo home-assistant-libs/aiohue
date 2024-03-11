@@ -1,8 +1,10 @@
-name: Publish releases
+name: Publish release to PyPi
 
 on:
   release:
     types: [published]
+env:
+  PYTHON_VERSION: "3.12"
 
 jobs:
   build-and-publish-pypi:
@@ -11,14 +13,27 @@ jobs:
     outputs:
       version: ${{ steps.vars.outputs.tag }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4.1.1
       - name: Get tag
         id: vars
         run: echo "tag=${GITHUB_REF#refs/*/}" >> $GITHUB_OUTPUT
-      - name: Set up Python 3.10
+      - name: Validate version number
+        run: >-
+          if [[ "${{ github.event.release.prerelease }}" == "true" ]]; then
+            if ! [[ "${{ steps.vars.outputs.tag }}" =~ "b" ]]; then
+            echo "Pre-release: Tag is missing beta suffix (${{ steps.vars.outputs.tag }})"
+              exit 1
+            fi
+          else
+            if [[ "${{ steps.vars.outputs.tag }}" =~ "b" ]]; then
+              echo "Release: Tag must not have a beta suffix (${{ steps.vars.outputs.tag }})"
+              exit 1
+            fi
+          fi
+      - name: Set up Python ${{ env.PYTHON_VERSION }}
         uses: actions/setup-python@v5.1.0
         with:
-          python-version: "3.10"
+          python-version: ${{ env.PYTHON_VERSION }}
       - name: Install build
         run: >-
           pip install build tomli tomli-w
@@ -35,7 +50,7 @@ jobs:
 
           with open("pyproject.toml", "wb") as f:
             tomli_w.dump(pyproject, f)
-      - name: Build
+      - name: Build python package
         run: >-
           python3 -m build
       - name: Publish release to PyPI
