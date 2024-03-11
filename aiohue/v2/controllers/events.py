@@ -145,10 +145,10 @@ class EventStream:
         self._subscribers.append(subscription)
         return unsubscribe
 
-    def emit(self, type: EventType, data: dict | None = None) -> None:
+    def emit(self, event_type: EventType, data: dict | None = None) -> None:
         """Emit event to all listeners."""
         for callback, event_filter, resource_filter in self._subscribers:
-            if event_filter is not None and type not in event_filter:
+            if event_filter is not None and event_type not in event_filter:
                 continue
             if (
                 data is not None
@@ -157,9 +157,9 @@ class EventStream:
             ):
                 continue
             if iscoroutinefunction(callback):
-                asyncio.create_task(callback(type, data))
+                asyncio.create_task(callback(event_type, data))
             else:
-                callback(type, data)
+                callback(event_type, data)
 
     async def __event_reader(self) -> NoReturn:
         """

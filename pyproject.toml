@@ -113,6 +113,9 @@ ignore-imports = true
 [tool.pylint.FORMAT]
 max-line-length = 88
 
+[tool.pylint.VARIABLES]
+allowed-redefined-builtins = ["id"]
+
 [tool.pytest.ini_options]
 addopts = "--cov"
 asyncio_mode = "auto"

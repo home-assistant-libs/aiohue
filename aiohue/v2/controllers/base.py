@@ -190,6 +190,7 @@ class BaseResourcesController(Generic[CLIPResource]):
         self, evt_type: EventType, evt_data: dict | None, is_reconnect: bool = False
     ) -> None:
         """Handle incoming event for this resource from the EventStream."""
+        # pylint: disable=too-many-return-statements,too-many-branches
         if evt_data is None:
             return
         item_id = evt_data.get("rid", evt_data["id"])

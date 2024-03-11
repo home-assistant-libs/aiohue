@@ -35,8 +35,8 @@ class BridgeSoftwareOutdated(AiohueException):
 ERRORS = {1: Unauthorized, 101: LinkButtonNotPressed}
 
 
-def raise_from_error(error: dict):
+def raise_from_error(error: dict) -> AiohueException:
     """Raise Exception based on Hue error."""
-    type = error.get("type")
-    cls = ERRORS.get(type, AiohueException)
+    _type = error.get("type")
+    cls = ERRORS.get(_type, AiohueException)
     raise cls(error["description"])
