@@ -17,7 +17,7 @@ from .feature import (
     DynamicsFeaturePut,
     OnFeature,
 )
-from .resource import ResourceTypes
+from .resource import ResourceIdentifier, ResourceTypes
 
 
 @dataclass
@@ -29,6 +29,7 @@ class GroupedLight:
     """
 
     id: str
+    owner: ResourceIdentifier
     id_v1: str | None = None
     on: OnFeature | None = None
     dimming: DimmingFeatureBase | None = None
