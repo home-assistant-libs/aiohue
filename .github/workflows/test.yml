@@ -36,6 +36,7 @@ jobs:
       matrix:
         python-version:
           - "3.11"
+          - "3.12"
 
     steps:
       - name: Check out code from GitHub
