@@ -2,7 +2,11 @@
   {
     "id": "9c489c26-9e34-4fcd-8324-a57e3a664cc0",
     "status": "unpaired",
-    "status_values": ["pairing", "paired", "unpaired"],
+    "status_values": [
+      "pairing",
+      "paired",
+      "unpaired"
+    ],
     "type": "homekit"
   },
   {
@@ -581,7 +585,9 @@
   },
   {
     "alert": {
-      "action_values": ["breathe"]
+      "action_values": [
+        "breathe"
+      ]
     },
     "color": {
       "gamut": {
@@ -620,7 +626,10 @@
       "speed": 0.627,
       "speed_valid": true,
       "status": "dynamic_palette",
-      "status_values": ["none", "dynamic_palette"]
+      "status_values": [
+        "none",
+        "dynamic_palette"
+      ]
     },
     "id": "02cba059-9c2c-4d45-97e4-4f79b1bfbaa1",
     "id_v1": "/lights/29",
@@ -640,7 +649,9 @@
   },
   {
     "alert": {
-      "action_values": ["breathe"]
+      "action_values": [
+        "breathe"
+      ]
     },
     "color_temperature": {
       "mirek": 369,
@@ -658,7 +669,9 @@
       "speed": 0.0,
       "speed_valid": false,
       "status": "none",
-      "status_values": ["none"]
+      "status_values": [
+        "none"
+      ]
     },
     "id": "3a6710fa-4474-4eba-b533-5e6e72968feb",
     "id_v1": "/lights/4",
@@ -678,7 +691,9 @@
   },
   {
     "alert": {
-      "action_values": ["breathe"]
+      "action_values": [
+        "breathe"
+      ]
     },
     "color": {
       "gamut": {
@@ -717,7 +732,10 @@
       "speed": 0.627,
       "speed_valid": true,
       "status": "dynamic_palette",
-      "status_values": ["none", "dynamic_palette"]
+      "status_values": [
+        "none",
+        "dynamic_palette"
+      ]
     },
     "id": "b3fe71ef-d0ef-48de-9355-d9e604377df0",
     "id_v1": "/lights/16",
@@ -737,13 +755,17 @@
   },
   {
     "alert": {
-      "action_values": ["breathe"]
+      "action_values": [
+        "breathe"
+      ]
     },
     "dynamics": {
       "speed": 0.0,
       "speed_valid": false,
       "status": "none",
-      "status_values": ["none"]
+      "status_values": [
+        "none"
+      ]
     },
     "id": "7697ac8a-25aa-4576-bb40-0036c0db15b9",
     "id_v1": "/lights/23",
@@ -763,7 +785,9 @@
   },
   {
     "alert": {
-      "action_values": ["breathe"]
+      "action_values": [
+        "breathe"
+      ]
     },
     "color": {
       "gamut": {
@@ -794,7 +818,10 @@
       "speed": 0.6389,
       "speed_valid": true,
       "status": "dynamic_palette",
-      "status_values": ["none", "dynamic_palette"]
+      "status_values": [
+        "none",
+        "dynamic_palette"
+      ]
     },
     "id": "74a45fee-1b3d-4553-b5ab-040da8a10cfd",
     "id_v1": "/lights/11",
@@ -814,7 +841,9 @@
   },
   {
     "alert": {
-      "action_values": ["breathe"]
+      "action_values": [
+        "breathe"
+      ]
     },
     "color": {
       "gamut": {
@@ -853,7 +882,10 @@
       "speed": 0.627,
       "speed_valid": true,
       "status": "dynamic_palette",
-      "status_values": ["none", "dynamic_palette"]
+      "status_values": [
+        "none",
+        "dynamic_palette"
+      ]
     },
     "gradient": {
       "points": [
@@ -1361,34 +1393,52 @@
   },
   {
     "alert": {
-      "action_values": ["breathe"]
+      "action_values": [
+        "breathe"
+      ]
     },
     "id": "f2416154-9607-43ab-a684-4453108a200e",
     "id_v1": "/groups/5",
     "on": {
       "on": true
     },
+    "owner": {
+      "rid": "a3fbc86a-bf4c-4c69-899d-d6eafc37e288",
+      "rtype": "bridge_home"
+    },
     "type": "grouped_light"
   },
   {
     "alert": {
-      "action_values": ["breathe"]
+      "action_values": [
+        "breathe"
+      ]
     },
     "id": "0a74457c-cb8d-44c2-a5a5-dcb7b3675550",
     "id_v1": "/groups/0",
     "on": {
       "on": true
     },
+    "owner": {
+      "rid": "a3fbc86a-bf4c-4c69-899d-d6eafc37e288",
+      "rtype": "bridge_home"
+    },
     "type": "grouped_light"
   },
   {
     "alert": {
-      "action_values": ["breathe"]
+      "action_values": [
+        "breathe"
+      ]
     },
     "id": "e937f8db-2f0e-49a0-936e-027e60e15b34",
     "id_v1": "/groups/3",
     "on": {
       "on": false
+    },
+    "owner": {
+      "rid": "a3fbc86a-bf4c-4c69-899d-d6eafc37e288",
+      "rtype": "bridge_home"
     },
     "type": "grouped_light"
   },

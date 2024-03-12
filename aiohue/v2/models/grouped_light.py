@@ -16,8 +16,10 @@ from .feature import (
     DimmingFeatureBase,
     DynamicsFeaturePut,
     OnFeature,
+    SignalingFeature,
+    SignalingFeaturePut,
 )
-from .resource import ResourceTypes
+from .resource import ResourceIdentifier, ResourceTypes
 
 
 @dataclass
@@ -29,10 +31,16 @@ class GroupedLight:
     """
 
     id: str
+    owner: ResourceIdentifier
     id_v1: str | None = None
+    # on: Joined on control & aggregated on state.
+    # “on” is true if any light in the group is on.
     on: OnFeature | None = None
+    # dimming: Joined dimming control.
+    # “dimming.brightness” contains average brightness of group containing turned-on lights only.
     dimming: DimmingFeatureBase | None = None
-    alert: AlertFeature | None = None
+    alert: AlertFeature | None = None  # Joined alert control
+    signaling: SignalingFeature | None = None
     type: ResourceTypes = ResourceTypes.GROUPED_LIGHT
 
 
@@ -52,3 +60,4 @@ class GroupedLightPut:
     color: ColorFeaturePut | None = None
     dynamics: DynamicsFeaturePut | None = None
     alert: AlertFeaturePut | None = None
+    signaling: SignalingFeaturePut | None = None

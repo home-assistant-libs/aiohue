@@ -29,6 +29,7 @@ from .feature import (
     PowerUpFeature,
     PowerUpFeaturePut,
     SignalingFeature,
+    SignalingFeaturePut,
     TimedEffectsFeature,
     TimedEffectsFeaturePut,
 )
@@ -148,3 +149,4 @@ class LightPut:
     effects: EffectsFeaturePut | None = None
     timed_effects: TimedEffectsFeaturePut | None = None
     powerup: PowerUpFeaturePut | None = None
+    signaling: SignalingFeaturePut | None = None
