@@ -19,7 +19,7 @@ dependencies = [
   "asyncio-throttle",
   "awesomeversion",
 ]
-description = "MPython module to talk to Philips Hue."
+description = "Python module to talk to Philips Hue."
 license = {text = "Apache-2.0"}
 readme = "README.md"
 requires-python = ">=3.11"
