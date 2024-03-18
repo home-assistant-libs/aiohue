@@ -26,7 +26,7 @@ dependencies = [
 
 [project.optional-dependencies]
 test = [
-  "black==24.2.0",
+  "black==24.3.0",
   "codespell==2.2.6",
   "mypy==1.9.0",
   "ruff==0.3.2",
