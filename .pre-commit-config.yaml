@@ -8,6 +8,7 @@ repos:
         language: system
         types: [python]
         entry: scripts/run-in-env.sh ruff check --fix
+        exclude: ^aiohue/v1/
         require_serial: true
         stages: [commit, push, manual]
       - id: ruff-format
@@ -62,6 +63,7 @@ repos:
         language: system
         types: [text]
         entry: scripts/run-in-env.sh codespell
+        exclude: ^tests/fixtures/
       - id: detect-private-key
         name: 🕵️  Detect Private Keys
         language: system
