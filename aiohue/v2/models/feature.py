@@ -503,9 +503,13 @@ class GradientFeature(GradientFeatureBase):
 class Signal(Enum):
     """Enum with various signals."""
 
-    NO_SIGNAL = "no_signal"  # No signal is active. Write “no_signal” to stop active signal.
+    NO_SIGNAL = (
+        "no_signal"  # No signal is active. Write “no_signal” to stop active signal.
+    )
     ON_OFF = "on_off"  # Toggles between max brightness and Off in fixed color.
-    ON_OFF_COLOR = "on_off_color"  # Toggles between off and max brightness with color provided.
+    ON_OFF_COLOR = (
+        "on_off_color"  # Toggles between off and max brightness with color provided.
+    )
     ALTERNATING = "alternating"  # Alternates between 2 provided colors.
     UNKNOWN = "unknown"
 

@@ -56,28 +56,28 @@ aiohue = ["py.typed"]
 include = ["aiohue*"]
 
 [tool.mypy]
-check_untyped_defs = true 
+check_untyped_defs = true
 disallow_any_generics = false # TEMPORARY DISABLED
-disallow_incomplete_defs = true 
-disallow_subclassing_any = true 
-disallow_untyped_calls = true 
-disallow_untyped_decorators = true 
-disallow_untyped_defs = true 
-exclude = ["aiohue/v1/", "aiohue/util.py"] 
-follow_imports = "skip" 
-ignore_missing_imports = true 
-no_implicit_optional = true 
-no_implicit_reexport = true 
-platform = "linux" 
-python_version = "3.11" 
-strict_optional = true 
-warn_incomplete_stub = true 
-warn_no_return = true 
-warn_redundant_casts = true 
-warn_return_any = true 
-warn_unreachable = true 
-warn_unused_configs = true 
-warn_unused_ignores = true 
+disallow_incomplete_defs = true
+disallow_subclassing_any = true
+disallow_untyped_calls = true
+disallow_untyped_decorators = true
+disallow_untyped_defs = true
+exclude = ["aiohue/v1/", "aiohue/util.py"]
+follow_imports = "skip"
+ignore_missing_imports = true
+no_implicit_optional = true
+no_implicit_reexport = true
+platform = "linux"
+python_version = "3.11"
+strict_optional = true
+warn_incomplete_stub = true
+warn_no_return = true
+warn_redundant_casts = true
+warn_return_any = true
+warn_unreachable = true
+warn_unused_configs = true
+warn_unused_ignores = true
 
 [tool.pylint.MAIN]
 ignore-paths = [
@@ -120,7 +120,7 @@ addopts = "--cov"
 asyncio_mode = "auto"
 
 [tool.ruff]
-exclude = ["aiohue/v1"]
+exclude = ["aiohue/v1/*.py"]
 fix = true
 line-length = 88
 show-fixes = true
@@ -152,6 +152,10 @@ ignore = [
   "TD004", # Just annoying, not really useful
   "COM812", # Conflict with the Ruff formatter
   "ISC001", # Conflict with the Ruff formatter
+  "D101", # TEMPORARY DISABLED
+  "D102", # TEMPORARY DISABLED
+  "D103", # TEMPORARY DISABLED
+  "D107", # TEMPORARY DISABLED
   "PGH004", # TEMPORARY DISABLED
   "TRY300", # TEMPORARY DISABLED
   "TRY003", # TEMPORARY DISABLED
