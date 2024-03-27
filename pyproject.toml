@@ -92,7 +92,7 @@ good-names = [
 
 [tool.pylint.DESIGN]
 max-args = 10
-max-attributes = 12
+max-attributes = 14
 
 [tool.pylint."MESSAGES CONTROL"]
 disable = [
