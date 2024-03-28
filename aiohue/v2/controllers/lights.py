@@ -38,19 +38,25 @@ class LightsController(BaseResourcesController[type[Light]]):
         self, id: str, brightness: float, transition_time: int | None = None
     ) -> None:
         """Set brightness to light. Turn on light if it's currently off."""
-        await self.set_state(id, on=True, brightness=brightness, transition_time=transition_time)
+        await self.set_state(
+            id, on=True, brightness=brightness, transition_time=transition_time
+        )
 
     async def set_color(
         self, id: str, x: float, y: float, transition_time: int | None = None
     ) -> None:
         """Set color to light. Turn on light if it's currently off."""
-        await self.set_state(id, on=True, color_xy=(x, y), transition_time=transition_time)
+        await self.set_state(
+            id, on=True, color_xy=(x, y), transition_time=transition_time
+        )
 
     async def set_color_temperature(
         self, id: str, mirek: int, transition_time: int | None = None
     ) -> None:
         """Set Color Temperature to light. Turn on light if it's currently off."""
-        await self.set_state(id, on=True, color_temp=mirek, transition_time=transition_time)
+        await self.set_state(
+            id, on=True, color_temp=mirek, transition_time=transition_time
+        )
 
     async def set_flash(self, id: str, short: bool = False) -> None:
         """Send Flash command to light."""

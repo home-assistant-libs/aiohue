@@ -103,7 +103,9 @@ def update_dataclass(cur_obj: dataclass, new_vals: dict) -> set[str]:
 def dataclass_to_dict(obj_in: dataclass, skip_none: bool = True) -> dict:
     """Convert dataclass instance to dict, optionally skip None values."""
     if skip_none:
-        dict_obj = asdict(obj_in, dict_factory=lambda x: {k: v for (k, v) in x if v is not None})
+        dict_obj = asdict(
+            obj_in, dict_factory=lambda x: {k: v for (k, v) in x if v is not None}
+        )
     else:
         dict_obj = asdict(obj_in)
 
@@ -130,6 +132,7 @@ def parse_utc_timestamp(datetimestr: str):
 def _parse_value(name: str, value: Any, value_type: Any, default: Any = MISSING) -> Any:
     """Try to parse a value from raw (json) data and type annotations."""
     # ruff: noqa: PLR0911, PLR0912
+    # pylint: disable=too-many-return-statements,too-many-branches
     if isinstance(value_type, str):
         # this shouldn't happen, but just in case
         value_type = get_type_hints(value_type, globals(), locals())
@@ -230,10 +233,10 @@ def dataclass_from_dict(cls: dataclass, dict_obj: dict, strict=False):
     If strict mode enabled, any additional keys in the provided dict will result in a KeyError.
     """
     if strict:
-        extra_keys = dict_obj.keys() - set([f.name for f in fields(cls)])
+        extra_keys = dict_obj.keys() - set([f.name for f in fields(cls)])  # pylint: disable=consider-using-set-comprehension
         if extra_keys:
             raise KeyError(
-                "Extra key(s) {} not allowed for {}".format(",".join(extra_keys), (str(cls)))
+                f'Extra key(s) {",".join(extra_keys)} not allowed for {cls!s}'
             )
 
     return cls(

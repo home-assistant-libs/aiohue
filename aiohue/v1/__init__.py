@@ -151,7 +151,8 @@ class HueBridgeV1:
                 return data
 
         raise BridgeBusy(
-            f"{retries} requests to the bridge failed, " "its probably overloaded. Giving up."
+            f"{retries} requests to the bridge failed, "
+            "its probably overloaded. Giving up."
         )
 
     async def __aenter__(self) -> HueBridgeV1:

@@ -200,7 +200,9 @@ class DaylightSensor(GenericSensor):
     def sunsetoffset(self):
         return self.raw["config"]["sunsetoffset"]
 
-    async def set_config(self, on=None, long=None, lat=None, sunriseoffset=None, sunsetoffset=None):
+    async def set_config(
+        self, on=None, long=None, lat=None, sunriseoffset=None, sunsetoffset=None
+    ):
         """Change config of a Daylight sensor."""
         data = {
             key: value

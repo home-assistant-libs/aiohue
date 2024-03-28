@@ -66,7 +66,9 @@ class BaseResourcesController(Generic[CLIPResource]):
             endpoint = f"clip/v2/resource/{self.item_type.value}"
             initial_data = await self._bridge.request("get", endpoint)
         else:
-            initial_data = [x for x in initial_data if x["type"] == self.item_type.value]
+            initial_data = [
+                x for x in initial_data if x["type"] == self.item_type.value
+            ]
         self._logger.debug("fetched %s items", len(initial_data))
 
         if self._initialized:
@@ -77,7 +79,9 @@ class BaseResourcesController(Generic[CLIPResource]):
         for item in initial_data:
             await self._handle_event(EventType.RESOURCE_ADDED, item)
         # subscribe to item updates
-        self._bridge.events.subscribe(self._handle_event, resource_filter=self.item_type)
+        self._bridge.events.subscribe(
+            self._handle_event, resource_filter=self.item_type
+        )
         self._initialized = True
 
     def subscribe(
@@ -186,13 +190,16 @@ class BaseResourcesController(Generic[CLIPResource]):
         self, evt_type: EventType, evt_data: dict | None, is_reconnect: bool = False
     ) -> None:
         """Handle incoming event for this resource from the EventStream."""
+        # pylint: disable=too-many-return-statements,too-many-branches
         if evt_data is None:
             return
         item_id = evt_data.get("rid", evt_data["id"])
         if evt_type == EventType.RESOURCE_ADDED:
             # new item added
             try:
-                cur_item = self._items[item_id] = dataclass_from_dict(self.item_cls, evt_data)
+                cur_item = self._items[item_id] = dataclass_from_dict(
+                    self.item_cls, evt_data
+                )
             except (KeyError, ValueError, TypeError) as exc:
                 # In an attempt to not completely crash when a single resource can't be parsed
                 # due to API schema mismatches, bugs in Hue or other factors, we allow some
@@ -237,7 +244,9 @@ class BaseResourcesController(Generic[CLIPResource]):
             # ignore all other events
             return
 
-        subscribers = self._subscribers.get(item_id, []) + self._subscribers[ID_FILTER_ALL]
+        subscribers = (
+            self._subscribers.get(item_id, []) + self._subscribers[ID_FILTER_ALL]
+        )
         for callback, event_filter in subscribers:
             if event_filter is not None and evt_type not in event_filter:
                 continue
@@ -267,7 +276,9 @@ class BaseResourcesController(Generic[CLIPResource]):
                     ResourceTypes.RELATIVE_ROTARY.value,
                 ):
                     continue
-                await self._handle_event(EventType.RESOURCE_UPDATED, item, is_reconnect=True)
+                await self._handle_event(
+                    EventType.RESOURCE_UPDATED, item, is_reconnect=True
+                )
 
         # work out item deletions
         deleted_ids = {x for x in prev_ids if x not in cur_ids}
@@ -281,7 +292,9 @@ class BaseResourcesController(Generic[CLIPResource]):
 class GroupedControllerBase(Generic[CLIPResource]):
     """Convenience controller which combines items from multiple resources."""
 
-    def __init__(self, bridge: "HueBridgeV2", resources: list[BaseResourcesController]) -> None:
+    def __init__(
+        self, bridge: "HueBridgeV2", resources: list[BaseResourcesController]
+    ) -> None:
         """Initialize instance."""
         self._resources = resources
         self._bridge = bridge
@@ -305,7 +318,9 @@ class GroupedControllerBase(Generic[CLIPResource]):
         event_filter: EventType | tuple[EventType] | None = None,
     ) -> Callable:
         """Subscribe to status changes for all grouped resources."""
-        unsubs = [x.subscribe(callback, id_filter, event_filter) for x in self._resources]
+        unsubs = [
+            x.subscribe(callback, id_filter, event_filter) for x in self._resources
+        ]
 
         def unsubscribe():
             for unsub in unsubs:

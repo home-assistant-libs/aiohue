@@ -68,6 +68,8 @@ class Light:
     https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_light_get
     """
 
+    # pylint: disable=too-many-instance-attributes
+
     id: str
     owner: ResourceIdentifier
     on: OnFeature

@@ -58,7 +58,12 @@ class ButtonController(BaseResourcesController[type[Button]]):
 
     _workaround_tasks: dict[str, asyncio.Task] = None
 
-    async def _handle_event(self, evt_type: EventType, evt_data: dict | None) -> None:
+    async def _handle_event(
+        self,
+        evt_type: EventType,
+        evt_data: dict | None,
+        is_reconnect: bool = False,  # noqa: ARG002
+    ) -> None:
         """Handle incoming event for this resource from the EventStream."""
         await super()._handle_event(evt_type, evt_data)
 
@@ -68,7 +73,8 @@ class ButtonController(BaseResourcesController[type[Button]]):
         # Handle longpress workaround if needed
         if not (
             evt_type == EventType.RESOURCE_UPDATED
-            and evt_data.get("button", {}).get("last_event") == ButtonEvent.INITIAL_PRESS.value
+            and evt_data.get("button", {}).get("last_event")
+            == ButtonEvent.INITIAL_PRESS.value
         ):
             return
 

@@ -85,7 +85,9 @@ async def is_hue_bridge(host: str, websession: ClientSession | None = None) -> s
                 # there are some emulator projects out there that emulate a Hue bridge
                 # in a sloppy way, ignore them.
                 # https://github.com/home-assistant-libs/aiohue/issues/134
-                raise ClientConnectionError("Invalid API response, not a real Hue bridge?")
+                raise ClientConnectionError(
+                    "Invalid API response, not a real Hue bridge?"
+                )
             return normalize_bridge_id(data["bridgeid"])
     finally:
         if not websession_provided:
@@ -100,7 +102,9 @@ async def is_v2_bridge(host: str, websession: ClientSession | None = None) -> bo
     try:
         # v2 api is https only and returns a 403 forbidden when no key provided
         url = f"https://{host}/clip/v2/resource"
-        async with websession.get(url, ssl=False, raise_for_status=False, timeout=30) as res:
+        async with websession.get(
+            url, ssl=False, raise_for_status=False, timeout=30
+        ) as res:
             return res.status == 403
     except Exception:  # pylint: disable=broad-except
         # all other status/exceptions means the bridge is not v2 or not reachable at this time

@@ -182,7 +182,8 @@ class HueBridgeV2:
                 return result["data"]
 
         raise BridgeBusy(
-            f"{retries} requests to the bridge failed, " "its probably overloaded. Giving up."
+            f"{retries} requests to the bridge failed, "
+            "its probably overloaded. Giving up."
         )
 
     @asynccontextmanager
@@ -230,14 +231,16 @@ class HueBridgeV2:
         return exc_type
 
     async def _handle_connect_event(
-        self, type: EventType, item: Any = None  # noqa: ARG002
+        self,
+        event_type: EventType,
+        item: Any = None,  # noqa: ARG002
     ) -> None:
         """Handle (disconnect) event from the EventStream."""
         # pylint: disable=unused-argument
-        if type == EventType.DISCONNECTED:
+        if event_type == EventType.DISCONNECTED:
             # If we receive a disconnect event, we store the timestamp
             self._disconnect_timestamp = time.time()
-        elif type == EventType.RECONNECTED:  # noqa: SIM102
+        elif event_type == EventType.RECONNECTED:  # noqa: SIM102
             # if the time between the disconnect and reconnect is more than 1 minute,
             # we fetch the full state.
             if (time.time() - self._disconnect_timestamp) > 60:
