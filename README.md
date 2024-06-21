@@ -14,5 +14,3 @@ The biggest advantage of the V2 API is that it supports event based updates so p
 ## Contribution guidelines
 
 Object hierarchy and property/method names should match the Philips Hue API.
-
-XX

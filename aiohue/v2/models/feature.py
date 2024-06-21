@@ -523,7 +523,7 @@ class Signal(Enum):
 class SignalingFeatureStatus:
     """Indicates status of active signal. Not available when inactive."""
 
-    signal: Signal | Signal = Signal.UNKNOWN
+    signal: Signal | None = Signal.UNKNOWN
     estimated_end: datetime | None = None
     colors: list[ColorFeatureBase] | None = None
 
