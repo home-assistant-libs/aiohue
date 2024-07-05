@@ -1,13 +1,13 @@
 """Handle connecting to the HUE Eventstream and distribute events."""
 
 import asyncio
-import json
-import random
-import string
 from asyncio.coroutines import iscoroutinefunction
 from collections import deque
 from collections.abc import Callable
 from enum import Enum
+import json
+import random
+import string
 from typing import TYPE_CHECKING, NoReturn, TypedDict
 
 from aiohttp import ClientTimeout
@@ -161,7 +161,7 @@ class EventStream:
             else:
                 callback(event_type, data)
 
-    async def __event_reader(self) -> NoReturn:
+    async def __event_reader(self) -> None:
         """
 
         Read incoming SSE messages and put them in a Queue to be processed.
@@ -237,7 +237,7 @@ class EventStream:
             self._status = EventStreamStatus.CONNECTING
             await asyncio.sleep(reconnect_wait)
 
-    async def __event_processor(self) -> NoReturn:
+    async def __event_processor(self) -> None:
         """Process incoming Hue events on the Queue and distribute those."""
         while True:
             event: HueEvent = await self._event_queue.get()
