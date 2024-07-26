@@ -234,10 +234,13 @@ class BaseResourcesController(Generic[CLIPResource]):
             # in fact this is a feature request to Signify to handle these stateless
             # device events in a different way:
             # https://developers.meethue.com/forum/t/differentiate-stateless-events/6627
-            if self.item_type == ResourceTypes.BUTTON and not evt_data.get("button", {}).get("button_report"):
+            if self.item_type == ResourceTypes.BUTTON and not evt_data.get(
+                "button", {}
+            ).get("button_report"):
                 return
             if self.item_type == ResourceTypes.RELATIVE_ROTARY and not evt_data.get(
-                    "relative_rotary", {}).get("rotary_report"):
+                "relative_rotary", {}
+            ).get("rotary_report"):
                 return
         else:
             # ignore all other events
