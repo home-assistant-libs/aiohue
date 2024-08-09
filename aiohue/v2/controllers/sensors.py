@@ -73,7 +73,7 @@ class ButtonController(BaseResourcesController[type[Button]]):
         # Handle longpress workaround if needed
         if not (
             evt_type == EventType.RESOURCE_UPDATED
-            and evt_data.get("button", {}).get("last_event")
+            and evt_data.get("button", {}).get("button_report", {}).get("event")
             == ButtonEvent.INITIAL_PRESS.value
         ):
             return
@@ -106,11 +106,11 @@ class ButtonController(BaseResourcesController[type[Button]]):
         count = 0
         try:
             while count <= 20:  # = max 10 seconds
-                cur_event = self._items[id].button.last_event
+                cur_event = self._items[id].button.button_report.event
                 if cur_event == ButtonEvent.SHORT_RELEASE:
                     break
                 # send REPEAT until short release is received
-                btn_resource["button"]["last_event"] = ButtonEvent.REPEAT.value
+                btn_resource["button"]["button_report"]["event"] = ButtonEvent.REPEAT.value
                 await self._handle_event(EventType.RESOURCE_UPDATED, btn_resource)
                 await asyncio.sleep(0.5)
                 count += 1
@@ -121,7 +121,7 @@ class ButtonController(BaseResourcesController[type[Button]]):
             # Note that the button will also fire the SHORT_RELEASE event if it's released within
             # those 10 seconds.
             if count > 1:
-                btn_resource["button"]["last_event"] = ButtonEvent.LONG_RELEASE.value
+                btn_resource["button"]["button_report"]["event"] = ButtonEvent.LONG_RELEASE.value
                 await self._handle_event(EventType.RESOURCE_UPDATED, btn_resource)
             self._logger.debug("Long press workaround for FOH switch completed.")
 
