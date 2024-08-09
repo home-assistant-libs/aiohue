@@ -110,7 +110,9 @@ class ButtonController(BaseResourcesController[type[Button]]):
                 if cur_event == ButtonEvent.SHORT_RELEASE:
                     break
                 # send REPEAT until short release is received
-                btn_resource["button"]["button_report"]["event"] = ButtonEvent.REPEAT.value
+                btn_resource["button"]["button_report"]["event"] = (
+                    ButtonEvent.REPEAT.value
+                )
                 await self._handle_event(EventType.RESOURCE_UPDATED, btn_resource)
                 await asyncio.sleep(0.5)
                 count += 1
@@ -121,7 +123,9 @@ class ButtonController(BaseResourcesController[type[Button]]):
             # Note that the button will also fire the SHORT_RELEASE event if it's released within
             # those 10 seconds.
             if count > 1:
-                btn_resource["button"]["button_report"]["event"] = ButtonEvent.LONG_RELEASE.value
+                btn_resource["button"]["button_report"]["event"] = (
+                    ButtonEvent.LONG_RELEASE.value
+                )
                 await self._handle_event(EventType.RESOURCE_UPDATED, btn_resource)
             self._logger.debug("Long press workaround for FOH switch completed.")
 
