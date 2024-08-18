@@ -92,11 +92,13 @@ class LightsController(BaseResourcesController[type[Light]]):
         if alert is not None:
             update_obj.alert = AlertFeaturePut(action=alert)
 
-        # for timed_effects feature, transition time is used for duration
-        if effect is not None and isinstance(effect, TimedEffectStatus):
-            update_obj.timed_effects = TimedEffectsFeaturePut(
-                effect=effect, duration=transition_time
-            )
-        elif effect is not None:
-            update_obj.effects = EffectsFeaturePut(effect=effect)
+        if effect not in (None, EffectStatus.NO_EFFECT):
+            # for timed_effects feature, transition time is used for duration
+            if isinstance(effect, TimedEffectStatus):
+                update_obj.timed_effects = TimedEffectsFeaturePut(
+                    effect=effect, duration=transition_time
+                )
+            else:
+                update_obj.effects = EffectsFeaturePut(effect=effect)
+
         await self.update(id, update_obj)
