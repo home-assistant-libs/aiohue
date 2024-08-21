@@ -348,6 +348,7 @@ class TimedEffectStatus(Enum):
 
     NO_EFFECT = "no_effect"
     SUNRISE = "sunrise"
+    SUNSET = "sunset"
     UNKNOWN = "unknown"
 
     @classmethod
