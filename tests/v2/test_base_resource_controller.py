@@ -6,7 +6,6 @@ from aiohue.v2.controllers.sensors import ButtonController, RelativeRotaryContro
 
 def test_handle_last_event_backwards_compatibility_for_button():
     """Test backwards compatibility handling for last_event in button."""
-
     bridge = HueBridgeV2("127.0.0.1", "fake")
     button_controller = ButtonController(bridge)
 
@@ -45,7 +44,6 @@ def test_handle_last_event_backwards_compatibility_for_button():
 
 def test_handle_last_event_backwards_compatibility_for_relative_rotary():
     """Test backwards compatibility handling for last_event in relative_rotary."""
-
     bridge = HueBridgeV2("127.0.0.1", "fake")
     rotary_controller = RelativeRotaryController(bridge)
 
