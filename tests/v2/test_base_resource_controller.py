@@ -8,7 +8,7 @@ from aiohue import HueBridgeV2
 from aiohue.v2 import EventType
 from aiohue.v2.controllers.base import BaseResourcesController
 from aiohue.v2.controllers.sensors import ButtonController, RelativeRotaryController
-from aiohue.v2.models.resource import ResourceIdentifier, ResourceTypes
+from aiohue.v2.models.resource import ResourceTypes
 
 
 @dataclass
@@ -18,7 +18,6 @@ class MockData:
     id: str
     type: ResourceTypes = ResourceTypes.UNKNOWN
 
-    owner: ResourceIdentifier | None = None
     id_v1: str | None = None
 
 
@@ -38,13 +37,11 @@ async def test_handle_event():
     controller.subscribe(callback)
 
     resource_id = str(uuid4())
-    device_id = str(uuid4())
+    other_id = str(uuid4())
 
     evt_data = {
         "id": resource_id,
-        "type": "unknown",
         "id_v1": "mock/1",
-        "owner": {"rid": device_id, "rtype": "device"},
     }
 
     # Create a new resource
@@ -55,9 +52,8 @@ async def test_handle_event():
         id=resource_id,
         type=ResourceTypes.UNKNOWN,
         id_v1="mock/1",
-        owner=ResourceIdentifier(rid=device_id, rtype=ResourceTypes.DEVICE),
     )
-    callback.assert_called_with(EventType.RESOURCE_ADDED, cur_data)
+    callback.assert_called_once_with(EventType.RESOURCE_ADDED, cur_data)
     callback.reset_mock()
 
     evt_data = {
@@ -73,13 +69,12 @@ async def test_handle_event():
         id=resource_id,
         type=ResourceTypes.UNKNOWN,
         id_v1="mock/2",
-        owner=ResourceIdentifier(rid=device_id, rtype=ResourceTypes.DEVICE),
     )
-    callback.assert_called_with(EventType.RESOURCE_UPDATED, cur_data)
+    callback.assert_called_once_with(EventType.RESOURCE_UPDATED, cur_data)
     callback.reset_mock()
 
     evt_data = {
-        "id": device_id,
+        "id": other_id,
         "id_v1": "mock/1",
     }
 
@@ -102,9 +97,8 @@ async def test_handle_event():
         id=resource_id,
         type=ResourceTypes.UNKNOWN,
         id_v1="mock/2",
-        owner=ResourceIdentifier(rid=device_id, rtype=ResourceTypes.DEVICE),
     )
-    callback.assert_called_with(EventType.RESOURCE_DELETED, cur_data)
+    callback.assert_called_once_with(EventType.RESOURCE_DELETED, cur_data)
     callback.reset_mock()
 
     evt_data = {
