@@ -46,7 +46,7 @@ async def test_handle_event():
 
     # Create a new resource
     # pylint: disable=protected-access
-    await controller._handle_event(EventType.RESOURCE_ADDED, evt_data, False)
+    await controller._handle_event(EventType.RESOURCE_ADDED, evt_data)
 
     cur_data = MockData(
         id=resource_id,
@@ -63,7 +63,7 @@ async def test_handle_event():
 
     # Update of a single property of an existing resource
     # pylint: disable=protected-access
-    await controller._handle_event(EventType.RESOURCE_UPDATED, evt_data, False)
+    await controller._handle_event(EventType.RESOURCE_UPDATED, evt_data)
 
     cur_data = MockData(
         id=resource_id,
@@ -80,7 +80,7 @@ async def test_handle_event():
 
     # Update of a single property of a non-existing resource
     # pylint: disable=protected-access
-    await controller._handle_event(EventType.RESOURCE_UPDATED, evt_data, False)
+    await controller._handle_event(EventType.RESOURCE_UPDATED, evt_data)
 
     callback.assert_not_called()
     callback.reset_mock()
@@ -91,7 +91,7 @@ async def test_handle_event():
 
     # Remove of existing resource
     # pylint: disable=protected-access
-    await controller._handle_event(EventType.RESOURCE_DELETED, evt_data, False)
+    await controller._handle_event(EventType.RESOURCE_DELETED, evt_data)
 
     cur_data = MockData(
         id=resource_id,
@@ -108,7 +108,7 @@ async def test_handle_event():
 
     # Update of an already removed resource
     # pylint: disable=protected-access
-    await controller._handle_event(EventType.RESOURCE_UPDATED, evt_data, False)
+    await controller._handle_event(EventType.RESOURCE_UPDATED, evt_data)
 
     callback.assert_not_called()
 

@@ -3,7 +3,9 @@
 import asyncio
 from asyncio.coroutines import iscoroutinefunction
 from collections.abc import Callable, Iterator
-from datetime import datetime
+
+# pylint: disable=no-name-in-module
+from datetime import datetime, UTC
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -276,7 +278,7 @@ class BaseResourcesController(Generic[CLIPResource]):
                     "last_event"
                 )
                 button_feature["button_report"]["updated"] = format_utc_timestamp(
-                    datetime.now()
+                    datetime.now(tz=UTC)
                 )
         if self.item_type == ResourceTypes.RELATIVE_ROTARY:
             relative_rotary_feature = evt_data.get("relative_rotary", {})
@@ -287,7 +289,7 @@ class BaseResourcesController(Generic[CLIPResource]):
                     "last_event"
                 )
                 relative_rotary_feature["rotary_report"]["updated"] = (
-                    format_utc_timestamp(datetime.now())
+                    format_utc_timestamp(datetime.now(tz=UTC))
                 )
 
     async def __handle_reconnect(self, full_state: list[dict]) -> None:

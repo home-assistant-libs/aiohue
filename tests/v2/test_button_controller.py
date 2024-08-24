@@ -34,7 +34,7 @@ async def create_button(
 
     # Create a new resource
     # pylint: disable=protected-access
-    await controller._handle_event(EventType.RESOURCE_ADDED, evt_data, False)
+    await controller._handle_event(EventType.RESOURCE_ADDED, evt_data)
 
     callback.assert_called_once()
     callback.reset_mock()
@@ -59,7 +59,7 @@ async def create_device(
     }
 
     # pylint: disable=protected-access
-    await bridge.devices._handle_event(EventType.RESOURCE_ADDED, evt_data, False)
+    await bridge.devices._handle_event(EventType.RESOURCE_ADDED, evt_data)
 
 
 def generate_button_event_data(button_id: str, event: str, device_id: str):
@@ -74,6 +74,17 @@ def generate_button_event_data(button_id: str, event: str, device_id: str):
         },
         "owner": {"rid": device_id, "rtype": ResourceTypes.DEVICE},
     }
+
+
+async def handle_button_event(
+    controller: ButtonController, button_id: str, event: str, device_id: str
+):
+    """Handle button event."""
+    # pylint: disable=protected-access
+    await controller._handle_event(
+        EventType.RESOURCE_UPDATED,
+        generate_button_event_data(button_id, event, device_id),
+    )
 
 
 class CopyingMock(Mock):
@@ -98,12 +109,7 @@ async def test_handle_events():
     await create_button(controller, callback, button_id, device_id)
 
     # Button event
-    # pylint: disable=protected-access
-    await controller._handle_event(
-        EventType.RESOURCE_UPDATED,
-        generate_button_event_data(button_id, "initial_press", device_id),
-        False,
-    )
+    await handle_button_event(controller, button_id, "initial_press", device_id)
 
     callback.assert_called_once()
     assert (
@@ -119,7 +125,7 @@ async def test_handle_events():
 
     # Absent button report is dropped
     # pylint: disable=protected-access
-    await controller._handle_event(EventType.RESOURCE_UPDATED, evt_data, False)
+    await controller._handle_event(EventType.RESOURCE_UPDATED, evt_data)
 
     callback.assert_not_called()
     callback.reset_mock()
@@ -139,22 +145,12 @@ async def test_handle_events_button_workaround_short_release():
     await create_button(controller, callback, button_id, device_id)
 
     # Button event: initial_press
-    # pylint: disable=protected-access
-    await controller._handle_event(
-        EventType.RESOURCE_UPDATED,
-        generate_button_event_data(button_id, "initial_press", device_id),
-        False,
-    )
+    await handle_button_event(controller, button_id, "initial_press", device_id)
 
     await asyncio.sleep(1.2)
 
     # Button event: short_release
-    # pylint: disable=protected-access
-    await controller._handle_event(
-        EventType.RESOURCE_UPDATED,
-        generate_button_event_data(button_id, "short_release", device_id),
-        False,
-    )
+    await handle_button_event(controller, button_id, "short_release", device_id)
 
     callback.assert_called()
     assert callback.call_count == 2
@@ -182,22 +178,12 @@ async def test_handle_events_button_workaround_repeats():
     await create_button(controller, callback, button_id, device_id)
 
     # Button event: initial_press
-    # pylint: disable=protected-access
-    await controller._handle_event(
-        EventType.RESOURCE_UPDATED,
-        generate_button_event_data(button_id, "initial_press", device_id),
-        False,
-    )
+    await handle_button_event(controller, button_id, "initial_press", device_id)
 
     await asyncio.sleep(2.2)
 
     # Button event: short_release
-    # pylint: disable=protected-access
-    await controller._handle_event(
-        EventType.RESOURCE_UPDATED,
-        generate_button_event_data(button_id, "short_release", device_id),
-        False,
-    )
+    await handle_button_event(controller, button_id, "short_release", device_id)
 
     callback.assert_called()
     assert callback.call_count == 4
@@ -233,12 +219,7 @@ async def test_handle_events_button_workaround_long_release():
     await create_button(controller, callback, button_id, device_id)
 
     # Button event: initial_press
-    # pylint: disable=protected-access
-    await controller._handle_event(
-        EventType.RESOURCE_UPDATED,
-        generate_button_event_data(button_id, "initial_press", device_id),
-        False,
-    )
+    await handle_button_event(controller, button_id, "initial_press", device_id)
 
     await asyncio.sleep(12.7)
 
@@ -268,22 +249,12 @@ async def test_handle_events_button_workaround_interrupt():
     await create_button(controller, callback, button2_id, device2_id)
 
     # Button event: initial_press
-    # pylint: disable=protected-access
-    await controller._handle_event(
-        EventType.RESOURCE_UPDATED,
-        generate_button_event_data(button1_id, "initial_press", device1_id),
-        False,
-    )
+    await handle_button_event(controller, button1_id, "initial_press", device1_id)
 
     await asyncio.sleep(2.2)
 
     # Button event: initial_press
-    # pylint: disable=protected-access
-    await controller._handle_event(
-        EventType.RESOURCE_UPDATED,
-        generate_button_event_data(button2_id, "initial_press", device2_id),
-        False,
-    )
+    await handle_button_event(controller, button2_id, "initial_press", device2_id)
 
     callback.assert_called()
     assert callback.call_count == 4
@@ -320,22 +291,12 @@ async def test_handle_events_button_non_workaround_device():
     await create_button(controller, callback, button_id, device_id)
 
     # Button event: initial_press
-    # pylint: disable=protected-access
-    await controller._handle_event(
-        EventType.RESOURCE_UPDATED,
-        generate_button_event_data(button_id, "initial_press", device_id),
-        False,
-    )
+    await handle_button_event(controller, button_id, "initial_press", device_id)
 
     await asyncio.sleep(2.2)
 
     # Button event: short_release
-    # pylint: disable=protected-access
-    await controller._handle_event(
-        EventType.RESOURCE_UPDATED,
-        generate_button_event_data(button_id, "short_release", device_id),
-        False,
-    )
+    await handle_button_event(controller, button_id, "short_release", device_id)
 
     callback.assert_called()
     assert callback.call_count == 2
