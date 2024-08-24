@@ -3,6 +3,7 @@
 import asyncio
 from asyncio.coroutines import iscoroutinefunction
 from collections.abc import Callable, Iterator
+from datetime import datetime
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -15,6 +16,7 @@ from aiohue.util import (
     dataclass_from_dict,
     dataclass_to_dict,
     update_dataclass,
+    format_utc_timestamp,
 )
 from aiohue.v2.models.device import Device
 from aiohue.v2.models.resource import ResourceTypes
@@ -273,6 +275,9 @@ class BaseResourcesController(Generic[CLIPResource]):
                 button_feature["button_report"]["event"] = button_feature.get(
                     "last_event"
                 )
+                button_feature["button_report"]["updated"] = format_utc_timestamp(
+                    datetime.now()
+                )
         if self.item_type == ResourceTypes.RELATIVE_ROTARY:
             relative_rotary_feature = evt_data.get("relative_rotary", {})
             if relative_rotary_feature.get(
@@ -280,6 +285,9 @@ class BaseResourcesController(Generic[CLIPResource]):
             ) and not relative_rotary_feature.get("rotary_report"):
                 relative_rotary_feature["rotary_report"] = relative_rotary_feature.get(
                     "last_event"
+                )
+                relative_rotary_feature["rotary_report"]["updated"] = (
+                    format_utc_timestamp(datetime.now())
                 )
 
     async def __handle_reconnect(self, full_state: list[dict]) -> None:

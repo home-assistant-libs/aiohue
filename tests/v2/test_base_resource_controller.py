@@ -129,25 +129,26 @@ def test_handle_last_event_backwards_compatibility_for_button():
     # pylint: disable=protected-access
     button_controller._handle_last_event_backwards_compatibility(evt_data)
 
-    assert (
-        evt_data.get("button", {}).get("button_report", {}).get("event")
-        == "initial_press"
-    )
+    button_report = evt_data.get("button", {}).get("button_report", {})
+    assert button_report.get("event") == "initial_press"
+    assert button_report.get("updated")
 
     evt_data = {
         "button": {
             "last_event": "initial_press",
-            "button_report": {"event": "short_release"},
+            "button_report": {
+                "event": "short_release",
+                "updated": "2024-08-24T16:27:00Z",
+            },
         }
     }
 
     # pylint: disable=protected-access
     button_controller._handle_last_event_backwards_compatibility(evt_data)
 
-    assert (
-        evt_data.get("button", {}).get("button_report", {}).get("event")
-        == "short_release"
-    )
+    button_report = evt_data.get("button", {}).get("button_report", {})
+    assert button_report.get("event") == "short_release"
+    assert button_report.get("updated") == "2024-08-24T16:27:00Z"
 
     evt_data = {"button": {}}
 
@@ -174,13 +175,12 @@ def test_handle_last_event_backwards_compatibility_for_relative_rotary():
     # pylint: disable=protected-access
     rotary_controller._handle_last_event_backwards_compatibility(evt_data)
 
-    assert (
-        evt_data.get("relative_rotary", {}).get("rotary_report", {}).get("action")
-        == "start"
-    )
-    assert evt_data.get("relative_rotary", {}).get("rotary_report", {}).get(
-        "rotation"
-    ) == evt_data.get("relative_rotary", {}).get("last_event", {}).get("rotation")
+    rotary_report = evt_data.get("relative_rotary", {}).get("rotary_report", {})
+    assert rotary_report.get("action") == "start"
+    assert rotary_report.get("rotation") == evt_data.get("relative_rotary", {}).get(
+        "last_event", {}
+    ).get("rotation")
+    assert rotary_report.get("updated")
 
     evt_data = {
         "relative_rotary": {
@@ -195,6 +195,7 @@ def test_handle_last_event_backwards_compatibility_for_relative_rotary():
                     "steps": 1,
                     "duration": 800,
                 },
+                "updated": "2024-08-24T16:27:00Z",
             },
         }
     }
@@ -202,31 +203,12 @@ def test_handle_last_event_backwards_compatibility_for_relative_rotary():
     # pylint: disable=protected-access
     rotary_controller._handle_last_event_backwards_compatibility(evt_data)
 
-    assert (
-        evt_data.get("relative_rotary", {}).get("rotary_report", {}).get("action")
-        == "repeat"
-    )
-    assert (
-        evt_data.get("relative_rotary", {})
-        .get("rotary_report", {})
-        .get("rotation", {})
-        .get("direction")
-        == "counter_clock_wise"
-    )
-    assert (
-        evt_data.get("relative_rotary", {})
-        .get("rotary_report", {})
-        .get("rotation", {})
-        .get("steps")
-        == 1
-    )
-    assert (
-        evt_data.get("relative_rotary", {})
-        .get("rotary_report", {})
-        .get("rotation", {})
-        .get("duration")
-        == 800
-    )
+    rotary_report = evt_data.get("relative_rotary", {}).get("rotary_report", {})
+    assert rotary_report.get("action") == "repeat"
+    assert rotary_report.get("rotation", {}).get("direction") == "counter_clock_wise"
+    assert rotary_report.get("rotation", {}).get("steps") == 1
+    assert rotary_report.get("rotation", {}).get("duration") == 800
+    assert rotary_report.get("updated") == "2024-08-24T16:27:00Z"
 
     evt_data = {"relative_rotary": {}}
 
