@@ -9,7 +9,9 @@ from aiohue.v2.models.feature import (
     ColorFeaturePut,
     ColorPoint,
     ColorTemperatureFeaturePut,
+    DeltaAction,
     DimmingFeaturePut,
+    DimmingDeltaFeaturePut,
     DynamicsFeaturePut,
     OnFeature,
 )
@@ -140,6 +142,29 @@ class GroupedLightController(BaseResourcesController[type[GroupedLight]]):
         if alert is not None:
             update_obj.alert = AlertFeaturePut(action=alert)
 
+        await self.update(id, update_obj)
+
+    async def set_dimming_delta(
+        self, id: str, brightness_delta: float | None = None
+    ) -> None:
+        """
+        Set brightness_delta value and action via DimmingDeltaFeature.
+
+        The action to be send depends on brightness_delta value:
+         None: STOP (this immediately stops any dimming transition)
+         > 0: UP,
+         < 0: DOWN
+        """
+        if brightness_delta in (None, 0):
+            dimming_delta = DimmingDeltaFeaturePut(action=DeltaAction.STOP)
+        else:
+            dimming_delta = DimmingDeltaFeaturePut(
+                action=DeltaAction.UP if brightness_delta > 0 else DeltaAction.DOWN,
+                brightness_delta=abs(brightness_delta),
+            )
+
+        update_obj = GroupedLightPut()
+        update_obj.dimming_delta = dimming_delta
         await self.update(id, update_obj)
 
 
