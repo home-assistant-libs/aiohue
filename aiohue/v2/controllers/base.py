@@ -233,10 +233,6 @@ class BaseResourcesController(Generic[CLIPResource]):
             if len(updated_keys) == 0 and is_reconnect:
                 return
 
-            # For backwards compatibility, add button_report or rotary_report when only
-            # the deprecated last_event is in the event.
-            self._handle_last_event_backwards_compatibility(evt_data)
-
             # Do not forward update events for button resource if
             # the button feature is missing in event data in an attempt to prevent
             # ghost events at bridge reboots/firmware updates.
@@ -266,31 +262,6 @@ class BaseResourcesController(Generic[CLIPResource]):
                 asyncio.create_task(callback(evt_type, cur_item))
             else:
                 callback(evt_type, cur_item)
-
-    def _handle_last_event_backwards_compatibility(self, evt_data: dict):
-        if self.item_type == ResourceTypes.BUTTON:
-            button_feature = evt_data.get("button", {})
-            if button_feature.get("last_event") and not button_feature.get(
-                "button_report"
-            ):
-                button_feature["button_report"] = {}
-                button_feature["button_report"]["event"] = button_feature.get(
-                    "last_event"
-                )
-                button_feature["button_report"]["updated"] = format_utc_timestamp(
-                    datetime.now(tz=UTC)
-                )
-        if self.item_type == ResourceTypes.RELATIVE_ROTARY:
-            relative_rotary_feature = evt_data.get("relative_rotary", {})
-            if relative_rotary_feature.get(
-                "last_event"
-            ) and not relative_rotary_feature.get("rotary_report"):
-                relative_rotary_feature["rotary_report"] = relative_rotary_feature.get(
-                    "last_event"
-                )
-                relative_rotary_feature["rotary_report"]["updated"] = (
-                    format_utc_timestamp(datetime.now(tz=UTC))
-                )
 
     async def __handle_reconnect(self, full_state: list[dict]) -> None:
         """Force update of state (on reconnect)."""
