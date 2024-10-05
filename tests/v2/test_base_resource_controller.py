@@ -7,7 +7,6 @@ from uuid import uuid4
 from aiohue import HueBridgeV2
 from aiohue.v2 import EventType
 from aiohue.v2.controllers.base import BaseResourcesController
-from aiohue.v2.controllers.sensors import ButtonController, RelativeRotaryController
 from aiohue.v2.models.resource import ResourceTypes
 
 

@@ -5,7 +5,6 @@ from asyncio.coroutines import iscoroutinefunction
 from collections.abc import Callable, Iterator
 
 # pylint: disable=no-name-in-module
-from datetime import datetime, UTC
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -18,7 +17,6 @@ from aiohue.util import (
     dataclass_from_dict,
     dataclass_to_dict,
     update_dataclass,
-    format_utc_timestamp,
 )
 from aiohue.v2.models.device import Device
 from aiohue.v2.models.resource import ResourceTypes
