@@ -104,6 +104,7 @@ disable = [
   "isinstance-second-argument-not-valid-type", # conflict with ruff
   "fixme", # we're still developing
   "too-few-public-methods", # unavoidable
+  "too-many-positional-arguments",
 ]
 
 [tool.pylint.SIMILARITIES]
