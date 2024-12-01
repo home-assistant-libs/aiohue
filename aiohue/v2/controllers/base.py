@@ -4,7 +4,6 @@ import asyncio
 from asyncio.coroutines import iscoroutinefunction
 from collections.abc import Callable, Iterator
 
-# pylint: disable=no-name-in-module
 from typing import (
     TYPE_CHECKING,
     Any,
