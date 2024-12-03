@@ -38,7 +38,7 @@ test = [
   "pytest-cov==6.0.0",
   "ruff==0.8.1",
   "safety==3.2.11",
-  "tomli==2.1.0",
+  "tomli==2.2.1",
 ]
 
 [tool.codespell]
