@@ -3,6 +3,7 @@
 import asyncio
 from asyncio.coroutines import iscoroutinefunction
 from collections.abc import Callable, Iterator
+
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -228,6 +229,7 @@ class BaseResourcesController(Generic[CLIPResource]):
             # do not forward update event at reconnects if no keys were updated
             if len(updated_keys) == 0 and is_reconnect:
                 return
+
             # Do not forward update events for button resource if
             # the button feature is missing in event data in an attempt to prevent
             # ghost events at bridge reboots/firmware updates.

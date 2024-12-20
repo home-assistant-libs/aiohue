@@ -129,6 +129,11 @@ def parse_utc_timestamp(datetimestr: str):
     return datetime.fromisoformat(datetimestr.replace("Z", "+00:00"))
 
 
+def format_utc_timestamp(time: datetime):
+    """Format datetime to string."""
+    return time.strftime("%Y-%m-%dT%H:%M:%S.%fZ")
+
+
 def _parse_value(name: str, value: Any, value_type: Any, default: Any = MISSING) -> Any:
     """Try to parse a value from raw (json) data and type annotations."""
     # ruff: noqa: PLR0911, PLR0912
