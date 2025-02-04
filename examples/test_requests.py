@@ -39,7 +39,7 @@ async def main():
         before = time.time()
         await asyncio.gather(*[toggle_light() for i in range(50)])
         after = time.time()
-        print(f"Completed in {after-before} seconds...")
+        print(f"Completed in {after - before} seconds...")
 
 
 with contextlib.suppress(KeyboardInterrupt):

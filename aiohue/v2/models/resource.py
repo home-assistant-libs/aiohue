@@ -1,4 +1,4 @@
-"""Generic/base Resource Model(s)."""
+"""Generic/base Resource Model(s)."""  # noqa: A005
 
 from dataclasses import dataclass
 from enum import Enum

@@ -241,7 +241,7 @@ def dataclass_from_dict(cls: dataclass, dict_obj: dict, strict=False):
         extra_keys = dict_obj.keys() - set([f.name for f in fields(cls)])  # pylint: disable=consider-using-set-comprehension
         if extra_keys:
             raise KeyError(
-                f'Extra key(s) {",".join(extra_keys)} not allowed for {cls!s}'
+                f"Extra key(s) {','.join(extra_keys)} not allowed for {cls!s}"
             )
 
     return cls(
