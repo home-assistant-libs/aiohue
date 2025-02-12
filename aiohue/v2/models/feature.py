@@ -300,6 +300,10 @@ class EffectStatus(Enum):
     GLISTEN = "glisten"
     OPAL = "opal"
     PRISM = "prism"
+    UNDERWATER = "underwater"
+    COSMOS = "cosmos"
+    SUNBEAM = "sunbeam"
+    ENCHANT = "enchant"
     UNKNOWN = "unknown"
 
     @classmethod
