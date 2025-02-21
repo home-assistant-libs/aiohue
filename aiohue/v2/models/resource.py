@@ -4,7 +4,7 @@ from dataclasses import dataclass
 from enum import Enum
 
 
-class ResourceTypes(Enum):
+class ResourceTypes(str, Enum):
     """
     Type of the supported resources.
 
