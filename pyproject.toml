@@ -36,7 +36,7 @@ test = [
   "pytest-asyncio==0.25.3",
   "pytest-aiohttp==1.1.0",
   "pytest-cov==6.0.0",
-  "ruff==0.9.6",
+  "ruff==0.9.7",
   "safety==3.3.1",
   "tomli==2.2.1",
 ]
