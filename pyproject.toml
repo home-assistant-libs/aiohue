@@ -29,7 +29,7 @@ version = "0.0.0"
 test = [
   "codespell==2.4.1",
   "mypy==1.15.0",
-  "pre-commit==4.1.0",
+  "pre-commit==4.2.0",
   "pre-commit-hooks==5.0.0",
   "pylint==3.3.4",
   "pytest==8.3.5",
