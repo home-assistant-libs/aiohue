@@ -1,8 +1,8 @@
 """Base controller for HUE resources as retrieved from the Hue bridge."""
 
 import asyncio
-from asyncio.coroutines import iscoroutinefunction
 from collections.abc import Callable, Iterator
+from inspect import iscoroutinefunction
 
 from typing import (
     TYPE_CHECKING,
