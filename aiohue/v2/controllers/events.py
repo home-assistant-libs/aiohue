@@ -1,10 +1,10 @@
 """Handle connecting to the HUE Eventstream and distribute events."""
 
 import asyncio
-from asyncio.coroutines import iscoroutinefunction
 from collections import deque
 from collections.abc import Callable
 from enum import Enum
+from inspect import iscoroutinefunction
 import json
 import random
 import string
