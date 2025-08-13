@@ -126,7 +126,7 @@ def dataclass_to_dict(obj_in: dataclass, skip_none: bool = True) -> dict:
 
 def parse_utc_timestamp(datetimestr: str):
     """Parse datetime from string."""
-    return datetime.fromisoformat(datetimestr.replace("Z", "+00:00"))
+    return datetime.fromisoformat(datetimestr)
 
 
 def format_utc_timestamp(time: datetime):
@@ -136,7 +136,7 @@ def format_utc_timestamp(time: datetime):
 
 def _parse_value(name: str, value: Any, value_type: Any, default: Any = MISSING) -> Any:
     """Try to parse a value from raw (json) data and type annotations."""
-    # ruff: noqa: PLR0911, PLR0912
+    # ruff: noqa: PLR0911
     # pylint: disable=too-many-return-statements,too-many-branches
     if isinstance(value_type, str):
         # this shouldn't happen, but just in case
