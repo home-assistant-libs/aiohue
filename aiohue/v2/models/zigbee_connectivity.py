@@ -23,6 +23,7 @@ class ConnectivityServiceStatus(Enum):
     DISCONNECTED = "disconnected"
     CONNECTIVITY_ISSUE = "connectivity_issue"
     UNIDIRECTIONAL_INCOMING = "unidirectional_incoming"
+    PENDING_DISCOVERY = "pending_discovery"
 
 
 @dataclass
