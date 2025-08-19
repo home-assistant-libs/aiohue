@@ -17,12 +17,15 @@ class ConnectivityServiceStatus(Enum):
     Connected if device has been recently been available.
     When indicating connectivity issues the device is powered off or has network
     issues When indicating unidirectional incoming the device only talks to bridge
+    pending_discovery when device is expected to be discovered (added to the
+    network) soon
     """
 
     CONNECTED = "connected"
     DISCONNECTED = "disconnected"
     CONNECTIVITY_ISSUE = "connectivity_issue"
     UNIDIRECTIONAL_INCOMING = "unidirectional_incoming"
+    PENDING_DISCOVERY = "pending_discovery"
 
 
 @dataclass
