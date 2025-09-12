@@ -9,6 +9,7 @@ from aiohue.v2.models.camera_motion import CameraMotion, CameraMotionPut
 from aiohue.v2.models.contact import Contact, ContactPut
 from aiohue.v2.models.device_power import DevicePower
 from aiohue.v2.models.geofence_client import GeofenceClient
+from aiohue.v2.models.grouped_motion import GroupedMotion, GroupedMotionPut
 from aiohue.v2.models.light_level import LightLevel, LightLevelPut
 from aiohue.v2.models.motion import Motion, MotionPut
 from aiohue.v2.models.relative_rotary import RelativeRotary
@@ -29,6 +30,7 @@ SENSOR_TYPES = (
     | CameraMotion
     | Contact
     | GeofenceClient
+    | GroupedMotion
     | LightLevel
     | Motion
     | RelativeRotary
@@ -166,6 +168,18 @@ class GeofenceClientController(BaseResourcesController[type[GeofenceClient]]):
     allow_parser_error = True
 
 
+class GroupedMotionController(BaseResourcesController[type[GroupedMotion]]):
+    """Controller holding and managing HUE resources of type `grouped_motion`."""
+
+    item_type = ResourceTypes.GROUPED_MOTION
+    item_cls = GroupedMotion
+    allow_parser_error = True
+
+    async def set_enabled(self, id: str, enabled: bool) -> None:
+        """Enable/Disable sensor."""
+        await self.update(id, GroupedMotionPut(enabled=enabled))
+
+
 class LightLevelController(BaseResourcesController[type[LightLevel]]):
     """Controller holding and managing HUE resources of type `light_level`."""
 
@@ -232,6 +246,7 @@ class SensorsController(GroupedControllerBase[SENSOR_TYPES]):
         self.contact = ContactController(bridge)
         self.device_power = DevicePowerController(bridge)
         self.geofence_client = GeofenceClientController(bridge)
+        self.grouped_motion = GroupedMotionController(bridge)
         self.light_level = LightLevelController(bridge)
         self.motion = MotionController(bridge)
         self.relative_rotary = RelativeRotaryController(bridge)
@@ -246,6 +261,7 @@ class SensorsController(GroupedControllerBase[SENSOR_TYPES]):
                 self.contact,
                 self.device_power,
                 self.geofence_client,
+                self.grouped_motion,
                 self.light_level,
                 self.motion,
                 self.relative_rotary,

@@ -50,6 +50,7 @@ class ResourceTypes(Enum):
     TAMPER = "tamper"
     CAMERA_MOTION = "camera_motion"
     PRIVATE_GROUP = "private_group"
+    GROUPED_MOTION = "grouped_motion"
     UNKNOWN = "unknown"
 
     @classmethod
