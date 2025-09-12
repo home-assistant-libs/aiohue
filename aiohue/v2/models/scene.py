@@ -5,6 +5,8 @@ https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_scene
 """
 
 from dataclasses import dataclass
+from datetime import datetime
+from enum import Enum
 
 from .feature import (
     ColorFeatureBase,
@@ -49,6 +51,40 @@ class SceneMetadata:
     image: ResourceIdentifier | None = None
 
 
+class SceneActiveStatus(Enum):
+    """Enum with possible active statuses for a Scene.
+
+    Hue API docs (resource: scene / status.active):
+    - inactive
+    - static
+    - dynamic_palette
+    """
+
+    INACTIVE = "inactive"
+    STATIC = "static"
+    DYNAMIC_PALETTE = "dynamic_palette"
+    UNKNOWN = "unknown"
+
+    @classmethod
+    def _missing_(cls: type, value: object):  # noqa: ARG003
+        """Return default member if unknown value encountered."""
+        return SceneActiveStatus.UNKNOWN
+
+
+@dataclass
+class SceneStatus:
+    """Represent Scene Status object.
+
+    Consists of information about the current status and last time the scene was recalled.
+    Hue API fields:
+        - active: one of inactive | static | dynamic_palette
+        - last_recall: ISO 8601 timestamp (optional if never recalled)
+    """
+
+    active: SceneActiveStatus
+    last_recall: datetime | None = None
+
+
 @dataclass
 class SceneMetadataPut:
     """Represent SceneMetadata model when sent/updated to the API with PUT request."""
@@ -77,6 +113,8 @@ class Scene:
     speed: float
     # auto_dynamic: whether to automatically start the scene dynamically on active recall
     auto_dynamic: bool | None = None
+    # status: the current active status and last recall of the scene
+    status: SceneStatus | None = None
 
     # optional params
     id_v1: str | None = None
