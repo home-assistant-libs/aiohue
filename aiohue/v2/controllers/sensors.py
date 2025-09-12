@@ -4,6 +4,7 @@ import asyncio
 from typing import TYPE_CHECKING
 
 from aiohue.util import dataclass_to_dict
+from aiohue.v2.models.bell_button import BellButton
 from aiohue.v2.models.button import Button, ButtonEvent
 from aiohue.v2.models.camera_motion import CameraMotion, CameraMotionPut
 from aiohue.v2.models.contact import Contact, ContactPut
@@ -27,6 +28,7 @@ if TYPE_CHECKING:
 
 SENSOR_TYPES = (
     DevicePower
+    | BellButton
     | Button
     | CameraMotion
     | Contact
@@ -50,6 +52,14 @@ class DevicePowerController(BaseResourcesController[type[DevicePower]]):
 
     item_type = ResourceTypes.DEVICE_POWER
     item_cls = DevicePower
+    allow_parser_error = True
+
+
+class BellButtonController(BaseResourcesController[type[BellButton]]):
+    """Controller holding and managing HUE resources of type `bell_button`."""
+
+    item_type = ResourceTypes.BELL_BUTTON
+    item_cls = BellButton
     allow_parser_error = True
 
 
@@ -255,6 +265,7 @@ class SensorsController(GroupedControllerBase[SENSOR_TYPES]):
 
     def __init__(self, bridge: "HueBridgeV2") -> None:
         """Initialize instance."""
+        self.bell_button = BellButtonController(bridge)
         self.button = ButtonController(bridge)
         self.camera_motion = CameraMotionController(bridge)
         self.contact = ContactController(bridge)
@@ -271,6 +282,7 @@ class SensorsController(GroupedControllerBase[SENSOR_TYPES]):
         super().__init__(
             bridge,
             [
+                self.bell_button,
                 self.button,
                 self.camera_motion,
                 self.contact,

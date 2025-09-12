@@ -52,6 +52,7 @@ class ResourceTypes(Enum):
     PRIVATE_GROUP = "private_group"
     GROUPED_MOTION = "grouped_motion"
     GROUPED_LIGHT_LEVEL = "grouped_light_level"
+    BELL_BUTTON = "bell_button"
     UNKNOWN = "unknown"
 
     @classmethod
