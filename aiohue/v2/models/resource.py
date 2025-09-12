@@ -51,6 +51,7 @@ class ResourceTypes(Enum):
     CAMERA_MOTION = "camera_motion"
     PRIVATE_GROUP = "private_group"
     GROUPED_MOTION = "grouped_motion"
+    GROUPED_LIGHT_LEVEL = "grouped_light_level"
     UNKNOWN = "unknown"
 
     @classmethod
