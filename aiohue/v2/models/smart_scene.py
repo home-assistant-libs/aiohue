@@ -35,6 +35,19 @@ class SmartSceneState(Enum):
         return SmartSceneState.INACTIVE
 
 
+class SmartSceneTimeslotKind(Enum):
+    """Enum with possible timeslot kinds for smart scenes."""
+
+    TIME = "time"
+    SUNRISE = "sunrise"
+    SUNSET = "sunset"
+
+    @classmethod
+    def _missing_(cls: type, value: object):  # noqa: ARG003
+        """Set default enum member if an unknown value is provided."""
+        return SmartSceneState.INACTIVE
+
+
 @dataclass
 class TimeslotStartTimeTime:
     """Time object."""
@@ -57,8 +70,8 @@ class TimeslotStartTimeTime:
 class TimeslotStartTime:
     """Representation of a Start time object within a timeslot."""
 
-    kind: str  # currently fixed to 'time'
-    time: TimeslotStartTimeTime
+    kind: SmartSceneTimeslotKind
+    time: TimeslotStartTimeTime | None = None  # only used when kind is TIME
 
 
 @dataclass
