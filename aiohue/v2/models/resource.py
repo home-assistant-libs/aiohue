@@ -50,6 +50,7 @@ class ResourceTypes(Enum):
     TAMPER = "tamper"
     CAMERA_MOTION = "camera_motion"
     CONVENIENCE_AREA_MOTION = "convenience_area_motion"
+    SECURITY_AREA_MOTION = "security_area_motion"
     PRIVATE_GROUP = "private_group"
     GROUPED_MOTION = "grouped_motion"
     GROUPED_LIGHT_LEVEL = "grouped_light_level"
@@ -69,6 +70,7 @@ SENSOR_RESOURCE_TYPES = (
     ResourceTypes.LIGHT_LEVEL,
     ResourceTypes.MOTION,
     ResourceTypes.CONVENIENCE_AREA_MOTION,
+    ResourceTypes.SECURITY_AREA_MOTION,
     ResourceTypes.RELATIVE_ROTARY,
     ResourceTypes.TEMPERATURE,
     ResourceTypes.ZIGBEE_CONNECTIVITY,

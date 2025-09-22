@@ -21,6 +21,10 @@ from aiohue.v2.models.grouped_light_level import GroupedLightLevel, GroupedLight
 from aiohue.v2.models.motion import Motion, MotionPut
 from aiohue.v2.models.relative_rotary import RelativeRotary
 from aiohue.v2.models.resource import ResourceTypes
+from aiohue.v2.models.security_area_motion import (
+    SecurityAreaMotion,
+    SecurityAreaMotionPut,
+)
 from aiohue.v2.models.tamper import Tamper
 from aiohue.v2.models.temperature import Temperature
 from aiohue.v2.models.zigbee_connectivity import ZigbeeConnectivity
@@ -44,6 +48,7 @@ SENSOR_TYPES = (
     | LightLevel
     | Motion
     | RelativeRotary
+    | SecurityAreaMotion
     | Tamper
     | Temperature
     | ZigbeeConnectivity
@@ -201,6 +206,27 @@ class ConvenienceAreaMotionController(
         )
 
 
+class SecurityAreaMotionController(BaseResourcesController[type[SecurityAreaMotion]]):
+    """Controller holding and managing HUE resources of type `security_area_motion`."""
+
+    item_type = ResourceTypes.SECURITY_AREA_MOTION
+    item_cls = SecurityAreaMotion
+    allow_parser_error = True
+
+    async def set_enabled(self, id: str, enabled: bool) -> None:
+        """Enable/Disable sensor."""
+        await self.update(id, SecurityAreaMotionPut(enabled=enabled))
+
+    async def set_sensitivity(self, id: str, sensitivity: int) -> None:
+        """Set motion sensor sensitivity."""
+        await self.update(
+            id,
+            SecurityAreaMotionPut(
+                sensitivity=MotionSensingFeatureSensitivityPut(sensitivity=sensitivity)
+            ),
+        )
+
+
 class GeofenceClientController(BaseResourcesController[type[GeofenceClient]]):
     """Controller holding and managing HUE resources of type `geofence_client`."""
 
@@ -308,6 +334,7 @@ class SensorsController(GroupedControllerBase[SENSOR_TYPES]):
         self.light_level = LightLevelController(bridge)
         self.motion = MotionController(bridge)
         self.relative_rotary = RelativeRotaryController(bridge)
+        self.security_area_motion = SecurityAreaMotionController(bridge)
         self.tamper = TamperController(bridge)
         self.temperature = TemperatureController(bridge)
         self.zigbee_connectivity = ZigbeeConnectivityController(bridge)
@@ -326,6 +353,7 @@ class SensorsController(GroupedControllerBase[SENSOR_TYPES]):
                 self.light_level,
                 self.motion,
                 self.relative_rotary,
+                self.security_area_motion,
                 self.tamper,
                 self.temperature,
                 self.zigbee_connectivity,
