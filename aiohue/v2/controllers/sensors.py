@@ -4,15 +4,27 @@ import asyncio
 from typing import TYPE_CHECKING
 
 from aiohue.util import dataclass_to_dict
+from aiohue.v2.models.bell_button import BellButton
 from aiohue.v2.models.button import Button, ButtonEvent
 from aiohue.v2.models.camera_motion import CameraMotion, CameraMotionPut
 from aiohue.v2.models.contact import Contact, ContactPut
+from aiohue.v2.models.convenience_area_motion import (
+    ConvenienceAreaMotion,
+    ConvenienceAreaMotionPut,
+)
 from aiohue.v2.models.device_power import DevicePower
+from aiohue.v2.models.feature import MotionSensingFeatureSensitivityPut
 from aiohue.v2.models.geofence_client import GeofenceClient
+from aiohue.v2.models.grouped_motion import GroupedMotion, GroupedMotionPut
 from aiohue.v2.models.light_level import LightLevel, LightLevelPut
+from aiohue.v2.models.grouped_light_level import GroupedLightLevel, GroupedLightLevelPut
 from aiohue.v2.models.motion import Motion, MotionPut
 from aiohue.v2.models.relative_rotary import RelativeRotary
 from aiohue.v2.models.resource import ResourceTypes
+from aiohue.v2.models.security_area_motion import (
+    SecurityAreaMotion,
+    SecurityAreaMotionPut,
+)
 from aiohue.v2.models.tamper import Tamper
 from aiohue.v2.models.temperature import Temperature
 from aiohue.v2.models.zigbee_connectivity import ZigbeeConnectivity
@@ -25,13 +37,18 @@ if TYPE_CHECKING:
 
 SENSOR_TYPES = (
     DevicePower
+    | BellButton
     | Button
     | CameraMotion
     | Contact
+    | ConvenienceAreaMotion
     | GeofenceClient
+    | GroupedLightLevel
+    | GroupedMotion
     | LightLevel
     | Motion
     | RelativeRotary
+    | SecurityAreaMotion
     | Tamper
     | Temperature
     | ZigbeeConnectivity
@@ -46,6 +63,14 @@ class DevicePowerController(BaseResourcesController[type[DevicePower]]):
 
     item_type = ResourceTypes.DEVICE_POWER
     item_cls = DevicePower
+    allow_parser_error = True
+
+
+class BellButtonController(BaseResourcesController[type[BellButton]]):
+    """Controller holding and managing HUE resources of type `bell_button`."""
+
+    item_type = ResourceTypes.BELL_BUTTON
+    item_cls = BellButton
     allow_parser_error = True
 
 
@@ -158,12 +183,80 @@ class ContactController(BaseResourcesController[type[Contact]]):
         await self.update(id, ContactPut(enabled=enabled))
 
 
+class ConvenienceAreaMotionController(
+    BaseResourcesController[type[ConvenienceAreaMotion]]
+):
+    """Controller holding and managing HUE resources of type `convenience_area_motion`."""
+
+    item_type = ResourceTypes.CONVENIENCE_AREA_MOTION
+    item_cls = ConvenienceAreaMotion
+    allow_parser_error = True
+
+    async def set_enabled(self, id: str, enabled: bool) -> None:
+        """Enable/Disable sensor."""
+        await self.update(id, ConvenienceAreaMotionPut(enabled=enabled))
+
+    async def set_sensitivity(self, id: str, sensitivity: int) -> None:
+        """Set motion sensor sensitivity."""
+        await self.update(
+            id,
+            ConvenienceAreaMotionPut(
+                sensitivity=MotionSensingFeatureSensitivityPut(sensitivity=sensitivity)
+            ),
+        )
+
+
+class SecurityAreaMotionController(BaseResourcesController[type[SecurityAreaMotion]]):
+    """Controller holding and managing HUE resources of type `security_area_motion`."""
+
+    item_type = ResourceTypes.SECURITY_AREA_MOTION
+    item_cls = SecurityAreaMotion
+    allow_parser_error = True
+
+    async def set_enabled(self, id: str, enabled: bool) -> None:
+        """Enable/Disable sensor."""
+        await self.update(id, SecurityAreaMotionPut(enabled=enabled))
+
+    async def set_sensitivity(self, id: str, sensitivity: int) -> None:
+        """Set motion sensor sensitivity."""
+        await self.update(
+            id,
+            SecurityAreaMotionPut(
+                sensitivity=MotionSensingFeatureSensitivityPut(sensitivity=sensitivity)
+            ),
+        )
+
+
 class GeofenceClientController(BaseResourcesController[type[GeofenceClient]]):
     """Controller holding and managing HUE resources of type `geofence_client`."""
 
     item_type = ResourceTypes.GEOFENCE_CLIENT
     item_cls = GeofenceClient
     allow_parser_error = True
+
+
+class GroupedLightLevelController(BaseResourcesController[type[GroupedLightLevel]]):
+    """Controller holding and managing HUE resources of type `grouped_light_level`."""
+
+    item_type = ResourceTypes.GROUPED_LIGHT_LEVEL
+    item_cls = GroupedLightLevel
+    allow_parser_error = True
+
+    async def set_enabled(self, id: str, enabled: bool) -> None:
+        """Enable/Disable sensor."""
+        await self.update(id, GroupedLightLevelPut(enabled=enabled))
+
+
+class GroupedMotionController(BaseResourcesController[type[GroupedMotion]]):
+    """Controller holding and managing HUE resources of type `grouped_motion`."""
+
+    item_type = ResourceTypes.GROUPED_MOTION
+    item_cls = GroupedMotion
+    allow_parser_error = True
+
+    async def set_enabled(self, id: str, enabled: bool) -> None:
+        """Enable/Disable sensor."""
+        await self.update(id, GroupedMotionPut(enabled=enabled))
 
 
 class LightLevelController(BaseResourcesController[type[LightLevel]]):
@@ -225,30 +318,42 @@ class ZigbeeConnectivityController(BaseResourcesController[type[ZigbeeConnectivi
 class SensorsController(GroupedControllerBase[SENSOR_TYPES]):
     """Controller grouping resources of all sensor resources."""
 
+    # pylint: disable=too-many-instance-attributes
+
     def __init__(self, bridge: "HueBridgeV2") -> None:
         """Initialize instance."""
+        self.bell_button = BellButtonController(bridge)
         self.button = ButtonController(bridge)
         self.camera_motion = CameraMotionController(bridge)
         self.contact = ContactController(bridge)
+        self.convenience_area_motion = ConvenienceAreaMotionController(bridge)
         self.device_power = DevicePowerController(bridge)
         self.geofence_client = GeofenceClientController(bridge)
+        self.grouped_light_level = GroupedLightLevelController(bridge)
+        self.grouped_motion = GroupedMotionController(bridge)
         self.light_level = LightLevelController(bridge)
         self.motion = MotionController(bridge)
         self.relative_rotary = RelativeRotaryController(bridge)
+        self.security_area_motion = SecurityAreaMotionController(bridge)
         self.tamper = TamperController(bridge)
         self.temperature = TemperatureController(bridge)
         self.zigbee_connectivity = ZigbeeConnectivityController(bridge)
         super().__init__(
             bridge,
             [
+                self.bell_button,
                 self.button,
                 self.camera_motion,
                 self.contact,
+                self.convenience_area_motion,
                 self.device_power,
                 self.geofence_client,
+                self.grouped_light_level,
+                self.grouped_motion,
                 self.light_level,
                 self.motion,
                 self.relative_rotary,
+                self.security_area_motion,
                 self.tamper,
                 self.temperature,
                 self.zigbee_connectivity,
