@@ -49,6 +49,7 @@ class ResourceTypes(Enum):
     CONTACT = "contact"
     TAMPER = "tamper"
     CAMERA_MOTION = "camera_motion"
+    CONVENIENCE_AREA_MOTION = "convenience_area_motion"
     PRIVATE_GROUP = "private_group"
     GROUPED_MOTION = "grouped_motion"
     GROUPED_LIGHT_LEVEL = "grouped_light_level"
@@ -67,6 +68,7 @@ SENSOR_RESOURCE_TYPES = (
     ResourceTypes.GEOFENCE_CLIENT,
     ResourceTypes.LIGHT_LEVEL,
     ResourceTypes.MOTION,
+    ResourceTypes.CONVENIENCE_AREA_MOTION,
     ResourceTypes.RELATIVE_ROTARY,
     ResourceTypes.TEMPERATURE,
     ResourceTypes.ZIGBEE_CONNECTIVITY,
