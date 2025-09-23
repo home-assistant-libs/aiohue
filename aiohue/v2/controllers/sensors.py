@@ -198,13 +198,13 @@ class ConvenienceAreaMotionController(
     allow_parser_error = True
 
     def get_motion_area_configuration(self, id: str) -> MotionAreaConfiguration:
-        """Get the motion area configuration connected to security area motion."""
+        """Get the motion area configuration connected to convenience area motion."""
         for area_config in self._bridge.config.motion_area_configuration:
             for service in area_config.services:
                 if service.rid == id:
                     return area_config
         raise KeyError(
-            f"Motion area configuration for security area motion {id} not found"
+            f"Motion area configuration for convenience area motion {id} not found"
         )
 
     async def set_enabled(self, id: str, enabled: bool) -> None:
