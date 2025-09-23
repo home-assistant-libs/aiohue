@@ -51,6 +51,8 @@ class ResourceTypes(Enum):
     CAMERA_MOTION = "camera_motion"
     CONVENIENCE_AREA_MOTION = "convenience_area_motion"
     SECURITY_AREA_MOTION = "security_area_motion"
+    MOTION_AREA_CONFIGURATION = "motion_area_configuration"
+    SERVICE_GROUP = "service_group"
     PRIVATE_GROUP = "private_group"
     GROUPED_MOTION = "grouped_motion"
     GROUPED_LIGHT_LEVEL = "grouped_light_level"

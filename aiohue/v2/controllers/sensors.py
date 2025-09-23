@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING
 
 from aiohue.util import dataclass_to_dict
 from aiohue.v2.models.bell_button import BellButton
+from aiohue.v2.models.bridge_home import BridgeHome
 from aiohue.v2.models.button import Button, ButtonEvent
 from aiohue.v2.models.camera_motion import CameraMotion, CameraMotionPut
 from aiohue.v2.models.contact import Contact, ContactPut
@@ -15,19 +16,23 @@ from aiohue.v2.models.convenience_area_motion import (
 from aiohue.v2.models.device_power import DevicePower
 from aiohue.v2.models.feature import MotionSensingFeatureSensitivityPut
 from aiohue.v2.models.geofence_client import GeofenceClient
+from aiohue.v2.models.grouped_light_level import GroupedLightLevel, GroupedLightLevelPut
 from aiohue.v2.models.grouped_motion import GroupedMotion, GroupedMotionPut
 from aiohue.v2.models.light_level import LightLevel, LightLevelPut
-from aiohue.v2.models.grouped_light_level import GroupedLightLevel, GroupedLightLevelPut
 from aiohue.v2.models.motion import Motion, MotionPut
+from aiohue.v2.models.motion_area_configuration import MotionAreaConfiguration
 from aiohue.v2.models.relative_rotary import RelativeRotary
 from aiohue.v2.models.resource import ResourceTypes
+from aiohue.v2.models.room import Room
 from aiohue.v2.models.security_area_motion import (
     SecurityAreaMotion,
     SecurityAreaMotionPut,
 )
+from aiohue.v2.models.service_group import ServiceGroup
 from aiohue.v2.models.tamper import Tamper
 from aiohue.v2.models.temperature import Temperature
 from aiohue.v2.models.zigbee_connectivity import ZigbeeConnectivity
+from aiohue.v2.models.zone import Zone
 
 from .base import BaseResourcesController, GroupedControllerBase
 from .events import EventType
@@ -192,6 +197,16 @@ class ConvenienceAreaMotionController(
     item_cls = ConvenienceAreaMotion
     allow_parser_error = True
 
+    def get_motion_area_configuration(self, id: str) -> MotionAreaConfiguration:
+        """Get the motion area configuration connected to security area motion."""
+        for area_config in self._bridge.config.motion_area_configuration:
+            for service in area_config.services:
+                if service.rid == id:
+                    return area_config
+        raise KeyError(
+            f"Motion area configuration for security area motion {id} not found"
+        )
+
     async def set_enabled(self, id: str, enabled: bool) -> None:
         """Enable/Disable sensor."""
         await self.update(id, ConvenienceAreaMotionPut(enabled=enabled))
@@ -212,6 +227,16 @@ class SecurityAreaMotionController(BaseResourcesController[type[SecurityAreaMoti
     item_type = ResourceTypes.SECURITY_AREA_MOTION
     item_cls = SecurityAreaMotion
     allow_parser_error = True
+
+    def get_motion_area_configuration(self, id: str) -> MotionAreaConfiguration:
+        """Get the motion area configuration connected to security area motion."""
+        for area_config in self._bridge.config.motion_area_configuration:
+            for service in area_config.services:
+                if service.rid == id:
+                    return area_config
+        raise KeyError(
+            f"Motion area configuration for security area motion {id} not found"
+        )
 
     async def set_enabled(self, id: str, enabled: bool) -> None:
         """Enable/Disable sensor."""
@@ -253,6 +278,19 @@ class GroupedMotionController(BaseResourcesController[type[GroupedMotion]]):
     item_type = ResourceTypes.GROUPED_MOTION
     item_cls = GroupedMotion
     allow_parser_error = True
+
+    def get_parent(self, id: str) -> ServiceGroup | Room | Zone | BridgeHome | None:
+        """Get the parent (ServiceGroup or Room/Zone) connected to grouped motion (if any)."""
+        grouped_motion = self._items[id]
+        if grouped_motion.owner.rtype == ResourceTypes.SERVICE_GROUP:
+            return self._bridge.config.service_group[grouped_motion.owner.rid]
+        if grouped_motion.owner.rtype == ResourceTypes.ROOM:
+            return self._bridge.groups.room[grouped_motion.owner.rid]
+        if grouped_motion.owner.rtype == ResourceTypes.ZONE:
+            return self._bridge.groups.zone[grouped_motion.owner.rid]
+        if grouped_motion.owner.rtype == ResourceTypes.BRIDGE_HOME:
+            return self._bridge.config.bridge_home
+        return None
 
     async def set_enabled(self, id: str, enabled: bool) -> None:
         """Enable/Disable sensor."""

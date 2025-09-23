@@ -1,6 +1,6 @@
 """Controller holding and managing HUE resources that are of the config type."""
 
-from typing import TYPE_CHECKING, Union
+from typing import TYPE_CHECKING
 
 from awesomeversion import AwesomeVersion
 
@@ -10,13 +10,26 @@ from aiohue.v2.models.behavior_instance import BehaviorInstance, BehaviorInstanc
 from aiohue.v2.models.behavior_script import BehaviorScript
 from aiohue.v2.models.bridge import Bridge
 from aiohue.v2.models.bridge_home import BridgeHome
+from aiohue.v2.models.convenience_area_motion import ConvenienceAreaMotion
 from aiohue.v2.models.device import Device
 from aiohue.v2.models.entertainment import Entertainment
 from aiohue.v2.models.entertainment_configuration import EntertainmentConfiguration
 from aiohue.v2.models.homekit import Homekit
 from aiohue.v2.models.matter import Matter
 from aiohue.v2.models.matter_fabric import MatterFabric
+from aiohue.v2.models.motion_area_configuration import (
+    MotionAreaConfiguration,
+    MotionAreaConfigurationPut,
+)
 from aiohue.v2.models.resource import ResourceTypes
+from aiohue.v2.models.room import Room
+from aiohue.v2.models.security_area_motion import SecurityAreaMotion
+from aiohue.v2.models.service_group import (
+    ServiceGroup,
+    ServiceGroupMetadata,
+    ServiceGroupPut,
+)
+from aiohue.v2.models.zone import Zone
 
 from .base import BaseResourcesController, GroupedControllerBase
 
@@ -107,9 +120,62 @@ class BehaviorInstanceController(BaseResourcesController[type[BehaviorInstance]]
         await self.update(id, BehaviorInstancePut(enabled=enabled))
 
 
+class MotionAreaConfigurationController(
+    BaseResourcesController[type[MotionAreaConfiguration]]
+):
+    """Controller holding and managing HUE resources of type `motion_area_configuration`."""
+
+    item_type = ResourceTypes.MOTION_AREA_CONFIGURATION
+    item_cls = MotionAreaConfiguration
+    allow_parser_error = True
+
+    def get_sensors(self, id: str) -> list[ConvenienceAreaMotion | SecurityAreaMotion]:
+        """Return all sensors in given motion area configuration."""
+        return [
+            x
+            for x in self._bridge.sensors
+            if x.owner.rid == id
+            and isinstance(x, (ConvenienceAreaMotion, SecurityAreaMotion))
+        ]
+
+    def get_group(self, id: str) -> Room | Zone:
+        """Return the group associated with this motion area configuration."""
+        if id not in self._items:
+            raise KeyError(f"Motion area configuration {id} not found")
+        group_id = self._items[id].group.rid
+        if group_id not in self._bridge.groups:
+            raise KeyError(f"Group {group_id} not found")
+        return self._bridge.groups[group_id]
+
+    async def set_enabled(self, id: str, enabled: bool) -> None:
+        """Enable/Disable motion area configuration."""
+        await self.update(id, MotionAreaConfigurationPut(enabled=enabled))
+
+    async def set_name(self, id: str, name: str) -> None:
+        """Set name of motion area configuration."""
+        await self.update(id, MotionAreaConfigurationPut(name=name))
+
+
+class ServiceGroupController(BaseResourcesController[type[ServiceGroup]]):
+    """Controller holding and managing HUE resources of type `service_group`."""
+
+    item_type = ResourceTypes.SERVICE_GROUP
+    item_cls = ServiceGroup
+    allow_parser_error = True
+
+    async def set_name(self, id: str, name: str) -> None:
+        """Set name of service group."""
+        await self.update(id, ServiceGroupPut(metadata=ServiceGroupMetadata(name=name)))
+
+
 class ConfigController(
     GroupedControllerBase[
-        Union[Bridge, BridgeHome, Entertainment, EntertainmentConfiguration]  # noqa: UP007
+        Bridge
+        | BridgeHome
+        | Entertainment
+        | EntertainmentConfiguration
+        | MotionAreaConfiguration
+        | ServiceGroup
     ]
 ):
     """
@@ -190,6 +256,8 @@ class ConfigController(
         self.matter_fabric = MatterFabricController(bridge)
         self.behavior_script = BehaviorScriptController(bridge)
         self.behavior_instance = BehaviorInstanceController(bridge)
+        self.motion_area_configuration = MotionAreaConfigurationController(bridge)
+        self.service_group = ServiceGroupController(bridge)
         super().__init__(
             bridge,
             [
@@ -202,5 +270,7 @@ class ConfigController(
                 self.matter_fabric,
                 self.behavior_script,
                 self.behavior_instance,
+                self.motion_area_configuration,
+                self.service_group,
             ],
         )

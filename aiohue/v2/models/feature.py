@@ -723,8 +723,10 @@ class MotionSensingFeatureSensitivity:
     Used by `motion` and `camera_motion` resources.
     """
 
-    status: MotionSensingFeatureSensitivityStatus
     sensitivity: int
+    status: MotionSensingFeatureSensitivityStatus = (
+        MotionSensingFeatureSensitivityStatus.UNKNOWN
+    )
     sensitivity_max: int = 10
 
 
