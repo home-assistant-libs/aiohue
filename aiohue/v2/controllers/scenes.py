@@ -19,7 +19,7 @@ from .base import BaseResourcesController, GroupedControllerBase
 if TYPE_CHECKING:
     from aiohue.v2 import HueBridgeV2
 
-SCENE_TYPES = Scene | SmartScene
+SCENE_TYPES = Scene | SmartScene  # pylint: disable=invalid-name
 
 
 class RegularScenesController(BaseResourcesController[type[Scene]]):
