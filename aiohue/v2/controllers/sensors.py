@@ -40,7 +40,7 @@ from .events import EventType
 if TYPE_CHECKING:
     from aiohue.v2 import HueBridgeV2
 
-SENSOR_TYPES = (
+SENSOR_TYPES = (  # pylint: disable=invalid-name
     DevicePower
     | BellButton
     | Button
