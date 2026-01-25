@@ -18,6 +18,7 @@ from .feature import (
     PaletteFeature,
     RecallFeature,
     SceneEffectsFeature,
+    SceneEffectsV2Feature,
 )
 from .resource import ResourceIdentifier, ResourceTypes
 
@@ -32,6 +33,7 @@ class ActionAction:
     color_temperature: ColorTemperatureFeatureBase | None = None
     gradient: GradientFeatureBase | None = None
     effects: SceneEffectsFeature | None = None
+    effects_v2: SceneEffectsV2Feature | None = None
     dynamics: DynamicsFeaturePut | None = None
 
 

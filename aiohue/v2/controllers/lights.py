@@ -12,6 +12,9 @@ from aiohue.v2.models.feature import (
     DynamicsFeaturePut,
     EffectsFeaturePut,
     EffectStatus,
+    EffectsV2ActionPut,
+    EffectsV2FeaturePut,
+    EffectsV2ParametersPut,
     OnFeature,
     TimedEffectsFeaturePut,
     TimedEffectStatus,
@@ -78,6 +81,7 @@ class LightsController(BaseResourcesController[type[Light]]):
         transition_time: int | None = None,
         alert: AlertEffectType | None = None,
         effect: EffectStatus | TimedEffectStatus | None = None,
+        effect_speed: float | None = None,
     ) -> None:
         """Set supported feature(s) to light resource."""
         update_obj = LightPut()
@@ -99,7 +103,27 @@ class LightsController(BaseResourcesController[type[Light]]):
             update_obj.timed_effects = TimedEffectsFeaturePut(
                 effect=effect, duration=transition_time
             )
+        elif effect is not None and (
+            effect_speed is not None or color_xy is not None or color_temp is not None
+        ):
+            # if color is set together with effect it is ignored unless we use effects_v2.
+            update_obj.effects_v2 = EffectsV2FeaturePut(
+                action=EffectsV2ActionPut(
+                    effect=effect, parameters=EffectsV2ParametersPut()
+                )
+            )
+            if color_xy is not None:
+                update_obj.effects_v2.action.parameters.color = ColorFeaturePut(
+                    xy=ColorPoint(*color_xy)
+                )
+            if color_temp is not None:
+                update_obj.effects_v2.action.parameters.color_temperature = (
+                    ColorTemperatureFeaturePut(mirek=color_temp)
+                )
+            if effect_speed is not None:
+                update_obj.effects_v2.action.parameters.speed = effect_speed
         elif effect is not None:
+            # fallback to old effects feature for backwards compatibility
             update_obj.effects = EffectsFeaturePut(effect=effect)
         await self.update(id, update_obj)
 
