@@ -347,6 +347,114 @@ class EffectsFeaturePut:
     effect: EffectStatus
 
 
+@dataclass
+class EffectsV2Parameters:
+    """
+    Represent `Effect Parameters` object as used by various Hue resources.
+
+    https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_light_put
+    """
+
+    color: ColorFeatureBase | None = None
+    color_temperature: ColorTemperatureFeatureBase | None = None
+    speed: float | None = None  # Speed of the effect (0.0 - 1.0)
+
+
+@dataclass
+class EffectsV2ParametersPut:
+    """
+    Represent `Effect Parameters` object as used by various Hue resources.
+
+    https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_light_put
+    """
+
+    color: ColorFeaturePut | None = None
+    color_temperature: ColorTemperatureFeaturePut | None = None
+    speed: float | None = None  # Speed of the effect (0.0 - 1.0)
+
+
+@dataclass
+class EffectsV2Action:
+    """
+    Represent `Effects V2 action` when sent to the API and when retrieved from scenes.
+
+    https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_light__id__put
+    """
+
+    effect: EffectStatus
+    parameters: EffectsV2Parameters | None = None
+
+
+@dataclass
+class EffectsV2ActionGet:
+    """
+    Represent `Effects V2 action` when retrieved from the API for a single light.
+
+    https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_light__id__get
+    """
+
+    effect_values: list[EffectStatus] = field(default_factory=list)
+
+
+@dataclass
+class EffectsV2ActionPut:
+    """
+    Represent `Effects V2 action` when sent to the API and when retrieved from scenes.
+
+    https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_light__id__put
+    """
+
+    effect: EffectStatus
+    parameters: EffectsV2ParametersPut | None = None
+
+
+@dataclass
+class EffectsV2Status:
+    """
+    Represent `Effects V2 status` when retrieved from the API for a single light.
+
+    https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_light__id__get
+    """
+
+    effect: EffectStatus
+    effect_values: list[EffectStatus] = field(default_factory=list)
+    parameters: EffectsV2Parameters | None = None
+
+
+@dataclass
+class SceneEffectsV2Feature:
+    """
+    Represent `Effects V2 feature` object as retrieved from scenes.
+
+    https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_scene_get
+    """
+
+    action: EffectsV2Action
+
+
+@dataclass
+class EffectsV2Feature:
+    """
+    Represent `Effects V2 feature` object as used by various Hue resources.
+
+    https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_light_get
+    """
+
+    action: EffectsV2ActionGet
+    status: EffectsV2Status
+
+
+@dataclass
+class EffectsV2FeaturePut:
+    """
+    Represent `Effects V2 action` when sent to the API and when retrieved from scenes.
+
+    https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_light__id__put
+    """
+
+    action: EffectsV2ActionPut
+
+
 class TimedEffectStatus(Enum):
     """Enum with possible timed effects."""
 

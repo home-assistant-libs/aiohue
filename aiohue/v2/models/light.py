@@ -23,6 +23,8 @@ from .feature import (
     DynamicStatus,
     EffectsFeature,
     EffectsFeaturePut,
+    EffectsV2Feature,
+    EffectsV2FeaturePut,
     GradientFeature,
     GradientFeatureBase,
     OnFeature,
@@ -84,6 +86,7 @@ class Light:
     signaling: SignalingFeature | None = None
     gradient: GradientFeature | None = None
     effects: EffectsFeature | None = None
+    effects_v2: EffectsV2Feature | None = None
     timed_effects: TimedEffectsFeature | None = None
     powerup: PowerUpFeature | None = None
 
@@ -149,6 +152,7 @@ class LightPut:
     alert: AlertFeaturePut | None = None
     gradient: GradientFeatureBase | None = None
     effects: EffectsFeaturePut | None = None
+    effects_v2: EffectsV2FeaturePut | None = None
     timed_effects: TimedEffectsFeaturePut | None = None
     powerup: PowerUpFeaturePut | None = None
     signaling: SignalingFeaturePut | None = None
