@@ -19,10 +19,12 @@ async def test_bridge_init(v2_resources):
     assert bridge.devices is not None
     assert len(bridge.devices.get_lights("0b216218-d811-4c95-8c55-bbcda50f9d50")) == 1
     assert len(bridge.devices.get_sensors("342daec9-391b-480b-abdd-87f1aa04ce3b")) == 6
+    assert len(bridge.devices.get_speakers("4177008b-9553-49fa-97a5-f4e14461d05d")) == 1
 
     assert bridge.lights is not None
     assert bridge.scenes is not None
     assert bridge.sensors is not None
+    assert bridge.speakers is not None
     assert bridge.groups is not None
 
     # test required version check

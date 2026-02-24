@@ -2168,5 +2168,128 @@
     "id": "52612630-841e-4d39-9763-60346a0da759",
     "is_configured": true,
     "type": "geolocation"
+  },
+  {
+    "id": "dc60c113-5023-430a-af40-9ebdd2f56748",
+    "owner": {
+      "rid": "4177008b-9553-49fa-97a5-f4e14461d05d",
+      "rtype": "device"
+    },
+    "alarm": {
+      "sound_values": [
+        "siren",
+        "no_sound"
+      ],
+      "status": {
+        "sound": "no_sound",
+        "sound_values": [
+          "siren",
+          "no_sound"
+        ]
+      }
+    },
+    "chime": {
+      "sound_values": [
+        "bleep",
+        "ding_dong_classic",
+        "ding_dong_modern",
+        "rise",
+        "westminster_classic",
+        "westminster_modern",
+        "ding_dong_xylo",
+        "hue_default",
+        "sonar",
+        "swing",
+        "bright",
+        "glow",
+        "bounce",
+        "reveal",
+        "welcome",
+        "bright_modern",
+        "fairy",
+        "galaxy",
+        "echo"
+      ],
+      "status": {
+        "sound": "no_sound",
+        "sound_values": [
+          "bleep",
+          "ding_dong_classic",
+          "ding_dong_modern",
+          "rise",
+          "westminster_classic",
+          "westminster_modern",
+          "ding_dong_xylo",
+          "hue_default",
+          "sonar",
+          "swing",
+          "bright",
+          "glow",
+          "bounce",
+          "reveal",
+          "welcome",
+          "bright_modern",
+          "fairy",
+          "galaxy",
+          "echo",
+          "no_sound"
+        ]
+      }
+    },
+    "alert": {
+      "sound_values": [
+        "alert"
+      ],
+      "status": {
+        "sound": "no_sound",
+        "sound_values": [
+          "alert",
+          "no_sound"
+        ]
+      }
+    },
+    "mute": {
+      "mute": "unmute"
+    },
+    "type": "speaker"
+  },
+  {
+    "id": "4177008b-9553-49fa-97a5-f4e14461d05d",
+    "product_data": {
+      "model_id": "COM001",
+      "manufacturer_name": "Signify Netherlands B.V.",
+      "product_name": "Secure chime",
+      "product_archetype": "hue_chime",
+      "certified": true,
+      "software_version": "1.123.13",
+      "hardware_platform_type": "100b-128"
+    },
+    "metadata": {
+      "name": "Secure chime",
+      "archetype": "hue_chime"
+    },
+    "identify": {},
+    "services": [
+      {
+        "rid": "8e31dcd4-7171-4c0c-b2ac-0e6a9d47681b",
+        "rtype": "zigbee_connectivity"
+      },
+      {
+        "rid": "dc60c113-5023-430a-af40-9ebdd2f56748",
+        "rtype": "speaker"
+      }
+    ],
+    "type": "device"
+  },
+  {
+    "id": "8e31dcd4-7171-4c0c-b2ac-0e6a9d47681b",
+    "id_v1": "/speakers/34",
+    "mac_address": "00:aa:bb:cc:aa:bb:cc:ee",
+    "owner": {
+      "rid": "4177008b-9553-49fa-97a5-f4e14461d05d",
+      "rtype": "device"
+    },
+    "status": "connected",
+    "type": "zigbee_connectivity"
   }
 ]
