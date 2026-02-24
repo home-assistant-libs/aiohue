@@ -15,6 +15,7 @@ class DeviceArchetypes(Enum):
     """Enum with all possible Device archetypes."""
 
     BRIDGE_V2 = "bridge_v2"
+    BRIDGE_V3 = "bridge_v3"
     UNKNOWN_ARCHETYPE = "unknown_archetype"
     CLASSIC_BULB = "classic_bulb"
     SULTAN_BULB = "sultan_bulb"
@@ -47,7 +48,14 @@ class DeviceArchetypes(Enum):
     BOLLARD = "bollard"
     WALL_WASHER = "wall_washer"
     HUE_PLAY = "hue_play"
+    HUE_CHIME = "hue_chime"
     VINTAGE_BULB = "vintage_bulb"
+    VINTAGE_CANDLE_BULB = "vintage_candle_bulb"
+    ELLIPSE_BULB = "ellipse_bulb"
+    TRIANGLE_BULB = "triangle_bulb"
+    SMALL_GLOBE_BULB = "small_globe_bulb"
+    LARGE_GLOBE_BULB = "large_globe_bulb"
+    EDISON_BULB = "edison_bulb"
     CHRISTMAS_TREE = "christmas_tree"
     STRING_LIGHT = "string_light"
     HUE_CENTRIS = "hue_centris"
@@ -58,6 +66,18 @@ class DeviceArchetypes(Enum):
     PENDANT_SPOT = "pendant_spot"
     CEILING_HORIZONTAL = "ceiling_horizontal"
     CEILING_TUBE = "ceiling_tube"
+    UP_AND_DOWN = "up_and_down"
+    UP_AND_DOWN_UP = "up_and_down_up"
+    UP_AND_DOWN_DOWN = "up_and_down_down"
+    HUE_FLOODLIGHT_CAMERA = "hue_floodlight_camera"
+    TWILIGHT = "twilight"
+    TWILIGHT_FRONT = "twilight_front"
+    TWILIGHT_BACK = "twilight_back"
+    HUE_PLAY_WALLWASHER = "hue_play_wallwasher"
+    HUE_OMNIGLOW = "hue_omniglow"
+    HUE_NEON = "hue_neon"
+    STRING_GLOBE = "string_globe"
+    STRING_PERMANENT = "string_permanent"
 
     @classmethod
     def _missing_(cls: type, value: object):  # noqa: ARG003
@@ -127,6 +147,11 @@ class Device:
     def sensors(self) -> set[str]:
         """Return a set of sensor id's belonging to this group/device."""
         return {x.rid for x in self.services if x.rtype in SENSOR_RESOURCE_TYPES}
+
+    @property
+    def speakers(self) -> set[str]:
+        """Return a set of speaker id's belonging to this group/device."""
+        return {x.rid for x in self.services if x.rtype == ResourceTypes.SPEAKER}
 
 
 @dataclass
