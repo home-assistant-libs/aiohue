@@ -55,15 +55,23 @@ class MotionAreaConfiguration:
     Represent a (full) `MotionAreaConfiguration` resource when retrieved from the api.
 
     https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_motion_area_configuration_get
+
+    Note: Hue Bridge Pro returns a simplified schema with only `id`, `owner`, `enabled`,
+    and `type`. The remaining fields are only present on standard Hue Bridges.
     """
 
     id: str
-    name: str
-    group: ResourceIdentifier
-    participants: list[MotionAreaParticipant]
-    services: list[ResourceIdentifier]
-    health: MotionAreaHealth
     enabled: bool
+
+    # Present on Hue Bridge Pro
+    owner: ResourceIdentifier | None = None
+
+    # Present on standard Hue Bridge only
+    name: str | None = None
+    group: ResourceIdentifier | None = None
+    participants: list[MotionAreaParticipant] | None = None
+    services: list[ResourceIdentifier] | None = None
+    health: MotionAreaHealth | None = None
 
     id_v1: str | None = None
     type: ResourceTypes = ResourceTypes.MOTION_AREA_CONFIGURATION

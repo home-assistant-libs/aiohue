@@ -138,14 +138,16 @@ class MotionAreaConfigurationController(
             and isinstance(x, (ConvenienceAreaMotion, SecurityAreaMotion))
         ]
 
-    def get_group(self, id: str) -> Room | Zone:
+    def get_group(self, id: str) -> Room | Zone | None:
         """Return the group associated with this motion area configuration."""
         if id not in self._items:
             raise KeyError(f"Motion area configuration {id} not found")
-        group_id = self._items[id].group.rid
-        if group_id not in self._bridge.groups:
-            raise KeyError(f"Group {group_id} not found")
-        return self._bridge.groups[group_id]
+        group = self._items[id].group
+        if group is None:
+            return None
+        if group.rid not in self._bridge.groups:
+            raise KeyError(f"Group {group.rid} not found")
+        return self._bridge.groups[group.rid]
 
     async def set_enabled(self, id: str, enabled: bool) -> None:
         """Enable/Disable motion area configuration."""
