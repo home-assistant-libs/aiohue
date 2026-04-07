@@ -8,6 +8,7 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import TYPE_CHECKING
 
+from aiohue.v2.controllers.events import EventType
 from aiohue.v2.models.scene import Scene, SceneActiveStatus
 from aiohue.v2.models.smart_scene import SmartScene, SmartSceneState
 
@@ -50,8 +51,11 @@ class SceneActivityTracker:
             return
 
         def _handle_scene_event(
-            event_type: object, scene: Scene | SmartScene
+            event_type: EventType, scene: Scene | SmartScene
         ) -> None:
+            if event_type == EventType.RESOURCE_DELETED:
+                self._clear_deleted_scene(scene)
+                return
             if self._apply_scene_update(scene):
                 group_id = scene.group.rid
                 for listener in list(self._listeners[group_id]):
@@ -90,6 +94,34 @@ class SceneActivityTracker:
             self._listeners[group_id].remove(listener)
 
         return _remove
+
+    def _clear_deleted_scene(self, scene: Scene | SmartScene) -> None:
+        """Clear group state when a tracked scene is deleted."""
+        if not isinstance(scene, (Scene, SmartScene)):
+            return
+        group_id = scene.group.rid
+        group_state = self._group_states.get(group_id)
+        if group_state is None:
+            return
+        changed = False
+        if isinstance(scene, Scene) and group_state.active_scene_id == scene.id:
+            group_state.active_scene_id = None
+            group_state.active_scene_name = None
+            group_state.active_scene_mode = None
+            group_state.active_scene_last_recall = None
+            group_state.active_scene_speed = None
+            group_state.active_scene_brightness = None
+            changed = True
+        elif (
+            isinstance(scene, SmartScene)
+            and group_state.active_smart_scene_id == scene.id
+        ):
+            group_state.active_smart_scene_id = None
+            group_state.active_smart_scene_name = None
+            changed = True
+        if changed:
+            for listener in list(self._listeners.get(group_id, [])):
+                listener(group_id)
 
     def _apply_scene_update(self, scene: Scene | SmartScene) -> bool:
         """Apply scene state to group tracking. Returns True if state changed."""

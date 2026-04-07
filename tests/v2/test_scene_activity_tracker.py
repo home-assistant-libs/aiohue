@@ -332,6 +332,91 @@ async def test_brightness_extracted_from_actions() -> None:
     assert state.active_scene_brightness == 80.0
 
 
+async def test_deleted_active_scene_clears_state() -> None:
+    """Deleting the tracked active scene clears group state and notifies listeners."""
+    bridge = HueBridgeV2("127.0.0.1", "fake")
+    scene_id = str(uuid4())
+    group_id = str(uuid4())
+
+    # pylint: disable=protected-access
+    await bridge.scenes.scene._handle_event(
+        EventType.RESOURCE_ADDED,
+        _scene_data(scene_id, group_id, "Relax", "static"),
+    )
+
+    tracker = SceneActivityTracker(bridge.scenes)
+    tracker.start()
+
+    listener = Mock()
+    tracker.subscribe(group_id, listener)
+
+    await bridge.scenes.scene._handle_event(
+        EventType.RESOURCE_DELETED, {"id": scene_id, "type": "scene"}
+    )
+
+    state = tracker.get_group_state(group_id)
+    assert state.active_scene_id is None
+    assert state.active_scene_name is None
+    listener.assert_called_once_with(group_id)
+
+
+async def test_deleted_inactive_scene_does_not_notify() -> None:
+    """Deleting a scene that was not tracked as active does not notify listeners."""
+    bridge = HueBridgeV2("127.0.0.1", "fake")
+    scene_a = str(uuid4())
+    scene_b = str(uuid4())
+    group_id = str(uuid4())
+
+    # pylint: disable=protected-access
+    await bridge.scenes.scene._handle_event(
+        EventType.RESOURCE_ADDED,
+        _scene_data(scene_a, group_id, "Relax", "static"),
+    )
+    await bridge.scenes.scene._handle_event(
+        EventType.RESOURCE_ADDED,
+        _scene_data(scene_b, group_id, "Energize", "inactive"),
+    )
+
+    tracker = SceneActivityTracker(bridge.scenes)
+    tracker.start()
+
+    listener = Mock()
+    tracker.subscribe(group_id, listener)
+
+    # Delete the inactive scene — should not touch state or notify
+    await bridge.scenes.scene._handle_event(
+        EventType.RESOURCE_DELETED, {"id": scene_b, "type": "scene"}
+    )
+
+    state = tracker.get_group_state(group_id)
+    assert state.active_scene_id == scene_a
+    listener.assert_not_called()
+
+
+async def test_deleted_active_smart_scene_clears_state() -> None:
+    """Deleting the tracked active smart scene clears its group state."""
+    bridge = HueBridgeV2("127.0.0.1", "fake")
+    scene_id = str(uuid4())
+    group_id = str(uuid4())
+
+    # pylint: disable=protected-access
+    await bridge.scenes.smart_scene._handle_event(
+        EventType.RESOURCE_ADDED,
+        _smart_scene_data(scene_id, group_id, "Morning", "active"),
+    )
+
+    tracker = SceneActivityTracker(bridge.scenes)
+    tracker.start()
+
+    await bridge.scenes.smart_scene._handle_event(
+        EventType.RESOURCE_DELETED, {"id": scene_id, "type": "smart_scene"}
+    )
+
+    state = tracker.get_group_state(group_id)
+    assert state.active_smart_scene_id is None
+    assert state.active_smart_scene_name is None
+
+
 async def test_brightness_none_when_no_dimming_action() -> None:
     """Brightness is None when no scene action has a dimming field."""
     bridge = HueBridgeV2("127.0.0.1", "fake")
