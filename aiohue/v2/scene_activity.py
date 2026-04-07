@@ -84,9 +84,7 @@ class SceneActivityTracker:
         """Return (and lazily create) the state holder for a group."""
         return self._group_states[group_id]
 
-    def subscribe(
-        self, group_id: str, listener: UpdateListener
-    ) -> Callable[[], None]:
+    def subscribe(self, group_id: str, listener: UpdateListener) -> Callable[[], None]:
         """Register a listener for a group; return an unsubscribe callable."""
         self._listeners[group_id].append(listener)
 
