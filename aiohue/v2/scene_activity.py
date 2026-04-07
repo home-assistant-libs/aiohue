@@ -95,44 +95,54 @@ class SceneActivityTracker:
         """Apply scene state to group tracking. Returns True if state changed."""
         if not scene.id:
             return False
-        group_id = scene.group.rid
-        group_state = self._group_states[group_id]
-
+        group_state = self._group_states[scene.group.rid]
         if isinstance(scene, Scene):
-            if scene.status is None:
-                return False
-            if scene.status.active != SceneActiveStatus.INACTIVE:
-                group_state.active_scene_id = scene.id
-                group_state.active_scene_name = scene.metadata.name
-                group_state.active_scene_mode = scene.status.active.value
-                group_state.active_scene_last_recall = scene.status.last_recall
-                group_state.active_scene_speed = scene.speed
-                group_state.active_scene_brightness = next(
-                    (
-                        action.action.dimming.brightness
-                        for action in scene.actions
-                        if action.action.dimming is not None
-                    ),
-                    None,
-                )
-                return True
-            if group_state.active_scene_id == scene.id:
-                group_state.active_scene_id = None
-                group_state.active_scene_name = None
-                group_state.active_scene_mode = None
-                group_state.active_scene_last_recall = None
-                group_state.active_scene_speed = None
-                group_state.active_scene_brightness = None
-                return True
-            return False
-
+            return self._apply_regular_scene_update(scene, group_state)
         if isinstance(scene, SmartScene):
-            if scene.state == SmartSceneState.ACTIVE:
-                group_state.active_smart_scene_id = scene.id
-                group_state.active_smart_scene_name = scene.metadata.name
-                return True
-            if group_state.active_smart_scene_id == scene.id:
-                group_state.active_smart_scene_id = None
-                group_state.active_smart_scene_name = None
-                return True
+            return self._apply_smart_scene_update(scene, group_state)
+        return False
+
+    def _apply_regular_scene_update(
+        self, scene: Scene, group_state: GroupSceneState
+    ) -> bool:
+        """Update group state from a regular scene event. Returns True if changed."""
+        if scene.status is None:
+            return False
+        if scene.status.active != SceneActiveStatus.INACTIVE:
+            group_state.active_scene_id = scene.id
+            group_state.active_scene_name = scene.metadata.name
+            group_state.active_scene_mode = scene.status.active.value
+            group_state.active_scene_last_recall = scene.status.last_recall
+            group_state.active_scene_speed = scene.speed
+            group_state.active_scene_brightness = next(
+                (
+                    action.action.dimming.brightness
+                    for action in scene.actions
+                    if action.action.dimming is not None
+                ),
+                None,
+            )
+            return True
+        if group_state.active_scene_id == scene.id:
+            group_state.active_scene_id = None
+            group_state.active_scene_name = None
+            group_state.active_scene_mode = None
+            group_state.active_scene_last_recall = None
+            group_state.active_scene_speed = None
+            group_state.active_scene_brightness = None
+            return True
+        return False
+
+    def _apply_smart_scene_update(
+        self, scene: SmartScene, group_state: GroupSceneState
+    ) -> bool:
+        """Update group state from a smart scene event. Returns True if changed."""
+        if scene.state == SmartSceneState.ACTIVE:
+            group_state.active_smart_scene_id = scene.id
+            group_state.active_smart_scene_name = scene.metadata.name
+            return True
+        if group_state.active_smart_scene_id == scene.id:
+            group_state.active_smart_scene_id = None
+            group_state.active_smart_scene_name = None
+            return True
         return False
