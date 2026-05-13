@@ -1,0 +1,159 @@
+{
+    "device": {
+        "name": "My Sync Box",
+        "deviceType": "HSB1",
+        "uniqueId": "C42996000000",
+        "apiLevel": 7,
+        "firmwareVersion": "1.7.4",
+        "buildNumber": 681947148,
+        "wifiState": "wan",
+        "ipAddress": "192.168.1.12",
+        "wifi": {
+            "ssid": "Wifi_2G",
+            "strength": 4
+        },
+        "lastCheckedUpdate": "2020-02-16T11:17:13Z",
+        "updatableBuildNumber": null,
+        "updatableFirmwareVersion": null,
+        "update": {
+            "autoUpdateEnabled": true,
+            "autoUpdateTime": 11
+        },
+        "ledMode": 1,
+        "action": "none",
+        "pushlink": "idle",
+        "capabilities": {
+            "maxIrCodes": 24,
+            "maxPresets": 16
+        }
+    },
+    "hue": {
+        "bridgeUniqueId": "001788FFFE000000",
+        "bridgeIpAddress": "192.168.1.8",
+        "groups": {
+            "db7dd240-d061-48bf-84c2-01f086e4bfae": {
+                "name": "TV Area",
+                "numLights": 5,
+                "active": false
+            },
+            "f7bd7dcb-bbcb-4cd1-b343-126e60575884": {
+                "name": "PC Area",
+                "numLights": 4,
+                "active": false
+            }
+        },
+        "connectionState": "connected"
+    },
+    "execution": {
+        "mode": "powersave",
+        "syncActive": false,
+        "hdmiActive": false,
+        "hdmiSource": "input1",
+        "hueTarget": "db7dd240-d061-48bf-84c2-01f086e4bfae",
+        "brightness": 122,
+        "lastSyncMode": "video",
+        "video": {
+            "intensity": "moderate",
+            "backgroundLighting": true
+        },
+        "game": {
+            "intensity": "high",
+            "backgroundLighting": false
+        },
+        "music": {
+            "intensity": "high",
+            "palette": "melancholicEnergetic"
+        },
+        "preset": null
+    },
+    "hdmi": {
+        "input1": {
+            "name": "HDMI 1",
+            "type": "generic",
+            "status": "plugged",
+            "lastSyncMode": "video"
+        },
+        "input2": {
+            "name": "Gaming",
+            "type": "xbox",
+            "status": "plugged",
+            "lastSyncMode": "game"
+        },
+        "input3": {
+            "name": "HDMI 3",
+            "type": "generic",
+            "status": "unplugged",
+            "lastSyncMode": "music"
+        },
+        "input4": {
+            "name": "Shield",
+            "type": "shield",
+            "status": "plugged",
+            "lastSyncMode": "video"
+        },
+        "output": {
+            "name": "HDMI Out",
+            "type": "generic",
+            "status": "plugged",
+            "lastSyncMode": "video"
+        },
+        "contentSpecs": "3840 x 2160 @ 60000 - SDR",
+        "videoSyncSupported": true,
+        "audioSyncSupported": true
+    },
+    "behavior": {
+        "inactivePowersave": 20,
+        "cecPowersave": 1,
+        "usbPowersave": 1,
+        "hpdInputSwitch": 1,
+        "hpdOutputEnableMs": 1500,
+        "arcBypassMode": 0,
+        "forceDoviNative": 0,
+        "input1": {
+            "cecInputSwitch": 1,
+            "linkAutoSync": 0,
+            "hdrMode": 0
+        },
+        "input2": {
+            "cecInputSwitch": 1,
+            "linkAutoSync": 0,
+            "hdrMode": 0
+        },
+        "input3": {
+            "cecInputSwitch": 1,
+            "linkAutoSync": 0,
+            "hdrMode": 0
+        },
+        "input4": {
+            "cecInputSwitch": 1,
+            "linkAutoSync": 0,
+            "hdrMode": 0
+        }
+    },
+    "ir": {
+        "defaultCodes": true,
+        "scan": {
+            "scanning": false,
+            "code": null,
+            "codes": []
+        },
+        "codes": {}
+    },
+    "registrations": {
+        "1": {
+            "appName": "Hue Sync iOS",
+            "instanceName": "iPhone X",
+            "role": "user",
+            "lastUsed": "2020-02-08T02:21:49Z",
+            "created": "2020-01-21T02:26:24Z"
+        },
+        "0": {
+            "appName": "Hue Sync Android",
+            "instanceName": "Pixel",
+            "role": "admin",
+            "lastUsed": "2020-02-16T05:45:20Z",
+            "created": "2020-01-11T05:45:20Z"
+        }
+    },
+    "presets": {}
+}
