@@ -18,7 +18,7 @@ async def main():
     print("Creating app_key for bridge: ", args.host)
     print()
     # the link button must be pressed before sending the authentication request
-    input("Press the link button on the bridge and press enter to continue...")
+    input("Press the link button on the bridge and press enter to continue...")  # noqa: ASYNC250
 
     # request api_key from bridge
     try:
