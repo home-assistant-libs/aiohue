@@ -6,7 +6,7 @@ import time
 from collections.abc import Callable, Generator
 from contextlib import asynccontextmanager
 from types import TracebackType
-from typing import Any
+from typing import Any, Self
 from uuid import uuid4
 
 import aiohttp
@@ -213,7 +213,7 @@ class HueBridgeV2:
         async with self._websession.request(method, url, **kwargs) as res:
             yield res
 
-    async def __aenter__(self) -> "HueBridgeV2":
+    async def __aenter__(self) -> Self:
         """Return Context manager."""
         await self.initialize()
         return self
