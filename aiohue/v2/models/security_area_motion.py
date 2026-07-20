@@ -27,8 +27,10 @@ class SecurityAreaMotion:
     # enabled: required(boolean)
     # true when sensor is activated, false when deactivated
     enabled: bool
-    motion: MotionSensingFeature
-    sensitivity: MotionSensingFeatureSensitivity | None
+
+    # Absent on Hue Bridge Pro
+    motion: MotionSensingFeature | None = None
+    sensitivity: MotionSensingFeatureSensitivity | None = None
 
     id_v1: str | None = None
     type: ResourceTypes = ResourceTypes.SECURITY_AREA_MOTION
