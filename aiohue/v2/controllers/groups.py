@@ -17,6 +17,7 @@ from aiohue.v2.models.feature import (
 )
 from aiohue.v2.models.grouped_light import GroupedLight, GroupedLightPut
 from aiohue.v2.models.light import Light
+from aiohue.v2.models.speaker import Speaker
 from aiohue.v2.models.resource import ResourceTypes
 from aiohue.v2.models.room import Room
 from aiohue.v2.models.scene import Scene
@@ -51,6 +52,20 @@ class RoomController(BaseResourcesController[type[Room]]):
             for light_id in dev.lights:
                 if light := self._bridge.lights.get(light_id):
                     result.append(light)
+        return result
+
+    def get_speakers(self, id: str) -> list[Speaker]:
+        """Return all speakers in given room."""
+        if id not in self._items:
+            return []
+        result = []
+        for dev_id in self._items[id].devices:
+            if (dev := self._bridge.devices.get(dev_id)) is None:
+                continue
+
+            for speaker_id in dev.speakers:
+                if speaker := self._bridge.speakers.get(speaker_id):
+                    result.append(speaker)
         return result
 
 
