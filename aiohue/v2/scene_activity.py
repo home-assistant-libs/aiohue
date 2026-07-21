@@ -25,9 +25,9 @@ class GroupSceneState:
     # Regular scene state
     active_scene_id: str | None = None
     active_scene_name: str | None = None
-    active_scene_mode: str | None = None  # "static" | "dynamic_palette"
+    active_scene_mode: str | None = None  # "static" | "dynamic_palette" | "unknown"
     active_scene_last_recall: datetime | None = None
-    active_scene_speed: float | None = None  # 0.0–1.0 when dynamic palette active
+    active_scene_speed: float | None = None  # 0.0–1.0 (scene speed; used for dynamic palette)
     active_scene_brightness: float | None = None  # 0.0–100.0
 
     # Smart scene state
