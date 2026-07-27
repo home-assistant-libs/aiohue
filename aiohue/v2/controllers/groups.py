@@ -17,10 +17,10 @@ from aiohue.v2.models.feature import (
 )
 from aiohue.v2.models.grouped_light import GroupedLight, GroupedLightPut
 from aiohue.v2.models.light import Light
-from aiohue.v2.models.speaker import Speaker
 from aiohue.v2.models.resource import ResourceTypes
 from aiohue.v2.models.room import Room
 from aiohue.v2.models.scene import Scene
+from aiohue.v2.models.speaker import Speaker
 from aiohue.v2.models.zone import Zone
 
 from .base import BaseResourcesController, GroupedControllerBase

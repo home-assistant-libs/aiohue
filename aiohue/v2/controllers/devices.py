@@ -4,9 +4,9 @@ from aiohue.v2.models.device import Device, DevicePut
 from aiohue.v2.models.device_software_update import DeviceSoftwareUpdate
 from aiohue.v2.models.feature import IdentifyFeature
 from aiohue.v2.models.light import Light
-from aiohue.v2.models.speaker import Speaker
 from aiohue.v2.models.resource import ResourceTypes
 from aiohue.v2.models.room import Room
+from aiohue.v2.models.speaker import Speaker
 from aiohue.v2.models.switch_input_configuration import SwitchInputConfiguration
 from aiohue.v2.models.zigbee_connectivity import ZigbeeConnectivity
 

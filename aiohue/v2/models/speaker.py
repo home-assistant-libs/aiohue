@@ -6,14 +6,14 @@ https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_speake
 
 from dataclasses import dataclass
 
+from .resource import ResourceIdentifier, ResourceTypes
 from .speaker_feature import (
-    MuteStatus,
-    SupportedSound,
     MuteFeature,
+    MuteStatus,
     SoundFeature,
     SoundFeaturePut,
+    SupportedSound,
 )
-from .resource import ResourceIdentifier, ResourceTypes
 
 
 @dataclass
