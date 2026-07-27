@@ -1,8 +1,10 @@
 """Test speakers controller functions."""
 
+import datetime
 from unittest.mock import patch
 
 from aiohue import HueBridgeV2
+from aiohue.v2 import EventType
 from aiohue.v2.models.speaker_feature import MuteStatus, SupportedSound
 
 SPEAKER_ID = "3903d908-eb6c-8ece-335c-f7ae230943f0"
@@ -78,6 +80,36 @@ async def test_set_mute_request_body(v2_resources):
         await bridge.speakers.set_mute(SPEAKER_ID, MuteStatus.MUTE)
 
     assert request.call_args.kwargs["json"] == {"mute": {"mute": "mute"}}
+
+
+async def test_playing_alarm_reports_estimated_end(v2_resources):
+    """Ensure a playing siren exposes its estimated end time."""
+    bridge = await bridge_with_speaker(v2_resources)
+
+    # shape captured from a live chime while the siren was playing
+    # pylint: disable=protected-access
+    await bridge.speakers._handle_event(
+        EventType.RESOURCE_UPDATED,
+        {
+            "id": SPEAKER_ID,
+            "type": "speaker",
+            "alarm": {
+                "sound_values": ["siren", "no_sound"],
+                "status": {
+                    "sound": "siren",
+                    "sound_values": ["siren", "no_sound"],
+                    "estimated_end": {"estimate": "2026-07-27T21:25:46.056Z"},
+                },
+            },
+        },
+    )
+
+    speaker = bridge.speakers[SPEAKER_ID]
+    assert speaker.is_playing_alarm
+    assert speaker.is_playing_sound
+    assert speaker.alarm.status.estimated_end.estimate == datetime.datetime(
+        2026, 7, 27, 21, 25, 46, 56000, tzinfo=datetime.UTC
+    )
 
 
 async def test_unknown_sound_does_not_break_parsing(v2_resources):
