@@ -1,0 +1,8 @@
+# This extend our general Ruff rules specifically for the maintainer scripts
+extend = "../pyproject.toml"
+
+lint.extend-ignore = [
+  "INP001", # Scripts are standalone, not a package
+  "ASYNC230", # A one-shot script may write its output with blocking IO
+  "T201", # Scripts report their findings by printing
+]
