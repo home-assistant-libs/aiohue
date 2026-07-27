@@ -22,6 +22,32 @@ def select_supported_sound(sounds) -> SupportedSound | None:
     return random.choice(playable) if playable else None
 
 
+async def play_and_wait(bridge, speaker, play_request):
+    """
+    Play a sound and wait until the speaker reports itself idle again.
+
+    The bridge clears the played sound a fair bit after the audio has finished,
+    so this returns later than the sound is actually audible.
+    """
+    done = asyncio.Event()
+    started = False
+
+    def on_update(_event_type, item):
+        nonlocal started
+        if item.is_playing_sound:
+            started = True
+        elif started:
+            done.set()
+
+    # subscribe before sending the request, so the state change cannot be missed
+    unsubscribe = bridge.speakers.subscribe(on_update, id_filter=speaker.id)
+    try:
+        await play_request
+        await done.wait()
+    finally:
+        unsubscribe()
+
+
 async def main():
     """Run Main execution."""
     if args.debug:
@@ -68,12 +94,18 @@ async def main():
         if speaker is not None:
             if sound := select_supported_sound(speaker.supported_chime_sounds):
                 print("Playing chime sound <", sound, "> on speaker", speaker.id)
-                await bridge.speakers.play_chime(speaker.id, sound, volume=50)
-                await asyncio.sleep(5)
+                await play_and_wait(
+                    bridge,
+                    speaker,
+                    bridge.speakers.play_chime(speaker.id, sound, volume=50),
+                )
             if sound := select_supported_sound(speaker.supported_alert_sounds):
                 print("Playing alert sound <", sound, "> on speaker", speaker.id)
-                await bridge.speakers.play_alert(speaker.id, sound, volume=50)
-                await asyncio.sleep(5)
+                await play_and_wait(
+                    bridge,
+                    speaker,
+                    bridge.speakers.play_alert(speaker.id, sound, volume=50),
+                )
 
         print("waiting for events...")
         await asyncio.sleep(3600)
