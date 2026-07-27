@@ -21,6 +21,7 @@ from .controllers.groups import GroupsController
 from .controllers.lights import LightsController
 from .controllers.scenes import ScenesController
 from .controllers.sensors import SensorsController
+from .controllers.speakers import SpeakersController
 
 # how many times do we retry on a 503 or 429 (bridge overload/rate limit)
 MAX_RETRIES = 25
@@ -54,6 +55,7 @@ class HueBridgeV2:
         self._scenes = ScenesController(self)
         self._groups = GroupsController(self)
         self._sensors = SensorsController(self)
+        self._speakers = SpeakersController(self)
         self._disconnect_timestamp = 0
 
     @property
@@ -101,6 +103,11 @@ class HueBridgeV2:
         """Get the Sensors Controller for managing all sensor resources."""
         return self._sensors
 
+    @property
+    def speakers(self) -> SpeakersController:
+        """Get the Speakers Controller for managing all speaker resources."""
+        return self._speakers
+
     async def initialize(self) -> None:
         """Initialize the connection to the bridge and fetch all data."""
         # Initialize all HUE resource controllers
@@ -137,6 +144,7 @@ class HueBridgeV2:
             self.lights.subscribe(callback),
             self.scenes.subscribe(callback),
             self.sensors.subscribe(callback),
+            self.speakers.subscribe(callback),
         ]
 
         def unsubscribe():
@@ -255,6 +263,7 @@ class HueBridgeV2:
             self._lights.initialize(full_state),
             self._scenes.initialize(full_state),
             self._sensors.initialize(full_state),
+            self._speakers.initialize(full_state),
             self._groups.initialize(full_state),
         )
 

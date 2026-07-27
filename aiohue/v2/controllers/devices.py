@@ -6,6 +6,7 @@ from aiohue.v2.models.feature import IdentifyFeature
 from aiohue.v2.models.light import Light
 from aiohue.v2.models.resource import ResourceTypes
 from aiohue.v2.models.room import Room
+from aiohue.v2.models.speaker import Speaker
 from aiohue.v2.models.switch_input_configuration import SwitchInputConfiguration
 from aiohue.v2.models.zigbee_connectivity import ZigbeeConnectivity
 
@@ -26,6 +27,10 @@ class DevicesController(BaseResourcesController[type[Device]]):
     def get_sensors(self, id: str) -> list[SENSOR_TYPES]:
         """Return all sensors belonging to given device."""
         return [x for x in self._bridge.sensors if x.id in self[id].sensors]
+
+    def get_speakers(self, id: str) -> list[Speaker]:
+        """Return all speakers belonging to given device."""
+        return [x for x in self._bridge.speakers if x.id in self[id].speakers]
 
     def get_room(self, id: str) -> Room | None:
         """Return room the given device belongs to (if any)."""

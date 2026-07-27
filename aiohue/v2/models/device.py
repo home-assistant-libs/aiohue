@@ -196,6 +196,11 @@ class Device:
         """Return a set of sensor id's belonging to this group/device."""
         return {x.rid for x in self.services if x.rtype in SENSOR_RESOURCE_TYPES}
 
+    @property
+    def speakers(self) -> set[str]:
+        """Return a set of speaker id's belonging to this group/device."""
+        return {x.rid for x in self.services if x.rtype == ResourceTypes.SPEAKER}
+
 
 @dataclass
 class DevicePut:
