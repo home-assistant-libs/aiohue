@@ -119,8 +119,11 @@ def compare(data: dict, cls: type, path: str) -> None:
                 (
                     "MISSING_REQUIRED",
                     f"{path}.{name}",
-                    f"{cls.__name__}.{name} is required and non-nullable but the "
-                    f"bridge omitted it, so parsing raises and the resource is dropped",
+                    (
+                        f"{cls.__name__}.{name} is required and non-nullable but "
+                        f"the bridge omitted it, so parsing raises and the "
+                        f"resource is dropped"
+                    ),
                     None,
                 )
             )
@@ -174,8 +177,10 @@ def _walk(value: Any, annotation: Any, path: str) -> None:
                     (
                         "ENUM_DRIFT",
                         path,
-                        f"{member.__name__} has no member for {value!r} "
-                        f"(declared: {sorted(e.value for e in member)})",
+                        (
+                            f"{member.__name__} has no member for {value!r} "
+                            f"(declared: {sorted(e.value for e in member)})"
+                        ),
                         value,
                     )
                 )
