@@ -58,6 +58,18 @@ async def test_play_alarm_sends_duration(v2_resources):
     }
 
 
+async def test_play_alert_request_body(v2_resources):
+    """Ensure an alert request carries the sound and volume but no duration."""
+    bridge = await bridge_with_speaker(v2_resources)
+
+    with patch.object(bridge, "request", return_value=[]) as request:
+        await bridge.speakers.play_alert(SPEAKER_ID, SupportedSound.ALERT, volume=70)
+
+    assert request.call_args.kwargs["json"] == {
+        "alert": {"sound": "alert", "volume": {"level": 70}}
+    }
+
+
 async def test_set_mute_request_body(v2_resources):
     """Ensure muting sends the mute feature."""
     bridge = await bridge_with_speaker(v2_resources)

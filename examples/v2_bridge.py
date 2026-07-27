@@ -18,7 +18,10 @@ args = parser.parse_args()
 
 def select_supported_sound(sounds) -> SupportedSound | None:
     """Pick a sound to play from a list of supported sounds."""
-    playable = [x for x in sounds if x != SupportedSound.NO_SOUND]
+    # a sound this version of aiohue does not know yet parses as UNKNOWN,
+    # which the bridge would reject if we sent it back
+    skip = (SupportedSound.NO_SOUND, SupportedSound.UNKNOWN)
+    playable = [x for x in sounds if x not in skip]
     return random.choice(playable) if playable else None
 
 
