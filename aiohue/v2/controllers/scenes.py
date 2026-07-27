@@ -43,10 +43,17 @@ class RegularScenesController(BaseResourcesController[type[Scene]]):
             update_obj.recall.dimming = DimmingFeaturePut(brightness=brightness)
         await self.update(id, update_obj)
 
-    def get_group(self, id: str) -> Room | Zone:
-        """Get group attached to given scene id."""
+    def get_group(self, id: str) -> Room | Zone | None:
+        """
+        Get group attached to given scene id.
+
+        Returns None if the group can not be resolved. A scene may be attached to
+        a resource that is not part of `bridge.groups` (e.g. `bridge_home`,
+        `service_group` or the reference-only `private_group`), which is legal on
+        the bridge but has no matching group object here.
+        """
         scene = self[id]
-        return next(x for x in self._bridge.groups if x.id == scene.group.rid)
+        return next((x for x in self._bridge.groups if x.id == scene.group.rid), None)
 
 
 class SmartScenesController(BaseResourcesController[type[SmartScene]]):
@@ -63,10 +70,14 @@ class SmartScenesController(BaseResourcesController[type[SmartScene]]):
         update_obj = SmartScenePut(recall=SmartSceneRecall(action=action))
         await self.update(id, update_obj)
 
-    def get_group(self, id: str) -> Room | Zone:
-        """Get group attached to given scene id."""
+    def get_group(self, id: str) -> Room | Zone | None:
+        """
+        Get group attached to given scene id.
+
+        Returns None if the group can not be resolved (see RegularScenesController).
+        """
         scene = self[id]
-        return next(x for x in self._bridge.groups if x.id == scene.group.rid)
+        return next((x for x in self._bridge.groups if x.id == scene.group.rid), None)
 
 
 class ScenesController(GroupedControllerBase[SCENE_TYPES]):
@@ -94,7 +105,11 @@ class ScenesController(GroupedControllerBase[SCENE_TYPES]):
             return
         await self.scene.recall(id, *args, **kwargs)
 
-    def get_group(self, id: str) -> Room | Zone:
-        """Get group attached to given scene id."""
+    def get_group(self, id: str) -> Room | Zone | None:
+        """
+        Get group attached to given scene id.
+
+        Returns None if the group can not be resolved (see RegularScenesController).
+        """
         scene = self[id]
-        return next(x for x in self._bridge.groups if x.id == scene.group.rid)
+        return next((x for x in self._bridge.groups if x.id == scene.group.rid), None)

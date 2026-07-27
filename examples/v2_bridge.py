@@ -16,38 +16,28 @@ parser.add_argument("--debug", help="enable debug logging", action="store_true")
 args = parser.parse_args()
 
 
-def select_supported_sound(sounds) -> SupportedSound:
-    """Choose a viable sound given a list of supported sounds, helper for speaker examples."""
-    sound = random.choice(sounds)
-    while sound == SupportedSound.NO_SOUND:
-        sound = random.choice(sounds)
-    return sound
+def select_supported_sound(sounds) -> SupportedSound | None:
+    """Pick a sound to play from a list of supported sounds."""
+    playable = [x for x in sounds if x != SupportedSound.NO_SOUND]
+    return random.choice(playable) if playable else None
 
 
-class YeildToEventLoop:
-    """Yield to the event loop, for speaker examples."""
+async def wait_until_sound_ended(bridge, speaker):
+    """Wait until the speaker is done playing the current sound."""
+    if not speaker.is_playing_sound:
+        return
 
-    def __await__(self):
-        """Give control to the event loop on await."""
-        yield
+    done = asyncio.Event()
 
+    def on_update(_event_type, item):
+        if not item.is_playing_sound:
+            done.set()
 
-async def check_speaker_is_playing(event, speaker):
-    """Check speaker playing state until speaker is done playing sound, for speaker examples."""
-    while True:
-        if not speaker.is_playing_sound:
-            event.set()
-            break
-        await YeildToEventLoop()
-
-
-async def until_speaker_sound_end(speaker):
-    """Wait until the speaker is done playing the current sound, helper for speaker examples."""
-    event = asyncio.Event()
-    await asyncio.sleep(2)
-    task = asyncio.create_task(check_speaker_is_playing(event, speaker))
-    await event.wait()
-    await task
+    unsubscribe = bridge.speakers.subscribe(on_update, id_filter=speaker.id)
+    try:
+        await done.wait()
+    finally:
+        unsubscribe()
 
 
 async def main():
@@ -92,26 +82,25 @@ async def main():
         bridge.subscribe(print_event)
 
         # speaker interaction examples
-        speaker = next(x for x in bridge.speakers.items)
-        if speaker.supports_alarm:
-            sound = select_supported_sound(speaker.supported_alarm_sounds)
-            print("Playing alarm sound <", sound, "> on speaker", speaker.id)
-            await bridge.speakers.play_alarm(
-                speaker.id, sound, volume=50, duration=1000
-            )
-            await until_speaker_sound_end(speaker)
-        if speaker.supports_chime:
-            sound = select_supported_sound(speaker.supported_chime_sounds)
-            print("Playing chime sound <", sound, "> on speaker", speaker.id)
-            await bridge.speakers.play_chime(speaker.id, sound, volume=50)
-            await until_speaker_sound_end(speaker)
-        if speaker.supports_alert:
-            sound = select_supported_sound(speaker.supported_alert_sounds)
-            print("Playing alert sound <", sound, "> on speaker", speaker.id)
-            await bridge.speakers.play_alert(speaker.id, sound, volume=50)
-            await until_speaker_sound_end(speaker)
+        speaker = next(iter(bridge.speakers), None)
+        if speaker is not None:
+            if sound := select_supported_sound(speaker.supported_alarm_sounds):
+                print("Playing alarm sound <", sound, "> on speaker", speaker.id)
+                # duration is only supported by the alarm sound feature
+                await bridge.speakers.play_alarm(
+                    speaker.id, sound, volume=50, duration=1000
+                )
+                await wait_until_sound_ended(bridge, speaker)
+            if sound := select_supported_sound(speaker.supported_chime_sounds):
+                print("Playing chime sound <", sound, "> on speaker", speaker.id)
+                await bridge.speakers.play_chime(speaker.id, sound, volume=50)
+                await wait_until_sound_ended(bridge, speaker)
+            if sound := select_supported_sound(speaker.supported_alert_sounds):
+                print("Playing alert sound <", sound, "> on speaker", speaker.id)
+                await bridge.speakers.play_alert(speaker.id, sound, volume=50)
+                await wait_until_sound_ended(bridge, speaker)
 
-        print("sounds done playing, now waiting for other events...")
+        print("waiting for events...")
         await asyncio.sleep(3600)
 
 

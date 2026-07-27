@@ -51,13 +51,34 @@ class ResourceTypes(Enum):
     CAMERA_MOTION = "camera_motion"
     CONVENIENCE_AREA_MOTION = "convenience_area_motion"
     SECURITY_AREA_MOTION = "security_area_motion"
-    SPEAKER = "speaker"
     MOTION_AREA_CONFIGURATION = "motion_area_configuration"
     SERVICE_GROUP = "service_group"
     PRIVATE_GROUP = "private_group"
     GROUPED_MOTION = "grouped_motion"
     GROUPED_LIGHT_LEVEL = "grouped_light_level"
     BELL_BUTTON = "bell_button"
+
+    # --- served resource types verified against a live Bridge Pro (2026-07) ---
+    # `clip` enumerates every resource type the bridge serves - useful for
+    # capability discovery and for spotting API additions early.
+    CLIP = "clip"
+    # NOTE: supersedes DEVICE_UPDATE, which no bridge reports anymore.
+    DEVICE_SOFTWARE_UPDATE = "device_software_update"
+    GEOLOCATION = "geolocation"
+    SPEAKER = "speaker"
+    SWITCH_INPUT_CONFIGURATION = "switch_input_configuration"
+    # NOTE: supersedes DEVICE_DISCOVERY, which no bridge reports anymore.
+    ZIGBEE_DEVICE_DISCOVERY = "zigbee_device_discovery"
+    WIFI_CONNECTIVITY = "wifi_connectivity"
+
+    # --- reference-only types ---
+    # These never appear as a served resource, but the bridge does emit them
+    # inside ResourceIdentifier.rtype. They need no model, only a valid enum
+    # member so references round-trip instead of degrading to UNKNOWN.
+    MOTION_AREA_CANDIDATE = "motion_area_candidate"
+    RECIPE = "recipe"
+    TAURUS_7455 = "taurus_7455"
+
     UNKNOWN = "unknown"
 
     @classmethod

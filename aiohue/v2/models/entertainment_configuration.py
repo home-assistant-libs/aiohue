@@ -90,6 +90,9 @@ class ServiceLocation:
     service: ResourceIdentifier
     positions: list[Position]
     position: Position | None = None
+    # equalization_factor: Relative equalization factor applied to the entertainment
+    # service, to compensate for differences in brightness in the configuration.
+    equalization_factor: float | None = None
 
 
 @dataclass
@@ -139,6 +142,9 @@ class EntertainmentConfiguration:
     channels: list[EntertainmentChannel]
     locations: EntertainmentLocations
     light_services: list[ResourceIdentifier] | None = None
+    # name: Friendly name of the entertainment configuration.
+    # Deprecated: use metadata.name
+    name: str | None = None
 
     active_streamer: ResourceIdentifier | None = None
     id_v1: str | None = None

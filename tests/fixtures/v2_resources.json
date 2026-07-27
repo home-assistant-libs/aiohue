@@ -1,599 +1,2806 @@
 [
   {
-    "id": "9c489c26-9e34-4fcd-8324-a57e3a664cc0",
-    "status": "unpaired",
-    "status_values": [
-      "pairing",
-      "paired",
-      "unpaired"
-    ],
-    "type": "homekit"
-  },
-  {
-    "actions": [
-      {
-        "action": {
-          "color": {
-            "xy": {
-              "x": 0.5058,
-              "y": 0.4477
+    "configuration": {
+      "button1": {
+        "on_long_press": {
+          "action": "all_off"
+        },
+        "on_short_release": {
+          "time_based_extended": {
+            "slots": [],
+            "with_off": {
+              "enabled": false
             }
-          },
-          "dimming": {
-            "brightness": 46.85
-          },
-          "on": {
-            "on": true
           }
         },
-        "target": {
-          "rid": "b3fe71ef-d0ef-48de-9355-d9e604377df0",
-          "rtype": "light"
-        }
+        "where": []
       },
+      "button2": {
+        "on_long_press": {
+          "action": "all_off"
+        },
+        "on_short_release": {
+          "recall_single_extended": {
+            "actions": [],
+            "with_off": {
+              "enabled": false
+            }
+          }
+        },
+        "where": []
+      },
+      "button3": {
+        "on_long_press": {
+          "action": "all_off"
+        },
+        "on_short_release": {
+          "recall_single_extended": {
+            "actions": [],
+            "with_off": {
+              "enabled": false
+            }
+          }
+        },
+        "where": []
+      },
+      "button4": {
+        "on_long_press": {
+          "action": "all_off"
+        },
+        "on_short_release": {
+          "scene_cycle_extended": {
+            "slots": [
+              [],
+              [],
+              [],
+              [],
+              []
+            ],
+            "with_off": {
+              "enabled": false
+            }
+          }
+        },
+        "where": []
+      },
+      "device": {
+        "rid": "c04b7bc8-1662-98d1-5a35-8c465ef9402a",
+        "rtype": "device"
+      },
+      "rotary": {
+        "on_dim_off": {
+          "action": "all_off"
+        },
+        "on_dim_on": {
+          "recall_single": [
+            {
+              "action": "last_on"
+            }
+          ]
+        },
+        "where": []
+      }
+    },
+    "dependees": [
       {
-        "action": {
-          "dimming": {
-            "brightness": 46.85
+        "level": "critical",
+        "target": {
+          "rid": "c04b7bc8-1662-98d1-5a35-8c465ef9402a",
+          "rtype": "device"
+        },
+        "type": "ResourceDependee"
+      }
+    ],
+    "enabled": true,
+    "id": "166ca57f-e3da-9361-73d9-3f3381588de9",
+    "last_error": "",
+    "metadata": {
+      "name": "Behavior Instance 4"
+    },
+    "script_id": "f306f634-acdb-4dd6-bdf5-48dd626d667e",
+    "state": null,
+    "status": "running",
+    "type": "behavior_instance"
+  },
+  {
+    "configuration": {
+      "end_state": "last_state",
+      "where": [
+        {
+          "group": {
+            "rid": "410475f5-3bac-a03b-c9a2-5f33b8f386b6",
+            "rtype": "entertainment_configuration"
+          }
+        }
+      ]
+    },
+    "dependees": [
+      {
+        "level": "critical",
+        "target": {
+          "rid": "410475f5-3bac-a03b-c9a2-5f33b8f386b6",
+          "rtype": "entertainment_configuration"
+        },
+        "type": "ResourceDependee"
+      }
+    ],
+    "enabled": true,
+    "id": "82bf2b72-b915-3a1b-7d11-2ac6521c28b7",
+    "last_error": "",
+    "metadata": {
+      "name": "Behavior Instance 1"
+    },
+    "script_id": "7719b841-6b3d-448d-a0e7-601ae9edb6a2",
+    "status": "running",
+    "type": "behavior_instance"
+  },
+  {
+    "configuration": {
+      "buttons": {
+        "41aa5d76-4d08-4075-b20c-801bf31d1de0": {
+          "on_repeat": {
+            "action": "dim_up"
           },
-          "gradient": {
-            "points": [
-              {
-                "color": {
-                  "xy": {
-                    "x": 0.4808,
-                    "y": 0.4485
-                  }
-                }
+          "where": []
+        },
+        "46390200-5b91-4e3e-8082-373990af7ab6": {
+          "on_long_press": {
+            "action": "do_nothing"
+          },
+          "on_short_release": {
+            "time_based_extended": {
+              "repeat_timeout": {
+                "seconds": 3
               },
-              {
-                "color": {
-                  "xy": {
-                    "x": 0.4958,
-                    "y": 0.443
-                  }
-                }
-              },
-              {
-                "color": {
-                  "xy": {
-                    "x": 0.5058,
-                    "y": 0.4477
-                  }
-                }
-              },
-              {
-                "color": {
-                  "xy": {
-                    "x": 0.5586,
-                    "y": 0.4081
-                  }
-                }
-              },
-              {
-                "color": {
-                  "xy": {
-                    "x": 0.569,
-                    "y": 0.4003
-                  }
-                }
+              "slots": [],
+              "with_off": {
+                "enabled": true
               }
-            ]
-          },
-          "on": {
-            "on": true
-          }
-        },
-        "target": {
-          "rid": "8015b17f-8336-415b-966a-b364bd082397",
-          "rtype": "light"
-        }
-      },
-      {
-        "action": {
-          "color": {
-            "xy": {
-              "x": 0.5586,
-              "y": 0.4081
             }
           },
-          "dimming": {
-            "brightness": 46.85
-          },
-          "on": {
-            "on": true
-          }
+          "where": []
         },
-        "target": {
-          "rid": "02cba059-9c2c-4d45-97e4-4f79b1bfbaa1",
-          "rtype": "light"
+        "7f383091-a9bd-4e2b-ace3-293bae7d49e9": {
+          "on_repeat": {
+            "action": "dim_down"
+          },
+          "where": []
+        },
+        "f5795337-dd1c-404e-919d-aa425b068810": {
+          "on_long_press": {
+            "action": "do_nothing"
+          },
+          "on_short_release": {
+            "scene_cycle_extended": {
+              "repeat_timeout": {
+                "seconds": 3
+              },
+              "slots": [
+                [],
+                [],
+                [],
+                [],
+                []
+              ],
+              "with_off": {
+                "enabled": false
+              }
+            }
+          },
+          "where": []
         }
+      },
+      "device": {
+        "rid": "a55e591b-d317-545e-16d0-341d42721293",
+        "rtype": "device"
+      },
+      "model_id": "RWL022"
+    },
+    "dependees": [
+      {
+        "level": "critical",
+        "target": {
+          "rid": "a55e591b-d317-545e-16d0-341d42721293",
+          "rtype": "device"
+        },
+        "type": "ResourceDependee"
       }
     ],
-    "group": {
-      "rid": "7cee478d-6455-483a-9e32-9f9fdcbcc4f6",
-      "rtype": "zone"
-    },
-    "id": "fce5eabb-2f51-461b-b112-5362da301236",
-    "id_v1": "/scenes/qYDehk7EfGoRvkj",
+    "enabled": true,
+    "id": "ac390cd0-d0b6-208d-5e60-b1653803c88d",
+    "last_error": "",
     "metadata": {
-      "image": {
-        "rid": "93984a4f-2d1b-4554-b972-b60fa8e476c5",
-        "rtype": "public_image"
-      },
-      "name": "Dynamic Test Scene"
+      "name": "Behavior Instance 3"
     },
-    "palette": {
-      "color": [
-        {
-          "color": {
-            "xy": {
-              "x": 0.4808,
-              "y": 0.4485
-            }
-          },
-          "dimming": {
-            "brightness": 74.02
-          }
-        },
-        {
-          "color": {
-            "xy": {
-              "x": 0.5023,
-              "y": 0.4467
-            }
-          },
-          "dimming": {
-            "brightness": 100.0
-          }
-        },
-        {
-          "color": {
-            "xy": {
-              "x": 0.5615,
-              "y": 0.4059
-            }
-          },
-          "dimming": {
-            "brightness": 100.0
-          }
-        }
-      ],
-      "color_temperature": [
-        {
-          "color_temperature": {
-            "mirek": 451
-          },
-          "dimming": {
-            "brightness": 31.1
-          }
-        }
-      ],
-      "dimming": []
+    "script_id": "67d9395b-4403-42cc-b5f0-740b699d67c6",
+    "state": {
+      "model_id": "RWL022",
+      "source_type": "device"
     },
-    "speed": 0.6269841194152832,
-    "auto_dynamic": true,
-    "status": {
-      "active": "dynamic_palette",
-      "last_recall": "2025-09-04T02:03:21.243Z"
-    },
-    "type": "scene"
+    "status": "running",
+    "type": "behavior_instance"
   },
   {
-    "actions": [
-      {
-        "action": {
-          "color_temperature": {
-            "mirek": 156
-          },
-          "dimming": {
-            "brightness": 100.0
-          },
-          "on": {
-            "on": true
+    "configuration": {
+      "button1": {
+        "on_long_press": {
+          "action": "all_off"
+        },
+        "on_short_release": {
+          "time_based_extended": {
+            "slots": [],
+            "with_off": {
+              "enabled": false
+            }
           }
         },
+        "where": [
+          {
+            "group": {
+              "rid": "cb0c3b7b-249e-1c91-f5d2-9fbabaa8ee3d",
+              "rtype": "room"
+            }
+          }
+        ]
+      },
+      "button2": {
+        "on_long_press": {
+          "action": "all_off"
+        },
+        "on_short_release": {
+          "recall_single_extended": {
+            "actions": [],
+            "with_off": {
+              "enabled": false
+            }
+          }
+        },
+        "where": [
+          {
+            "group": {
+              "rid": "cb0c3b7b-249e-1c91-f5d2-9fbabaa8ee3d",
+              "rtype": "room"
+            }
+          }
+        ]
+      },
+      "button3": {
+        "on_long_press": {
+          "action": "all_off"
+        },
+        "on_short_release": {
+          "recall_single_extended": {
+            "actions": [],
+            "with_off": {
+              "enabled": false
+            }
+          }
+        },
+        "where": [
+          {
+            "group": {
+              "rid": "cb0c3b7b-249e-1c91-f5d2-9fbabaa8ee3d",
+              "rtype": "room"
+            }
+          }
+        ]
+      },
+      "button4": {
+        "on_long_press": {
+          "action": "all_off"
+        },
+        "on_short_release": {
+          "scene_cycle_extended": {
+            "slots": [
+              [],
+              [],
+              [],
+              [],
+              []
+            ],
+            "with_off": {
+              "enabled": false
+            }
+          }
+        },
+        "where": [
+          {
+            "group": {
+              "rid": "cb0c3b7b-249e-1c91-f5d2-9fbabaa8ee3d",
+              "rtype": "room"
+            }
+          }
+        ]
+      },
+      "device": {
+        "rid": "7b21d2e6-7e70-9964-b038-ca99293424fd",
+        "rtype": "device"
+      },
+      "rotary": {
+        "on_dim_off": {
+          "action": "all_off"
+        },
+        "on_dim_on": {
+          "recall_single": [
+            {
+              "action": "last_on"
+            }
+          ]
+        },
+        "where": [
+          {
+            "group": {
+              "rid": "cb0c3b7b-249e-1c91-f5d2-9fbabaa8ee3d",
+              "rtype": "room"
+            }
+          }
+        ]
+      }
+    },
+    "dependees": [
+      {
+        "level": "critical",
         "target": {
-          "rid": "3a6710fa-4474-4eba-b533-5e6e72968feb",
-          "rtype": "light"
-        }
+          "rid": "7b21d2e6-7e70-9964-b038-ca99293424fd",
+          "rtype": "device"
+        },
+        "type": "ResourceDependee"
       },
       {
-        "action": {
-          "on": {
-            "on": true
-          }
-        },
+        "level": "critical",
         "target": {
-          "rid": "7697ac8a-25aa-4576-bb40-0036c0db15b9",
-          "rtype": "light"
-        }
+          "rid": "cb0c3b7b-249e-1c91-f5d2-9fbabaa8ee3d",
+          "rtype": "room"
+        },
+        "type": "ResourceDependee"
       }
     ],
-    "group": {
-      "rid": "6ddc9066-7e7d-4a03-a773-c73937968296",
-      "rtype": "room"
-    },
-    "id": "cdbf3740-7977-4a11-8275-8c78636ad4bd",
-    "id_v1": "/scenes/LwgmWgRnaRUxg6K",
+    "enabled": true,
+    "id": "cd165172-daa1-22eb-cde6-f26de9c57fcd",
+    "last_error": "",
     "metadata": {
-      "image": {
-        "rid": "7fd2ccc5-5749-4142-b7a5-66405a676f03",
-        "rtype": "public_image"
-      },
-      "name": "Regular Test Scene"
+      "name": "Behavior Instance 2"
     },
-    "palette": {
-      "color": [],
-      "color_temperature": [],
-      "dimming": []
-    },
-    "speed": 0.5,
-    "auto_dynamic": false,
-    "status": {
-      "active": "static",
-      "last_recall": "2025-09-04T02:03:21.243Z"
-    },
-    "type": "scene"
+    "script_id": "f306f634-acdb-4dd6-bdf5-48dd626d667e",
+    "state": null,
+    "status": "running",
+    "type": "behavior_instance"
   },
   {
-    "id": "3ff06175-29e8-44a8-8fe7-af591b0025da",
-    "id_v1": "/sensors/50",
+    "configuration_schema": {
+      "$ref": "config.json#"
+    },
+    "description": "Generic switches script",
+    "id": "1983758a-1c4f-96b5-54f8-957ab0edc399",
     "metadata": {
-      "archetype": "unknown_archetype",
-      "name": "Wall switch with 2 controls"
+      "category": "accessory",
+      "name": "Behavior Script 4"
+    },
+    "state_schema": {
+      "$ref": "state.json#"
+    },
+    "supported_features": [],
+    "trigger_schema": {},
+    "type": "behavior_script",
+    "version": "0.0.1"
+  },
+  {
+    "configuration_schema": {
+      "$ref": "smoke_alarm_config.json#"
+    },
+    "description": "Smoke alarm automation",
+    "id": "27b78d92-330d-2bef-47bc-4a08ba3a4d82",
+    "max_number_instances": 1,
+    "metadata": {
+      "category": "automation",
+      "name": "Behavior Script 3"
+    },
+    "state_schema": {
+      "$ref": "smoke_alarm_state.json#"
+    },
+    "supported_features": [],
+    "trigger_schema": {
+      "$ref": "smoke_alarm_trigger.json#"
+    },
+    "type": "behavior_script",
+    "version": "0.0.1"
+  },
+  {
+    "configuration_schema": {
+      "$ref": "leaving_home_config.json#"
+    },
+    "description": "Automatically turn off your lights when you leave",
+    "id": "918eda01-e59a-83fb-b7f0-0261873da59c",
+    "metadata": {
+      "category": "automation",
+      "name": "Behavior Script 1"
+    },
+    "state_schema": {},
+    "supported_features": [],
+    "trigger_schema": {
+      "$ref": "trigger.json#"
+    },
+    "type": "behavior_script",
+    "version": "0.0.1"
+  },
+  {
+    "configuration_schema": {
+      "$ref": "config.json#"
+    },
+    "description": "Contact Sensor script",
+    "id": "e1335036-5818-74b2-0969-2e1be4bf0426",
+    "metadata": {
+      "category": "accessory",
+      "name": "Behavior Script 2"
+    },
+    "state_schema": {
+      "$ref": "state.json#"
+    },
+    "supported_features": [],
+    "trigger_schema": {},
+    "type": "behavior_script",
+    "version": "0.0.1"
+  },
+  {
+    "bridge_id": "aabbccddeeffggh",
+    "id": "a1b5c18e-5865-ee2c-642e-6051f569eaca",
+    "import": {
+      "origin": "ecb5fafffe84fdc7",
+      "time": "2025-08-27T10:31:03.000Z"
+    },
+    "owner": {
+      "rid": "bae2cb3c-8717-3652-6620-615b68b360ef",
+      "rtype": "device"
+    },
+    "time_zone": {
+      "time_zone": "Europe/Amsterdam"
+    },
+    "type": "bridge"
+  },
+  {
+    "children": [
+      {
+        "rid": "51428b4a-5805-c25a-081e-f922bb76eb4f",
+        "rtype": "device"
+      },
+      {
+        "rid": "bae2cb3c-8717-3652-6620-615b68b360ef",
+        "rtype": "device"
+      },
+      {
+        "rid": "a8210de2-3aa8-037c-32d2-2e6e8df7f39b",
+        "rtype": "device"
+      },
+      {
+        "rid": "fc8a3caf-95aa-9c24-0eb2-22293a7f2618",
+        "rtype": "device"
+      },
+      {
+        "rid": "b2879c32-1bf3-9c99-4825-539401a42ab7",
+        "rtype": "device"
+      },
+      {
+        "rid": "9810e195-019c-db05-5680-42f352a80111",
+        "rtype": "device"
+      },
+      {
+        "rid": "fbbffd8c-eeba-22a4-ae08-4c90544c0ed4",
+        "rtype": "device"
+      },
+      {
+        "rid": "b9b9e165-a3b2-1670-5fc8-297d403b2252",
+        "rtype": "device"
+      },
+      {
+        "rid": "2dc387a1-b021-19b8-bfbd-0b4503d402c3",
+        "rtype": "room"
+      },
+      {
+        "rid": "608c8790-f6af-a771-142e-3768903563f6",
+        "rtype": "room"
+      },
+      {
+        "rid": "91740fb3-b3b1-3295-32bc-ffb75ae81817",
+        "rtype": "room"
+      },
+      {
+        "rid": "bd9ba88f-cdd6-bd53-05c8-36b62eb936de",
+        "rtype": "room"
+      },
+      {
+        "rid": "24829e2a-e999-4411-2e9b-1ea66efed450",
+        "rtype": "room"
+      },
+      {
+        "rid": "977899a0-4381-7556-a1e0-275266dbf95d",
+        "rtype": "room"
+      },
+      {
+        "rid": "cb0c3b7b-249e-1c91-f5d2-9fbabaa8ee3d",
+        "rtype": "room"
+      },
+      {
+        "rid": "76289d92-66a6-6c15-7030-7c658dcbd88c",
+        "rtype": "room"
+      },
+      {
+        "rid": "6fbbf09d-87b1-a7a1-e347-0c574f92ae3f",
+        "rtype": "room"
+      },
+      {
+        "rid": "b9034902-35ba-a92e-afe3-62e1caf6becf",
+        "rtype": "room"
+      },
+      {
+        "rid": "0d8309ef-6f9e-5c05-3245-5db0fda14681",
+        "rtype": "room"
+      }
+    ],
+    "id": "1aa23fea-31a6-1d38-c560-0d8a58047983",
+    "id_v1": "/groups/0",
+    "services": [
+      {
+        "rid": "c3793415-1f6a-b694-2b5f-12ec5f37d265",
+        "rtype": "grouped_light"
+      },
+      {
+        "rid": "fb91d231-5fb2-a07d-87ea-7a0bec99fad9",
+        "rtype": "grouped_motion"
+      },
+      {
+        "rid": "2c5c78f7-f2ea-3d58-60ee-4b2586213ea5",
+        "rtype": "grouped_light_level"
+      }
+    ],
+    "type": "bridge_home"
+  },
+  {
+    "button": {
+      "button_report": {
+        "event": "short_release",
+        "updated": "1970-01-01T00:00:00.000Z"
+      },
+      "event_values": [
+        "initial_press",
+        "repeat",
+        "short_release",
+        "long_release",
+        "long_press"
+      ],
+      "last_event": "short_release",
+      "repeat_interval": 800
+    },
+    "id": "0a9acc8f-a8ab-af2e-373b-dc6040de3bd5",
+    "id_v1": "/sensors/62",
+    "metadata": {
+      "control_id": 3
+    },
+    "owner": {
+      "rid": "c59ce269-4b38-b432-f6c4-ca9181865666",
+      "rtype": "device"
+    },
+    "type": "button"
+  },
+  {
+    "button": {
+      "button_report": {
+        "event": "short_release",
+        "updated": "2026-07-22T13:59:46.894Z"
+      },
+      "event_values": [
+        "initial_press",
+        "repeat",
+        "short_release",
+        "long_release",
+        "long_press"
+      ],
+      "last_event": "short_release",
+      "repeat_interval": 800
+    },
+    "id": "60e3626f-4a3a-3d91-ef40-74d7058f90b9",
+    "id_v1": "/sensors/157",
+    "metadata": {
+      "control_id": 1
+    },
+    "owner": {
+      "rid": "8ec5ef01-89f1-56ee-7256-22929a2aa0c5",
+      "rtype": "device"
+    },
+    "type": "button"
+  },
+  {
+    "button": {
+      "button_report": {
+        "event": "short_release",
+        "updated": "1970-01-01T00:00:00.000Z"
+      },
+      "event_values": [
+        "initial_press",
+        "repeat",
+        "short_release",
+        "long_release",
+        "long_press"
+      ],
+      "last_event": "short_release",
+      "repeat_interval": 800
+    },
+    "id": "764fa54b-0dee-b984-ea48-8d8d0cccd274",
+    "id_v1": "/sensors/27",
+    "metadata": {
+      "control_id": 2
+    },
+    "owner": {
+      "rid": "a8210de2-3aa8-037c-32d2-2e6e8df7f39b",
+      "rtype": "device"
+    },
+    "type": "button"
+  },
+  {
+    "button": {
+      "event_values": [
+        "initial_press",
+        "repeat",
+        "short_release",
+        "long_release",
+        "long_press"
+      ],
+      "repeat_interval": 800
+    },
+    "id": "c810d227-2fd6-1dde-6813-ad3da5680381",
+    "id_v1": "/sensors/162",
+    "metadata": {
+      "control_id": 3
+    },
+    "owner": {
+      "rid": "18ee8fe0-612d-8fcd-8ee4-ac771003fe39",
+      "rtype": "device"
+    },
+    "type": "button"
+  },
+  {
+    "enabled": true,
+    "id": "96ae542a-a350-c6c1-4475-4b5e0efdcdab",
+    "motion": {
+      "motion": false,
+      "motion_report": {
+        "changed": "2026-07-27T18:52:20.958Z",
+        "motion": false
+      },
+      "motion_valid": true
+    },
+    "owner": {
+      "rid": "514657fc-8ddc-b29e-aa8f-10492d5fcd3e",
+      "rtype": "device"
+    },
+    "type": "camera_motion"
+  },
+  {
+    "id": "487c3f5c-d9e7-281b-2ff6-bab1228840ca",
+    "resources": [
+      "motion_area_configuration",
+      "convenience_area_motion",
+      "security_area_motion",
+      "entertainment_configuration",
+      "bridge",
+      "button",
+      "device",
+      "device_power",
+      "device_software_update",
+      "entertainment",
+      "light",
+      "light_level",
+      "zigbee_connectivity",
+      "zgp_connectivity",
+      "motion",
+      "camera_motion",
+      "relative_rotary",
+      "temperature",
+      "zigbee_device_discovery",
+      "contact",
+      "tamper",
+      "speaker",
+      "bell_button",
+      "switch_input_configuration",
+      "bridge_home",
+      "grouped_light",
+      "grouped_light_level",
+      "grouped_motion",
+      "room",
+      "service_group",
+      "zone",
+      "scene",
+      "matter",
+      "matter_fabric",
+      "behavior_script",
+      "behavior_instance",
+      "geofence_client",
+      "geolocation",
+      "smart_scene",
+      "clip"
+    ],
+    "type": "clip"
+  },
+  {
+    "contact_report": {
+      "changed": "2026-07-27T17:18:42.957Z",
+      "state": "no_contact"
+    },
+    "enabled": true,
+    "id": "1c81d201-23f1-db39-9762-4eafb6397464",
+    "owner": {
+      "rid": "6b31cfbc-fdec-c439-f6ca-85fdb03f30d3",
+      "rtype": "device"
+    },
+    "type": "contact"
+  },
+  {
+    "enabled": false,
+    "id": "4c6f72aa-faa0-486d-7b8f-99a88ce99455",
+    "motion": {
+      "motion": false,
+      "motion_report": {
+        "changed": "2025-09-23T11:34:14.403Z",
+        "motion": false
+      },
+      "motion_valid": false
+    },
+    "owner": {
+      "rid": "973d5f98-efc5-34f4-4d1d-df721925fd61",
+      "rtype": "motion_area_configuration"
+    },
+    "sensitivity": {
+      "sensitivity": 2,
+      "sensitivity_max": 4
+    },
+    "type": "convenience_area_motion"
+  },
+  {
+    "enabled": true,
+    "id": "d0a63597-d97a-dfdf-3da9-35e6e7af1833",
+    "motion": {
+      "motion": false,
+      "motion_report": {
+        "changed": "2025-09-23T12:10:46.177Z",
+        "motion": false
+      },
+      "motion_valid": false
+    },
+    "owner": {
+      "rid": "3d33d037-2bfa-f556-de7a-c0c26f2680e6",
+      "rtype": "motion_area_configuration"
+    },
+    "sensitivity": {
+      "sensitivity": 4,
+      "sensitivity_max": 4
+    },
+    "type": "convenience_area_motion"
+  },
+  {
+    "geometry": {
+      "objects": []
+    },
+    "id": "04c3a9bd-89e4-1d92-a76c-978db65168ad",
+    "id_v1": "/lights/123",
+    "identify": {},
+    "metadata": {
+      "archetype": "hue_neon",
+      "name": "Device 10"
     },
     "product_data": {
       "certified": true,
+      "hardware_platform_type": "100b-118",
+      "manufacturer_name": "Signify Netherlands B.V.",
+      "model_id": "929004277102",
+      "product_archetype": "hue_neon",
+      "product_name": "Hue Neon outdoor strip light",
+      "software_version": "1.163.1"
+    },
+    "services": [
+      {
+        "rid": "417bfd29-7ea0-410b-194a-d4343c688721",
+        "rtype": "motion_area_candidate"
+      }
+    ],
+    "type": "device"
+  },
+  {
+    "geometry": {
+      "objects": []
+    },
+    "id": "0bcdac54-2743-2834-cf22-298271f2f75e",
+    "id_v1": "/lights/80",
+    "identify": {},
+    "metadata": {
+      "archetype": "single_spot",
+      "name": "Device 3"
+    },
+    "product_data": {
+      "certified": true,
+      "hardware_platform_type": "100b-114",
+      "manufacturer_name": "Signify Netherlands B.V.",
+      "model_id": "LTG002",
+      "product_archetype": "spot_bulb",
+      "product_name": "Hue ambiance spot",
+      "software_version": "1.163.1"
+    },
+    "services": [
+      {
+        "rid": "2b9bfde1-03ec-f36f-dc9f-1168391479ae",
+        "rtype": "motion_area_candidate"
+      }
+    ],
+    "type": "device"
+  },
+  {
+    "geometry": {
+      "objects": []
+    },
+    "id": "0c8e502b-25af-aa66-4649-00b28dba8308",
+    "id_v1": "/sensors/77",
+    "metadata": {
+      "archetype": "unknown_archetype",
+      "name": "Device 22"
+    },
+    "product_data": {
+      "certified": true,
+      "hardware_platform_type": "100b-121",
+      "manufacturer_name": "Signify Netherlands B.V.",
+      "model_id": "RDM002",
+      "product_archetype": "unknown_archetype",
+      "product_name": "Hue tap dial switch",
+      "software_version": "2.85.1"
+    },
+    "services": [
+      {
+        "rid": "5580a2b4-f067-0d1e-7b8b-588535ec6512",
+        "rtype": "relative_rotary"
+      }
+    ],
+    "type": "device"
+  },
+  {
+    "geometry": {
+      "objects": []
+    },
+    "id": "14caee0d-9676-6264-8e5f-5d717293ac8f",
+    "id_v1": "/sensors/100",
+    "identify": {},
+    "metadata": {
+      "archetype": "unknown_archetype",
+      "name": "Device 41"
+    },
+    "product_data": {
+      "certified": true,
+      "hardware_platform_type": "100b-11b",
+      "manufacturer_name": "Signify Netherlands B.V.",
+      "model_id": "SML003",
+      "product_archetype": "unknown_archetype",
+      "product_name": "Hue motion sensor",
+      "software_version": "2.85.1"
+    },
+    "services": [
+      {
+        "rid": "b39ca175-e3f8-32cf-71ec-54a01108061f",
+        "rtype": "motion"
+      }
+    ],
+    "type": "device",
+    "usertest": {
+      "status": "set",
+      "usertest": false
+    }
+  },
+  {
+    "geometry": {
+      "objects": []
+    },
+    "id": "1661846f-929d-672a-6b59-b7222cf583e5",
+    "id_v1": "/lights/86",
+    "identify": {},
+    "metadata": {
+      "archetype": "wall_lantern",
+      "name": "Device 18"
+    },
+    "product_data": {
+      "certified": true,
+      "hardware_platform_type": "100b-11f",
+      "manufacturer_name": "Signify Netherlands B.V.",
+      "model_id": "1746430P7",
+      "product_archetype": "wall_lantern",
+      "product_name": "Hue Resonate outdoor wall",
+      "software_version": "1.163.1"
+    },
+    "services": [
+      {
+        "rid": "28e66af4-c470-fbc1-065d-98ddba405ef6",
+        "rtype": "zigbee_connectivity"
+      },
+      {
+        "rid": "22f4bb03-4ef8-fe31-91b9-c529f1d1146e",
+        "rtype": "motion_area_candidate"
+      }
+    ],
+    "type": "device"
+  },
+  {
+    "geometry": {
+      "objects": []
+    },
+    "id": "18ee8fe0-612d-8fcd-8ee4-ac771003fe39",
+    "id_v1": "/sensors/162",
+    "metadata": {
+      "archetype": "unknown_archetype",
+      "name": "Device 45"
+    },
+    "product_data": {
+      "certified": true,
+      "hardware_platform_type": "100b-119",
+      "manufacturer_name": "Signify Netherlands B.V.",
+      "model_id": "RWL022",
+      "product_archetype": "unknown_archetype",
+      "product_name": "Hue dimmer switch",
+      "software_version": "2.85.1"
+    },
+    "services": [
+      {
+        "rid": "c810d227-2fd6-1dde-6813-ad3da5680381",
+        "rtype": "button"
+      },
+      {
+        "rid": "fcce6c00-9e3c-2a14-6060-30a86d3b99d0",
+        "rtype": "device_power"
+      }
+    ],
+    "type": "device"
+  },
+  {
+    "geometry": {
+      "objects": []
+    },
+    "id": "23b03bd1-ea29-1ae4-7c5b-9155511de431",
+    "id_v1": "/sensors/143",
+    "metadata": {
+      "archetype": "unknown_archetype",
+      "name": "Device 23"
+    },
+    "product_data": {
+      "certified": true,
+      "hardware_platform_type": "100b-121",
+      "manufacturer_name": "Signify Netherlands B.V.",
+      "model_id": "RDM002",
+      "product_archetype": "unknown_archetype",
+      "product_name": "Hue tap dial switch",
+      "software_version": "2.85.1"
+    },
+    "services": [
+      {
+        "rid": "af9ecd0e-9d42-e2ea-9148-74abc19f020f",
+        "rtype": "relative_rotary"
+      }
+    ],
+    "type": "device"
+  },
+  {
+    "geometry": {
+      "objects": []
+    },
+    "id": "28a12861-37b1-ea69-9fdb-0a6722f4b680",
+    "id_v1": "/lights/76",
+    "identify": {},
+    "metadata": {
+      "archetype": "ceiling_round",
+      "name": "Device 12"
+    },
+    "product_data": {
+      "certified": true,
+      "hardware_platform_type": "100b-11d",
+      "manufacturer_name": "Signify Netherlands B.V.",
+      "model_id": "3261031P6",
+      "product_archetype": "ceiling_round",
+      "product_name": "Hue Being Ceiling",
+      "software_version": "1.163.2"
+    },
+    "services": [
+      {
+        "rid": "c62d0b3c-be66-bc9b-d43b-a4397dda443f",
+        "rtype": "motion_area_candidate"
+      }
+    ],
+    "type": "device"
+  },
+  {
+    "device_mode": {
+      "mode": "switch_single_pushbutton",
+      "mode_values": [
+        "switch_single_rocker",
+        "switch_single_pushbutton",
+        "switch_dual_rocker",
+        "switch_dual_pushbutton"
+      ],
+      "status": "set"
+    },
+    "geometry": {
+      "objects": []
+    },
+    "id": "34955c1c-2c19-5c08-0803-b989ff06f21f",
+    "id_v1": "/sensors/145",
+    "metadata": {
+      "archetype": "unknown_archetype",
+      "name": "Device 21"
+    },
+    "product_data": {
+      "certified": true,
+      "hardware_platform_type": "100b-11c",
       "manufacturer_name": "Signify Netherlands B.V.",
       "model_id": "RDM001",
       "product_archetype": "unknown_archetype",
       "product_name": "Hue wall switch module",
-      "software_version": "1.0.3"
+      "software_version": "2.85.5"
     },
     "services": [
       {
-        "rid": "c658d3d8-a013-4b81-8ac6-78b248537e70",
-        "rtype": "button"
-      },
-      {
-        "rid": "be1eb834-bdf5-4d26-8fba-7b1feaa83a9d",
-        "rtype": "button"
-      },
-      {
-        "rid": "c1cd98a6-6c23-43bb-b6e1-08dda9e168a4",
-        "rtype": "device_power"
-      },
-      {
-        "rid": "af520f40-e080-43b0-9bb5-41a4d5251b2b",
-        "rtype": "zigbee_connectivity"
+        "rid": "f4c85afd-a30d-b3f1-cb36-980b9606ed84",
+        "rtype": "switch_input_configuration"
       }
     ],
     "type": "device"
   },
   {
-    "id": "0b216218-d811-4c95-8c55-bbcda50f9d50",
-    "id_v1": "/lights/29",
+    "geometry": {
+      "objects": []
+    },
+    "id": "40ec16d5-4dd8-e27c-069a-12cedf13c8cb",
+    "id_v1": "/lights/126",
+    "identify": {},
     "metadata": {
-      "archetype": "floor_shade",
-      "name": "Hue light with color and color temperature 1"
+      "archetype": "ceiling_square",
+      "name": "Device 31"
     },
     "product_data": {
       "certified": true,
+      "hardware_platform_type": "100b-11f",
       "manufacturer_name": "Signify Netherlands B.V.",
-      "model_id": "4080248P9",
-      "product_archetype": "floor_shade",
-      "product_name": "Hue color floor",
-      "software_version": "1.88.1"
+      "model_id": "929003099201",
+      "product_archetype": "ceiling_square",
+      "product_name": "Hue Aurelle Panel",
+      "software_version": "1.163.1"
     },
     "services": [
       {
-        "rid": "02cba059-9c2c-4d45-97e4-4f79b1bfbaa1",
-        "rtype": "light"
-      },
-      {
-        "rid": "1987ba66-c21d-48d0-98fb-121d939a71f3",
-        "rtype": "zigbee_connectivity"
-      },
-      {
-        "rid": "5d7b3979-b936-47ff-8458-554f8a2921db",
-        "rtype": "entertainment"
+        "rid": "b3dea9e5-f233-b694-345d-a4c031d29b1c",
+        "rtype": "motion_area_candidate"
       }
     ],
     "type": "device"
   },
   {
-    "id": "60b849cc-a8b5-4034-8881-ed1cd560fd13",
-    "id_v1": "/lights/4",
+    "geometry": {
+      "objects": []
+    },
+    "id": "42b8327b-b7d7-2469-3c45-069a41b4dca8",
+    "id_v1": "/lights/128",
+    "identify": {},
     "metadata": {
-      "archetype": "ceiling_round",
-      "name": "Hue light with color temperature only"
+      "archetype": "string_globe",
+      "name": "Device 36"
     },
     "product_data": {
       "certified": true,
+      "hardware_platform_type": "100b-118",
       "manufacturer_name": "Signify Netherlands B.V.",
-      "model_id": "LTC001",
-      "product_archetype": "ceiling_round",
-      "product_name": "Hue ambiance ceiling",
-      "software_version": "1.88.1"
+      "model_id": "LCX028",
+      "product_archetype": "string_globe",
+      "product_name": "Festavia bulb string light",
+      "software_version": "1.163.1"
     },
     "services": [
       {
-        "rid": "3a6710fa-4474-4eba-b533-5e6e72968feb",
+        "rid": "01b1da1b-2cb1-eb71-5391-63b5ae1ceb6c",
         "rtype": "light"
       },
       {
-        "rid": "bd878f44-feb7-406e-8af9-6a1796d1ddc9",
-        "rtype": "zigbee_connectivity"
+        "rid": "6dd2638d-644c-69b0-027d-75bffce92061",
+        "rtype": "motion_area_candidate"
       }
     ],
     "type": "device"
   },
   {
-    "id": "342daec9-391b-480b-abdd-87f1aa04ce3b",
-    "id_v1": "/sensors/10",
+    "geometry": {
+      "objects": []
+    },
+    "id": "42be61ac-7b63-90b0-ebcd-af84475e4711",
+    "id_v1": "/sensors/134",
+    "identify": {},
     "metadata": {
       "archetype": "unknown_archetype",
-      "name": "Hue Dimmer switch with 4 controls"
+      "name": "Device 4"
     },
     "product_data": {
       "certified": true,
+      "hardware_platform_type": "100b-11b",
       "manufacturer_name": "Signify Netherlands B.V.",
-      "model_id": "RWL021",
+      "model_id": "SML003",
       "product_archetype": "unknown_archetype",
-      "product_name": "Hue dimmer switch",
-      "software_version": "1.1.28573"
+      "product_name": "Hue motion sensor",
+      "software_version": "2.85.1"
     },
     "services": [
       {
-        "rid": "f92aa267-1387-4f02-9950-210fb7ca1f5a",
-        "rtype": "button"
+        "rid": "3b4d53a1-07c8-b8b8-3c1d-38d5f54b62c5",
+        "rtype": "light_level"
       },
       {
-        "rid": "7f1ab9f6-cc2b-4b40-9011-65e2af153f75",
-        "rtype": "button"
-      },
-      {
-        "rid": "b4edb2d6-55d0-47f4-bd43-7ae215ef1062",
-        "rtype": "button"
-      },
-      {
-        "rid": "40a810bf-3d22-4c56-9334-4a59a00768ab",
-        "rtype": "button"
-      },
-      {
-        "rid": "0bb058bc-2139-43d9-8c9b-edfb4570953b",
-        "rtype": "device_power"
-      },
-      {
-        "rid": "db50a5d9-8cc7-486f-be06-c0b8f0d26c69",
-        "rtype": "zigbee_connectivity"
+        "rid": "515be12b-0c6f-aba0-a714-1586419d9b95",
+        "rtype": "temperature"
       }
     ],
-    "type": "device"
+    "type": "device",
+    "usertest": {
+      "status": "set",
+      "usertest": false
+    }
   },
   {
-    "id": "b9e76da7-ac22-476a-986d-e466e62e962f",
-    "id_v1": "/lights/16",
+    "geometry": {
+      "objects": [
+        {
+          "reference": {
+            "rid": "7049a389-288d-f789-b338-87fd2172a1fa",
+            "rtype": "light"
+          },
+          "transform": {
+            "position": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "rotation": {
+              "w": 1.0,
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            }
+          }
+        }
+      ]
+    },
+    "id": "4cff9212-ee6d-cd4b-346e-155aa4d8908e",
+    "id_v1": "/lights/40",
+    "identify": {},
     "metadata": {
-      "archetype": "hue_lightstrip",
-      "name": "Hue light with color and color temperature 2"
+      "archetype": "bollard",
+      "name": "Device 14"
     },
     "product_data": {
       "certified": true,
+      "hardware_platform_type": "100b-11f",
       "manufacturer_name": "Signify Netherlands B.V.",
-      "model_id": "LST002",
-      "product_archetype": "hue_lightstrip",
-      "product_name": "Hue lightstrip plus",
-      "software_version": "67.88.1"
+      "model_id": "1743430P7",
+      "product_archetype": "bollard",
+      "product_name": "Hue Impress outdoor pedestal",
+      "software_version": "1.163.1"
     },
     "services": [
       {
-        "rid": "b3fe71ef-d0ef-48de-9355-d9e604377df0",
+        "rid": "7049a389-288d-f789-b338-87fd2172a1fa",
         "rtype": "light"
       },
       {
-        "rid": "717afeb6-b1ce-426e-96de-48e8fe037fb0",
-        "rtype": "zigbee_connectivity"
-      },
-      {
-        "rid": "d88acc42-259c-43b5-bf5d-90c16cdb8f2f",
+        "rid": "ad16f0d8-aefc-7b33-261b-7d3a62fa2af4",
         "rtype": "entertainment"
+      },
+      {
+        "rid": "f956e921-1b35-b342-4fdc-10d6a3777e64",
+        "rtype": "motion_area_candidate"
       }
     ],
     "type": "device"
   },
   {
-    "id": "fcdfab5d-8e04-4e9c-a999-7f92cb38c4fc",
-    "id_v1": "/lights/23",
-    "metadata": {
-      "archetype": "classic_bulb",
-      "name": "Hue on/off light"
+    "geometry": {
+      "objects": []
     },
-    "product_data": {
-      "certified": false,
-      "manufacturer_name": "eWeLink",
-      "model_id": "SA-003-Zigbee",
-      "product_archetype": "classic_bulb",
-      "product_name": "On/Off light",
-      "software_version": "1.0.2"
-    },
-    "services": [
-      {
-        "rid": "7697ac8a-25aa-4576-bb40-0036c0db15b9",
-        "rtype": "light"
-      },
-      {
-        "rid": "6b00ce2b-a8a5-4bab-bc5e-757a0b0338ff",
-        "rtype": "zigbee_connectivity"
-      }
-    ],
-    "type": "device"
-  },
-  {
-    "id": "7745ebea-dd33-429c-a900-bae4e7ae1107",
-    "id_v1": "/sensors/5",
-    "metadata": {
-      "archetype": "unknown_archetype",
-      "name": "Hue Smart button 1 control"
-    },
-    "product_data": {
-      "certified": true,
-      "manufacturer_name": "Signify Netherlands B.V.",
-      "model_id": "ROM001",
-      "product_archetype": "unknown_archetype",
-      "product_name": "Hue Smart button",
-      "software_version": "2.47.8"
-    },
-    "services": [
-      {
-        "rid": "31cffcda-efc2-401f-a152-e10db3eed232",
-        "rtype": "button"
-      },
-      {
-        "rid": "3f219f5a-ad6c-484f-b976-769a9c267a72",
-        "rtype": "device_power"
-      },
-      {
-        "rid": "bba44861-8222-45c9-9e6b-d7f3a6543829",
-        "rtype": "zigbee_connectivity"
-      }
-    ],
-    "type": "device"
-  },
-  {
-    "id": "4a507550-8742-4087-8bf5-c2334f29891c",
-    "id_v1": "",
-    "metadata": {
-      "archetype": "bridge_v2",
-      "name": "Philips hue"
-    },
-    "product_data": {
-      "certified": true,
-      "manufacturer_name": "Signify Netherlands B.V.",
-      "model_id": "BSB002",
-      "product_archetype": "bridge_v2",
-      "product_name": "Philips hue",
-      "software_version": "1.48.1948086000"
-    },
-    "services": [
-      {
-        "rid": "07dd5849-abcd-efgh-b9b9-eb540408ce00",
-        "rtype": "bridge"
-      },
-      {
-        "rid": "6c898412-ed25-4402-9807-a0c326616b0f",
-        "rtype": "zigbee_connectivity"
-      },
-      {
-        "rid": "b8ab0c30-b227-4d35-9c96-7cd16131fcc5",
-        "rtype": "entertainment"
-      }
-    ],
-    "type": "device"
-  },
-  {
-    "id": "8d07d39c-3c19-47ce-ac7a-8bf3d8e849b9",
-    "id_v1": "/lights/11",
+    "id": "51428b4a-5805-c25a-081e-f922bb76eb4f",
+    "id_v1": "/lights/120",
+    "identify": {},
     "metadata": {
       "archetype": "hue_bloom",
-      "name": "Hue light with color only"
+      "name": "Device 6"
     },
     "product_data": {
       "certified": true,
+      "hardware_platform_type": "100b-103",
       "manufacturer_name": "Signify Netherlands B.V.",
       "model_id": "LLC011",
       "product_archetype": "hue_bloom",
       "product_name": "Hue bloom",
-      "software_version": "67.91.1"
+      "software_version": "67.116.3"
     },
     "services": [
       {
-        "rid": "74a45fee-1b3d-4553-b5ab-040da8a10cfd",
-        "rtype": "light"
-      },
-      {
-        "rid": "98baae94-76d9-4bc4-a1d1-d53f1d7b1286",
+        "rid": "24c292f9-9772-d20e-4f7f-1e916923dc0f",
         "rtype": "zigbee_connectivity"
       },
       {
-        "rid": "8e6a4ff3-14ca-42f9-8358-9d691b9a4524",
+        "rid": "1a49f893-e2fc-908a-9046-fa7629f1e770",
+        "rtype": "light"
+      },
+      {
+        "rid": "fafdf327-07a0-43cc-be13-5d7e4627daa5",
         "rtype": "entertainment"
       }
     ],
     "type": "device"
   },
   {
-    "id": "1c8be0d5-a68b-45c2-8f56-530d13b0c128",
-    "id_v1": "/lights/24",
+    "geometry": {
+      "objects": []
+    },
+    "id": "514657fc-8ddc-b29e-aa8f-10492d5fcd3e",
+    "identify": {},
     "metadata": {
-      "archetype": "hue_lightstrip_tv",
-      "name": "Hue light with color and color temperature gradient"
+      "archetype": "unknown_archetype",
+      "name": "Device 7"
     },
     "product_data": {
       "certified": true,
       "manufacturer_name": "Signify Netherlands B.V.",
-      "model_id": "LCX003",
-      "product_archetype": "hue_lightstrip_tv",
-      "product_name": "Hue play gradient lightstrip",
-      "software_version": "1.86.7"
+      "model_id": "CMW004",
+      "product_archetype": "unknown_archetype",
+      "product_name": "Secure wired camera 2K",
+      "software_version": "2.86.1"
     },
     "services": [
       {
-        "rid": "8015b17f-8336-415b-966a-b364bd082397",
-        "rtype": "light"
-      },
-      {
-        "rid": "ff4e6545-341f-4b0d-9869-b6feb6e6fe87",
-        "rtype": "zigbee_connectivity"
-      },
-      {
-        "rid": "7b03eb98-4cfd-4acf-ac11-675f51613e5e",
-        "rtype": "entertainment"
+        "rid": "96ae542a-a350-c6c1-4475-4b5e0efdcdab",
+        "rtype": "camera_motion"
       }
     ],
     "type": "device"
   },
   {
-    "id": "2330b45d-6079-4c6e-bba6-1b68afb1a0d6",
-    "id_v1": "/sensors/66",
+    "geometry": {
+      "objects": []
+    },
+    "id": "5f8180f0-c884-a13f-a34d-1230f242e518",
+    "id_v1": "/lights/129",
+    "identify": {},
     "metadata": {
-      "archetype": "unknown_archetype",
-      "name": "Hue motion sensor"
+      "archetype": "hue_signe",
+      "name": "Device 11"
     },
     "product_data": {
       "certified": true,
+      "hardware_platform_type": "100b-118",
+      "manufacturer_name": "Signify Netherlands B.V.",
+      "model_id": "915005987001",
+      "product_archetype": "hue_signe",
+      "product_name": "Signe gradient table",
+      "software_version": "1.163.1"
+    },
+    "services": [
+      {
+        "rid": "8b745c25-02e6-623f-1494-1236448eb81f",
+        "rtype": "motion_area_candidate"
+      }
+    ],
+    "type": "device"
+  },
+  {
+    "geometry": {
+      "objects": []
+    },
+    "id": "657055ad-aa6f-dc5a-c40a-07e692ff23ba",
+    "id_v1": "/lights/91",
+    "identify": {},
+    "metadata": {
+      "archetype": "vintage_bulb",
+      "name": "Device 20"
+    },
+    "product_data": {
+      "certified": true,
+      "hardware_platform_type": "100b-114",
+      "manufacturer_name": "Signify Netherlands B.V.",
+      "model_id": "LTO002",
+      "product_archetype": "vintage_bulb",
+      "product_name": "Hue filament bulb",
+      "software_version": "1.163.1"
+    },
+    "services": [
+      {
+        "rid": "049e9799-4fc3-38bd-1ad1-de3c6ff31882",
+        "rtype": "motion_area_candidate"
+      }
+    ],
+    "type": "device"
+  },
+  {
+    "geometry": {
+      "objects": []
+    },
+    "id": "6b31cfbc-fdec-c439-f6ca-85fdb03f30d3",
+    "identify": {},
+    "metadata": {
+      "archetype": "unknown_archetype",
+      "name": "Device 43"
+    },
+    "product_data": {
+      "certified": true,
+      "hardware_platform_type": "100b-125",
+      "manufacturer_name": "Signify Netherlands B.V.",
+      "model_id": "SOC001",
+      "product_archetype": "unknown_archetype",
+      "product_name": "Hue secure contact sensor",
+      "software_version": "2.85.1"
+    },
+    "services": [
+      {
+        "rid": "1c81d201-23f1-db39-9762-4eafb6397464",
+        "rtype": "contact"
+      },
+      {
+        "rid": "dead0381-1697-bf06-ac07-1d0c191960a2",
+        "rtype": "tamper"
+      }
+    ],
+    "type": "device"
+  },
+  {
+    "device_mode": {
+      "mode": "switch_dual_pushbutton",
+      "mode_values": [
+        "switch_single_rocker",
+        "switch_single_pushbutton",
+        "switch_dual_rocker",
+        "switch_dual_pushbutton"
+      ],
+      "status": "set"
+    },
+    "geometry": {
+      "objects": []
+    },
+    "id": "6c3131a4-de8b-7105-6c11-b39e79f481ce",
+    "id_v1": "/sensors/146",
+    "metadata": {
+      "archetype": "unknown_archetype",
+      "name": "Device 30"
+    },
+    "product_data": {
+      "certified": true,
+      "hardware_platform_type": "100b-11c",
+      "manufacturer_name": "Signify Netherlands B.V.",
+      "model_id": "RDM001",
+      "product_archetype": "unknown_archetype",
+      "product_name": "Hue wall switch module",
+      "software_version": "2.85.5"
+    },
+    "services": [
+      {
+        "rid": "fc042746-a0ba-dd74-f045-48d7b819537a",
+        "rtype": "switch_input_configuration"
+      }
+    ],
+    "type": "device"
+  },
+  {
+    "geometry": {
+      "objects": []
+    },
+    "id": "738ef4a0-8b18-4ae4-0b93-1042e8716117",
+    "id_v1": "/sensors/91",
+    "identify": {},
+    "metadata": {
+      "archetype": "unknown_archetype",
+      "name": "Device 39"
+    },
+    "product_data": {
+      "certified": true,
+      "hardware_platform_type": "100b-11b",
+      "manufacturer_name": "Signify Netherlands B.V.",
+      "model_id": "SML003",
+      "product_archetype": "unknown_archetype",
+      "product_name": "Hue motion sensor",
+      "software_version": "2.85.1"
+    },
+    "services": [
+      {
+        "rid": "45403512-7620-3bff-476d-5836e73882a8",
+        "rtype": "device_power"
+      }
+    ],
+    "type": "device",
+    "usertest": {
+      "status": "set",
+      "usertest": false
+    }
+  },
+  {
+    "geometry": {
+      "objects": []
+    },
+    "id": "739ebab0-97a7-0ee3-91a0-29be479d34f4",
+    "id_v1": "/lights/72",
+    "identify": {},
+    "metadata": {
+      "archetype": "sultan_bulb",
+      "name": "Device 17"
+    },
+    "product_data": {
+      "certified": true,
+      "hardware_platform_type": "100b-114",
+      "manufacturer_name": "Signify Netherlands B.V.",
+      "model_id": "LTA009",
+      "product_archetype": "sultan_bulb",
+      "product_name": "Hue ambiance lamp",
+      "software_version": "1.163.1"
+    },
+    "services": [
+      {
+        "rid": "f427202e-d8cd-cb0e-479f-72955a2d7cbe",
+        "rtype": "light"
+      },
+      {
+        "rid": "87b9aa26-f59b-6984-92ec-5e58d329eaf1",
+        "rtype": "motion_area_candidate"
+      }
+    ],
+    "type": "device"
+  },
+  {
+    "geometry": {
+      "objects": []
+    },
+    "id": "7b21d2e6-7e70-9964-b038-ca99293424fd",
+    "id_v1": "/sensors/147",
+    "metadata": {
+      "archetype": "unknown_archetype",
+      "name": "Device 8"
+    },
+    "product_data": {
+      "certified": true,
+      "hardware_platform_type": "100b-121",
+      "manufacturer_name": "Signify Netherlands B.V.",
+      "model_id": "RDM002",
+      "product_archetype": "unknown_archetype",
+      "product_name": "Hue tap dial switch",
+      "software_version": "2.85.1"
+    },
+    "services": [],
+    "type": "device"
+  },
+  {
+    "geometry": {
+      "objects": []
+    },
+    "id": "7bd86197-ef7c-7625-3170-1b6de1502441",
+    "id_v1": "/sensors/125",
+    "identify": {},
+    "metadata": {
+      "archetype": "unknown_archetype",
+      "name": "Device 46"
+    },
+    "product_data": {
+      "certified": true,
+      "hardware_platform_type": "100b-11b",
+      "manufacturer_name": "Signify Netherlands B.V.",
+      "model_id": "SML003",
+      "product_archetype": "unknown_archetype",
+      "product_name": "Hue motion sensor",
+      "software_version": "2.85.1"
+    },
+    "services": [
+      {
+        "rid": "9a747ee4-ab13-2f08-e8e9-0c8506d21649",
+        "rtype": "motion"
+      }
+    ],
+    "type": "device",
+    "usertest": {
+      "status": "set",
+      "usertest": false
+    }
+  },
+  {
+    "geometry": {
+      "objects": []
+    },
+    "id": "7e7fa7bc-8c1a-576b-6fef-b1ff0ea7e77b",
+    "id_v1": "/lights/75",
+    "identify": {},
+    "metadata": {
+      "archetype": "hue_lightstrip",
+      "name": "Device 26"
+    },
+    "product_data": {
+      "certified": true,
+      "hardware_platform_type": "100b-11f",
+      "manufacturer_name": "Signify Netherlands B.V.",
+      "model_id": "LCL001",
+      "product_archetype": "hue_lightstrip",
+      "product_name": "Hue lightstrip plus",
+      "software_version": "1.163.1"
+    },
+    "services": [
+      {
+        "rid": "17394d66-d770-4513-609d-88429e636268",
+        "rtype": "zigbee_connectivity"
+      },
+      {
+        "rid": "4cd1e047-6b7d-c797-eac8-3cb2b496ae36",
+        "rtype": "light"
+      },
+      {
+        "rid": "abd9108f-878d-e50a-f622-923ed48b4337",
+        "rtype": "entertainment"
+      },
+      {
+        "rid": "8017e329-f009-6732-c0be-8e72fd402957",
+        "rtype": "motion_area_candidate"
+      }
+    ],
+    "type": "device"
+  },
+  {
+    "device_mode": {
+      "mode": "switch_dual_pushbutton",
+      "mode_values": [
+        "switch_single_rocker",
+        "switch_single_pushbutton",
+        "switch_dual_rocker",
+        "switch_dual_pushbutton"
+      ],
+      "status": "set"
+    },
+    "geometry": {
+      "objects": []
+    },
+    "id": "8ec5ef01-89f1-56ee-7256-22929a2aa0c5",
+    "id_v1": "/sensors/157",
+    "metadata": {
+      "archetype": "unknown_archetype",
+      "name": "Device 38"
+    },
+    "product_data": {
+      "certified": true,
+      "hardware_platform_type": "100b-11c",
+      "manufacturer_name": "Signify Netherlands B.V.",
+      "model_id": "RDM001",
+      "product_archetype": "unknown_archetype",
+      "product_name": "Hue wall switch module",
+      "software_version": "2.85.5"
+    },
+    "services": [
+      {
+        "rid": "60e3626f-4a3a-3d91-ef40-74d7058f90b9",
+        "rtype": "button"
+      }
+    ],
+    "type": "device"
+  },
+  {
+    "geometry": {
+      "objects": []
+    },
+    "id": "9810e195-019c-db05-5680-42f352a80111",
+    "id_v1": "/sensors/231",
+    "metadata": {
+      "archetype": "unknown_archetype",
+      "name": "Device 35"
+    },
+    "product_data": {
+      "certified": true,
+      "hardware_platform_type": "100b-121",
+      "manufacturer_name": "Signify Netherlands B.V.",
+      "model_id": "RDM002",
+      "product_archetype": "unknown_archetype",
+      "product_name": "Hue tap dial switch",
+      "software_version": "2.85.1"
+    },
+    "services": [
+      {
+        "rid": "952c0b4d-facb-a603-6556-92dc96daabc7",
+        "rtype": "relative_rotary"
+      }
+    ],
+    "type": "device"
+  },
+  {
+    "geometry": {
+      "objects": [
+        {
+          "reference": {
+            "rid": "183cce41-63a6-f1c4-a349-0749a55351ac",
+            "rtype": "light"
+          },
+          "transform": {
+            "position": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "rotation": {
+              "w": 1.0,
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            }
+          }
+        }
+      ]
+    },
+    "id": "9a47175d-c63c-d928-c9ca-0f7e6c409184",
+    "id_v1": "/lights/63",
+    "identify": {},
+    "metadata": {
+      "archetype": "hue_lightstrip",
+      "name": "Device 15"
+    },
+    "product_data": {
+      "certified": false,
+      "hardware_platform_type": "124f-1413",
+      "manufacturer_name": "GLEDOPTO",
+      "model_id": "GL-C-006P",
+      "product_archetype": "classic_bulb",
+      "product_name": "Color temperature light",
+      "software_version": "10651203"
+    },
+    "services": [
+      {
+        "rid": "183cce41-63a6-f1c4-a349-0749a55351ac",
+        "rtype": "light"
+      }
+    ],
+    "type": "device"
+  },
+  {
+    "geometry": {
+      "objects": []
+    },
+    "id": "9d6998c6-ed4d-cc75-0e50-4ec61446e8f2",
+    "id_v1": "/sensors/72",
+    "identify": {},
+    "metadata": {
+      "archetype": "unknown_archetype",
+      "name": "Device 42"
+    },
+    "product_data": {
+      "certified": true,
+      "hardware_platform_type": "100b-10d",
       "manufacturer_name": "Signify Netherlands B.V.",
       "model_id": "SML001",
       "product_archetype": "unknown_archetype",
       "product_name": "Hue motion sensor",
-      "software_version": "1.1.27575"
+      "software_version": "67.116.1"
     },
     "services": [
       {
-        "rid": "b6896534-016d-4052-8cb4-ef04454df62c",
+        "rid": "d34e524b-4d45-4ac5-be57-2e2e92d0cd63",
         "rtype": "motion"
       },
       {
-        "rid": "669f609d-4860-4f1c-bc25-7a9cec1c3b6c",
-        "rtype": "device_power"
-      },
-      {
-        "rid": "ec9b5ad7-2471-4356-b757-d00537828963",
-        "rtype": "zigbee_connectivity"
-      },
-      {
-        "rid": "d504e7a4-9a18-4854-90fd-c5b6ac102c40",
+        "rid": "76fa9af3-e5c1-7d6a-15c2-173755817ed4",
         "rtype": "light_level"
-      },
+      }
+    ],
+    "type": "device",
+    "usertest": {
+      "status": "set",
+      "usertest": false
+    }
+  },
+  {
+    "geometry": {
+      "objects": []
+    },
+    "id": "a55e591b-d317-545e-16d0-341d42721293",
+    "id_v1": "/sensors/167",
+    "metadata": {
+      "archetype": "unknown_archetype",
+      "name": "Device 40"
+    },
+    "product_data": {
+      "certified": true,
+      "hardware_platform_type": "100b-119",
+      "manufacturer_name": "Signify Netherlands B.V.",
+      "model_id": "RWL022",
+      "product_archetype": "unknown_archetype",
+      "product_name": "Hue dimmer switch",
+      "software_version": "2.85.1"
+    },
+    "services": [],
+    "type": "device"
+  },
+  {
+    "geometry": {
+      "objects": []
+    },
+    "id": "a8210de2-3aa8-037c-32d2-2e6e8df7f39b",
+    "id_v1": "/sensors/26",
+    "metadata": {
+      "archetype": "unknown_archetype",
+      "name": "Device 19"
+    },
+    "product_data": {
+      "certified": true,
+      "hardware_platform_type": "100b-121",
+      "manufacturer_name": "Signify Netherlands B.V.",
+      "model_id": "RDM002",
+      "product_archetype": "unknown_archetype",
+      "product_name": "Hue tap dial switch",
+      "software_version": "2.85.1"
+    },
+    "services": [
       {
-        "rid": "66466e14-d2fa-4b96-b2a0-e10de9cd8b8b",
-        "rtype": "temperature"
+        "rid": "764fa54b-0dee-b984-ea48-8d8d0cccd274",
+        "rtype": "button"
       }
     ],
     "type": "device"
   },
   {
+    "geometry": {
+      "objects": []
+    },
+    "id": "a966a5eb-3d24-33e3-f465-36860d66d263",
+    "id_v1": "/lights/3",
+    "identify": {},
+    "metadata": {
+      "archetype": "recessed_ceiling",
+      "name": "Device 28"
+    },
+    "product_data": {
+      "certified": true,
+      "hardware_platform_type": "100b-114",
+      "manufacturer_name": "Signify Netherlands B.V.",
+      "model_id": "929003045401",
+      "product_archetype": "recessed_ceiling",
+      "product_name": "Hue Centura spot",
+      "software_version": "1.163.1"
+    },
+    "services": [
+      {
+        "rid": "5124f04d-ad06-8db7-f875-9e5398967980",
+        "rtype": "motion_area_candidate"
+      },
+      {
+        "rid": "30779fb5-9d53-1fef-74b0-820a0231f3ab",
+        "rtype": "device_software_update"
+      }
+    ],
+    "type": "device"
+  },
+  {
+    "geometry": {
+      "objects": []
+    },
+    "id": "abb87463-e3a8-7edd-d7b3-07092678dce6",
+    "id_v1": "/lights/112",
+    "identify": {},
+    "metadata": {
+      "archetype": "floor_shade",
+      "name": "Device 9"
+    },
+    "product_data": {
+      "certified": true,
+      "hardware_platform_type": "100b-11d",
+      "manufacturer_name": "Signify Netherlands B.V.",
+      "model_id": "4080248P9",
+      "product_archetype": "floor_shade",
+      "product_name": "Hue color floor",
+      "software_version": "1.163.2"
+    },
+    "services": [
+      {
+        "rid": "24d60506-22e8-f564-cff5-c7b702b62504",
+        "rtype": "light"
+      },
+      {
+        "rid": "2b41d107-afd8-5f99-e3a5-b06b2d43f7c8",
+        "rtype": "entertainment"
+      },
+      {
+        "rid": "1e8ad281-bdff-4351-e46b-a5bd2693ae04",
+        "rtype": "motion_area_candidate"
+      }
+    ],
+    "type": "device"
+  },
+  {
+    "geometry": {
+      "objects": []
+    },
+    "id": "b1421fef-cd77-cf37-3b91-0ba77a29e4ef",
+    "id_v1": "/sensors/81",
+    "identify": {},
+    "metadata": {
+      "archetype": "unknown_archetype",
+      "name": "Device 13"
+    },
+    "product_data": {
+      "certified": true,
+      "hardware_platform_type": "100b-11b",
+      "manufacturer_name": "Signify Netherlands B.V.",
+      "model_id": "SML003",
+      "product_archetype": "unknown_archetype",
+      "product_name": "Hue motion sensor",
+      "software_version": "2.85.1"
+    },
+    "services": [
+      {
+        "rid": "5ee552c6-18c7-1a4b-1ed4-944549cb93e3",
+        "rtype": "temperature"
+      }
+    ],
+    "type": "device",
+    "usertest": {
+      "status": "set",
+      "usertest": false
+    }
+  },
+  {
+    "geometry": {
+      "objects": []
+    },
+    "id": "b2879c32-1bf3-9c99-4825-539401a42ab7",
+    "id_v1": "/sensors/84",
+    "identify": {},
+    "metadata": {
+      "archetype": "unknown_archetype",
+      "name": "Device 33"
+    },
+    "product_data": {
+      "certified": true,
+      "hardware_platform_type": "100b-11b",
+      "manufacturer_name": "Signify Netherlands B.V.",
+      "model_id": "SML003",
+      "product_archetype": "unknown_archetype",
+      "product_name": "Hue motion sensor",
+      "software_version": "2.85.1"
+    },
+    "services": [
+      {
+        "rid": "d211cfa1-168a-9f65-7c21-649ab2dfb4e5",
+        "rtype": "temperature"
+      }
+    ],
+    "type": "device",
+    "usertest": {
+      "status": "set",
+      "usertest": false
+    }
+  },
+  {
+    "geometry": {
+      "objects": []
+    },
+    "id": "b6257363-71db-1b79-10d8-69c4e3dcdae4",
+    "identify": {},
+    "metadata": {
+      "archetype": "hue_chime",
+      "name": "Device 27"
+    },
+    "product_data": {
+      "certified": true,
+      "hardware_platform_type": "100b-128",
+      "manufacturer_name": "Signify Netherlands B.V.",
+      "model_id": "COM001",
+      "product_archetype": "hue_chime",
+      "product_name": "Secure chime",
+      "software_version": "1.163.1"
+    },
+    "services": [
+      {
+        "rid": "3903d908-eb6c-8ece-335c-f7ae230943f0",
+        "rtype": "speaker"
+      },
+      {
+        "rid": "b6b1c6ab-35b7-05ae-263a-91900ff5ebf7",
+        "rtype": "motion_area_candidate"
+      },
+      {
+        "rid": "7da9a978-5a85-75a6-bd84-2446a6f218c3",
+        "rtype": "device_software_update"
+      }
+    ],
+    "type": "device"
+  },
+  {
+    "geometry": {
+      "objects": []
+    },
+    "id": "b9b9e165-a3b2-1670-5fc8-297d403b2252",
+    "id_v1": "/sensors/243",
+    "metadata": {
+      "archetype": "unknown_archetype",
+      "name": "Device 44"
+    },
+    "product_data": {
+      "certified": true,
+      "hardware_platform_type": "100b-121",
+      "manufacturer_name": "Signify Netherlands B.V.",
+      "model_id": "RDM002",
+      "product_archetype": "unknown_archetype",
+      "product_name": "Hue tap dial switch",
+      "software_version": "2.85.1"
+    },
+    "services": [
+      {
+        "rid": "52fc7b36-3042-4710-1efc-bb674797191e",
+        "rtype": "relative_rotary"
+      }
+    ],
+    "type": "device"
+  },
+  {
+    "id": "bae2cb3c-8717-3652-6620-615b68b360ef",
+    "identify": {},
+    "metadata": {
+      "archetype": "bridge_v3",
+      "name": "Device 16"
+    },
+    "product_data": {
+      "certified": true,
+      "manufacturer_name": "Signify Netherlands B.V.",
+      "model_id": "BSB003",
+      "product_archetype": "bridge_v3",
+      "product_name": "Hue Bridge",
+      "software_version": "1.78.2071401010"
+    },
+    "services": [
+      {
+        "rid": "a1b5c18e-5865-ee2c-642e-6051f569eaca",
+        "rtype": "bridge"
+      },
+      {
+        "rid": "5b85f1dc-addf-2a26-720e-b21128d406b4",
+        "rtype": "entertainment"
+      },
+      {
+        "rid": "9669f838-e8ee-3473-3a75-ef4314e1d78e",
+        "rtype": "zigbee_device_discovery"
+      }
+    ],
+    "type": "device"
+  },
+  {
+    "geometry": {
+      "objects": []
+    },
+    "id": "c04b7bc8-1662-98d1-5a35-8c465ef9402a",
+    "id_v1": "/sensors/160",
+    "metadata": {
+      "archetype": "unknown_archetype",
+      "name": "Device 24"
+    },
+    "product_data": {
+      "certified": true,
+      "hardware_platform_type": "100b-121",
+      "manufacturer_name": "Signify Netherlands B.V.",
+      "model_id": "RDM002",
+      "product_archetype": "unknown_archetype",
+      "product_name": "Hue tap dial switch",
+      "software_version": "2.85.1"
+    },
+    "services": [],
+    "type": "device"
+  },
+  {
+    "geometry": {
+      "objects": []
+    },
+    "id": "c4ef392b-c628-6820-4661-cc2c5f76a00b",
+    "id_v1": "/sensors/119",
+    "identify": {},
+    "metadata": {
+      "archetype": "unknown_archetype",
+      "name": "Device 32"
+    },
+    "product_data": {
+      "certified": true,
+      "hardware_platform_type": "100b-11b",
+      "manufacturer_name": "Signify Netherlands B.V.",
+      "model_id": "SML003",
+      "product_archetype": "unknown_archetype",
+      "product_name": "Hue motion sensor",
+      "software_version": "2.85.1"
+    },
+    "services": [
+      {
+        "rid": "71ef7207-d5ce-b2e1-7266-758052002aaa",
+        "rtype": "light_level"
+      }
+    ],
+    "type": "device",
+    "usertest": {
+      "status": "set",
+      "usertest": false
+    }
+  },
+  {
+    "geometry": {
+      "objects": []
+    },
+    "id": "c59ce269-4b38-b432-f6c4-ca9181865666",
+    "id_v1": "/sensors/61",
+    "metadata": {
+      "archetype": "unknown_archetype",
+      "name": "Device 5"
+    },
+    "product_data": {
+      "certified": true,
+      "hardware_platform_type": "100b-121",
+      "manufacturer_name": "Signify Netherlands B.V.",
+      "model_id": "RDM002",
+      "product_archetype": "unknown_archetype",
+      "product_name": "Hue tap dial switch",
+      "software_version": "2.85.1"
+    },
+    "services": [
+      {
+        "rid": "0a9acc8f-a8ab-af2e-373b-dc6040de3bd5",
+        "rtype": "button"
+      }
+    ],
+    "type": "device"
+  },
+  {
+    "geometry": {
+      "objects": []
+    },
+    "id": "d55eb66e-44ab-ac0c-fdcf-c3d05759df15",
+    "id_v1": "/lights/127",
+    "identify": {},
+    "metadata": {
+      "archetype": "ground_spot",
+      "name": "Device 29"
+    },
+    "product_data": {
+      "certified": true,
+      "hardware_platform_type": "100b-11f",
+      "manufacturer_name": "Signify Netherlands B.V.",
+      "model_id": "1741530P7",
+      "product_archetype": "ground_spot",
+      "product_name": "Hue Lily outdoor spotlight",
+      "software_version": "1.163.1"
+    },
+    "services": [
+      {
+        "rid": "23e5b13b-5834-d4db-b51b-d3216fc0ca76",
+        "rtype": "motion_area_candidate"
+      }
+    ],
+    "type": "device"
+  },
+  {
+    "device_mode": {
+      "mode": "switch_dual_pushbutton",
+      "mode_values": [
+        "switch_single_rocker",
+        "switch_single_pushbutton",
+        "switch_dual_rocker",
+        "switch_dual_pushbutton"
+      ],
+      "status": "set"
+    },
+    "geometry": {
+      "objects": []
+    },
+    "id": "ee8468b9-ffe1-82d7-fbf9-bfb3704a8494",
+    "id_v1": "/sensors/103",
+    "metadata": {
+      "archetype": "unknown_archetype",
+      "name": "Device 34"
+    },
+    "product_data": {
+      "certified": true,
+      "hardware_platform_type": "100b-11c",
+      "manufacturer_name": "Signify Netherlands B.V.",
+      "model_id": "RDM001",
+      "product_archetype": "unknown_archetype",
+      "product_name": "Hue wall switch module",
+      "software_version": "2.85.5"
+    },
+    "services": [
+      {
+        "rid": "7df8303e-23a1-a1da-9c77-099538854705",
+        "rtype": "switch_input_configuration"
+      }
+    ],
+    "type": "device"
+  },
+  {
+    "geometry": {
+      "objects": []
+    },
+    "id": "f747dba7-6ec9-5683-7674-98095f330517",
+    "id_v1": "/lights/71",
+    "identify": {},
+    "metadata": {
+      "archetype": "sultan_bulb",
+      "name": "Device 1"
+    },
+    "product_data": {
+      "certified": true,
+      "hardware_platform_type": "100b-114",
+      "manufacturer_name": "Signify Netherlands B.V.",
+      "model_id": "LTA009",
+      "product_archetype": "sultan_bulb",
+      "product_name": "Hue ambiance lamp",
+      "software_version": "1.163.1"
+    },
+    "services": [
+      {
+        "rid": "7ebc892a-46fe-0a90-cd0c-87836247edda",
+        "rtype": "light"
+      },
+      {
+        "rid": "80c9b1d9-4f28-c237-fa15-51a0bd9b49bc",
+        "rtype": "motion_area_candidate"
+      },
+      {
+        "rid": "97480557-7389-b7c8-570d-5127d62e5bb6",
+        "rtype": "device_software_update"
+      }
+    ],
+    "type": "device"
+  },
+  {
+    "geometry": {
+      "objects": []
+    },
+    "id": "fb657eb4-38ba-fd3c-7535-d56f4350699f",
+    "id_v1": "/sensors/140",
+    "identify": {},
+    "metadata": {
+      "archetype": "unknown_archetype",
+      "name": "Device 2"
+    },
+    "product_data": {
+      "certified": true,
+      "hardware_platform_type": "100b-11b",
+      "manufacturer_name": "Signify Netherlands B.V.",
+      "model_id": "SML003",
+      "product_archetype": "unknown_archetype",
+      "product_name": "Hue motion sensor",
+      "software_version": "2.85.1"
+    },
+    "services": [
+      {
+        "rid": "3756e24e-5b1c-e295-13c9-b37f253a6053",
+        "rtype": "zigbee_connectivity"
+      },
+      {
+        "rid": "749be502-2ecf-52ad-aee4-c96bec40249b",
+        "rtype": "motion"
+      },
+      {
+        "rid": "e3fabf45-c632-8e8e-8656-e5d4f534ea0c",
+        "rtype": "device_power"
+      },
+      {
+        "rid": "cc1ec670-c3a6-4ee3-e6f3-241f9ca420b5",
+        "rtype": "light_level"
+      },
+      {
+        "rid": "774ea4b7-0031-aca2-2341-b74575e76bc5",
+        "rtype": "temperature"
+      },
+      {
+        "rid": "aebf75d4-ba1a-54bb-c12b-922d91065072",
+        "rtype": "device_software_update"
+      }
+    ],
+    "type": "device",
+    "usertest": {
+      "status": "set",
+      "usertest": false
+    }
+  },
+  {
+    "device_mode": {
+      "mode": "switch_single_pushbutton",
+      "mode_values": [
+        "switch_single_rocker",
+        "switch_single_pushbutton",
+        "switch_dual_rocker",
+        "switch_dual_pushbutton"
+      ],
+      "status": "set"
+    },
+    "geometry": {
+      "objects": []
+    },
+    "id": "fbbffd8c-eeba-22a4-ae08-4c90544c0ed4",
+    "id_v1": "/sensors/166",
+    "metadata": {
+      "archetype": "unknown_archetype",
+      "name": "Device 37"
+    },
+    "product_data": {
+      "certified": true,
+      "hardware_platform_type": "100b-11c",
+      "manufacturer_name": "Signify Netherlands B.V.",
+      "model_id": "RDM001",
+      "product_archetype": "unknown_archetype",
+      "product_name": "Hue wall switch module",
+      "software_version": "2.85.5"
+    },
+    "services": [
+      {
+        "rid": "922e00d4-e10b-6021-2b7f-d59e8f17e765",
+        "rtype": "switch_input_configuration"
+      }
+    ],
+    "type": "device"
+  },
+  {
+    "geometry": {
+      "objects": []
+    },
+    "id": "fc8a3caf-95aa-9c24-0eb2-22293a7f2618",
+    "id_v1": "/sensors/22",
+    "metadata": {
+      "archetype": "unknown_archetype",
+      "name": "Device 25"
+    },
+    "product_data": {
+      "certified": true,
+      "hardware_platform_type": "100b-121",
+      "manufacturer_name": "Signify Netherlands B.V.",
+      "model_id": "RDM002",
+      "product_archetype": "unknown_archetype",
+      "product_name": "Hue tap dial switch",
+      "software_version": "2.77.39"
+    },
+    "services": [
+      {
+        "rid": "f0315d40-9390-3a10-5b76-26a770dcc241",
+        "rtype": "device_power"
+      }
+    ],
+    "type": "device"
+  },
+  {
+    "id": "45403512-7620-3bff-476d-5836e73882a8",
+    "id_v1": "/sensors/91",
+    "owner": {
+      "rid": "738ef4a0-8b18-4ae4-0b93-1042e8716117",
+      "rtype": "device"
+    },
+    "power_state": {
+      "battery_level": 53,
+      "battery_state": "normal"
+    },
+    "type": "device_power"
+  },
+  {
+    "id": "e3fabf45-c632-8e8e-8656-e5d4f534ea0c",
+    "id_v1": "/sensors/140",
+    "owner": {
+      "rid": "fb657eb4-38ba-fd3c-7535-d56f4350699f",
+      "rtype": "device"
+    },
+    "power_state": {
+      "battery_level": 51,
+      "battery_state": "normal"
+    },
+    "type": "device_power"
+  },
+  {
+    "id": "f0315d40-9390-3a10-5b76-26a770dcc241",
+    "id_v1": "/sensors/22",
+    "owner": {
+      "rid": "fc8a3caf-95aa-9c24-0eb2-22293a7f2618",
+      "rtype": "device"
+    },
+    "power_state": {
+      "battery_level": 3,
+      "battery_state": "low"
+    },
+    "type": "device_power"
+  },
+  {
+    "id": "fcce6c00-9e3c-2a14-6060-30a86d3b99d0",
+    "id_v1": "/sensors/162",
+    "owner": {
+      "rid": "18ee8fe0-612d-8fcd-8ee4-ac771003fe39",
+      "rtype": "device"
+    },
+    "power_state": {
+      "battery_level": 96,
+      "battery_state": "normal"
+    },
+    "type": "device_power"
+  },
+  {
+    "id": "30779fb5-9d53-1fef-74b0-820a0231f3ab",
+    "owner": {
+      "rid": "a966a5eb-3d24-33e3-f465-36860d66d263",
+      "rtype": "device"
+    },
+    "problems": [],
+    "state": "no_update",
+    "type": "device_software_update"
+  },
+  {
+    "id": "7da9a978-5a85-75a6-bd84-2446a6f218c3",
+    "owner": {
+      "rid": "b6257363-71db-1b79-10d8-69c4e3dcdae4",
+      "rtype": "device"
+    },
+    "problems": [],
+    "state": "no_update",
+    "type": "device_software_update"
+  },
+  {
+    "id": "97480557-7389-b7c8-570d-5127d62e5bb6",
+    "owner": {
+      "rid": "f747dba7-6ec9-5683-7674-98095f330517",
+      "rtype": "device"
+    },
+    "problems": [],
+    "state": "no_update",
+    "type": "device_software_update"
+  },
+  {
+    "id": "aebf75d4-ba1a-54bb-c12b-922d91065072",
+    "owner": {
+      "rid": "fb657eb4-38ba-fd3c-7535-d56f4350699f",
+      "rtype": "device"
+    },
+    "problems": [],
+    "state": "no_update",
+    "type": "device_software_update"
+  },
+  {
+    "equalizer": true,
+    "id": "2b41d107-afd8-5f99-e3a5-b06b2d43f7c8",
+    "id_v1": "/lights/112",
+    "owner": {
+      "rid": "abb87463-e3a8-7edd-d7b3-07092678dce6",
+      "rtype": "device"
+    },
+    "proxy": true,
+    "renderer": true,
+    "renderer_reference": {
+      "rid": "24d60506-22e8-f564-cff5-c7b702b62504",
+      "rtype": "light"
+    },
+    "segments": {
+      "configurable": false,
+      "max_segments": 1,
+      "segments": [
+        {
+          "length": 1,
+          "start": 0
+        }
+      ]
+    },
+    "type": "entertainment"
+  },
+  {
+    "equalizer": false,
+    "id": "5b85f1dc-addf-2a26-720e-b21128d406b4",
+    "max_streams": 1,
+    "owner": {
+      "rid": "bae2cb3c-8717-3652-6620-615b68b360ef",
+      "rtype": "device"
+    },
+    "proxy": true,
+    "renderer": false,
+    "type": "entertainment"
+  },
+  {
+    "equalizer": true,
+    "id": "abd9108f-878d-e50a-f622-923ed48b4337",
+    "id_v1": "/lights/75",
+    "owner": {
+      "rid": "7e7fa7bc-8c1a-576b-6fef-b1ff0ea7e77b",
+      "rtype": "device"
+    },
+    "proxy": true,
+    "renderer": true,
+    "renderer_reference": {
+      "rid": "4cd1e047-6b7d-c797-eac8-3cb2b496ae36",
+      "rtype": "light"
+    },
+    "segments": {
+      "configurable": false,
+      "max_segments": 1,
+      "segments": [
+        {
+          "length": 1,
+          "start": 0
+        }
+      ]
+    },
+    "type": "entertainment"
+  },
+  {
+    "equalizer": true,
+    "id": "ad16f0d8-aefc-7b33-261b-7d3a62fa2af4",
+    "id_v1": "/lights/40",
+    "owner": {
+      "rid": "4cff9212-ee6d-cd4b-346e-155aa4d8908e",
+      "rtype": "device"
+    },
+    "proxy": true,
+    "renderer": true,
+    "renderer_reference": {
+      "rid": "7049a389-288d-f789-b338-87fd2172a1fa",
+      "rtype": "light"
+    },
+    "segments": {
+      "configurable": false,
+      "max_segments": 1,
+      "segments": [
+        {
+          "length": 1,
+          "start": 0
+        }
+      ]
+    },
+    "type": "entertainment"
+  },
+  {
+    "equalizer": true,
+    "id": "fafdf327-07a0-43cc-be13-5d7e4627daa5",
+    "id_v1": "/lights/120",
+    "owner": {
+      "rid": "51428b4a-5805-c25a-081e-f922bb76eb4f",
+      "rtype": "device"
+    },
+    "proxy": false,
+    "renderer": true,
+    "renderer_reference": {
+      "rid": "1a49f893-e2fc-908a-9046-fa7629f1e770",
+      "rtype": "light"
+    },
+    "segments": {
+      "configurable": false,
+      "max_segments": 1,
+      "segments": [
+        {
+          "length": 1,
+          "start": 0
+        }
+      ]
+    },
+    "type": "entertainment"
+  },
+  {
+    "channels": [],
+    "configuration_type": "screen",
+    "id": "1ba39b8c-17d6-dd38-23d9-cf760c108937",
+    "id_v1": "/groups/200",
+    "light_services": [],
+    "locations": {
+      "service_locations": []
+    },
+    "metadata": {
+      "name": "Entertainment Configuration 5"
+    },
+    "name": "Entertainment Configuration 6",
+    "status": "inactive",
+    "stream_proxy": {
+      "mode": "auto",
+      "node": {
+        "rid": "5b85f1dc-addf-2a26-720e-b21128d406b4",
+        "rtype": "entertainment"
+      }
+    },
+    "type": "entertainment_configuration"
+  },
+  {
+    "channels": [],
+    "configuration_type": "screen",
+    "id": "410475f5-3bac-a03b-c9a2-5f33b8f386b6",
+    "id_v1": "/groups/202",
+    "light_services": [],
+    "locations": {
+      "service_locations": []
+    },
+    "metadata": {
+      "name": "Entertainment Configuration 1"
+    },
+    "name": "Entertainment Configuration 2",
+    "status": "inactive",
+    "stream_proxy": {
+      "mode": "auto",
+      "node": {
+        "rid": "5b85f1dc-addf-2a26-720e-b21128d406b4",
+        "rtype": "entertainment"
+      }
+    },
+    "type": "entertainment_configuration"
+  },
+  {
+    "channels": [],
+    "configuration_type": "music",
+    "id": "c32b34ae-8641-f613-3078-687045076786",
+    "id_v1": "/groups/201",
+    "light_services": [],
+    "locations": {
+      "service_locations": []
+    },
+    "metadata": {
+      "name": "Entertainment Configuration 3"
+    },
+    "name": "Entertainment Configuration 4",
+    "status": "inactive",
+    "stream_proxy": {
+      "mode": "auto",
+      "node": {
+        "rid": "5b85f1dc-addf-2a26-720e-b21128d406b4",
+        "rtype": "entertainment"
+      }
+    },
+    "type": "entertainment_configuration"
+  },
+  {
+    "id": "4b25cdb2-bdf2-2e70-2b82-0c90e2d7b2e9",
+    "name": "Geofence Client 2",
+    "type": "geofence_client"
+  },
+  {
+    "id": "755e0657-a31c-adcd-23c7-728180f6dc5a",
+    "name": "Geofence Client 1",
+    "type": "geofence_client"
+  },
+  {
+    "id": "efaa9b6b-2efd-9d76-0ca5-effd3f8b00b7",
+    "is_configured": true,
+    "sun_today": {
+      "day_type": "normal_day",
+      "sunset_time": "21:37:00"
+    },
+    "type": "geolocation"
+  },
+  {
+    "alert": {
+      "action_values": [
+        "breathe"
+      ]
+    },
+    "color_temperature": {},
+    "color_temperature_delta": {},
+    "dimming": {
+      "brightness": 0.0
+    },
+    "dimming_delta": {},
+    "dynamics": {},
+    "id": "56ce43c1-eae0-387d-169d-37f0278e14b0",
+    "id_v1": "/groups/119",
+    "on": {
+      "on": false
+    },
+    "owner": {
+      "rid": "ef38feff-75fb-1be8-cd65-63fe4c6c6435",
+      "rtype": "zone"
+    },
+    "signaling": {
+      "signal_values": [
+        "no_signal",
+        "on_off"
+      ]
+    },
+    "type": "grouped_light"
+  },
+  {
+    "alert": {
+      "action_values": [
+        "breathe"
+      ]
+    },
+    "color_temperature": {},
+    "color_temperature_delta": {},
+    "dimming": {
+      "brightness": 0.0
+    },
+    "dimming_delta": {},
+    "dynamics": {},
+    "id": "77e33b2e-b8d5-53a4-200c-45ce3eb3dbd6",
+    "id_v1": "/groups/128",
+    "on": {
+      "on": false
+    },
+    "owner": {
+      "rid": "34a91d8a-dca8-833e-5f20-cb072f825f2f",
+      "rtype": "zone"
+    },
+    "signaling": {
+      "signal_values": [
+        "no_signal",
+        "on_off"
+      ]
+    },
+    "type": "grouped_light"
+  },
+  {
+    "alert": {
+      "action_values": [
+        "breathe"
+      ]
+    },
+    "color": {},
+    "color_temperature": {},
+    "color_temperature_delta": {},
+    "dimming": {
+      "brightness": 68.99
+    },
+    "dimming_delta": {},
+    "dynamics": {},
+    "id": "c3793415-1f6a-b694-2b5f-12ec5f37d265",
+    "id_v1": "/groups/0",
+    "on": {
+      "on": true
+    },
+    "owner": {
+      "rid": "1aa23fea-31a6-1d38-c560-0d8a58047983",
+      "rtype": "bridge_home"
+    },
+    "signaling": {
+      "signal_values": [
+        "alternating",
+        "no_signal",
+        "on_off",
+        "on_off_color"
+      ]
+    },
+    "type": "grouped_light"
+  },
+  {
+    "alert": {
+      "action_values": [
+        "breathe"
+      ]
+    },
+    "color_temperature": {},
+    "color_temperature_delta": {},
+    "dimming": {
+      "brightness": 0.0
+    },
+    "dimming_delta": {},
+    "dynamics": {},
+    "id": "e7587e55-8538-65d5-0fcf-e9e9905bd016",
+    "id_v1": "/groups/115",
+    "on": {
+      "on": false
+    },
+    "owner": {
+      "rid": "76289d92-66a6-6c15-7030-7c658dcbd88c",
+      "rtype": "room"
+    },
+    "signaling": {
+      "signal_values": [
+        "no_signal",
+        "on_off"
+      ]
+    },
+    "type": "grouped_light"
+  },
+  {
+    "enabled": true,
+    "id": "2b8eaf0a-8c03-6bd6-f44e-ca0eb2da4b2b",
+    "light": {
+      "light_level_report": {
+        "changed": "2026-07-27T18:51:31.104Z",
+        "light_level": 0
+      }
+    },
+    "owner": {
+      "rid": "cb0c3b7b-249e-1c91-f5d2-9fbabaa8ee3d",
+      "rtype": "room"
+    },
+    "type": "grouped_light_level"
+  },
+  {
+    "enabled": true,
+    "id": "2c5c78f7-f2ea-3d58-60ee-4b2586213ea5",
+    "light": {
+      "light_level_report": {
+        "changed": "2026-03-28T13:10:04.040Z",
+        "light_level": 0
+      }
+    },
+    "owner": {
+      "rid": "1aa23fea-31a6-1d38-c560-0d8a58047983",
+      "rtype": "bridge_home"
+    },
+    "type": "grouped_light_level"
+  },
+  {
+    "enabled": true,
+    "id": "73bf05be-8128-1bc2-9156-d326df365697",
+    "light": {
+      "light_level_report": {
+        "changed": "2026-07-27T18:49:05.761Z",
+        "light_level": 30174
+      }
+    },
+    "owner": {
+      "rid": "24829e2a-e999-4411-2e9b-1ea66efed450",
+      "rtype": "room"
+    },
+    "type": "grouped_light_level"
+  },
+  {
+    "enabled": true,
+    "id": "a4a3669d-cea0-e38f-719e-3667ac6f1568",
+    "light": {
+      "light_level_report": {
+        "changed": "2026-07-27T18:49:31.809Z",
+        "light_level": 9141
+      }
+    },
+    "owner": {
+      "rid": "608c8790-f6af-a771-142e-3768903563f6",
+      "rtype": "room"
+    },
+    "type": "grouped_light_level"
+  },
+  {
+    "enabled": true,
+    "id": "3689dff1-6574-d400-dbd9-47a1e6123f98",
+    "motion": {
+      "motion_report": {
+        "changed": "2026-07-27T18:33:13.474Z",
+        "motion": false
+      }
+    },
+    "owner": {
+      "rid": "2dc387a1-b021-19b8-bfbd-0b4503d402c3",
+      "rtype": "room"
+    },
+    "type": "grouped_motion"
+  },
+  {
+    "enabled": true,
+    "id": "e53ef4bc-fc47-23b5-a2a7-c0c27cd1ff9d",
+    "motion": {
+      "motion_report": {
+        "changed": "2026-07-27T18:52:52.895Z",
+        "motion": true
+      }
+    },
+    "owner": {
+      "rid": "6fbbf09d-87b1-a7a1-e347-0c574f92ae3f",
+      "rtype": "room"
+    },
+    "type": "grouped_motion"
+  },
+  {
+    "enabled": true,
+    "id": "e55c9ede-5f44-8013-dbfe-6a159c632c61",
+    "motion": {
+      "motion_report": {
+        "changed": "2026-07-27T18:46:32.058Z",
+        "motion": false
+      }
+    },
+    "owner": {
+      "rid": "cb0c3b7b-249e-1c91-f5d2-9fbabaa8ee3d",
+      "rtype": "room"
+    },
+    "type": "grouped_motion"
+  },
+  {
+    "enabled": true,
+    "id": "fb91d231-5fb2-a07d-87ea-7a0bec99fad9",
+    "motion": {
+      "motion_report": {
+        "changed": "2026-07-27T18:46:41.118Z",
+        "motion": true
+      }
+    },
+    "owner": {
+      "rid": "1aa23fea-31a6-1d38-c560-0d8a58047983",
+      "rtype": "bridge_home"
+    },
+    "type": "grouped_motion"
+  },
+  {
     "alert": {
       "action_values": [
         "breathe"
@@ -616,24 +2823,41 @@
       },
       "gamut_type": "C",
       "xy": {
-        "x": 0.5614,
-        "y": 0.4058
+        "x": 0.5974,
+        "y": 0.36
       }
     },
     "color_temperature": {
       "mirek": null,
       "mirek_schema": {
-        "mirek_maximum": 500,
-        "mirek_minimum": 153
+        "mirek_maximum": 1000,
+        "mirek_minimum": 50
       },
       "mirek_valid": false
     },
-    "dimming": {
-      "brightness": 46.85,
-      "min_dim_level": 0.10000000149011612
+    "color_temperature_delta": {},
+    "content_configuration": {
+      "association": {
+        "association": "not_associated"
+      },
+      "order": {
+        "configurable": true,
+        "order": "forward",
+        "status": "set"
+      },
+      "orientation": {
+        "configurable": true,
+        "orientation": "horizontal",
+        "status": "set"
+      }
     },
+    "dimming": {
+      "brightness": 81.03,
+      "min_dim_level": 0.02
+    },
+    "dimming_delta": {},
     "dynamics": {
-      "speed": 0.627,
+      "speed": 0.7302,
       "speed_valid": true,
       "status": "dynamic_palette",
       "status_values": [
@@ -641,19 +2865,186 @@
         "dynamic_palette"
       ]
     },
-    "id": "02cba059-9c2c-4d45-97e4-4f79b1bfbaa1",
-    "id_v1": "/lights/29",
+    "effects": {
+      "effect_values": [
+        "no_effect",
+        "candle",
+        "fire",
+        "prism",
+        "sparkle",
+        "opal",
+        "glisten",
+        "underwater",
+        "cosmos",
+        "sunbeam",
+        "enchant"
+      ],
+      "status": "no_effect",
+      "status_values": [
+        "no_effect",
+        "candle",
+        "fire",
+        "prism",
+        "sparkle",
+        "opal",
+        "glisten",
+        "underwater",
+        "cosmos",
+        "sunbeam",
+        "enchant"
+      ]
+    },
+    "effects_v2": {
+      "action": {
+        "effect_values": [
+          "no_effect",
+          "candle",
+          "fire",
+          "prism",
+          "sparkle",
+          "opal",
+          "glisten",
+          "underwater",
+          "cosmos",
+          "sunbeam",
+          "enchant"
+        ]
+      },
+      "status": {
+        "effect": "no_effect",
+        "effect_values": [
+          "no_effect",
+          "candle",
+          "fire",
+          "prism",
+          "sparkle",
+          "opal",
+          "glisten",
+          "underwater",
+          "cosmos",
+          "sunbeam",
+          "enchant"
+        ]
+      }
+    },
+    "geometry": {
+      "pixel_positions": []
+    },
+    "gradient": {
+      "mode": "random_pixelated",
+      "mode_values": [
+        "interpolated_palette",
+        "interpolated_palette_mirrored",
+        "random_pixelated",
+        "segmented_palette"
+      ],
+      "pixel_count": 20,
+      "points": [
+        {
+          "color": {
+            "xy": {
+              "x": 0.5974,
+              "y": 0.36
+            }
+          }
+        },
+        {
+          "color": {
+            "xy": {
+              "x": 0.5714,
+              "y": 0.3806
+            }
+          }
+        },
+        {
+          "color": {
+            "xy": {
+              "x": 0.5286,
+              "y": 0.4068
+            }
+          }
+        },
+        {
+          "color": {
+            "xy": {
+              "x": 0.4787,
+              "y": 0.4495
+            }
+          }
+        },
+        {
+          "color": {
+            "xy": {
+              "x": 0.4376,
+              "y": 0.4577
+            }
+          }
+        }
+      ],
+      "points_capable": 5
+    },
+    "id": "01b1da1b-2cb1-eb71-5391-63b5ae1ceb6c",
+    "id_v1": "/lights/128",
+    "identify": {},
     "metadata": {
-      "archetype": "floor_shade",
-      "name": "Hue light with color and color temperature 1"
+      "archetype": "string_globe",
+      "function": "decorative",
+      "name": "Light 1"
     },
     "mode": "normal",
     "on": {
-      "on": true
+      "on": false
     },
     "owner": {
-      "rid": "0b216218-d811-4c95-8c55-bbcda50f9d50",
+      "rid": "42b8327b-b7d7-2469-3c45-069a41b4dca8",
       "rtype": "device"
+    },
+    "powerup": {
+      "color": {
+        "color_temperature": {
+          "mirek": 367
+        },
+        "mode": "color_temperature"
+      },
+      "configured": true,
+      "dimming": {
+        "dimming": {
+          "brightness": 100.0
+        },
+        "mode": "dimming"
+      },
+      "on": {
+        "mode": "on",
+        "on": {
+          "on": true
+        }
+      },
+      "preset": "safety"
+    },
+    "product_data": {
+      "function": "decorative"
+    },
+    "service_id": 0,
+    "signaling": {
+      "signal_values": [
+        "no_signal",
+        "on_off",
+        "on_off_color",
+        "alternating"
+      ]
+    },
+    "timed_effects": {
+      "effect_values": [
+        "no_effect",
+        "sunrise",
+        "sunset"
+      ],
+      "status": "no_effect",
+      "status_values": [
+        "no_effect",
+        "sunrise",
+        "sunset"
+      ]
     },
     "type": "light"
   },
@@ -664,17 +3055,18 @@
       ]
     },
     "color_temperature": {
-      "mirek": 369,
+      "mirek": 447,
       "mirek_schema": {
-        "mirek_maximum": 454,
-        "mirek_minimum": 153
+        "mirek_maximum": 495,
+        "mirek_minimum": 158
       },
       "mirek_valid": true
     },
+    "color_temperature_delta": {},
     "dimming": {
-      "brightness": 59.45,
-      "min_dim_level": 0.10000000149011612
+      "brightness": 100.0
     },
+    "dimming_delta": {},
     "dynamics": {
       "speed": 0.0,
       "speed_valid": false,
@@ -683,113 +3075,43 @@
         "none"
       ]
     },
-    "id": "3a6710fa-4474-4eba-b533-5e6e72968feb",
-    "id_v1": "/lights/4",
-    "metadata": {
-      "archetype": "ceiling_round",
-      "name": "Hue light with color temperature only"
-    },
-    "mode": "normal",
-    "on": {
-      "on": false
-    },
-    "owner": {
-      "rid": "60b849cc-a8b5-4034-8881-ed1cd560fd13",
-      "rtype": "device"
-    },
-    "type": "light"
-  },
-  {
-    "alert": {
-      "action_values": [
-        "breathe"
-      ]
-    },
-    "color": {
-      "gamut": {
-        "blue": {
-          "x": 0.1532,
-          "y": 0.0475
-        },
-        "green": {
-          "x": 0.17,
-          "y": 0.7
-        },
-        "red": {
-          "x": 0.6915,
-          "y": 0.3083
+    "geometry": {
+      "pixel_positions": [
+        {
+          "index": 0,
+          "position": {
+            "x": 0.93,
+            "y": 1.34,
+            "z": 0.92
+          }
         }
-      },
-      "gamut_type": "C",
-      "xy": {
-        "x": 0.5022,
-        "y": 0.4466
-      }
-    },
-    "color_temperature": {
-      "mirek": null,
-      "mirek_schema": {
-        "mirek_maximum": 500,
-        "mirek_minimum": 153
-      },
-      "mirek_valid": false
-    },
-    "dimming": {
-      "brightness": 46.85,
-      "min_dim_level": 0.02500000037252903
-    },
-    "dynamics": {
-      "speed": 0.627,
-      "speed_valid": true,
-      "status": "dynamic_palette",
-      "status_values": [
-        "none",
-        "dynamic_palette"
       ]
     },
-    "id": "b3fe71ef-d0ef-48de-9355-d9e604377df0",
-    "id_v1": "/lights/16",
+    "id": "183cce41-63a6-f1c4-a349-0749a55351ac",
+    "id_v1": "/lights/63",
+    "identify": {},
     "metadata": {
       "archetype": "hue_lightstrip",
-      "name": "Hue light with color and color temperature 2"
+      "function": "functional",
+      "name": "Light 6"
     },
     "mode": "normal",
     "on": {
       "on": true
     },
     "owner": {
-      "rid": "b9e76da7-ac22-476a-986d-e466e62e962f",
+      "rid": "9a47175d-c63c-d928-c9ca-0f7e6c409184",
       "rtype": "device"
     },
-    "type": "light"
-  },
-  {
-    "alert": {
-      "action_values": [
-        "breathe"
+    "product_data": {
+      "function": "functional"
+    },
+    "service_id": 0,
+    "signaling": {
+      "signal_values": [
+        "no_signal",
+        "on_off"
       ]
-    },
-    "dynamics": {
-      "speed": 0.0,
-      "speed_valid": false,
-      "status": "none",
-      "status_values": [
-        "none"
-      ]
-    },
-    "id": "7697ac8a-25aa-4576-bb40-0036c0db15b9",
-    "id_v1": "/lights/23",
-    "metadata": {
-      "archetype": "classic_bulb",
-      "name": "Hue on/off light"
-    },
-    "mode": "normal",
-    "on": {
-      "on": false
-    },
-    "owner": {
-      "rid": "fcdfab5d-8e04-4e9c-a999-7f92cb38c4fc",
-      "rtype": "device"
     },
     "type": "light"
   },
@@ -816,36 +3138,83 @@
       },
       "gamut_type": "A",
       "xy": {
-        "x": 0.4849,
-        "y": 0.3895
+        "x": 0.4578,
+        "y": 0.41
       }
     },
+    "color_temperature": {
+      "mirek": 367,
+      "mirek_schema": {
+        "mirek_maximum": 500,
+        "mirek_minimum": 153
+      },
+      "mirek_valid": true
+    },
+    "color_temperature_delta": {},
     "dimming": {
-      "brightness": 50.0,
+      "brightness": 100.0,
       "min_dim_level": 10.0
     },
+    "dimming_delta": {},
     "dynamics": {
-      "speed": 0.6389,
-      "speed_valid": true,
-      "status": "dynamic_palette",
+      "speed": 0.0,
+      "speed_valid": false,
+      "status": "none",
       "status_values": [
         "none",
         "dynamic_palette"
       ]
     },
-    "id": "74a45fee-1b3d-4553-b5ab-040da8a10cfd",
-    "id_v1": "/lights/11",
+    "geometry": {
+      "pixel_positions": []
+    },
+    "id": "1a49f893-e2fc-908a-9046-fa7629f1e770",
+    "id_v1": "/lights/120",
+    "identify": {},
     "metadata": {
       "archetype": "hue_bloom",
-      "name": "Hue light with color only"
+      "function": "decorative",
+      "name": "Light 4"
     },
     "mode": "normal",
     "on": {
       "on": true
     },
     "owner": {
-      "rid": "8d07d39c-3c19-47ce-ac7a-8bf3d8e849b9",
+      "rid": "51428b4a-5805-c25a-081e-f922bb76eb4f",
       "rtype": "device"
+    },
+    "powerup": {
+      "color": {
+        "color_temperature": {
+          "mirek": 366
+        },
+        "mode": "color_temperature"
+      },
+      "configured": true,
+      "dimming": {
+        "dimming": {
+          "brightness": 100.0
+        },
+        "mode": "dimming"
+      },
+      "on": {
+        "mode": "on",
+        "on": {
+          "on": true
+        }
+      },
+      "preset": "safety"
+    },
+    "product_data": {
+      "function": "decorative"
+    },
+    "service_id": 0,
+    "signaling": {
+      "signal_values": [
+        "no_signal",
+        "on_off"
+      ]
     },
     "type": "light"
   },
@@ -872,8 +3241,8 @@
       },
       "gamut_type": "C",
       "xy": {
-        "x": 0.5022,
-        "y": 0.4466
+        "x": 0.1725,
+        "y": 0.1532
       }
     },
     "color_temperature": {
@@ -884,12 +3253,14 @@
       },
       "mirek_valid": false
     },
+    "color_temperature_delta": {},
     "dimming": {
-      "brightness": 46.85,
-      "min_dim_level": 0.10000000149011612
+      "brightness": 20.16,
+      "min_dim_level": 0.1
     },
+    "dimming_delta": {},
     "dynamics": {
-      "speed": 0.627,
+      "speed": 0.6032,
       "speed_valid": true,
       "status": "dynamic_palette",
       "status_values": [
@@ -897,532 +3268,306 @@
         "dynamic_palette"
       ]
     },
-    "gradient": {
-      "points": [
-        {
-          "color": {
-            "xy": {
-              "x": 0.5022,
-              "y": 0.4466
-            }
-          }
-        },
-        {
-          "color": {
-            "xy": {
-              "x": 0.4806,
-              "y": 0.4484
-            }
-          }
-        },
-        {
-          "color": {
-            "xy": {
-              "x": 0.5022,
-              "y": 0.4466
-            }
-          }
-        },
-        {
-          "color": {
-            "xy": {
-              "x": 0.5614,
-              "y": 0.4058
-            }
-          }
-        },
-        {
-          "color": {
-            "xy": {
-              "x": 0.5022,
-              "y": 0.4466
-            }
-          }
-        }
+    "effects": {
+      "effect_values": [
+        "no_effect",
+        "candle",
+        "fire",
+        "prism",
+        "sparkle",
+        "opal",
+        "glisten",
+        "underwater",
+        "cosmos",
+        "sunbeam",
+        "enchant"
       ],
-      "points_capable": 5
+      "status": "no_effect",
+      "status_values": [
+        "no_effect",
+        "candle",
+        "fire",
+        "prism",
+        "sparkle",
+        "opal",
+        "glisten",
+        "underwater",
+        "cosmos",
+        "sunbeam",
+        "enchant"
+      ]
     },
-    "id": "8015b17f-8336-415b-966a-b364bd082397",
-    "id_v1": "/lights/24",
+    "effects_v2": {
+      "action": {
+        "effect_values": [
+          "no_effect",
+          "candle",
+          "fire",
+          "prism",
+          "sparkle",
+          "opal",
+          "glisten",
+          "underwater",
+          "cosmos",
+          "sunbeam",
+          "enchant"
+        ]
+      },
+      "status": {
+        "effect": "no_effect",
+        "effect_values": [
+          "no_effect",
+          "candle",
+          "fire",
+          "prism",
+          "sparkle",
+          "opal",
+          "glisten",
+          "underwater",
+          "cosmos",
+          "sunbeam",
+          "enchant"
+        ]
+      }
+    },
+    "geometry": {
+      "pixel_positions": []
+    },
+    "id": "24d60506-22e8-f564-cff5-c7b702b62504",
+    "id_v1": "/lights/112",
+    "identify": {},
     "metadata": {
-      "archetype": "hue_lightstrip_tv",
-      "name": "Hue light with color and color temperature gradient"
+      "archetype": "floor_shade",
+      "function": "decorative",
+      "name": "Light 3"
     },
     "mode": "normal",
     "on": {
       "on": true
     },
     "owner": {
-      "rid": "1c8be0d5-a68b-45c2-8f56-530d13b0c128",
+      "rid": "abb87463-e3a8-7edd-d7b3-07092678dce6",
       "rtype": "device"
+    },
+    "powerup": {
+      "color": {
+        "color_temperature": {
+          "mirek": 366
+        },
+        "mode": "color_temperature"
+      },
+      "configured": true,
+      "dimming": {
+        "dimming": {
+          "brightness": 100.0
+        },
+        "mode": "dimming"
+      },
+      "on": {
+        "mode": "on",
+        "on": {
+          "on": true
+        }
+      },
+      "preset": "safety"
+    },
+    "product_data": {
+      "function": "decorative"
+    },
+    "service_id": 0,
+    "signaling": {
+      "signal_values": [
+        "no_signal",
+        "on_off",
+        "on_off_color",
+        "alternating"
+      ]
+    },
+    "timed_effects": {
+      "effect_values": [
+        "no_effect",
+        "sunrise",
+        "sunset"
+      ],
+      "status": "no_effect",
+      "status_values": [
+        "no_effect",
+        "sunrise",
+        "sunset"
+      ]
     },
     "type": "light"
   },
   {
-    "id": "af520f40-e080-43b0-9bb5-41a4d5251b2b",
-    "id_v1": "/sensors/50",
-    "mac_address": "00:17:88:01:0b:aa:bb:99",
-    "owner": {
-      "rid": "3ff06175-29e8-44a8-8fe7-af591b0025da",
-      "rtype": "device"
-    },
-    "status": "connected",
-    "type": "zigbee_connectivity"
-  },
-  {
-    "id": "1987ba66-c21d-48d0-98fb-121d939a71f3",
-    "id_v1": "/lights/29",
-    "mac_address": "00:17:88:01:09:aa:bb:65",
-    "owner": {
-      "rid": "0b216218-d811-4c95-8c55-bbcda50f9d50",
-      "rtype": "device"
-    },
-    "status": "connected",
-    "type": "zigbee_connectivity"
-  },
-  {
-    "id": "bd878f44-feb7-406e-8af9-6a1796d1ddc9",
-    "id_v1": "/lights/4",
-    "mac_address": "00:17:88:01:06:aa:bb:58",
-    "owner": {
-      "rid": "60b849cc-a8b5-4034-8881-ed1cd560fd13",
-      "rtype": "device"
-    },
-    "status": "connected",
-    "type": "zigbee_connectivity"
-  },
-  {
-    "id": "db50a5d9-8cc7-486f-be06-c0b8f0d26c69",
-    "id_v1": "/sensors/10",
-    "mac_address": "00:17:88:01:08:aa:cc:60",
-    "owner": {
-      "rid": "342daec9-391b-480b-abdd-87f1aa04ce3b",
-      "rtype": "device"
-    },
-    "status": "connected",
-    "type": "zigbee_connectivity"
-  },
-  {
-    "id": "717afeb6-b1ce-426e-96de-48e8fe037fb0",
-    "id_v1": "/lights/16",
-    "mac_address": "00:17:88:aa:aa:bb:0d:ab",
-    "owner": {
-      "rid": "b9e76da7-ac22-476a-986d-e466e62e962f",
-      "rtype": "device"
-    },
-    "status": "connected",
-    "type": "zigbee_connectivity"
-  },
-  {
-    "id": "6b00ce2b-a8a5-4bab-bc5e-757a0b0338ff",
-    "id_v1": "/lights/23",
-    "mac_address": "00:12:4b:00:1f:aa:bb:f3",
-    "owner": {
-      "rid": "fcdfab5d-8e04-4e9c-a999-7f92cb38c4fc",
-      "rtype": "device"
-    },
-    "status": "connected",
-    "type": "zigbee_connectivity"
-  },
-  {
-    "id": "bba44861-8222-45c9-9e6b-d7f3a6543829",
-    "id_v1": "/sensors/5",
-    "mac_address": "00:17:88:01:aa:cc:87:b6",
-    "owner": {
-      "rid": "7745ebea-dd33-429c-a900-bae4e7ae1107",
-      "rtype": "device"
-    },
-    "status": "connected",
-    "type": "zigbee_connectivity"
-  },
-  {
-    "id": "6c898412-ed25-4402-9807-a0c326616b0f",
-    "id_v1": "",
-    "mac_address": "00:17:88:01:aa:bb:fd:c7",
-    "owner": {
-      "rid": "4a507550-8742-4087-8bf5-c2334f29891c",
-      "rtype": "device"
-    },
-    "status": "connected",
-    "type": "zigbee_connectivity"
-  },
-  {
-    "id": "d2ae969a-add5-41b1-afbd-f2837b2eb551",
-    "id_v1": "/lights/34",
-    "mac_address": "00:17:88:01:aa:bb:cc:ed",
-    "owner": {
-      "rid": "5ad8326c-e51a-4594-8738-fc700b53fcc4",
-      "rtype": "device"
-    },
-    "status": "connected",
-    "type": "zigbee_connectivity"
-  },
-  {
-    "id": "98baae94-76d9-4bc4-a1d1-d53f1d7b1286",
-    "id_v1": "/lights/11",
-    "mac_address": "00:17:88:aa:bb:1e:cc:b2",
-    "owner": {
-      "rid": "8d07d39c-3c19-47ce-ac7a-8bf3d8e849b9",
-      "rtype": "device"
-    },
-    "status": "connected",
-    "type": "zigbee_connectivity"
-  },
-  {
-    "id": "ff4e6545-341f-4b0d-9869-b6feb6e6fe87",
-    "id_v1": "/lights/24",
-    "mac_address": "00:17:88:01:aa:bb:cc:3d",
-    "owner": {
-      "rid": "1c8be0d5-a68b-45c2-8f56-530d13b0c128",
-      "rtype": "device"
-    },
-    "status": "connected",
-    "type": "zigbee_connectivity"
-  },
-  {
-    "id": "ec9b5ad7-2471-4356-b757-d00537828963",
-    "id_v1": "/sensors/66",
-    "mac_address": "00:17:aa:bb:cc:09:ac:c3",
-    "owner": {
-      "rid": "2330b45d-6079-4c6e-bba6-1b68afb1a0d6",
-      "rtype": "device"
-    },
-    "status": "connected",
-    "type": "zigbee_connectivity"
-  },
-  {
-    "id": "5d7b3979-b936-47ff-8458-554f8a2921db",
-    "id_v1": "/lights/29",
-    "owner": {
-      "rid": "0b216218-d811-4c95-8c55-bbcda50f9d50",
-      "rtype": "device"
-    },
-    "proxy": true,
-    "renderer": true,
-    "segments": {
-      "configurable": false,
-      "max_segments": 1,
-      "segments": [
-        {
-          "length": 1,
-          "start": 0
-        }
-      ]
-    },
-    "type": "entertainment"
-  },
-  {
-    "id": "d88acc42-259c-43b5-bf5d-90c16cdb8f2f",
-    "id_v1": "/lights/16",
-    "owner": {
-      "rid": "b9e76da7-ac22-476a-986d-e466e62e962f",
-      "rtype": "device"
-    },
-    "proxy": true,
-    "renderer": true,
-    "segments": {
-      "configurable": false,
-      "max_segments": 1,
-      "segments": [
-        {
-          "length": 1,
-          "start": 0
-        }
-      ]
-    },
-    "type": "entertainment"
-  },
-  {
-    "id": "b8ab0c30-b227-4d35-9c96-7cd16131fcc5",
-    "id_v1": "",
-    "owner": {
-      "rid": "4a507550-8742-4087-8bf5-c2334f29891c",
-      "rtype": "device"
-    },
-    "proxy": true,
-    "renderer": false,
-    "type": "entertainment"
-  },
-  {
-    "id": "8e6a4ff3-14ca-42f9-8358-9d691b9a4524",
-    "id_v1": "/lights/11",
-    "owner": {
-      "rid": "8d07d39c-3c19-47ce-ac7a-8bf3d8e849b9",
-      "rtype": "device"
-    },
-    "proxy": false,
-    "renderer": true,
-    "segments": {
-      "configurable": false,
-      "max_segments": 1,
-      "segments": [
-        {
-          "length": 1,
-          "start": 0
-        }
-      ]
-    },
-    "type": "entertainment"
-  },
-  {
-    "id": "7b03eb98-4cfd-4acf-ac11-675f51613e5e",
-    "id_v1": "/lights/24",
-    "owner": {
-      "rid": "1c8be0d5-a68b-45c2-8f56-530d13b0c128",
-      "rtype": "device"
-    },
-    "proxy": true,
-    "renderer": true,
-    "segments": {
-      "configurable": false,
-      "max_segments": 10,
-      "segments": [
-        {
-          "length": 2,
-          "start": 0
-        },
-        {
-          "length": 3,
-          "start": 2
-        },
-        {
-          "length": 5,
-          "start": 5
-        },
-        {
-          "length": 4,
-          "start": 10
-        },
-        {
-          "length": 5,
-          "start": 14
-        },
-        {
-          "length": 3,
-          "start": 19
-        },
-        {
-          "length": 2,
-          "start": 22
-        }
-      ]
-    },
-    "type": "entertainment"
-  },
-  {
-    "button": {
-      "button_report": {
-        "event": "short_release"
-      }
-    },
-    "id": "c658d3d8-a013-4b81-8ac6-78b248537e70",
-    "id_v1": "/sensors/50",
-    "metadata": {
-      "control_id": 1
-    },
-    "owner": {
-      "rid": "3ff06175-29e8-44a8-8fe7-af591b0025da",
-      "rtype": "device"
-    },
-    "type": "button"
-  },
-  {
-    "id": "be1eb834-bdf5-4d26-8fba-7b1feaa83a9d",
-    "id_v1": "/sensors/50",
-    "metadata": {
-      "control_id": 2
-    },
-    "owner": {
-      "rid": "3ff06175-29e8-44a8-8fe7-af591b0025da",
-      "rtype": "device"
-    },
-    "type": "button"
-  },
-  {
-    "id": "f92aa267-1387-4f02-9950-210fb7ca1f5a",
-    "id_v1": "/sensors/10",
-    "metadata": {
-      "control_id": 1
-    },
-    "owner": {
-      "rid": "342daec9-391b-480b-abdd-87f1aa04ce3b",
-      "rtype": "device"
-    },
-    "type": "button"
-  },
-  {
-    "button": {
-      "button_report": {
-        "event": "short_release"
-      }
-    },
-    "id": "7f1ab9f6-cc2b-4b40-9011-65e2af153f75",
-    "id_v1": "/sensors/10",
-    "metadata": {
-      "control_id": 2
-    },
-    "owner": {
-      "rid": "342daec9-391b-480b-abdd-87f1aa04ce3b",
-      "rtype": "device"
-    },
-    "type": "button"
-  },
-  {
-    "id": "b4edb2d6-55d0-47f4-bd43-7ae215ef1062",
-    "id_v1": "/sensors/10",
-    "metadata": {
-      "control_id": 3
-    },
-    "owner": {
-      "rid": "342daec9-391b-480b-abdd-87f1aa04ce3b",
-      "rtype": "device"
-    },
-    "type": "button"
-  },
-  {
-    "id": "40a810bf-3d22-4c56-9334-4a59a00768ab",
-    "id_v1": "/sensors/10",
-    "metadata": {
-      "control_id": 4
-    },
-    "owner": {
-      "rid": "342daec9-391b-480b-abdd-87f1aa04ce3b",
-      "rtype": "device"
-    },
-    "type": "button"
-  },
-  {
-    "button": {
-      "button_report": {
-        "event": "short_release"
-      }
-    },
-    "id": "31cffcda-efc2-401f-a152-e10db3eed232",
-    "id_v1": "/sensors/5",
-    "metadata": {
-      "control_id": 1
-    },
-    "owner": {
-      "rid": "7745ebea-dd33-429c-a900-bae4e7ae1107",
-      "rtype": "device"
-    },
-    "type": "button"
-  },
-  {
-    "id": "c1cd98a6-6c23-43bb-b6e1-08dda9e168a4",
-    "id_v1": "/sensors/50",
-    "owner": {
-      "rid": "3ff06175-29e8-44a8-8fe7-af591b0025da",
-      "rtype": "device"
-    },
-    "power_state": {
-      "battery_level": 100,
-      "battery_state": "normal"
-    },
-    "type": "device_power"
-  },
-  {
-    "id": "0bb058bc-2139-43d9-8c9b-edfb4570953b",
-    "id_v1": "/sensors/10",
-    "owner": {
-      "rid": "342daec9-391b-480b-abdd-87f1aa04ce3b",
-      "rtype": "device"
-    },
-    "power_state": {
-      "battery_level": 83,
-      "battery_state": "normal"
-    },
-    "type": "device_power"
-  },
-  {
-    "id": "3f219f5a-ad6c-484f-b976-769a9c267a72",
-    "id_v1": "/sensors/5",
-    "owner": {
-      "rid": "7745ebea-dd33-429c-a900-bae4e7ae1107",
-      "rtype": "device"
-    },
-    "power_state": {
-      "battery_level": 91,
-      "battery_state": "normal"
-    },
-    "type": "device_power"
-  },
-  {
-    "id": "669f609d-4860-4f1c-bc25-7a9cec1c3b6c",
-    "id_v1": "/sensors/66",
-    "owner": {
-      "rid": "2330b45d-6079-4c6e-bba6-1b68afb1a0d6",
-      "rtype": "device"
-    },
-    "power_state": {
-      "battery_level": 100,
-      "battery_state": "normal"
-    },
-    "type": "device_power"
-  },
-  {
-    "children": [
-      {
-        "rid": "02cba059-9c2c-4d45-97e4-4f79b1bfbaa1",
-        "rtype": "light"
-      },
-      {
-        "rid": "b3fe71ef-d0ef-48de-9355-d9e604377df0",
-        "rtype": "light"
-      },
-      {
-        "rid": "8015b17f-8336-415b-966a-b364bd082397",
-        "rtype": "light"
-      }
-    ],
-    "grouped_services": [
-      {
-        "rid": "f2416154-9607-43ab-a684-4453108a200e",
-        "rtype": "grouped_light"
-      }
-    ],
-    "id": "7cee478d-6455-483a-9e32-9f9fdcbcc4f6",
-    "id_v1": "/groups/5",
-    "metadata": {
-      "archetype": "downstairs",
-      "name": "Test Zone"
-    },
-    "services": [
-      {
-        "rid": "02cba059-9c2c-4d45-97e4-4f79b1bfbaa1",
-        "rtype": "light"
-      },
-      {
-        "rid": "b3fe71ef-d0ef-48de-9355-d9e604377df0",
-        "rtype": "light"
-      },
-      {
-        "rid": "8015b17f-8336-415b-966a-b364bd082397",
-        "rtype": "light"
-      },
-      {
-        "rid": "f2416154-9607-43ab-a684-4453108a200e",
-        "rtype": "grouped_light"
-      }
-    ],
-    "type": "zone"
-  },
-  {
     "alert": {
       "action_values": [
         "breathe"
       ]
     },
-    "id": "f2416154-9607-43ab-a684-4453108a200e",
-    "id_v1": "/groups/5",
+    "color": {
+      "gamut": {
+        "blue": {
+          "x": 0.1532,
+          "y": 0.0475
+        },
+        "green": {
+          "x": 0.17,
+          "y": 0.7
+        },
+        "red": {
+          "x": 0.6915,
+          "y": 0.3083
+        }
+      },
+      "gamut_type": "C",
+      "xy": {
+        "x": 0.1532,
+        "y": 0.0476
+      }
+    },
+    "color_temperature": {
+      "mirek": null,
+      "mirek_schema": {
+        "mirek_maximum": 500,
+        "mirek_minimum": 153
+      },
+      "mirek_valid": false
+    },
+    "color_temperature_delta": {},
+    "dimming": {
+      "brightness": 20.16,
+      "min_dim_level": 0.04
+    },
+    "dimming_delta": {},
+    "dynamics": {
+      "speed": 0.6032,
+      "speed_valid": true,
+      "status": "dynamic_palette",
+      "status_values": [
+        "none",
+        "dynamic_palette"
+      ]
+    },
+    "effects": {
+      "effect_values": [
+        "no_effect",
+        "candle",
+        "fire",
+        "prism",
+        "sparkle",
+        "opal",
+        "glisten",
+        "underwater",
+        "cosmos",
+        "sunbeam",
+        "enchant"
+      ],
+      "status": "no_effect",
+      "status_values": [
+        "no_effect",
+        "candle",
+        "fire",
+        "prism",
+        "sparkle",
+        "opal",
+        "glisten",
+        "underwater",
+        "cosmos",
+        "sunbeam",
+        "enchant"
+      ]
+    },
+    "effects_v2": {
+      "action": {
+        "effect_values": [
+          "no_effect",
+          "candle",
+          "fire",
+          "prism",
+          "sparkle",
+          "opal",
+          "glisten",
+          "underwater",
+          "cosmos",
+          "sunbeam",
+          "enchant"
+        ]
+      },
+      "status": {
+        "effect": "no_effect",
+        "effect_values": [
+          "no_effect",
+          "candle",
+          "fire",
+          "prism",
+          "sparkle",
+          "opal",
+          "glisten",
+          "underwater",
+          "cosmos",
+          "sunbeam",
+          "enchant"
+        ]
+      }
+    },
+    "geometry": {
+      "pixel_positions": []
+    },
+    "id": "4cd1e047-6b7d-c797-eac8-3cb2b496ae36",
+    "id_v1": "/lights/75",
+    "identify": {},
+    "metadata": {
+      "archetype": "hue_lightstrip",
+      "function": "decorative",
+      "name": "Light 8"
+    },
+    "mode": "normal",
     "on": {
       "on": true
     },
     "owner": {
-      "rid": "a3fbc86a-bf4c-4c69-899d-d6eafc37e288",
-      "rtype": "bridge_home"
+      "rid": "7e7fa7bc-8c1a-576b-6fef-b1ff0ea7e77b",
+      "rtype": "device"
     },
-    "type": "grouped_light"
+    "powerup": {
+      "color": {
+        "mode": "previous"
+      },
+      "configured": true,
+      "dimming": {
+        "mode": "previous"
+      },
+      "on": {
+        "mode": "previous"
+      },
+      "preset": "powerfail"
+    },
+    "product_data": {
+      "function": "decorative"
+    },
+    "service_id": 0,
+    "signaling": {
+      "signal_values": [
+        "no_signal",
+        "on_off",
+        "on_off_color",
+        "alternating"
+      ]
+    },
+    "timed_effects": {
+      "effect_values": [
+        "no_effect",
+        "sunrise",
+        "sunset"
+      ],
+      "status": "no_effect",
+      "status_values": [
+        "no_effect",
+        "sunrise",
+        "sunset"
+      ]
+    },
+    "type": "light"
   },
   {
     "alert": {
@@ -1430,751 +3575,1692 @@
         "breathe"
       ]
     },
-    "id": "0a74457c-cb8d-44c2-a5a5-dcb7b3675550",
-    "id_v1": "/groups/0",
-    "on": {
-      "on": true
+    "color": {
+      "gamut": {
+        "blue": {
+          "x": 0.1532,
+          "y": 0.0475
+        },
+        "green": {
+          "x": 0.17,
+          "y": 0.7
+        },
+        "red": {
+          "x": 0.6915,
+          "y": 0.3083
+        }
+      },
+      "gamut_type": "C",
+      "xy": {
+        "x": 0.5286,
+        "y": 0.4068
+      }
     },
-    "owner": {
-      "rid": "a3fbc86a-bf4c-4c69-899d-d6eafc37e288",
-      "rtype": "bridge_home"
+    "color_temperature": {
+      "mirek": null,
+      "mirek_schema": {
+        "mirek_maximum": 500,
+        "mirek_minimum": 153
+      },
+      "mirek_valid": false
     },
-    "type": "grouped_light"
-  },
-  {
-    "alert": {
-      "action_values": [
-        "breathe"
+    "color_temperature_delta": {},
+    "dimming": {
+      "brightness": 81.03,
+      "min_dim_level": 0.1
+    },
+    "dimming_delta": {},
+    "dynamics": {
+      "speed": 0.7302,
+      "speed_valid": true,
+      "status": "dynamic_palette",
+      "status_values": [
+        "none",
+        "dynamic_palette"
       ]
     },
-    "id": "e937f8db-2f0e-49a0-936e-027e60e15b34",
-    "id_v1": "/groups/3",
+    "effects": {
+      "effect_values": [
+        "no_effect",
+        "candle",
+        "fire",
+        "prism",
+        "sparkle",
+        "opal",
+        "glisten",
+        "underwater",
+        "cosmos",
+        "sunbeam",
+        "enchant"
+      ],
+      "status": "no_effect",
+      "status_values": [
+        "no_effect",
+        "candle",
+        "fire",
+        "prism",
+        "sparkle",
+        "opal",
+        "glisten",
+        "underwater",
+        "cosmos",
+        "sunbeam",
+        "enchant"
+      ]
+    },
+    "effects_v2": {
+      "action": {
+        "effect_values": [
+          "no_effect",
+          "candle",
+          "fire",
+          "prism",
+          "sparkle",
+          "opal",
+          "glisten",
+          "underwater",
+          "cosmos",
+          "sunbeam",
+          "enchant"
+        ]
+      },
+      "status": {
+        "effect": "no_effect",
+        "effect_values": [
+          "no_effect",
+          "candle",
+          "fire",
+          "prism",
+          "sparkle",
+          "opal",
+          "glisten",
+          "underwater",
+          "cosmos",
+          "sunbeam",
+          "enchant"
+        ]
+      }
+    },
+    "geometry": {
+      "pixel_positions": [
+        {
+          "index": 0,
+          "position": {
+            "x": -6.54,
+            "y": 6.56,
+            "z": 0.55
+          }
+        }
+      ]
+    },
+    "id": "7049a389-288d-f789-b338-87fd2172a1fa",
+    "id_v1": "/lights/40",
+    "identify": {},
+    "metadata": {
+      "archetype": "bollard",
+      "function": "decorative",
+      "name": "Light 5"
+    },
+    "mode": "normal",
     "on": {
       "on": false
     },
     "owner": {
-      "rid": "a3fbc86a-bf4c-4c69-899d-d6eafc37e288",
-      "rtype": "bridge_home"
+      "rid": "4cff9212-ee6d-cd4b-346e-155aa4d8908e",
+      "rtype": "device"
     },
-    "type": "grouped_light"
-  },
-  {
-    "children": [
-      {
-        "rid": "6ddc9066-7e7d-4a03-a773-c73937968296",
-        "rtype": "room"
+    "powerup": {
+      "color": {
+        "mode": "previous"
       },
-      {
-        "rid": "0b216218-d811-4c95-8c55-bbcda50f9d50",
-        "rtype": "device"
+      "configured": true,
+      "dimming": {
+        "mode": "previous"
       },
-      {
-        "rid": "b9e76da7-ac22-476a-986d-e466e62e962f",
-        "rtype": "device"
+      "on": {
+        "mode": "previous"
       },
-      {
-        "rid": "5ad8326c-e51a-4594-8738-fc700b53fcc4",
-        "rtype": "device"
-      },
-      {
-        "rid": "8d07d39c-3c19-47ce-ac7a-8bf3d8e849b9",
-        "rtype": "device"
-      },
-      {
-        "rid": "1c8be0d5-a68b-45c2-8f56-530d13b0c128",
-        "rtype": "device"
-      },
-      {
-        "rid": "7745ebea-dd33-429c-a900-bae4e7ae1107",
-        "rtype": "device"
-      },
-      {
-        "rid": "3ff06175-29e8-44a8-8fe7-af591b0025da",
-        "rtype": "device"
-      },
-      {
-        "rid": "2330b45d-6079-4c6e-bba6-1b68afb1a0d6",
-        "rtype": "device"
-      },
-      {
-        "rid": "342daec9-391b-480b-abdd-87f1aa04ce3b",
-        "rtype": "device"
-      }
-    ],
-    "grouped_services": [
-      {
-        "rid": "0a74457c-cb8d-44c2-a5a5-dcb7b3675550",
-        "rtype": "grouped_light"
-      }
-    ],
-    "id": "a3fbc86a-bf4c-4c69-899d-d6eafc37e288",
-    "id_v1": "/groups/0",
-    "services": [
-      {
-        "rid": "3a6710fa-4474-4eba-b533-5e6e72968feb",
-        "rtype": "light"
-      },
-      {
-        "rid": "d0df7249-02c1-4480-ba2c-d61b1e648a58",
-        "rtype": "light"
-      },
-      {
-        "rid": "74a45fee-1b3d-4553-b5ab-040da8a10cfd",
-        "rtype": "light"
-      },
-      {
-        "rid": "d2d48fac-df99-4f8d-8bdc-bac82d2cfb24",
-        "rtype": "light"
-      },
-      {
-        "rid": "b3fe71ef-d0ef-48de-9355-d9e604377df0",
-        "rtype": "light"
-      },
-      {
-        "rid": "1d1ac857-9b89-48aa-a4f3-68302e7d0998",
-        "rtype": "light"
-      },
-      {
-        "rid": "7697ac8a-25aa-4576-bb40-0036c0db15b9",
-        "rtype": "light"
-      },
-      {
-        "rid": "8015b17f-8336-415b-966a-b364bd082397",
-        "rtype": "light"
-      },
-      {
-        "rid": "02cba059-9c2c-4d45-97e4-4f79b1bfbaa1",
-        "rtype": "light"
-      },
-      {
-        "rid": "6a5d8ce8-c0a0-43bb-870e-d7e641cdb063",
-        "rtype": "button"
-      },
-      {
-        "rid": "85fa4928-b061-4d19-8458-c5e30d375e39",
-        "rtype": "button"
-      },
-      {
-        "rid": "a0640313-0a01-42b9-b236-c5e0a1568ef5",
-        "rtype": "button"
-      },
-      {
-        "rid": "50fe978e-117c-4fc5-bb17-f707c1614a11",
-        "rtype": "button"
-      },
-      {
-        "rid": "31cffcda-efc2-401f-a152-e10db3eed232",
-        "rtype": "button"
-      },
-      {
-        "rid": "f92aa267-1387-4f02-9950-210fb7ca1f5a",
-        "rtype": "button"
-      },
-      {
-        "rid": "7f1ab9f6-cc2b-4b40-9011-65e2af153f75",
-        "rtype": "button"
-      },
-      {
-        "rid": "b4edb2d6-55d0-47f4-bd43-7ae215ef1062",
-        "rtype": "button"
-      },
-      {
-        "rid": "40a810bf-3d22-4c56-9334-4a59a00768ab",
-        "rtype": "button"
-      },
-      {
-        "rid": "487aa265-8ea1-4280-a663-cbf93a79ccd7",
-        "rtype": "button"
-      },
-      {
-        "rid": "f6e137cf-8e93-4f6a-be9c-2f820bf6d893",
-        "rtype": "button"
-      },
-      {
-        "rid": "c658d3d8-a013-4b81-8ac6-78b248537e70",
-        "rtype": "button"
-      },
-      {
-        "rid": "be1eb834-bdf5-4d26-8fba-7b1feaa83a9d",
-        "rtype": "button"
-      },
-      {
-        "rid": "b6896534-016d-4052-8cb4-ef04454df62c",
-        "rtype": "motion"
-      },
-      {
-        "rid": "d504e7a4-9a18-4854-90fd-c5b6ac102c40",
-        "rtype": "light_level"
-      },
-      {
-        "rid": "66466e14-d2fa-4b96-b2a0-e10de9cd8b8b",
-        "rtype": "temperature"
-      },
-      {
-        "rid": "0a74457c-cb8d-44c2-a5a5-dcb7b3675550",
-        "rtype": "grouped_light"
-      }
-    ],
-    "type": "bridge_home"
-  },
-  {
-    "children": [
-      {
-        "rid": "60b849cc-a8b5-4034-8881-ed1cd560fd13",
-        "rtype": "device"
-      },
-      {
-        "rid": "fcdfab5d-8e04-4e9c-a999-7f92cb38c4fc",
-        "rtype": "device"
-      }
-    ],
-    "grouped_services": [
-      {
-        "rid": "e937f8db-2f0e-49a0-936e-027e60e15b34",
-        "rtype": "grouped_light"
-      }
-    ],
-    "id": "6ddc9066-7e7d-4a03-a773-c73937968296",
-    "id_v1": "/groups/3",
-    "metadata": {
-      "archetype": "bathroom",
-      "name": "Test Room"
+      "preset": "powerfail"
     },
-    "services": [
-      {
-        "rid": "7697ac8a-25aa-4576-bb40-0036c0db15b9",
-        "rtype": "light"
-      },
-      {
-        "rid": "3a6710fa-4474-4eba-b533-5e6e72968feb",
-        "rtype": "light"
-      },
-      {
-        "rid": "e937f8db-2f0e-49a0-936e-027e60e15b34",
-        "rtype": "grouped_light"
-      }
-    ],
-    "type": "room"
-  },
-  {
-    "channels": [
-      {
-        "channel_id": 0,
-        "members": [
-          {
-            "index": 0,
-            "service": {
-              "rid": "5d7b3979-b936-47ff-8458-554f8a2921db",
-              "rtype": "entertainment"
-            }
-          }
-        ],
-        "position": {
-          "x": -0.8399999737739563,
-          "y": 0.8999999761581421,
-          "z": -0.5
-        }
-      },
-      {
-        "channel_id": 1,
-        "members": [
-          {
-            "index": 0,
-            "service": {
-              "rid": "d88acc42-259c-43b5-bf5d-90c16cdb8f2f",
-              "rtype": "entertainment"
-            }
-          }
-        ],
-        "position": {
-          "x": -0.9399999976158142,
-          "y": -0.20999999344348907,
-          "z": -1.0
-        }
-      },
-      {
-        "channel_id": 2,
-        "members": [
-          {
-            "index": 0,
-            "service": {
-              "rid": "7b03eb98-4cfd-4acf-ac11-675f51613e5e",
-              "rtype": "entertainment"
-            }
-          }
-        ],
-        "position": {
-          "x": -0.4000000059604645,
-          "y": 0.800000011920929,
-          "z": -0.4000000059604645
-        }
-      },
-      {
-        "channel_id": 3,
-        "members": [
-          {
-            "index": 1,
-            "service": {
-              "rid": "7b03eb98-4cfd-4acf-ac11-675f51613e5e",
-              "rtype": "entertainment"
-            }
-          }
-        ],
-        "position": {
-          "x": -0.4000000059604645,
-          "y": 0.800000011920929,
-          "z": 0.0
-        }
-      },
-      {
-        "channel_id": 4,
-        "members": [
-          {
-            "index": 2,
-            "service": {
-              "rid": "7b03eb98-4cfd-4acf-ac11-675f51613e5e",
-              "rtype": "entertainment"
-            }
-          }
-        ],
-        "position": {
-          "x": -0.4000000059604645,
-          "y": 0.800000011920929,
-          "z": 0.4000000059604645
-        }
-      },
-      {
-        "channel_id": 5,
-        "members": [
-          {
-            "index": 3,
-            "service": {
-              "rid": "7b03eb98-4cfd-4acf-ac11-675f51613e5e",
-              "rtype": "entertainment"
-            }
-          }
-        ],
-        "position": {
-          "x": 0.0,
-          "y": 0.800000011920929,
-          "z": 0.4000000059604645
-        }
-      },
-      {
-        "channel_id": 6,
-        "members": [
-          {
-            "index": 4,
-            "service": {
-              "rid": "7b03eb98-4cfd-4acf-ac11-675f51613e5e",
-              "rtype": "entertainment"
-            }
-          }
-        ],
-        "position": {
-          "x": 0.4000000059604645,
-          "y": 0.800000011920929,
-          "z": 0.4000000059604645
-        }
-      },
-      {
-        "channel_id": 7,
-        "members": [
-          {
-            "index": 5,
-            "service": {
-              "rid": "7b03eb98-4cfd-4acf-ac11-675f51613e5e",
-              "rtype": "entertainment"
-            }
-          }
-        ],
-        "position": {
-          "x": 0.4000000059604645,
-          "y": 0.800000011920929,
-          "z": 0.0
-        }
-      },
-      {
-        "channel_id": 8,
-        "members": [
-          {
-            "index": 6,
-            "service": {
-              "rid": "7b03eb98-4cfd-4acf-ac11-675f51613e5e",
-              "rtype": "entertainment"
-            }
-          }
-        ],
-        "position": {
-          "x": 0.4000000059604645,
-          "y": 0.800000011920929,
-          "z": -0.4000000059604645
-        }
-      },
-      {
-        "channel_id": 9,
-        "members": [
-          {
-            "index": 0,
-            "service": {
-              "rid": "be321947-0a48-4742-913d-073b3b540c97",
-              "rtype": "entertainment"
-            }
-          }
-        ],
-        "position": {
-          "x": 0.9100000262260437,
-          "y": 0.8100000023841858,
-          "z": -0.3799999952316284
-        }
-      }
-    ],
-    "configuration_type": "screen",
-    "id": "c14cf1cf-6c7a-4984-b8bb-c5b71aeb70fc",
-    "id_v1": "/groups/2",
-    "light_services": [
-      {
-        "rid": "02cba059-9c2c-4d45-97e4-4f79b1bfbaa1",
-        "rtype": "light"
-      },
-      {
-        "rid": "b3fe71ef-d0ef-48de-9355-d9e604377df0",
-        "rtype": "light"
-      },
-      {
-        "rid": "8015b17f-8336-415b-966a-b364bd082397",
-        "rtype": "light"
-      }
-    ],
-    "locations": {
-      "service_locations": [
-        {
-          "position": {
-            "x": -0.8399999737739563,
-            "y": 0.8999999761581421,
-            "z": -0.5
-          },
-          "positions": [
-            {
-              "x": -0.8399999737739563,
-              "y": 0.8999999761581421,
-              "z": -0.5
-            }
-          ],
-          "service": {
-            "rid": "5d7b3979-b936-47ff-8458-554f8a2921db",
-            "rtype": "entertainment"
-          }
-        },
-        {
-          "position": {
-            "x": -0.9399999976158142,
-            "y": -0.20999999344348907,
-            "z": -1.0
-          },
-          "positions": [
-            {
-              "x": -0.9399999976158142,
-              "y": -0.20999999344348907,
-              "z": -1.0
-            }
-          ],
-          "service": {
-            "rid": "d88acc42-259c-43b5-bf5d-90c16cdb8f2f",
-            "rtype": "entertainment"
-          }
-        },
-        {
-          "position": {
-            "x": -0.4000000059604645,
-            "y": 0.800000011920929,
-            "z": -0.4000000059604645
-          },
-          "positions": [
-            {
-              "x": -0.4000000059604645,
-              "y": 0.800000011920929,
-              "z": -0.4000000059604645
-            },
-            {
-              "x": 0.4000000059604645,
-              "y": 0.800000011920929,
-              "z": -0.4000000059604645
-            }
-          ],
-          "service": {
-            "rid": "7b03eb98-4cfd-4acf-ac11-675f51613e5e",
-            "rtype": "entertainment"
-          }
-        },
-        {
-          "position": {
-            "x": 0.9100000262260437,
-            "y": 0.8100000023841858,
-            "z": -0.3799999952316284
-          },
-          "positions": [
-            {
-              "x": 0.9100000262260437,
-              "y": 0.8100000023841858,
-              "z": -0.3799999952316284
-            }
-          ],
-          "service": {
-            "rid": "be321947-0a48-4742-913d-073b3b540c97",
-            "rtype": "entertainment"
-          }
-        }
+    "product_data": {
+      "function": "decorative"
+    },
+    "service_id": 0,
+    "signaling": {
+      "signal_values": [
+        "no_signal",
+        "on_off",
+        "on_off_color",
+        "alternating"
       ]
     },
-    "metadata": {
-      "name": "Entertainmentroom 1"
+    "timed_effects": {
+      "effect_values": [
+        "no_effect",
+        "sunrise",
+        "sunset"
+      ],
+      "status": "no_effect",
+      "status_values": [
+        "no_effect",
+        "sunrise",
+        "sunset"
+      ]
     },
-    "name": "Entertainmentroom 1",
-    "status": "inactive",
-    "stream_proxy": {
-      "mode": "auto",
-      "node": {
-        "rid": "b8ab0c30-b227-4d35-9c96-7cd16131fcc5",
-        "rtype": "entertainment"
+    "type": "light"
+  },
+  {
+    "alert": {
+      "action_values": [
+        "breathe"
+      ]
+    },
+    "color_temperature": {
+      "mirek": 369,
+      "mirek_schema": {
+        "mirek_maximum": 454,
+        "mirek_minimum": 153
+      },
+      "mirek_valid": true
+    },
+    "color_temperature_delta": {},
+    "dimming": {
+      "brightness": 62.45,
+      "min_dim_level": 0.2
+    },
+    "dimming_delta": {},
+    "dynamics": {
+      "speed": 0.0,
+      "speed_valid": false,
+      "status": "none",
+      "status_values": [
+        "none"
+      ]
+    },
+    "effects": {
+      "effect_values": [
+        "no_effect",
+        "candle",
+        "sparkle",
+        "glisten"
+      ],
+      "status": "no_effect",
+      "status_values": [
+        "no_effect",
+        "candle",
+        "sparkle",
+        "glisten"
+      ]
+    },
+    "effects_v2": {
+      "action": {
+        "effect_values": [
+          "no_effect",
+          "candle",
+          "sparkle",
+          "glisten"
+        ]
+      },
+      "status": {
+        "effect": "no_effect",
+        "effect_values": [
+          "no_effect",
+          "candle",
+          "sparkle",
+          "glisten"
+        ]
       }
     },
-    "type": "entertainment_configuration"
-  },
-  {
-    "bridge_id": "aabbccddeeffggh",
-    "id": "07dd5849-abcd-efgh-b9b9-eb540408ce00",
-    "id_v1": "",
+    "geometry": {
+      "pixel_positions": []
+    },
+    "id": "7ebc892a-46fe-0a90-cd0c-87836247edda",
+    "id_v1": "/lights/71",
+    "identify": {},
+    "metadata": {
+      "archetype": "sultan_bulb",
+      "function": "mixed",
+      "name": "Light 7"
+    },
+    "mode": "normal",
+    "on": {
+      "on": true
+    },
     "owner": {
-      "rid": "4a507550-8742-4087-8bf5-c2334f29891c",
+      "rid": "f747dba7-6ec9-5683-7674-98095f330517",
       "rtype": "device"
     },
-    "time_zone": {
-      "time_zone": "Europe/Amsterdam"
+    "powerup": {
+      "color": {
+        "mode": "previous"
+      },
+      "configured": true,
+      "dimming": {
+        "mode": "previous"
+      },
+      "on": {
+        "mode": "previous"
+      },
+      "preset": "powerfail"
     },
-    "type": "bridge"
+    "product_data": {
+      "function": "mixed"
+    },
+    "service_id": 0,
+    "signaling": {
+      "signal_values": [
+        "no_signal",
+        "on_off"
+      ]
+    },
+    "timed_effects": {
+      "effect_values": [
+        "no_effect",
+        "sunrise",
+        "sunset"
+      ],
+      "status": "no_effect",
+      "status_values": [
+        "no_effect",
+        "sunrise",
+        "sunset"
+      ]
+    },
+    "type": "light"
+  },
+  {
+    "alert": {
+      "action_values": [
+        "breathe"
+      ]
+    },
+    "color_temperature": {
+      "mirek": 369,
+      "mirek_schema": {
+        "mirek_maximum": 454,
+        "mirek_minimum": 153
+      },
+      "mirek_valid": true
+    },
+    "color_temperature_delta": {},
+    "dimming": {
+      "brightness": 62.06,
+      "min_dim_level": 0.2
+    },
+    "dimming_delta": {},
+    "dynamics": {
+      "speed": 0.0,
+      "speed_valid": false,
+      "status": "none",
+      "status_values": [
+        "none"
+      ]
+    },
+    "effects": {
+      "effect_values": [
+        "no_effect",
+        "candle",
+        "sparkle",
+        "glisten"
+      ],
+      "status": "no_effect",
+      "status_values": [
+        "no_effect",
+        "candle",
+        "sparkle",
+        "glisten"
+      ]
+    },
+    "effects_v2": {
+      "action": {
+        "effect_values": [
+          "no_effect",
+          "candle",
+          "sparkle",
+          "glisten"
+        ]
+      },
+      "status": {
+        "effect": "no_effect",
+        "effect_values": [
+          "no_effect",
+          "candle",
+          "sparkle",
+          "glisten"
+        ]
+      }
+    },
+    "geometry": {
+      "pixel_positions": []
+    },
+    "id": "f427202e-d8cd-cb0e-479f-72955a2d7cbe",
+    "id_v1": "/lights/72",
+    "identify": {},
+    "metadata": {
+      "archetype": "sultan_bulb",
+      "function": "mixed",
+      "name": "Light 2"
+    },
+    "mode": "normal",
+    "on": {
+      "on": true
+    },
+    "owner": {
+      "rid": "739ebab0-97a7-0ee3-91a0-29be479d34f4",
+      "rtype": "device"
+    },
+    "powerup": {
+      "color": {
+        "mode": "previous"
+      },
+      "configured": true,
+      "dimming": {
+        "mode": "previous"
+      },
+      "on": {
+        "mode": "previous"
+      },
+      "preset": "powerfail"
+    },
+    "product_data": {
+      "function": "mixed"
+    },
+    "service_id": 0,
+    "signaling": {
+      "signal_values": [
+        "no_signal",
+        "on_off"
+      ]
+    },
+    "timed_effects": {
+      "effect_values": [
+        "no_effect",
+        "sunrise",
+        "sunset"
+      ],
+      "status": "no_effect",
+      "status_values": [
+        "no_effect",
+        "sunrise",
+        "sunset"
+      ]
+    },
+    "type": "light"
   },
   {
     "enabled": true,
-    "id": "b6896534-016d-4052-8cb4-ef04454df62c",
-    "id_v1": "/sensors/66",
-    "motion": {
-      "motion": false,
-      "motion_valid": true
-    },
-    "owner": {
-      "rid": "2330b45d-6079-4c6e-bba6-1b68afb1a0d6",
-      "rtype": "device"
-    },
-    "type": "motion"
-  },
-  {
-    "enabled": true,
-    "id": "d504e7a4-9a18-4854-90fd-c5b6ac102c40",
-    "id_v1": "/sensors/67",
+    "id": "3b4d53a1-07c8-b8b8-3c1d-38d5f54b62c5",
+    "id_v1": "/sensors/135",
     "light": {
-      "light_level": 18027,
+      "light_level": 7728,
+      "light_level_report": {
+        "changed": "2026-07-27T18:52:27.796Z",
+        "light_level": 7728
+      },
       "light_level_valid": true
     },
     "owner": {
-      "rid": "2330b45d-6079-4c6e-bba6-1b68afb1a0d6",
+      "rid": "42be61ac-7b63-90b0-ebcd-af84475e4711",
       "rtype": "device"
     },
     "type": "light_level"
   },
   {
     "enabled": true,
-    "id": "66466e14-d2fa-4b96-b2a0-e10de9cd8b8b",
-    "id_v1": "/sensors/68",
+    "id": "71ef7207-d5ce-b2e1-7266-758052002aaa",
+    "id_v1": "/sensors/120",
+    "light": {
+      "light_level": 0,
+      "light_level_report": {
+        "changed": "2026-07-27T18:51:31.074Z",
+        "light_level": 0
+      },
+      "light_level_valid": true
+    },
     "owner": {
-      "rid": "2330b45d-6079-4c6e-bba6-1b68afb1a0d6",
+      "rid": "c4ef392b-c628-6820-4661-cc2c5f76a00b",
       "rtype": "device"
     },
-    "temperature": {
-      "temperature": 18.139999389648438,
-      "temperature_valid": true
-    },
-    "type": "temperature"
+    "type": "light_level"
   },
   {
-    "configuration": {
-      "end_state": "last_state",
-      "where": [
+    "enabled": true,
+    "id": "76fa9af3-e5c1-7d6a-15c2-173755817ed4",
+    "id_v1": "/sensors/73",
+    "light": {
+      "light_level": 0,
+      "light_level_report": {
+        "changed": "2026-07-22T12:24:04.497Z",
+        "light_level": 0
+      },
+      "light_level_valid": true
+    },
+    "owner": {
+      "rid": "9d6998c6-ed4d-cc75-0e50-4ec61446e8f2",
+      "rtype": "device"
+    },
+    "type": "light_level"
+  },
+  {
+    "enabled": true,
+    "id": "cc1ec670-c3a6-4ee3-e6f3-241f9ca420b5",
+    "id_v1": "/sensors/141",
+    "light": {
+      "light_level": 0,
+      "light_level_report": {
+        "changed": "2026-07-27T16:42:33.307Z",
+        "light_level": 0
+      },
+      "light_level_valid": true
+    },
+    "owner": {
+      "rid": "fb657eb4-38ba-fd3c-7535-d56f4350699f",
+      "rtype": "device"
+    },
+    "type": "light_level"
+  },
+  {
+    "has_qr_code": true,
+    "id": "09711fc7-9d01-9d13-c7f0-1ec2d82d5395",
+    "max_fabrics": 16,
+    "software_version_string": "1.4.2",
+    "type": "matter"
+  },
+  {
+    "enabled": true,
+    "id": "749be502-2ecf-52ad-aee4-c96bec40249b",
+    "id_v1": "/sensors/140",
+    "motion": {
+      "motion": false,
+      "motion_report": {
+        "changed": "2026-07-27T16:37:34.908Z",
+        "motion": false
+      },
+      "motion_valid": true
+    },
+    "owner": {
+      "rid": "fb657eb4-38ba-fd3c-7535-d56f4350699f",
+      "rtype": "device"
+    },
+    "sensitivity": {
+      "sensitivity": 3,
+      "sensitivity_max": 4,
+      "status": "set"
+    },
+    "type": "motion"
+  },
+  {
+    "enabled": true,
+    "id": "9a747ee4-ab13-2f08-e8e9-0c8506d21649",
+    "id_v1": "/sensors/125",
+    "motion": {
+      "motion": false,
+      "motion_report": {
+        "changed": "2026-07-27T18:33:10.223Z",
+        "motion": false
+      },
+      "motion_valid": true
+    },
+    "owner": {
+      "rid": "7bd86197-ef7c-7625-3170-1b6de1502441",
+      "rtype": "device"
+    },
+    "sensitivity": {
+      "sensitivity": 3,
+      "sensitivity_max": 4,
+      "status": "set"
+    },
+    "type": "motion"
+  },
+  {
+    "enabled": true,
+    "id": "b39ca175-e3f8-32cf-71ec-54a01108061f",
+    "id_v1": "/sensors/100",
+    "motion": {
+      "motion": true,
+      "motion_report": {
+        "changed": "2026-07-27T18:52:51.514Z",
+        "motion": true
+      },
+      "motion_valid": true
+    },
+    "owner": {
+      "rid": "14caee0d-9676-6264-8e5f-5d717293ac8f",
+      "rtype": "device"
+    },
+    "sensitivity": {
+      "sensitivity": 3,
+      "sensitivity_max": 4,
+      "status": "set"
+    },
+    "type": "motion"
+  },
+  {
+    "enabled": true,
+    "id": "d34e524b-4d45-4ac5-be57-2e2e92d0cd63",
+    "id_v1": "/sensors/72",
+    "motion": {
+      "motion": false,
+      "motion_report": {
+        "changed": "2026-07-22T12:19:05.031Z",
+        "motion": false
+      },
+      "motion_valid": true
+    },
+    "owner": {
+      "rid": "9d6998c6-ed4d-cc75-0e50-4ec61446e8f2",
+      "rtype": "device"
+    },
+    "sensitivity": {
+      "sensitivity": 2,
+      "sensitivity_max": 2,
+      "status": "set"
+    },
+    "type": "motion"
+  },
+  {
+    "enabled": true,
+    "group": {
+      "rid": "977899a0-4381-7556-a1e0-275266dbf95d",
+      "rtype": "room"
+    },
+    "health": "healthy",
+    "id": "3d33d037-2bfa-f556-de7a-c0c26f2680e6",
+    "name": "Motion Area Configuration 2",
+    "participants": [
+      {
+        "resource": {
+          "rid": "d1774af6-2742-c288-c5c1-4e859b1facc2",
+          "rtype": "motion_area_candidate"
+        },
+        "status": {
+          "health": "healthy"
+        }
+      },
+      {
+        "resource": {
+          "rid": "3f327e75-b017-5fac-0d38-8b3daf1f0480",
+          "rtype": "motion_area_candidate"
+        },
+        "status": {
+          "health": "healthy"
+        }
+      },
+      {
+        "resource": {
+          "rid": "153f0b53-ca99-c4d2-a618-8bad6c7b5b26",
+          "rtype": "motion_area_candidate"
+        },
+        "status": {
+          "health": "healthy"
+        }
+      },
+      {
+        "resource": {
+          "rid": "c5c63501-e8e1-293c-652f-0e2cd031ccd3",
+          "rtype": "motion_area_candidate"
+        },
+        "status": {
+          "health": "healthy"
+        }
+      }
+    ],
+    "services": [
+      {
+        "rid": "d0a63597-d97a-dfdf-3da9-35e6e7af1833",
+        "rtype": "convenience_area_motion"
+      },
+      {
+        "rid": "6c8a19fb-d706-d829-4d1d-8a3cc400dfe4",
+        "rtype": "security_area_motion"
+      }
+    ],
+    "type": "motion_area_configuration"
+  },
+  {
+    "enabled": true,
+    "group": {
+      "rid": "0d8309ef-6f9e-5c05-3245-5db0fda14681",
+      "rtype": "room"
+    },
+    "health": "healthy",
+    "id": "973d5f98-efc5-34f4-4d1d-df721925fd61",
+    "name": "Motion Area Configuration 1",
+    "participants": [
+      {
+        "resource": {
+          "rid": "ebc84f7b-6334-b7c5-6239-3292d2e611b0",
+          "rtype": "motion_area_candidate"
+        },
+        "status": {
+          "health": "healthy"
+        }
+      },
+      {
+        "resource": {
+          "rid": "049e9799-4fc3-38bd-1ad1-de3c6ff31882",
+          "rtype": "motion_area_candidate"
+        },
+        "status": {
+          "health": "healthy"
+        }
+      },
+      {
+        "resource": {
+          "rid": "bcaa826f-c9ab-99c9-b0fb-5cbd84f974a0",
+          "rtype": "motion_area_candidate"
+        },
+        "status": {
+          "health": "healthy"
+        }
+      },
+      {
+        "resource": {
+          "rid": "92782c99-3197-9ea6-91ba-c24d3f0b1e23",
+          "rtype": "motion_area_candidate"
+        },
+        "status": {
+          "health": "healthy"
+        }
+      }
+    ],
+    "services": [
+      {
+        "rid": "4c6f72aa-faa0-486d-7b8f-99a88ce99455",
+        "rtype": "convenience_area_motion"
+      },
+      {
+        "rid": "71f03699-1103-1c95-cbae-33d1537c67ae",
+        "rtype": "security_area_motion"
+      }
+    ],
+    "type": "motion_area_configuration"
+  },
+  {
+    "id": "52fc7b36-3042-4710-1efc-bb674797191e",
+    "id_v1": "/sensors/243",
+    "owner": {
+      "rid": "b9b9e165-a3b2-1670-5fc8-297d403b2252",
+      "rtype": "device"
+    },
+    "relative_rotary": {
+      "last_event": {
+        "action": "start",
+        "rotation": {
+          "direction": "clock_wise",
+          "duration": 400,
+          "steps": 15
+        }
+      },
+      "rotary_report": {
+        "action": "start",
+        "rotation": {
+          "direction": "clock_wise",
+          "duration": 400,
+          "steps": 15
+        },
+        "updated": "2026-07-26T19:12:25.926Z"
+      }
+    },
+    "type": "relative_rotary"
+  },
+  {
+    "id": "5580a2b4-f067-0d1e-7b8b-588535ec6512",
+    "id_v1": "/sensors/77",
+    "owner": {
+      "rid": "0c8e502b-25af-aa66-4649-00b28dba8308",
+      "rtype": "device"
+    },
+    "relative_rotary": {
+      "last_event": {
+        "action": "repeat",
+        "rotation": {
+          "direction": "clock_wise",
+          "duration": 400,
+          "steps": 287
+        }
+      },
+      "rotary_report": {
+        "action": "repeat",
+        "rotation": {
+          "direction": "clock_wise",
+          "duration": 400,
+          "steps": 287
+        },
+        "updated": "2026-07-27T18:41:22.300Z"
+      }
+    },
+    "type": "relative_rotary"
+  },
+  {
+    "id": "952c0b4d-facb-a603-6556-92dc96daabc7",
+    "id_v1": "/sensors/231",
+    "owner": {
+      "rid": "9810e195-019c-db05-5680-42f352a80111",
+      "rtype": "device"
+    },
+    "relative_rotary": {
+      "last_event": {
+        "action": "repeat",
+        "rotation": {
+          "direction": "clock_wise",
+          "duration": 400,
+          "steps": 196
+        }
+      },
+      "rotary_report": {
+        "action": "repeat",
+        "rotation": {
+          "direction": "clock_wise",
+          "duration": 400,
+          "steps": 196
+        },
+        "updated": "2026-07-18T18:13:50.270Z"
+      }
+    },
+    "type": "relative_rotary"
+  },
+  {
+    "id": "af9ecd0e-9d42-e2ea-9148-74abc19f020f",
+    "id_v1": "/sensors/143",
+    "owner": {
+      "rid": "23b03bd1-ea29-1ae4-7c5b-9155511de431",
+      "rtype": "device"
+    },
+    "relative_rotary": {
+      "last_event": {
+        "action": "repeat",
+        "rotation": {
+          "direction": "clock_wise",
+          "duration": 400,
+          "steps": 136
+        }
+      },
+      "rotary_report": {
+        "action": "repeat",
+        "rotation": {
+          "direction": "clock_wise",
+          "duration": 400,
+          "steps": 136
+        },
+        "updated": "2026-07-26T19:12:30.814Z"
+      }
+    },
+    "type": "relative_rotary"
+  },
+  {
+    "children": [
+      {
+        "rid": "657055ad-aa6f-dc5a-c40a-07e692ff23ba",
+        "rtype": "device"
+      }
+    ],
+    "geometry": {
+      "objects": []
+    },
+    "id": "0d8309ef-6f9e-5c05-3245-5db0fda14681",
+    "id_v1": "/groups/1",
+    "metadata": {
+      "archetype": "living_room",
+      "name": "Room 11"
+    },
+    "services": [],
+    "type": "room"
+  },
+  {
+    "children": [
+      {
+        "rid": "b6257363-71db-1b79-10d8-69c4e3dcdae4",
+        "rtype": "device"
+      }
+    ],
+    "geometry": {
+      "objects": []
+    },
+    "id": "24829e2a-e999-4411-2e9b-1ea66efed450",
+    "id_v1": "/groups/120",
+    "metadata": {
+      "archetype": "other",
+      "name": "Room 5"
+    },
+    "services": [
+      {
+        "rid": "73bf05be-8128-1bc2-9156-d326df365697",
+        "rtype": "grouped_light_level"
+      }
+    ],
+    "type": "room"
+  },
+  {
+    "children": [
+      {
+        "rid": "a966a5eb-3d24-33e3-f465-36860d66d263",
+        "rtype": "device"
+      },
+      {
+        "rid": "9a47175d-c63c-d928-c9ca-0f7e6c409184",
+        "rtype": "device"
+      },
+      {
+        "rid": "7bd86197-ef7c-7625-3170-1b6de1502441",
+        "rtype": "device"
+      },
+      {
+        "rid": "42be61ac-7b63-90b0-ebcd-af84475e4711",
+        "rtype": "device"
+      },
+      {
+        "rid": "23b03bd1-ea29-1ae4-7c5b-9155511de431",
+        "rtype": "device"
+      },
+      {
+        "rid": "6b31cfbc-fdec-c439-f6ca-85fdb03f30d3",
+        "rtype": "device"
+      }
+    ],
+    "geometry": {
+      "objects": [
         {
-          "group": {
-            "rid": "c14cf1cf-6c7a-4984-b8bb-c5b71aeb70fc",
-            "rtype": "entertainment_configuration"
+          "reference": {
+            "rid": "a966a5eb-3d24-33e3-f465-36860d66d263",
+            "rtype": "device"
+          },
+          "transform": {
+            "position": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "rotation": {
+              "w": 1.0,
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            }
+          }
+        },
+        {
+          "reference": {
+            "rid": "9a47175d-c63c-d928-c9ca-0f7e6c409184",
+            "rtype": "device"
+          },
+          "transform": {
+            "position": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "rotation": {
+              "w": 1.0,
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            }
           }
         }
       ]
     },
-    "dependees": [
+    "id": "2dc387a1-b021-19b8-bfbd-0b4503d402c3",
+    "id_v1": "/groups/92",
+    "metadata": {
+      "archetype": "kitchen",
+      "name": "Room 1"
+    },
+    "services": [
       {
-        "level": "critical",
-        "target": {
-          "rid": "c14cf1cf-6c7a-4984-b8bb-c5b71aeb70fc",
-          "rtype": "entertainment_configuration"
-        },
-        "type": "ResourceDependee"
+        "rid": "3689dff1-6574-d400-dbd9-47a1e6123f98",
+        "rtype": "grouped_motion"
       }
     ],
+    "type": "room"
+  },
+  {
+    "children": [],
+    "geometry": {
+      "objects": []
+    },
+    "id": "608c8790-f6af-a771-142e-3768903563f6",
+    "id_v1": "/groups/110",
+    "metadata": {
+      "archetype": "laundry_room",
+      "name": "Room 2"
+    },
+    "services": [
+      {
+        "rid": "a4a3669d-cea0-e38f-719e-3667ac6f1568",
+        "rtype": "grouped_light_level"
+      }
+    ],
+    "type": "room"
+  },
+  {
+    "children": [
+      {
+        "rid": "abb87463-e3a8-7edd-d7b3-07092678dce6",
+        "rtype": "device"
+      },
+      {
+        "rid": "0c8e502b-25af-aa66-4649-00b28dba8308",
+        "rtype": "device"
+      },
+      {
+        "rid": "7e7fa7bc-8c1a-576b-6fef-b1ff0ea7e77b",
+        "rtype": "device"
+      },
+      {
+        "rid": "f747dba7-6ec9-5683-7674-98095f330517",
+        "rtype": "device"
+      },
+      {
+        "rid": "739ebab0-97a7-0ee3-91a0-29be479d34f4",
+        "rtype": "device"
+      }
+    ],
+    "geometry": {
+      "objects": []
+    },
+    "id": "6fbbf09d-87b1-a7a1-e347-0c574f92ae3f",
+    "id_v1": "/groups/104",
+    "metadata": {
+      "archetype": "bedroom",
+      "name": "Room 9"
+    },
+    "services": [
+      {
+        "rid": "e53ef4bc-fc47-23b5-a2a7-c0c27cd1ff9d",
+        "rtype": "grouped_motion"
+      }
+    ],
+    "type": "room"
+  },
+  {
+    "children": [
+      {
+        "rid": "6c3131a4-de8b-7105-6c11-b39e79f481ce",
+        "rtype": "device"
+      }
+    ],
+    "geometry": {
+      "objects": []
+    },
+    "id": "76289d92-66a6-6c15-7030-7c658dcbd88c",
+    "id_v1": "/groups/115",
+    "metadata": {
+      "archetype": "staircase",
+      "name": "Room 8"
+    },
+    "services": [
+      {
+        "rid": "e7587e55-8538-65d5-0fcf-e9e9905bd016",
+        "rtype": "grouped_light"
+      }
+    ],
+    "type": "room"
+  },
+  {
+    "children": [
+      {
+        "rid": "9d6998c6-ed4d-cc75-0e50-4ec61446e8f2",
+        "rtype": "device"
+      }
+    ],
+    "geometry": {
+      "objects": []
+    },
+    "id": "91740fb3-b3b1-3295-32bc-ffb75ae81817",
+    "id_v1": "/groups/103",
+    "metadata": {
+      "archetype": "storage",
+      "name": "Room 3"
+    },
+    "services": [],
+    "type": "room"
+  },
+  {
+    "children": [
+      {
+        "rid": "c59ce269-4b38-b432-f6c4-ca9181865666",
+        "rtype": "device"
+      }
+    ],
+    "geometry": {
+      "objects": []
+    },
+    "id": "977899a0-4381-7556-a1e0-275266dbf95d",
+    "id_v1": "/groups/81",
+    "metadata": {
+      "archetype": "bedroom",
+      "name": "Room 6"
+    },
+    "services": [],
+    "type": "room"
+  },
+  {
+    "children": [
+      {
+        "rid": "ee8468b9-ffe1-82d7-fbf9-bfb3704a8494",
+        "rtype": "device"
+      },
+      {
+        "rid": "14caee0d-9676-6264-8e5f-5d717293ac8f",
+        "rtype": "device"
+      },
+      {
+        "rid": "0bcdac54-2743-2834-cf22-298271f2f75e",
+        "rtype": "device"
+      }
+    ],
+    "geometry": {
+      "objects": []
+    },
+    "id": "b9034902-35ba-a92e-afe3-62e1caf6becf",
+    "id_v1": "/groups/111",
+    "metadata": {
+      "archetype": "hallway",
+      "name": "Room 10"
+    },
+    "services": [],
+    "type": "room"
+  },
+  {
+    "children": [
+      {
+        "rid": "514657fc-8ddc-b29e-aa8f-10492d5fcd3e",
+        "rtype": "device"
+      },
+      {
+        "rid": "5f8180f0-c884-a13f-a34d-1230f242e518",
+        "rtype": "device"
+      }
+    ],
+    "geometry": {
+      "objects": []
+    },
+    "id": "bd9ba88f-cdd6-bd53-05c8-36b62eb936de",
+    "id_v1": "/groups/123",
+    "metadata": {
+      "archetype": "office",
+      "name": "Room 4"
+    },
+    "services": [],
+    "type": "room"
+  },
+  {
+    "children": [
+      {
+        "rid": "7b21d2e6-7e70-9964-b038-ca99293424fd",
+        "rtype": "device"
+      },
+      {
+        "rid": "c4ef392b-c628-6820-4661-cc2c5f76a00b",
+        "rtype": "device"
+      }
+    ],
+    "geometry": {
+      "objects": []
+    },
+    "id": "cb0c3b7b-249e-1c91-f5d2-9fbabaa8ee3d",
+    "id_v1": "/groups/122",
+    "metadata": {
+      "archetype": "bathroom",
+      "name": "Room 7"
+    },
+    "services": [
+      {
+        "rid": "e55c9ede-5f44-8013-dbfe-6a159c632c61",
+        "rtype": "grouped_motion"
+      },
+      {
+        "rid": "2b8eaf0a-8c03-6bd6-f44e-ca0eb2da4b2b",
+        "rtype": "grouped_light_level"
+      }
+    ],
+    "type": "room"
+  },
+  {
+    "actions": [
+      {
+        "action": {
+          "color_temperature": {
+            "mirek": 447
+          },
+          "dimming": {
+            "brightness": 100.0
+          },
+          "on": {
+            "on": true
+          }
+        },
+        "target": {
+          "rid": "183cce41-63a6-f1c4-a349-0749a55351ac",
+          "rtype": "light"
+        }
+      }
+    ],
+    "auto_dynamic": false,
+    "group": {
+      "rid": "e1373d79-8b56-63e4-6068-5e297ea50099",
+      "rtype": "zone"
+    },
+    "id": "23345d3f-4fde-74ad-83b5-95df6793e702",
+    "id_v1": "/scenes/ph9lUEMKHYyNOKBX",
+    "last_actions_update": {
+      "source": "clip"
+    },
+    "mapping": {
+      "algorithm": "classic"
+    },
+    "metadata": {
+      "image": {
+        "rid": "ef144aab-c7b2-4363-653c-b6aaa2d79305",
+        "rtype": "public_image"
+      },
+      "name": "Scene 5"
+    },
+    "palette": {
+      "color": [],
+      "color_temperature": [
+        {
+          "color_temperature": {
+            "mirek": 447
+          },
+          "dimming": {
+            "brightness": 100.0
+          }
+        }
+      ],
+      "dimming": [],
+      "effects": [],
+      "effects_v2": []
+    },
+    "recall": {},
+    "speed": 0.6031746,
+    "status": {
+      "active": "dynamic_palette",
+      "last_recall": "2026-07-27T18:49:04.931Z"
+    },
+    "type": "scene"
+  },
+  {
+    "actions": [
+      {
+        "action": {
+          "color_temperature": {
+            "mirek": 233
+          },
+          "dimming": {
+            "brightness": 100.0
+          },
+          "on": {
+            "on": true
+          }
+        },
+        "target": {
+          "rid": "183cce41-63a6-f1c4-a349-0749a55351ac",
+          "rtype": "light"
+        }
+      }
+    ],
+    "auto_dynamic": false,
+    "group": {
+      "rid": "e1373d79-8b56-63e4-6068-5e297ea50099",
+      "rtype": "zone"
+    },
+    "id": "4f596925-bf5d-eae7-f965-77af0d802e71",
+    "id_v1": "/scenes/xMOExt1MNiduwMg2",
+    "last_actions_update": {
+      "source": "clip"
+    },
+    "mapping": {
+      "algorithm": "classic"
+    },
+    "metadata": {
+      "image": {
+        "rid": "8af301eb-cfad-77ce-901b-80aeb1e3d217",
+        "rtype": "public_image"
+      },
+      "name": "Scene 3"
+    },
+    "palette": {
+      "color": [],
+      "color_temperature": [
+        {
+          "color_temperature": {
+            "mirek": 233
+          },
+          "dimming": {
+            "brightness": 100.0
+          }
+        }
+      ],
+      "dimming": [],
+      "effects": [],
+      "effects_v2": []
+    },
+    "recall": {},
+    "speed": 0.603,
+    "status": {
+      "active": "inactive",
+      "last_recall": "2026-07-21T09:28:21.387Z"
+    },
+    "type": "scene"
+  },
+  {
+    "actions": [
+      {
+        "action": {
+          "color_temperature": {
+            "mirek": 346
+          },
+          "dimming": {
+            "brightness": 100.0
+          },
+          "on": {
+            "on": true
+          }
+        },
+        "target": {
+          "rid": "183cce41-63a6-f1c4-a349-0749a55351ac",
+          "rtype": "light"
+        }
+      }
+    ],
+    "auto_dynamic": false,
+    "group": {
+      "rid": "e1373d79-8b56-63e4-6068-5e297ea50099",
+      "rtype": "zone"
+    },
+    "id": "7a72ec8c-455d-cb91-77d2-39278dbffdd1",
+    "id_v1": "/scenes/blxW1bf0B1jXV8Tf",
+    "last_actions_update": {
+      "source": "clip"
+    },
+    "mapping": {
+      "algorithm": "classic"
+    },
+    "metadata": {
+      "image": {
+        "rid": "8b35d2f8-2157-9505-2826-cd59bb6ec331",
+        "rtype": "public_image"
+      },
+      "name": "Scene 4"
+    },
+    "palette": {
+      "color": [],
+      "color_temperature": [
+        {
+          "color_temperature": {
+            "mirek": 346
+          },
+          "dimming": {
+            "brightness": 100.0
+          }
+        }
+      ],
+      "dimming": [],
+      "effects": [],
+      "effects_v2": []
+    },
+    "recall": {},
+    "speed": 0.603,
+    "status": {
+      "active": "inactive",
+      "last_recall": "2026-07-27T14:35:37.030Z"
+    },
+    "type": "scene"
+  },
+  {
+    "actions": [
+      {
+        "action": {
+          "color_temperature": {
+            "mirek": 370
+          },
+          "dimming": {
+            "brightness": 85.54
+          },
+          "on": {
+            "on": true
+          }
+        },
+        "target": {
+          "rid": "183cce41-63a6-f1c4-a349-0749a55351ac",
+          "rtype": "light"
+        }
+      }
+    ],
+    "auto_dynamic": false,
+    "group": {
+      "rid": "e1373d79-8b56-63e4-6068-5e297ea50099",
+      "rtype": "zone"
+    },
+    "id": "9e3b5154-714f-c5f8-2ade-d25e72bb4461",
+    "id_v1": "/scenes/Py9u0SsK232se5u8",
+    "last_actions_update": {
+      "source": "clip"
+    },
+    "mapping": {
+      "algorithm": "classic"
+    },
+    "metadata": {
+      "image": {
+        "rid": "4ec173fa-ae8a-d402-9571-5ecb1c309e51",
+        "rtype": "public_image"
+      },
+      "name": "Scene 2"
+    },
+    "palette": {
+      "color": [],
+      "color_temperature": [
+        {
+          "color_temperature": {
+            "mirek": 370
+          },
+          "dimming": {
+            "brightness": 85.54
+          }
+        }
+      ],
+      "dimming": [],
+      "effects": [],
+      "effects_v2": []
+    },
+    "recall": {},
+    "speed": 0.6031746,
+    "status": {
+      "active": "inactive",
+      "last_recall": "2026-07-27T05:33:31.636Z"
+    },
+    "type": "scene"
+  },
+  {
+    "actions": [
+      {
+        "action": {
+          "color_temperature": {
+            "mirek": 500
+          },
+          "dimming": {
+            "brightness": 93.0
+          },
+          "on": {
+            "on": true
+          }
+        },
+        "target": {
+          "rid": "183cce41-63a6-f1c4-a349-0749a55351ac",
+          "rtype": "light"
+        }
+      }
+    ],
+    "auto_dynamic": false,
+    "group": {
+      "rid": "e1373d79-8b56-63e4-6068-5e297ea50099",
+      "rtype": "zone"
+    },
+    "id": "ad2b2008-3b09-8917-f070-50009b7dbe4d",
+    "id_v1": "/scenes/In96sy8VUrJyY83V",
+    "last_actions_update": {
+      "source": "clip"
+    },
+    "mapping": {
+      "algorithm": "classic"
+    },
+    "metadata": {
+      "image": {
+        "rid": "b93122ba-b717-bf6c-2246-f40a199a7d9f",
+        "rtype": "public_image"
+      },
+      "name": "Scene 1"
+    },
+    "palette": {
+      "color": [
+        {
+          "color": {
+            "xy": {
+              "x": 0.5609999,
+              "y": 0.4042
+            }
+          },
+          "dimming": {
+            "brightness": 35.0
+          }
+        }
+      ],
+      "color_temperature": [
+        {
+          "color_temperature": {
+            "mirek": 500
+          },
+          "dimming": {
+            "brightness": 93.0
+          }
+        }
+      ],
+      "dimming": [],
+      "effects": [],
+      "effects_v2": []
+    },
+    "recall": {},
+    "speed": 0.6031746,
+    "status": {
+      "active": "inactive",
+      "last_recall": "2026-07-26T21:00:01.882Z"
+    },
+    "type": "scene"
+  },
+  {
+    "actions": [
+      {
+        "action": {
+          "color_temperature": {
+            "mirek": 370
+          },
+          "dimming": {
+            "brightness": 30.0
+          },
+          "on": {
+            "on": true
+          }
+        },
+        "target": {
+          "rid": "7ebc892a-46fe-0a90-cd0c-87836247edda",
+          "rtype": "light"
+        }
+      },
+      {
+        "action": {
+          "color_temperature": {
+            "mirek": 370
+          },
+          "dimming": {
+            "brightness": 30.0
+          },
+          "on": {
+            "on": true
+          }
+        },
+        "target": {
+          "rid": "f427202e-d8cd-cb0e-479f-72955a2d7cbe",
+          "rtype": "light"
+        }
+      }
+    ],
+    "auto_dynamic": false,
+    "group": {
+      "rid": "2a6c3bd5-12e4-7d7f-f8b4-1b75c193e373",
+      "rtype": "zone"
+    },
+    "id": "f0e31a44-4efe-41d2-e9c9-80f1ca6355c5",
+    "id_v1": "/scenes/rO8zwx6nIyMP-5V8",
+    "last_actions_update": {
+      "source": "clip"
+    },
+    "mapping": {
+      "algorithm": "classic"
+    },
+    "metadata": {
+      "image": {
+        "rid": "4ec173fa-ae8a-d402-9571-5ecb1c309e51",
+        "rtype": "public_image"
+      },
+      "name": "Scene 6"
+    },
+    "palette": {
+      "color": [],
+      "color_temperature": [
+        {
+          "color_temperature": {
+            "mirek": 370
+          },
+          "dimming": {
+            "brightness": 30.0
+          }
+        }
+      ],
+      "dimming": [],
+      "effects": [],
+      "effects_v2": []
+    },
+    "recall": {},
+    "speed": 0.603,
+    "status": {
+      "active": "static",
+      "last_recall": "2026-07-27T18:41:21.985Z"
+    },
+    "type": "scene"
+  },
+  {
     "enabled": true,
-    "id": "0670cfb1-2bd7-4237-a0e3-1827a44d7231",
-    "last_error": "",
-    "metadata": {
-      "name": "state_after_streaming"
+    "id": "6c8a19fb-d706-d829-4d1d-8a3cc400dfe4",
+    "motion": {
+      "motion": false,
+      "motion_report": {
+        "changed": "2026-07-27T06:44:23.013Z",
+        "motion": false
+      },
+      "motion_valid": true
     },
-    "migrated_from": "/resourcelinks/47450",
-    "script_id": "7719b841-6b3d-448d-a0e7-601ae9edb6a2",
-    "status": "running",
-    "type": "behavior_instance"
-  },
-  {
-    "configuration_schema": {
-      "$ref": "leaving_home_config.json#"
-    },
-    "description": "Automatically turn off your lights when you leave",
-    "id": "0194752a-2d53-4f92-8209-dfdc52745af3",
-    "metadata": {
-      "name": "Leaving home"
-    },
-    "state_schema": {},
-    "trigger_schema": {
-      "$ref": "trigger.json#"
-    },
-    "type": "behavior_script",
-    "version": "0.0.1"
-  },
-  {
-    "configuration_schema": {
-      "$ref": "schedule_config.json#"
-    },
-    "description": "Schedule turning on and off lights",
-    "id": "7238c707-8693-4f19-9095-ccdc1444d228",
-    "metadata": {
-      "name": "Schedule"
-    },
-    "state_schema": {},
-    "trigger_schema": {
-      "$ref": "trigger.json#"
-    },
-    "type": "behavior_script",
-    "version": "0.0.1"
-  },
-  {
-    "configuration_schema": {
-      "$ref": "lights_state_after_streaming_config.json#"
-    },
-    "description": "State of lights in the entertainment group after streaming ends",
-    "id": "7719b841-6b3d-448d-a0e7-601ae9edb6a2",
-    "metadata": {
-      "name": "Light state after streaming"
-    },
-    "state_schema": {},
-    "trigger_schema": {},
-    "type": "behavior_script",
-    "version": "0.0.1"
-  },
-  {
-    "configuration_schema": {
-      "$ref": "basic_goto_sleep_config.json#"
-    },
-    "description": "Get ready for nice sleep.",
-    "id": "7e571ac6-f363-42e1-809a-4cbf6523ed72",
-    "metadata": {
-      "name": "Basic go to sleep routine"
-    },
-    "state_schema": {},
-    "trigger_schema": {
-      "$ref": "trigger.json#"
-    },
-    "type": "behavior_script",
-    "version": "0.0.1"
-  },
-  {
-    "configuration_schema": {
-      "$ref": "coming_home_config.json#"
-    },
-    "description": "Automatically turn your lights to choosen light states, when you arrive at home.",
-    "id": "fd60fcd1-4809-4813-b510-4a18856a595c",
-    "metadata": {
-      "name": "Coming home"
-    },
-    "state_schema": {},
-    "trigger_schema": {
-      "$ref": "trigger.json#"
-    },
-    "type": "behavior_script",
-    "version": "0.0.1"
-  },
-  {
-    "configuration_schema": {
-      "$ref": "basic_wake_up_config.json#"
-    },
-    "description": "Get your body in the mood to wake up by fading on the lights in the morning.",
-    "id": "ff8957e3-2eb9-4699-a0c8-ad2cb3ede704",
-    "metadata": {
-      "name": "Basic wake up routine"
-    },
-    "state_schema": {},
-    "trigger_schema": {
-      "$ref": "trigger.json#"
-    },
-    "type": "behavior_script",
-    "version": "0.0.1"
-  },
-  {
-    "configuration_schema": {
-      "$ref": "natural_light_config.json#"
-    },
-    "description": "Natural light during the day",
-    "id": "a4260b49-0c69-4926-a29c-417f4a38a352",
-    "metadata": {
-      "name": "Natural Light"
-    },
-    "state_schema": {
-      "$ref": "natural_light_state.json#"
-    },
-    "trigger_schema": {
-      "$ref": "smart_scene_trigger.json#"
-    },
-    "type": "behavior_script",
-    "version": "0.0.1"
-  },
-  {
-    "configuration_schema": {
-      "$ref": "timer_config.json#"
-    },
-    "description": "Countdown Timer",
-    "id": "e73bc72d-96b1-46f8-aa57-729861f80c78",
-    "metadata": {
-      "name": "Timers"
-    },
-    "state_schema": {
-      "$ref": "timer_state.json#"
-    },
-    "trigger_schema": {
-      "$ref": "trigger.json#"
-    },
-    "type": "behavior_script",
-    "version": "0.0.1"
-  },
-  {
-    "id": "c6e03a31-4c30-4cef-834f-26ffbb06a593",
-    "name": "Test geofence client",
-    "type": "geofence_client"
-  },
-  {
-    "id": "52612630-841e-4d39-9763-60346a0da759",
-    "is_configured": true,
-    "type": "geolocation"
-  },
-  {
-    "id": "dc60c113-5023-430a-af40-9ebdd2f56748",
     "owner": {
-      "rid": "4177008b-9553-49fa-97a5-f4e14461d05d",
-      "rtype": "device"
+      "rid": "3d33d037-2bfa-f556-de7a-c0c26f2680e6",
+      "rtype": "motion_area_configuration"
     },
+    "sensitivity": {
+      "sensitivity": 2,
+      "sensitivity_max": 4
+    },
+    "type": "security_area_motion"
+  },
+  {
+    "enabled": true,
+    "id": "71f03699-1103-1c95-cbae-33d1537c67ae",
+    "motion": {
+      "motion": false,
+      "motion_report": {
+        "changed": "2026-07-27T18:40:10.202Z",
+        "motion": false
+      },
+      "motion_valid": true
+    },
+    "owner": {
+      "rid": "973d5f98-efc5-34f4-4d1d-df721925fd61",
+      "rtype": "motion_area_configuration"
+    },
+    "sensitivity": {
+      "sensitivity": 2,
+      "sensitivity_max": 4
+    },
+    "type": "security_area_motion"
+  },
+  {
+    "active_timeslot": {
+      "timeslot_id": 3,
+      "weekday": "saturday"
+    },
+    "group": {
+      "rid": "ef38feff-75fb-1be8-cd65-63fe4c6c6435",
+      "rtype": "zone"
+    },
+    "id": "126ea131-6a73-f59a-8d96-9cf2a2e3af58",
+    "metadata": {
+      "image": {
+        "rid": "fc64913f-57e8-2ae3-277c-0e14b2182528",
+        "rtype": "public_image"
+      },
+      "name": "Smart Scene 1"
+    },
+    "state": "inactive",
+    "transition_duration": 600000,
+    "type": "smart_scene",
+    "week_timeslots": []
+  },
+  {
+    "active_timeslot": {
+      "timeslot_id": 1,
+      "weekday": "saturday"
+    },
+    "group": {
+      "rid": "b9034902-35ba-a92e-afe3-62e1caf6becf",
+      "rtype": "room"
+    },
+    "id": "1b8bd83a-de6a-9b48-77a4-8afacf744e22",
+    "metadata": {
+      "image": {
+        "rid": "fc64913f-57e8-2ae3-277c-0e14b2182528",
+        "rtype": "public_image"
+      },
+      "name": "Smart Scene 2"
+    },
+    "state": "inactive",
+    "transition_duration": 60000,
+    "type": "smart_scene",
+    "week_timeslots": []
+  },
+  {
+    "active_timeslot": {
+      "timeslot_id": 1,
+      "weekday": "saturday"
+    },
+    "group": {
+      "rid": "75137653-e79d-3135-0a89-55b3c4c418d4",
+      "rtype": "zone"
+    },
+    "id": "976d9891-95ae-ea59-bb8f-25559d549ccf",
+    "metadata": {
+      "image": {
+        "rid": "fc64913f-57e8-2ae3-277c-0e14b2182528",
+        "rtype": "public_image"
+      },
+      "name": "Smart Scene 4"
+    },
+    "state": "inactive",
+    "transition_duration": 60000,
+    "type": "smart_scene",
+    "week_timeslots": []
+  },
+  {
+    "active_timeslot": {
+      "timeslot_id": 1,
+      "weekday": "saturday"
+    },
+    "group": {
+      "rid": "0678cab6-cfdf-806e-e87f-1fb86fe5a185",
+      "rtype": "zone"
+    },
+    "id": "c4894452-21d5-ffaf-ab96-398bff067a95",
+    "metadata": {
+      "image": {
+        "rid": "fc64913f-57e8-2ae3-277c-0e14b2182528",
+        "rtype": "public_image"
+      },
+      "name": "Smart Scene 3"
+    },
+    "state": "inactive",
+    "transition_duration": 60000,
+    "type": "smart_scene",
+    "week_timeslots": []
+  },
+  {
     "alarm": {
       "sound_values": [
         "siren",
@@ -2184,6 +5270,18 @@
         "sound": "no_sound",
         "sound_values": [
           "siren",
+          "no_sound"
+        ]
+      }
+    },
+    "alert": {
+      "sound_values": [
+        "alert"
+      ],
+      "status": {
+        "sound": "no_sound",
+        "sound_values": [
+          "alert",
           "no_sound"
         ]
       }
@@ -2236,60 +5334,354 @@
         ]
       }
     },
-    "alert": {
-      "sound_values": [
-        "alert"
-      ],
-      "status": {
-        "sound": "no_sound",
-        "sound_values": [
-          "alert",
-          "no_sound"
-        ]
-      }
-    },
+    "id": "3903d908-eb6c-8ece-335c-f7ae230943f0",
     "mute": {
       "mute": "unmute"
+    },
+    "owner": {
+      "rid": "b6257363-71db-1b79-10d8-69c4e3dcdae4",
+      "rtype": "device"
     },
     "type": "speaker"
   },
   {
-    "id": "4177008b-9553-49fa-97a5-f4e14461d05d",
-    "product_data": {
-      "model_id": "COM001",
-      "manufacturer_name": "Signify Netherlands B.V.",
-      "product_name": "Secure chime",
-      "product_archetype": "hue_chime",
-      "certified": true,
-      "software_version": "1.123.13",
-      "hardware_platform_type": "100b-128"
+    "id": "7df8303e-23a1-a1da-9c77-099538854705",
+    "linked_services": [],
+    "owner": {
+      "rid": "ee8468b9-ffe1-82d7-fbf9-bfb3704a8494",
+      "rtype": "device"
     },
-    "metadata": {
-      "name": "Secure chime",
-      "archetype": "hue_chime"
+    "switch_mode": {
+      "mode": "switch_dual_pushbutton",
+      "mode_values": [
+        "switch_single_rocker",
+        "switch_single_pushbutton",
+        "switch_dual_rocker",
+        "switch_dual_pushbutton"
+      ],
+      "status": "set"
     },
-    "identify": {},
-    "services": [
-      {
-        "rid": "8e31dcd4-7171-4c0c-b2ac-0e6a9d47681b",
-        "rtype": "zigbee_connectivity"
-      },
-      {
-        "rid": "dc60c113-5023-430a-af40-9ebdd2f56748",
-        "rtype": "speaker"
-      }
-    ],
-    "type": "device"
+    "type": "switch_input_configuration"
   },
   {
-    "id": "8e31dcd4-7171-4c0c-b2ac-0e6a9d47681b",
-    "id_v1": "/speakers/34",
-    "mac_address": "00:aa:bb:cc:aa:bb:cc:ee",
+    "id": "922e00d4-e10b-6021-2b7f-d59e8f17e765",
+    "linked_services": [],
     "owner": {
-      "rid": "4177008b-9553-49fa-97a5-f4e14461d05d",
+      "rid": "fbbffd8c-eeba-22a4-ae08-4c90544c0ed4",
+      "rtype": "device"
+    },
+    "switch_mode": {
+      "mode": "switch_single_pushbutton",
+      "mode_values": [
+        "switch_single_rocker",
+        "switch_single_pushbutton",
+        "switch_dual_rocker",
+        "switch_dual_pushbutton"
+      ],
+      "status": "set"
+    },
+    "type": "switch_input_configuration"
+  },
+  {
+    "id": "f4c85afd-a30d-b3f1-cb36-980b9606ed84",
+    "linked_services": [],
+    "owner": {
+      "rid": "34955c1c-2c19-5c08-0803-b989ff06f21f",
+      "rtype": "device"
+    },
+    "switch_mode": {
+      "mode": "switch_single_pushbutton",
+      "mode_values": [
+        "switch_single_rocker",
+        "switch_single_pushbutton",
+        "switch_dual_rocker",
+        "switch_dual_pushbutton"
+      ],
+      "status": "set"
+    },
+    "type": "switch_input_configuration"
+  },
+  {
+    "id": "fc042746-a0ba-dd74-f045-48d7b819537a",
+    "linked_services": [],
+    "owner": {
+      "rid": "6c3131a4-de8b-7105-6c11-b39e79f481ce",
+      "rtype": "device"
+    },
+    "switch_mode": {
+      "mode": "switch_dual_pushbutton",
+      "mode_values": [
+        "switch_single_rocker",
+        "switch_single_pushbutton",
+        "switch_dual_rocker",
+        "switch_dual_pushbutton"
+      ],
+      "status": "set"
+    },
+    "type": "switch_input_configuration"
+  },
+  {
+    "id": "dead0381-1697-bf06-ac07-1d0c191960a2",
+    "owner": {
+      "rid": "6b31cfbc-fdec-c439-f6ca-85fdb03f30d3",
+      "rtype": "device"
+    },
+    "tamper_reports": [],
+    "type": "tamper"
+  },
+  {
+    "enabled": true,
+    "id": "515be12b-0c6f-aba0-a714-1586419d9b95",
+    "id_v1": "/sensors/136",
+    "owner": {
+      "rid": "42be61ac-7b63-90b0-ebcd-af84475e4711",
+      "rtype": "device"
+    },
+    "temperature": {
+      "temperature": 22.26,
+      "temperature_report": {
+        "changed": "2026-07-27T18:52:38.084Z",
+        "temperature": 22.26
+      },
+      "temperature_valid": true
+    },
+    "type": "temperature"
+  },
+  {
+    "enabled": true,
+    "id": "5ee552c6-18c7-1a4b-1ed4-944549cb93e3",
+    "id_v1": "/sensors/83",
+    "owner": {
+      "rid": "b1421fef-cd77-cf37-3b91-0ba77a29e4ef",
+      "rtype": "device"
+    },
+    "temperature": {
+      "temperature": 20.56,
+      "temperature_report": {
+        "changed": "2026-07-27T18:52:35.904Z",
+        "temperature": 20.56
+      },
+      "temperature_valid": true
+    },
+    "type": "temperature"
+  },
+  {
+    "enabled": true,
+    "id": "774ea4b7-0031-aca2-2341-b74575e76bc5",
+    "id_v1": "/sensors/142",
+    "owner": {
+      "rid": "fb657eb4-38ba-fd3c-7535-d56f4350699f",
+      "rtype": "device"
+    },
+    "temperature": {
+      "temperature": 18.56,
+      "temperature_report": {
+        "changed": "2026-07-27T18:45:49.031Z",
+        "temperature": 18.56
+      },
+      "temperature_valid": true
+    },
+    "type": "temperature"
+  },
+  {
+    "enabled": true,
+    "id": "d211cfa1-168a-9f65-7c21-649ab2dfb4e5",
+    "id_v1": "/sensors/86",
+    "owner": {
+      "rid": "b2879c32-1bf3-9c99-4825-539401a42ab7",
+      "rtype": "device"
+    },
+    "temperature": {
+      "temperature": 22.55,
+      "temperature_report": {
+        "changed": "2026-07-27T18:50:19.724Z",
+        "temperature": 22.55
+      },
+      "temperature_valid": true
+    },
+    "type": "temperature"
+  },
+  {
+    "id": "17394d66-d770-4513-609d-88429e636268",
+    "id_v1": "/lights/75",
+    "mac_address": "00:11:22:33:44:55",
+    "owner": {
+      "rid": "7e7fa7bc-8c1a-576b-6fef-b1ff0ea7e77b",
       "rtype": "device"
     },
     "status": "connected",
     "type": "zigbee_connectivity"
+  },
+  {
+    "id": "24c292f9-9772-d20e-4f7f-1e916923dc0f",
+    "id_v1": "/lights/120",
+    "mac_address": "00:11:22:33:44:55",
+    "owner": {
+      "rid": "51428b4a-5805-c25a-081e-f922bb76eb4f",
+      "rtype": "device"
+    },
+    "status": "connectivity_issue",
+    "type": "zigbee_connectivity"
+  },
+  {
+    "id": "28e66af4-c470-fbc1-065d-98ddba405ef6",
+    "id_v1": "/lights/86",
+    "mac_address": "00:11:22:33:44:55",
+    "owner": {
+      "rid": "1661846f-929d-672a-6b59-b7222cf583e5",
+      "rtype": "device"
+    },
+    "status": "connected",
+    "type": "zigbee_connectivity"
+  },
+  {
+    "id": "3756e24e-5b1c-e295-13c9-b37f253a6053",
+    "id_v1": "/sensors/140",
+    "mac_address": "00:11:22:33:44:55",
+    "owner": {
+      "rid": "fb657eb4-38ba-fd3c-7535-d56f4350699f",
+      "rtype": "device"
+    },
+    "status": "connected",
+    "type": "zigbee_connectivity"
+  },
+  {
+    "action": {
+      "action_type_values": [
+        "search",
+        "search_allow_default_link_key"
+      ]
+    },
+    "add_install_codes": {},
+    "id": "9669f838-e8ee-3473-3a75-ef4314e1d78e",
+    "owner": {
+      "rid": "bae2cb3c-8717-3652-6620-615b68b360ef",
+      "rtype": "device"
+    },
+    "status": "ready",
+    "type": "zigbee_device_discovery"
+  },
+  {
+    "children": [],
+    "id": "0678cab6-cfdf-806e-e87f-1fb86fe5a185",
+    "id_v1": "/groups/98",
+    "metadata": {
+      "archetype": "bedroom",
+      "name": "Zone 1"
+    },
+    "services": [],
+    "type": "zone"
+  },
+  {
+    "children": [
+      {
+        "rid": "7ebc892a-46fe-0a90-cd0c-87836247edda",
+        "rtype": "light"
+      },
+      {
+        "rid": "f427202e-d8cd-cb0e-479f-72955a2d7cbe",
+        "rtype": "light"
+      }
+    ],
+    "id": "2a6c3bd5-12e4-7d7f-f8b4-1b75c193e373",
+    "id_v1": "/groups/105",
+    "metadata": {
+      "archetype": "bedroom",
+      "name": "Zone 8"
+    },
+    "services": [],
+    "type": "zone"
+  },
+  {
+    "children": [],
+    "id": "34a91d8a-dca8-833e-5f20-cb072f825f2f",
+    "id_v1": "/groups/128",
+    "metadata": {
+      "archetype": "staircase",
+      "name": "Zone 9"
+    },
+    "services": [
+      {
+        "rid": "77e33b2e-b8d5-53a4-200c-45ce3eb3dbd6",
+        "rtype": "grouped_light"
+      }
+    ],
+    "type": "zone"
+  },
+  {
+    "children": [],
+    "id": "4215adbd-15b4-137f-31e2-286ae27a56bf",
+    "id_v1": "/groups/99",
+    "metadata": {
+      "archetype": "garden",
+      "name": "Zone 4"
+    },
+    "services": [],
+    "type": "zone"
+  },
+  {
+    "children": [],
+    "id": "4d0ba1d3-b7fc-920a-27a6-457364a3b786",
+    "id_v1": "/groups/94",
+    "metadata": {
+      "archetype": "kitchen",
+      "name": "Zone 3"
+    },
+    "services": [],
+    "type": "zone"
+  },
+  {
+    "children": [],
+    "id": "75137653-e79d-3135-0a89-55b3c4c418d4",
+    "id_v1": "/groups/90",
+    "metadata": {
+      "archetype": "hallway",
+      "name": "Zone 5"
+    },
+    "services": [],
+    "type": "zone"
+  },
+  {
+    "children": [
+      {
+        "rid": "183cce41-63a6-f1c4-a349-0749a55351ac",
+        "rtype": "light"
+      }
+    ],
+    "id": "e1373d79-8b56-63e4-6068-5e297ea50099",
+    "id_v1": "/groups/130",
+    "metadata": {
+      "archetype": "kitchen",
+      "name": "Zone 6"
+    },
+    "services": [],
+    "type": "zone"
+  },
+  {
+    "children": [],
+    "id": "ef38feff-75fb-1be8-cd65-63fe4c6c6435",
+    "id_v1": "/groups/119",
+    "metadata": {
+      "archetype": "dining",
+      "name": "Zone 7"
+    },
+    "services": [
+      {
+        "rid": "56ce43c1-eae0-387d-169d-37f0278e14b0",
+        "rtype": "grouped_light"
+      }
+    ],
+    "type": "zone"
+  },
+  {
+    "children": [],
+    "id": "f05d4eda-13f2-926d-701b-65d19d6f192f",
+    "id_v1": "/groups/109",
+    "metadata": {
+      "archetype": "guest_room",
+      "name": "Zone 2"
+    },
+    "services": [],
+    "type": "zone"
   }
 ]

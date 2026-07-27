@@ -29,9 +29,6 @@ class Speaker:
     # owner: required(ResourceIdentifier)
     owner: ResourceIdentifier
 
-    # type: required(ResourceTypes)
-    type: ResourceTypes = ResourceTypes.SPEAKER
-
     # id_v1: string
     id_v1: str | None = None
     # alarm: SoundFeature
@@ -42,6 +39,8 @@ class Speaker:
     alert: SoundFeature | None = None
     # mute: MuteFeature
     mute: MuteFeature | None = None
+
+    type: ResourceTypes = ResourceTypes.SPEAKER
 
     @property
     def supports_alarm(self) -> bool:

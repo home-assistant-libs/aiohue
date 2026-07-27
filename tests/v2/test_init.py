@@ -17,17 +17,17 @@ async def test_bridge_init(v2_resources):
     assert bridge.config.bridge_id == "aabbccddeeffggh"
 
     assert bridge.devices is not None
-    assert len(bridge.devices.get_lights("0b216218-d811-4c95-8c55-bbcda50f9d50")) == 1
-    assert len(bridge.devices.get_sensors("342daec9-391b-480b-abdd-87f1aa04ce3b")) == 6
-    assert len(bridge.devices.get_speakers("4177008b-9553-49fa-97a5-f4e14461d05d")) == 1
+    assert len(bridge.devices.get_lights("42b8327b-b7d7-2469-3c45-069a41b4dca8")) == 1
+    assert len(bridge.devices.get_sensors("fb657eb4-38ba-fd3c-7535-d56f4350699f")) == 5
 
     assert bridge.lights is not None
     assert bridge.scenes is not None
-    assert bridge.sensors is not None
     assert bridge.speakers is not None
+    assert len(bridge.devices.get_speakers("b6257363-71db-1b79-10d8-69c4e3dcdae4")) == 1
+    assert bridge.sensors is not None
     assert bridge.groups is not None
 
-    # test required version check
-    assert bridge.config.check_version("1.50.1950111030") is False
-    assert bridge.config.check_version("1.48.1948086000") is True
-    assert bridge.config.check_version("1.48.1948085000") is True
+    # test required version check (fixture bridge runs 1.78.2071401010)
+    assert bridge.config.check_version("1.79.2071401010") is False
+    assert bridge.config.check_version("1.78.2071401010") is True
+    assert bridge.config.check_version("1.50.1950111030") is True

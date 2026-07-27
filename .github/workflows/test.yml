@@ -16,9 +16,9 @@ jobs:
 
     steps:
       - name: Check out code from GitHub
-        uses: actions/checkout@v6.0.2
+        uses: actions/checkout@v7.0.1
       - name: Set up Python
-        uses: actions/setup-python@v6.2.0
+        uses: actions/setup-python@v7.0.0
         with:
           python-version: "3.11"
       - name: Install dependencies
@@ -40,9 +40,9 @@ jobs:
 
     steps:
       - name: Check out code from GitHub
-        uses: actions/checkout@v6.0.2
+        uses: actions/checkout@v7.0.1
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v6.2.0
+        uses: actions/setup-python@v7.0.0
         with:
           python-version: ${{ matrix.python-version }}
       - name: Install dependencies

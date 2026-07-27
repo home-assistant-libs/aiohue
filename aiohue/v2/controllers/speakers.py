@@ -1,25 +1,16 @@
 """Controller holding and managing HUE resources of type `speaker`."""
 
+from aiohue.v2.models.resource import ResourceTypes
 from aiohue.v2.models.speaker import Speaker, SpeakerPut
 from aiohue.v2.models.speaker_feature import (
-    MuteStatus,
     MuteFeature,
-    SupportedSound,
+    MuteStatus,
     SoundFeaturePut,
+    SupportedSound,
     VolumeFeature,
 )
-from aiohue.v2.models.resource import ResourceTypes
 
 from .base import BaseResourcesController
-
-
-def _get_sound_feature_put(
-    sound: SupportedSound, volume: int | None = None, duration: int | None = None
-) -> SoundFeaturePut | None:
-    update_obj = SoundFeaturePut(sound=sound, duration=duration)
-    if volume is not None:
-        update_obj.volume = VolumeFeature(level=volume)
-    return update_obj
 
 
 class SpeakersController(BaseResourcesController[type[Speaker]]):
@@ -35,10 +26,13 @@ class SpeakersController(BaseResourcesController[type[Speaker]]):
         volume: int | None = None,
         duration: int | None = None,
     ) -> None:
-        """Set alarm sound of speaker resource."""
-        await self.__set_state(
-            id, alarm=_get_sound_feature_put(sound, volume, duration)
-        )
+        """
+        Play an alarm sound on the speaker.
+
+        The alarm is the only sound feature that accepts a duration, given in
+        milliseconds and rounded up to the next multiple of 1000.
+        """
+        await self.__set_state(id, alarm=_sound_feature_put(sound, volume, duration))
 
     async def play_chime(
         self,
@@ -46,8 +40,8 @@ class SpeakersController(BaseResourcesController[type[Speaker]]):
         sound: SupportedSound,
         volume: int | None = None,
     ) -> None:
-        """Set chime sound of speaker resource."""
-        await self.__set_state(id, chime=_get_sound_feature_put(sound, volume))
+        """Play a chime sound on the speaker."""
+        await self.__set_state(id, chime=_sound_feature_put(sound, volume))
 
     async def play_alert(
         self,
@@ -55,15 +49,19 @@ class SpeakersController(BaseResourcesController[type[Speaker]]):
         sound: SupportedSound,
         volume: int | None = None,
     ) -> None:
-        """Set alert sound of speaker resource."""
-        await self.__set_state(id, alert=_get_sound_feature_put(sound, volume))
+        """Play an alert sound on the speaker."""
+        await self.__set_state(id, alert=_sound_feature_put(sound, volume))
 
     async def set_mute(
         self,
         id: str,
         mute: MuteStatus,
     ) -> None:
-        """Set mute state of speaker resource."""
+        """
+        Mute or unmute the speaker.
+
+        A speaker has a single global mute state. The alarm is not affected by it.
+        """
         await self.__set_state(id, mute=mute)
 
     async def __set_state(
@@ -78,7 +76,14 @@ class SpeakersController(BaseResourcesController[type[Speaker]]):
         update_obj = SpeakerPut(alarm=alarm, chime=chime, alert=alert)
         if mute is not None:
             update_obj.mute = MuteFeature(mute=mute)
-        await self.update(
-            id,
-            update_obj,
-        )
+        await self.update(id, update_obj)
+
+
+def _sound_feature_put(
+    sound: SupportedSound, volume: int | None = None, duration: int | None = None
+) -> SoundFeaturePut:
+    """Build the request body for a play-sound request."""
+    update_obj = SoundFeaturePut(sound=sound, duration=duration)
+    if volume is not None:
+        update_obj.volume = VolumeFeature(level=volume)
+    return update_obj

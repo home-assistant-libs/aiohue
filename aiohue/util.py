@@ -109,16 +109,24 @@ def dataclass_to_dict(obj_in: dataclass, skip_none: bool = True) -> dict:
     else:
         dict_obj = asdict(obj_in)
 
+    def _clean_value(value: Any):
+        # NOTE: collections must be walked too, otherwise Enums nested inside a
+        # list (e.g. ScenePut.actions[].target.rtype) survive as Enum instances
+        # and blow up json serialization of the request body.
+        if isinstance(value, dict):
+            return _clean_dict(value)
+        if isinstance(value, list | tuple | set):
+            return [_clean_value(x) for x in value]
+        if isinstance(value, Enum):
+            return value.value
+        return value
+
     def _clean_dict(_dict_obj: dict):
         final = {}
         for key, value in _dict_obj.items():
             if value is None and skip_none:
                 continue
-            if isinstance(value, dict):
-                value = _clean_dict(value)  # noqa: PLW2901
-            if isinstance(value, Enum):
-                value = value.value  # noqa: PLW2901
-            final[key] = value
+            final[key] = _clean_value(value)
         return final
 
     return _clean_dict(dict_obj)

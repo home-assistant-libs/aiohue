@@ -40,6 +40,7 @@ class EstimatedEndFeature:
 class SupportedSound(StrEnum):
     """Enum of possible sounds."""
 
+    UNKNOWN = "unknown"
     NO_SOUND = "no_sound"
     ALERT = "alert"
     BLEEP = "bleep"
@@ -62,6 +63,11 @@ class SupportedSound(StrEnum):
     FAIRY = "fairy"
     GALAXY = "galaxy"
     ECHO = "echo"
+
+    @classmethod
+    def _missing_(cls: type, value: object):  # noqa: ARG003
+        """Set default enum member if an unknown value is provided."""
+        return SupportedSound.UNKNOWN
 
 
 @dataclass
@@ -88,7 +94,7 @@ class SoundStatus(SoundStatusBase):
     sound_values: list[SupportedSound]
     # estimated_end: only present for siren sound
     # Estimated end-time of the current sound based on duration.
-    estimated_end: EstimatedEndFeature | None
+    estimated_end: EstimatedEndFeature | None = None
 
 
 @dataclass
@@ -113,7 +119,7 @@ class SoundFeaturePut(SoundStatusBase):
 
     volume: VolumeFeature | None = None
     # duration: int, minimum: 0, maximum: 65534000
-    # Only applicable for alert sound feature
+    # Only applicable for the alarm sound feature
     # Stepsize of 1000ms, values in between a step will be rounded up to next multiple of 1000ms.
     duration: int | None = None
 
@@ -121,7 +127,7 @@ class SoundFeaturePut(SoundStatusBase):
 @dataclass
 class SoundFeature:
     """
-    Represents the MuteFeature of a speaker resource.
+    Represents a sound feature (alarm, chime or alert) of a speaker resource.
 
     https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_speaker_get
     """
