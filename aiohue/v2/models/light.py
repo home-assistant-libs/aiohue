@@ -12,9 +12,12 @@ from .feature import (
     AlertFeaturePut,
     ColorFeature,
     ColorFeatureBase,
+    ColorTemperatureDeltaFeature,
     ColorTemperatureDeltaFeaturePut,
     ColorTemperatureFeature,
     ColorTemperatureFeatureBase,
+    ConfigurationStatus,
+    DimmingDeltaFeature,
     DimmingDeltaFeaturePut,
     DimmingFeature,
     DimmingFeatureBase,
@@ -27,6 +30,8 @@ from .feature import (
     EffectsV2FeaturePut,
     GradientFeature,
     GradientFeatureBase,
+    IdentifyFeature,
+    LightGeometryFeature,
     OnFeature,
     PowerUpFeature,
     PowerUpFeaturePut,
@@ -36,6 +41,20 @@ from .feature import (
     TimedEffectsFeaturePut,
 )
 from .resource import ResourceIdentifier, ResourceTypes
+
+
+class LightFunction(Enum):
+    """Enum with all possible functions of a light service."""
+
+    FUNCTIONAL = "functional"
+    DECORATIVE = "decorative"
+    MIXED = "mixed"
+    UNKNOWN = "unknown"
+
+    @classmethod
+    def _missing_(cls: type, value: object):  # noqa: ARG003
+        """Set default enum member if an unknown value is provided."""
+        return LightFunction.UNKNOWN
 
 
 @dataclass
@@ -49,6 +68,24 @@ class LightMetaData:
     # Light archetype Deprecated: use archetype on device level
     archetype: str | None
     name: str
+    # function: Function of the lightservice
+    function: LightFunction | None = None
+    # fixed_mired: A fixed mired value of the white lamp
+    fixed_mired: int | None = None
+
+
+@dataclass
+class LightProductData:
+    """
+    Represent the factory defaults of a light service.
+
+    https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_light_get
+    """
+
+    # name and archetype are only available for devices with multiple lightservices
+    name: str | None = None
+    archetype: str | None = None
+    function: LightFunction | None = None
 
 
 class LightMode(Enum):
@@ -60,6 +97,89 @@ class LightMode(Enum):
 
     NORMAL = "normal"
     STREAMING = "streaming"
+
+
+class ContentOrientation(Enum):
+    """Enum with possible orientations of content deployed on a light."""
+
+    HORIZONTAL = "horizontal"
+    VERTICAL = "vertical"
+    UNKNOWN = "unknown"
+
+    @classmethod
+    def _missing_(cls: type, value: object):  # noqa: ARG003
+        """Set default enum member if an unknown value is provided."""
+        return ContentOrientation.UNKNOWN
+
+
+class ContentOrder(Enum):
+    """Enum with possible orders in which content is represented on the pixels."""
+
+    FORWARD = "forward"
+    REVERSED = "reversed"
+    UNKNOWN = "unknown"
+
+    @classmethod
+    def _missing_(cls: type, value: object):  # noqa: ARG003
+        """Set default enum member if an unknown value is provided."""
+        return ContentOrder.UNKNOWN
+
+
+class ContentAssociation(Enum):
+    """
+    Enum with the objects a light service can be associated with.
+
+    `screen` means the light is placed behind or around a screen following an arc.
+    """
+
+    NOT_ASSOCIATED = "not_associated"
+    SCREEN = "screen"
+    UNKNOWN = "unknown"
+
+    @classmethod
+    def _missing_(cls: type, value: object):  # noqa: ARG003
+        """Set default enum member if an unknown value is provided."""
+        return ContentAssociation.UNKNOWN
+
+
+@dataclass
+class ContentOrientationConfiguration:
+    """Represent the orientation for content deployed on pixelated products."""
+
+    orientation: ContentOrientation = ContentOrientation.UNKNOWN
+    status: ConfigurationStatus = ConfigurationStatus.UNKNOWN
+    # configurable: Indicates if the product allows modifying this attribute
+    configurable: bool = False
+
+
+@dataclass
+class ContentOrderConfiguration:
+    """Represent the order in which content is represented on the pixels."""
+
+    order: ContentOrder = ContentOrder.UNKNOWN
+    status: ConfigurationStatus = ConfigurationStatus.UNKNOWN
+    # configurable: Indicates if the product allows modifying this attribute
+    configurable: bool = False
+
+
+@dataclass
+class ContentAssociationConfiguration:
+    """Represent what the light service is associated with, e.g. a screen."""
+
+    association: ContentAssociation = ContentAssociation.UNKNOWN
+
+
+@dataclass
+class ContentConfiguration:
+    """
+    Represent the parameters that affect how content is deployed on a light.
+
+    https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_light_get
+    """
+
+    orientation: ContentOrientationConfiguration | None = None
+    order: ContentOrderConfiguration | None = None
+    association: ContentAssociationConfiguration | None = None
 
 
 @dataclass
@@ -78,8 +198,17 @@ class Light:
     mode: LightMode
 
     id_v1: str | None = None
+    metadata: LightMetaData | None = None
+    # product_data: Factory defaults of the product data
+    product_data: LightProductData | None = None
+    # service_id: Service identification number.
+    # 0 indicates service of a single instance
+    service_id: int | None = None
+    identify: IdentifyFeature | None = None
     dimming: DimmingFeature | None = None
+    dimming_delta: DimmingDeltaFeature | None = None
     color_temperature: ColorTemperatureFeature | None = None
+    color_temperature_delta: ColorTemperatureDeltaFeature | None = None
     color: ColorFeature | None = None
     dynamics: DynamicsFeature | None = None
     alert: AlertFeature | None = None
@@ -89,6 +218,8 @@ class Light:
     effects_v2: EffectsV2Feature | None = None
     timed_effects: TimedEffectsFeature | None = None
     powerup: PowerUpFeature | None = None
+    content_configuration: ContentConfiguration | None = None
+    geometry: LightGeometryFeature | None = None
 
     type: ResourceTypes = ResourceTypes.LIGHT
 

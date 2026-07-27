@@ -51,6 +51,8 @@ class SceneMetadata:
 
     name: str
     image: ResourceIdentifier | None = None
+    # appdata: Application specific data. Free format string.
+    appdata: str | None = None
 
 
 class SceneActiveStatus(Enum):
@@ -87,6 +89,51 @@ class SceneStatus:
     last_recall: datetime | None = None
 
 
+class SceneMappingAlgorithm(Enum):
+    """Enum with possible algorithms used to map a scene onto its group."""
+
+    CLASSIC = "classic"
+    SPATIAL = "spatial"
+    UNKNOWN = "unknown"
+
+    @classmethod
+    def _missing_(cls: type, value: object):  # noqa: ARG003
+        """Return default member if unknown value encountered."""
+        return SceneMappingAlgorithm.UNKNOWN
+
+
+@dataclass
+class SceneMapping:
+    """
+    Represent the details about the used scene mapping.
+
+    Only available on bridges with SpatialAware support.
+    """
+
+    algorithm: SceneMappingAlgorithm = SceneMappingAlgorithm.UNKNOWN
+
+
+class SceneActionsUpdateSource(Enum):
+    """Enum with possible sources of a scene actions list update."""
+
+    CLIP = "clip"
+    # autogrow: the system updated the scene because lights were added or removed
+    AUTOGROW = "autogrow"
+    UNKNOWN = "unknown"
+
+    @classmethod
+    def _missing_(cls: type, value: object):  # noqa: ARG003
+        """Return default member if unknown value encountered."""
+        return SceneActionsUpdateSource.UNKNOWN
+
+
+@dataclass
+class SceneLastActionsUpdate:
+    """Represent information about the most recent update of the scene's actions."""
+
+    source: SceneActionsUpdateSource = SceneActionsUpdateSource.UNKNOWN
+
+
 @dataclass
 class SceneMetadataPut:
     """Represent SceneMetadata model when sent/updated to the API with PUT request."""
@@ -121,6 +168,13 @@ class Scene:
     # optional params
     id_v1: str | None = None
     palette: PaletteFeature | None = None
+    # recall: the bridge reports an empty object here,
+    # the actual properties are only accepted in PUT requests
+    recall: RecallFeature | None = None
+    # mapping: details about the used scene mapping
+    mapping: SceneMapping | None = None
+    # last_actions_update: information about the most recent actions list update
+    last_actions_update: SceneLastActionsUpdate | None = None
 
     type: ResourceTypes = ResourceTypes.SCENE
 
@@ -137,7 +191,6 @@ class ScenePut:
     actions: list[Action] | None = None
     palette: PaletteFeature | None = None
     recall: RecallFeature | None = None
-    palette: PaletteFeature | None = None
     # speed: (number – minimum: 0 – maximum: 1)
     # Speed of dynamic palette for this scene
     speed: float | None = None

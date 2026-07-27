@@ -7,6 +7,7 @@ https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_room
 from dataclasses import dataclass
 from enum import Enum
 
+from .feature import GeometryFeature
 from .resource import ResourceIdentifier, ResourceTypes
 
 
@@ -104,6 +105,8 @@ class Room:
     children: list[ResourceIdentifier]
 
     id_v1: str | None = None
+    # geometry: positioning of the devices that are part of this room
+    geometry: GeometryFeature | None = None
     type: ResourceTypes = ResourceTypes.ROOM
 
     @property

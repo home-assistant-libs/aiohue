@@ -91,7 +91,8 @@ good-names = [
 
 [tool.pylint.DESIGN]
 max-args = 10
-max-attributes = 14
+# the grouped controllers hold one attribute per resource type they manage
+max-attributes = 20
 
 [tool.pylint."MESSAGES CONTROL"]
 disable = [
@@ -116,7 +117,9 @@ max-line-length = 88
 allowed-redefined-builtins = ["id"]
 
 [tool.pytest.ini_options]
-addopts = "--cov"
+# scope coverage to the package: an unscoped --cov makes pytest-cov auto-discover
+# source roots, which pulls in examples/ and executes its argparse at import time.
+addopts = "--cov=aiohue"
 asyncio_mode = "auto"
 
 [tool.ruff]
@@ -150,6 +153,7 @@ ignore = [
   "TD003", # Just annoying, not really useful
   "TD004", # Just annoying, not really useful
   "COM812", # Conflict with the Ruff formatter
+  "CPY001", # We don't use copyright headers
   "ISC001", # Conflict with the Ruff formatter
   "D101", # TEMPORARY DISABLED
   "D102", # TEMPORARY DISABLED

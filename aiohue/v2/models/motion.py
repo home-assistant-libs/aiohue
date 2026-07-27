@@ -27,8 +27,11 @@ class Motion:
     # enabled: required(boolean)
     # true when sensor is activated, false when deactivated
     enabled: bool
-    motion: MotionSensingFeature
-    sensitivity: MotionSensingFeatureSensitivity | None
+    # NOTE: the bridge omits `motion` entirely on some firmware/config
+    # combinations (notably Hue Secure / MotionAware areas). It must stay
+    # optional or the whole resource fails to parse and gets dropped.
+    motion: MotionSensingFeature | None = None
+    sensitivity: MotionSensingFeatureSensitivity | None = None
 
     id_v1: str | None = None
     type: ResourceTypes = ResourceTypes.MOTION

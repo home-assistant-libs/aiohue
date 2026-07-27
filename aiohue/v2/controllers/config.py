@@ -10,10 +10,13 @@ from aiohue.v2.models.behavior_instance import BehaviorInstance, BehaviorInstanc
 from aiohue.v2.models.behavior_script import BehaviorScript
 from aiohue.v2.models.bridge import Bridge
 from aiohue.v2.models.bridge_home import BridgeHome
+from aiohue.v2.models.clip import Clip
 from aiohue.v2.models.convenience_area_motion import ConvenienceAreaMotion
 from aiohue.v2.models.device import Device
+from aiohue.v2.models.device_software_update import DeviceSoftwareUpdate
 from aiohue.v2.models.entertainment import Entertainment
 from aiohue.v2.models.entertainment_configuration import EntertainmentConfiguration
+from aiohue.v2.models.geolocation import Geolocation, GeolocationPut
 from aiohue.v2.models.homekit import Homekit
 from aiohue.v2.models.matter import Matter
 from aiohue.v2.models.matter_fabric import MatterFabric
@@ -28,6 +31,18 @@ from aiohue.v2.models.service_group import (
     ServiceGroup,
     ServiceGroupMetadata,
     ServiceGroupPut,
+)
+from aiohue.v2.models.switch_input_configuration import (
+    SwitchInputConfiguration,
+    SwitchInputConfigurationPut,
+    SwitchModePut,
+    SwitchModeType,
+)
+from aiohue.v2.models.zigbee_device_discovery import (
+    SearchActionType,
+    ZigbeeDeviceDiscovery,
+    ZigbeeDeviceDiscoveryActionPut,
+    ZigbeeDeviceDiscoveryPut,
 )
 from aiohue.v2.models.zone import Zone
 
@@ -168,14 +183,99 @@ class ServiceGroupController(BaseResourcesController[type[ServiceGroup]]):
         await self.update(id, ServiceGroupPut(metadata=ServiceGroupMetadata(name=name)))
 
 
+class ClipController(BaseResourcesController[type[Clip]]):
+    """Controller holding and managing HUE resources of type `clip`."""
+
+    item_type = ResourceTypes.CLIP
+    item_cls = Clip
+    allow_parser_error = True
+
+    def supports(self, resource_type: ResourceTypes) -> bool:
+        """Return if the bridge serves the given resource type."""
+        return any(resource_type.value in item.resources for item in self.items)
+
+
+class DeviceSoftwareUpdateController(
+    BaseResourcesController[type[DeviceSoftwareUpdate]]
+):
+    """Controller holding and managing HUE resources of type `device_software_update`."""
+
+    item_type = ResourceTypes.DEVICE_SOFTWARE_UPDATE
+    item_cls = DeviceSoftwareUpdate
+    allow_parser_error = True
+
+
+class GeolocationController(BaseResourcesController[type[Geolocation]]):
+    """Controller holding and managing HUE resources of type `geolocation`."""
+
+    item_type = ResourceTypes.GEOLOCATION
+    item_cls = Geolocation
+    allow_parser_error = True
+
+    async def set_location(self, id: str, latitude: float, longitude: float) -> None:
+        """Set the coordinates used to calculate sunrise/sunset."""
+        await self.update(id, GeolocationPut(latitude=latitude, longitude=longitude))
+
+
+class SwitchInputConfigurationController(
+    BaseResourcesController[type[SwitchInputConfiguration]]
+):
+    """Controller holding and managing HUE resources of type `switch_input_configuration`."""
+
+    item_type = ResourceTypes.SWITCH_INPUT_CONFIGURATION
+    item_cls = SwitchInputConfiguration
+    allow_parser_error = True
+
+    async def set_switch_mode(self, id: str, mode: SwitchModeType) -> None:
+        """Set the mode the switch operates in."""
+        await self.update(
+            id, SwitchInputConfigurationPut(switch_mode=SwitchModePut(mode=mode))
+        )
+
+
+class ZigbeeDeviceDiscoveryController(
+    BaseResourcesController[type[ZigbeeDeviceDiscovery]]
+):
+    """Controller holding and managing HUE resources of type `zigbee_device_discovery`."""
+
+    item_type = ResourceTypes.ZIGBEE_DEVICE_DISCOVERY
+    item_cls = ZigbeeDeviceDiscovery
+    allow_parser_error = True
+
+    async def search(
+        self,
+        id: str,
+        action_type: SearchActionType = SearchActionType.SEARCH,
+        search_codes: list[str] | None = None,
+    ) -> None:
+        """
+        Start searching for new zigbee devices to join the network.
+
+        Optionally limit the search to devices with the given search codes.
+        """
+        await self.update(
+            id,
+            ZigbeeDeviceDiscoveryPut(
+                action=ZigbeeDeviceDiscoveryActionPut(
+                    action_type=action_type, search_codes=search_codes
+                )
+            ),
+        )
+
+
 class ConfigController(
     GroupedControllerBase[
         Bridge
         | BridgeHome
+        | Clip
+        | DeviceSoftwareUpdate
         | Entertainment
         | EntertainmentConfiguration
+        | Geolocation
         | MotionAreaConfiguration
         | ServiceGroup
+        | SwitchInputConfiguration
+        | ZigbeeDeviceDiscovery
     ]
 ):
     """
@@ -258,6 +358,11 @@ class ConfigController(
         self.behavior_instance = BehaviorInstanceController(bridge)
         self.motion_area_configuration = MotionAreaConfigurationController(bridge)
         self.service_group = ServiceGroupController(bridge)
+        self.clip = ClipController(bridge)
+        self.device_software_update = DeviceSoftwareUpdateController(bridge)
+        self.geolocation = GeolocationController(bridge)
+        self.switch_input_configuration = SwitchInputConfigurationController(bridge)
+        self.zigbee_device_discovery = ZigbeeDeviceDiscoveryController(bridge)
         super().__init__(
             bridge,
             [
@@ -272,5 +377,10 @@ class ConfigController(
                 self.behavior_instance,
                 self.motion_area_configuration,
                 self.service_group,
+                self.clip,
+                self.device_software_update,
+                self.geolocation,
+                self.switch_input_configuration,
+                self.zigbee_device_discovery,
             ],
         )

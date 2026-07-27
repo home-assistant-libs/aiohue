@@ -4,6 +4,26 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
 
+from .resource import ResourceIdentifier
+
+
+class ConfigurationStatus(Enum):
+    """
+    Enum with possible statuses of a configurable value.
+
+    `set` means the reported value is in effect,
+    `changing` means a requested change is still being applied.
+    """
+
+    SET = "set"
+    CHANGING = "changing"
+    UNKNOWN = "unknown"
+
+    @classmethod
+    def _missing_(cls: type, value: object):  # noqa: ARG003
+        """Set default enum member if an unknown value is provided."""
+        return ConfigurationStatus.UNKNOWN
+
 
 @dataclass
 class OnFeature:
@@ -47,6 +67,21 @@ class DeltaAction(Enum):
 
 
 @dataclass
+class DimmingDeltaFeature:
+    """
+    Represent `DimmingDelta` Feature object as used by various Hue resources.
+
+    The bridge reports an empty object to advertise that the resource accepts
+    dimming deltas; the properties themselves are only sent in PUT requests.
+
+    https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_light_get
+    """
+
+    action: DeltaAction | None = None
+    brightness_delta: float | None = None
+
+
+@dataclass
 class DimmingDeltaFeaturePut:
     """
     Represent `DimmingDelta` Feature when updating/sending in PUT requests.
@@ -59,6 +94,21 @@ class DimmingDeltaFeaturePut:
 
     action: DeltaAction
     brightness_delta: float | None = None
+
+
+@dataclass
+class ColorTemperatureDeltaFeature:
+    """
+    Represent `ColorTemperatureDelta` Feature object as used by various Hue resources.
+
+    The bridge reports an empty object to advertise that the resource accepts
+    color temperature deltas; the properties themselves are only sent in PUT requests.
+
+    https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_light_get
+    """
+
+    action: DeltaAction | None = None
+    mirek_delta: int | None = None
 
 
 @dataclass
@@ -86,6 +136,78 @@ class Position:
     x: float
     y: float
     z: float
+
+
+@dataclass
+class Rotation:
+    """
+    Represent a quaternion describing a rotation in 3D space.
+
+    Each value is a float between -1 and 1.
+    """
+
+    x: float
+    y: float
+    z: float
+    w: float
+
+
+@dataclass
+class GeometryTransform:
+    """Represent the placement of an object in 3D space."""
+
+    # position: A 3D coordinate in space, in meters.
+    position: Position
+    rotation: Rotation
+
+
+@dataclass
+class GeometryObject:
+    """Represent the placement of a single referenced resource in 3D space."""
+
+    reference: ResourceIdentifier
+    transform: GeometryTransform
+
+
+@dataclass
+class GeometryFeature:
+    """
+    Represent `Geometry` Feature object as used by various Hue resources.
+
+    Describes where the resources belonging to this resource are positioned
+    in 3D space.
+
+    https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_device_get
+    """
+
+    objects: list[GeometryObject] = field(default_factory=list)
+
+
+@dataclass
+class PixelPosition:
+    """
+    Represent the position of a single pixel of a light in 3D space.
+
+    Range of the coordinates is -100 to 100 meters.
+    """
+
+    # index: Index of the pixel to which the position belongs,
+    # 0 for non-gradient lights.
+    index: int
+    position: Position
+
+
+@dataclass
+class LightGeometryFeature:
+    """
+    Represent `Geometry` Feature object as used by the light resource.
+
+    Describes where the pixels of the light are positioned in 3D space.
+
+    https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_light_get
+    """
+
+    pixel_positions: list[PixelPosition] = field(default_factory=list)
 
 
 class AlertEffectType(Enum):
@@ -195,6 +317,20 @@ class ColorFeaturePut(ColorFeatureBase):
 
 
 @dataclass
+class GroupedColorFeature:
+    """
+    Represent the joined `Color` control of a group of lights.
+
+    The bridge reports an empty object when at least one light in the group
+    supports color control.
+
+    https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_grouped_light_get
+    """
+
+    xy: ColorPoint | None = None
+
+
+@dataclass
 class MirekSchema:
     """Represent Mirek schema."""
 
@@ -233,6 +369,21 @@ class ColorTemperatureFeaturePut:
 
     # Color temperature in mirek (153-500)
     mirek: int
+
+
+@dataclass
+class GroupedColorTemperatureFeature:
+    """
+    Represent the joined `ColorTemperature` control of a group of lights.
+
+    The bridge reports an empty object when at least one light in the group
+    supports color temperature control.
+
+    https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_grouped_light_get
+    """
+
+    # Color temperature in mirek (153-500)
+    mirek: int | None = None
 
 
 class DynamicStatus(Enum):
@@ -569,6 +720,11 @@ class PaletteFeature:
     dimming: list[DimmingFeatureBase]
     # color_temperature: (array of PaletteFeatureColorTemperature – minItems: 0 – maxItems: 1)
     color_temperature: list[PaletteFeatureColorTemperature]
+    # effects: (array of SceneEffectsFeature – minItems: 0 – maxItems: 3)
+    # Deprecated: use effects_v2
+    effects: list[SceneEffectsFeature] = field(default_factory=list)
+    # effects_v2: (array of SceneEffectsV2Feature – minItems: 0 – maxItems: 3)
+    effects_v2: list[SceneEffectsV2Feature] = field(default_factory=list)
 
 
 @dataclass
@@ -594,6 +750,8 @@ class GradientFeatureBase:
     # points: Collection of gradients points.
     # For control of the gradient points through a PUT a minimum of 2 points need to be provided.
     points: list[GradientPoint]
+    # mode: Mode in which the points are (to be) deployed.
+    mode: GradientMode | None = None
 
 
 @dataclass
@@ -606,7 +764,7 @@ class GradientFeature(GradientFeatureBase):
 
     # points_capable: required(integer)
     # Number of color points that gradient lamp is capable of showing with gradience.
-    points_capable: int
+    points_capable: int = 0
     # mode: Mode in which the points are currently being deployed.
     # If not provided during PUT/POST it will be defaulted to interpolated_palette
     mode: GradientMode = GradientMode.INTERPOLATED_PALETTE
@@ -804,7 +962,15 @@ class MotionSensingFeature:
 
     @property
     def value(self) -> bool | None:
-        """Return the actual/current value."""
+        """
+        Return the current motion state, or None if the sensor has no valid reading.
+
+        A disabled sensor, or one that is not (yet) reporting, keeps returning its
+        last known motion value with `motion_valid` set to false. That value can be
+        arbitrarily old, so it is reported as unknown rather than as an observation.
+        """
+        if self.motion_valid is False:
+            return None
         # prefer new style attribute (not available on older firmware versions)
         if self.motion_report is not None:
             return self.motion_report.motion

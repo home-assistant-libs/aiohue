@@ -6,7 +6,7 @@ https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_bridge
 
 from dataclasses import dataclass
 
-from .resource import ResourceTypes
+from .resource import ResourceIdentifier, ResourceTypes
 
 
 @dataclass
@@ -29,4 +29,5 @@ class Bridge:
     time_zone: TimeZone
 
     id_v1: str | None = None
+    owner: ResourceIdentifier | None = None
     type: ResourceTypes = ResourceTypes.BRIDGE

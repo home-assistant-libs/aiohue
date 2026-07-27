@@ -14,6 +14,8 @@ class MotionAreaHealth(Enum):
     """Enum with possible health status values."""
 
     HEALTHY = "healthy"
+    # unhealthy is only reported on participant level
+    UNHEALTHY = "unhealthy"
     DEGRADED = "degraded"
     RECOVERING = "recovering"
     UNRECOVERABLE = "unrecoverable"

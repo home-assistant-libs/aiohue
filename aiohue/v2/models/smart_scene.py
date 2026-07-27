@@ -145,6 +145,9 @@ class SmartScene:
 
     # active_timeslot: information on what is the light state for every timeslot of the day
     active_timeslot: SmartSceneActiveTimeslot | None = None
+    # transition_duration: duration in ms of the transition from one timeslot's
+    # scene to the other (defaults to 60000ms)
+    transition_duration: int | None = None
     id_v1: str | None = None
 
     type: ResourceTypes = ResourceTypes.SMART_SCENE
@@ -160,6 +163,7 @@ class SmartScenePut:
 
     metadata: SceneMetadataPut | None = None
     week_timeslots: list[DayTimeSlots] | None = None
+    transition_duration: int | None = None
     recall: SmartSceneRecall | None = None
 
 
