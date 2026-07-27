@@ -4,7 +4,8 @@ import datetime
 from unittest.mock import patch
 
 from aiohue import HueBridgeV2
-from aiohue.v2.models.scene import SceneActiveStatus
+from aiohue.util import dataclass_from_dict
+from aiohue.v2.models.scene import SceneActiveStatus, SceneStatus
 
 
 async def test_scene_status_parsing(v2_resources):
@@ -32,6 +33,10 @@ async def test_scene_status_parsing(v2_resources):
     assert static_scene is not None
     assert isinstance(static_scene.status.last_recall, datetime.datetime)
 
-    # a scene that has never been recalled reports no last_recall
-    for scene in scenes:
-        assert scene.status is not None
+
+def test_scene_status_without_last_recall():
+    """Ensure a scene that has never been recalled is parsed."""
+    status = dataclass_from_dict(SceneStatus, {"active": "inactive"})
+
+    assert status.active == SceneActiveStatus.INACTIVE
+    assert status.last_recall is None
