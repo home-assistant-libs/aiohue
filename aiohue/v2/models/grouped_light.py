@@ -10,11 +10,15 @@ from .feature import (
     AlertFeature,
     AlertFeaturePut,
     ColorFeaturePut,
+    ColorTemperatureDeltaFeature,
     ColorTemperatureDeltaFeaturePut,
     ColorTemperatureFeaturePut,
+    DimmingDeltaFeature,
     DimmingDeltaFeaturePut,
     DimmingFeatureBase,
     DynamicsFeaturePut,
+    GroupedColorFeature,
+    GroupedColorTemperatureFeature,
     OnFeature,
     SignalingFeature,
     SignalingFeaturePut,
@@ -39,8 +43,16 @@ class GroupedLight:
     # dimming: Joined dimming control.
     # “dimming.brightness” contains average brightness of group containing turned-on lights only.
     dimming: DimmingFeatureBase | None = None
+    dimming_delta: DimmingDeltaFeature | None = None
+    color: GroupedColorFeature | None = None  # Joined color control
+    # color_temperature: Joined color temperature control
+    color_temperature: GroupedColorTemperatureFeature | None = None
+    color_temperature_delta: ColorTemperatureDeltaFeature | None = None
     alert: AlertFeature | None = None  # Joined alert control
     signaling: SignalingFeature | None = None
+    # dynamics: the bridge reports an empty object here,
+    # the actual properties are only accepted in PUT requests
+    dynamics: DynamicsFeaturePut | None = None
     type: ResourceTypes = ResourceTypes.GROUPED_LIGHT
 
 

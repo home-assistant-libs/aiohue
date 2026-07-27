@@ -33,6 +33,8 @@ class Matter:
     max_fabrics: int  # Maximum number of fabrics that can exist at a time
     has_qr_code: bool  # Indicates whether a physical QR code is present
 
+    # software_version_string: software version of the matter daemon, e.g. 1.5.0
+    software_version_string: str | None = None
     id_v1: str | None = None
     type: ResourceTypes = ResourceTypes.MATTER
 

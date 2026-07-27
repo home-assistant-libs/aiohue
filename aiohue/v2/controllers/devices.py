@@ -1,10 +1,12 @@
 """Controller holding and managing HUE resources of type `device`."""
 
 from aiohue.v2.models.device import Device, DevicePut
+from aiohue.v2.models.device_software_update import DeviceSoftwareUpdate
 from aiohue.v2.models.feature import IdentifyFeature
 from aiohue.v2.models.light import Light
 from aiohue.v2.models.resource import ResourceTypes
 from aiohue.v2.models.room import Room
+from aiohue.v2.models.switch_input_configuration import SwitchInputConfiguration
 from aiohue.v2.models.zigbee_connectivity import ZigbeeConnectivity
 
 from .base import BaseResourcesController
@@ -34,6 +36,22 @@ class DevicesController(BaseResourcesController[type[Device]]):
         for service in self._items[id].services:
             if service.rtype == ResourceTypes.ZIGBEE_CONNECTIVITY:
                 return self._bridge.sensors.zigbee_connectivity.get(service.rid)
+        return None
+
+    def get_software_update(self, id: str) -> DeviceSoftwareUpdate | None:
+        """Return the DeviceSoftwareUpdate resource connected to device."""
+        for service in self._items[id].services:
+            if service.rtype == ResourceTypes.DEVICE_SOFTWARE_UPDATE:
+                return self._bridge.config.device_software_update.get(service.rid)
+        return None
+
+    def get_switch_input_configuration(
+        self, id: str
+    ) -> SwitchInputConfiguration | None:
+        """Return the SwitchInputConfiguration resource connected to device."""
+        for service in self._items[id].services:
+            if service.rtype == ResourceTypes.SWITCH_INPUT_CONFIGURATION:
+                return self._bridge.config.switch_input_configuration.get(service.rid)
         return None
 
     async def set_identify(self, id: str) -> None:

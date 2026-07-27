@@ -2,10 +2,14 @@
 
 import datetime
 from dataclasses import dataclass
+import json
 
 import pytest
 
-from aiohue.util import dataclass_from_dict
+from aiohue.util import dataclass_from_dict, dataclass_to_dict
+from aiohue.v2.models.feature import OnFeature
+from aiohue.v2.models.resource import ResourceIdentifier, ResourceTypes
+from aiohue.v2.models.scene import Action, ActionAction, ScenePut
 
 
 @dataclass
@@ -76,3 +80,21 @@ def test_dataclass_from_dict():
     # test extra keys not silently ignored in strict mode
     with pytest.raises(KeyError):
         dataclass_from_dict(BasicModel, raw2, strict=True)
+
+
+def test_dataclass_to_dict_serializes_enums_in_collections():
+    """Ensure enums nested inside lists are serialized to their value."""
+    update_obj = ScenePut(
+        actions=[
+            Action(
+                target=ResourceIdentifier(rid="some-id", rtype=ResourceTypes.LIGHT),
+                action=ActionAction(on=OnFeature(on=True)),
+            )
+        ]
+    )
+
+    result = dataclass_to_dict(update_obj)
+
+    assert result["actions"][0]["target"]["rtype"] == "light"
+    # the request body is handed to json.dumps, so it must contain no Enums
+    json.dumps(result)

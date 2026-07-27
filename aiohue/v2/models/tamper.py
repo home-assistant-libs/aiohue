@@ -56,4 +56,4 @@ class Tamper:
     tamper_reports: list[TamperReport] = field(default_factory=list)
 
     id_v1: str | None = None
-    type: ResourceTypes = ResourceTypes.CONTACT
+    type: ResourceTypes = ResourceTypes.TAMPER

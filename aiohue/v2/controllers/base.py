@@ -128,7 +128,15 @@ class BaseResourcesController(Generic[CLIPResource]):
 
     def get_by_v1_id(self, id: str) -> CLIPResource | None:
         """Get item by it's legacy V1 id."""
-        return next((item for item in self._items.values() if item.id_v1 == id), None)
+        # resource types introduced after the V1 api have no id_v1 at all
+        return next(
+            (
+                item
+                for item in self._items.values()
+                if getattr(item, "id_v1", None) == id
+            ),
+            None,
+        )
 
     def get_device(self, id: str) -> Device | None:
         """
