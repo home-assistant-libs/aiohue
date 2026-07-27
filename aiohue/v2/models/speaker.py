@@ -21,6 +21,10 @@ class Speaker:
     """
     Represent a Speaker resource when retrieved from the HUE api.
 
+    The bridge reports the sound that was last played and only clears it well
+    after playback has finished, so the `is_playing_*` properties lag behind the
+    audio and should not be relied on for precise timing.
+
     https://developers.meethue.com/develop/hue-api-v2/api-reference/#resource_speaker_get
     """
 
@@ -29,8 +33,6 @@ class Speaker:
     # owner: required(ResourceIdentifier)
     owner: ResourceIdentifier
 
-    # id_v1: string
-    id_v1: str | None = None
     # alarm: SoundFeature
     alarm: SoundFeature | None = None
     # chime: SoundsFeature

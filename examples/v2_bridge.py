@@ -22,24 +22,6 @@ def select_supported_sound(sounds) -> SupportedSound | None:
     return random.choice(playable) if playable else None
 
 
-async def wait_until_sound_ended(bridge, speaker):
-    """Wait until the speaker is done playing the current sound."""
-    if not speaker.is_playing_sound:
-        return
-
-    done = asyncio.Event()
-
-    def on_update(_event_type, item):
-        if not item.is_playing_sound:
-            done.set()
-
-    unsubscribe = bridge.speakers.subscribe(on_update, id_filter=speaker.id)
-    try:
-        await done.wait()
-    finally:
-        unsubscribe()
-
-
 async def main():
     """Run Main execution."""
     if args.debug:
@@ -84,21 +66,14 @@ async def main():
         # speaker interaction examples
         speaker = next(iter(bridge.speakers), None)
         if speaker is not None:
-            if sound := select_supported_sound(speaker.supported_alarm_sounds):
-                print("Playing alarm sound <", sound, "> on speaker", speaker.id)
-                # duration is only supported by the alarm sound feature
-                await bridge.speakers.play_alarm(
-                    speaker.id, sound, volume=50, duration=1000
-                )
-                await wait_until_sound_ended(bridge, speaker)
             if sound := select_supported_sound(speaker.supported_chime_sounds):
                 print("Playing chime sound <", sound, "> on speaker", speaker.id)
                 await bridge.speakers.play_chime(speaker.id, sound, volume=50)
-                await wait_until_sound_ended(bridge, speaker)
+                await asyncio.sleep(5)
             if sound := select_supported_sound(speaker.supported_alert_sounds):
                 print("Playing alert sound <", sound, "> on speaker", speaker.id)
                 await bridge.speakers.play_alert(speaker.id, sound, volume=50)
-                await wait_until_sound_ended(bridge, speaker)
+                await asyncio.sleep(5)
 
         print("waiting for events...")
         await asyncio.sleep(3600)
