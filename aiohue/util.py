@@ -254,30 +254,29 @@ def dataclass_from_dict(cls: dataclass, dict_obj: dict, strict=False):
 
     return cls(
         **{
-            field.name: _parse_value(
-                f"{cls.__name__}.{field.name}",
-                dict_obj.get(field.name),
-                field.type,
-                _field_default(field),
-            )
+            field.name: _parse_field(cls.__name__, field, dict_obj.get(field.name))
             for field in fields(cls)
         }
     )
 
 
-def _field_default(field: Field) -> Any:
+def _parse_field(cls_name: str, field: Field, value: Any) -> Any:
     """
-    Return the default for a dataclass field, or MISSING if it has none.
+    Parse a single dataclass field from its raw value.
 
     A field declared with `default_factory` has no `default`, so its fallback
-    has to be produced by calling the factory. Without this the field is treated
-    as required and the whole resource fails to parse when the key is absent.
+    has to be produced by calling the factory. Without that the field counts as
+    required and the whole resource fails to parse when the key is absent. The
+    factory only runs when there is no value, so it cannot fire a side effect
+    for a field the bridge did send.
     """
-    if field.default is not MISSING:
-        return field.default
-    if field.default_factory is not MISSING:
-        return field.default_factory()
-    return MISSING
+    default = MISSING
+    if value is None:
+        if field.default is not MISSING:
+            default = field.default
+        elif field.default_factory is not MISSING:
+            default = field.default_factory()
+    return _parse_value(f"{cls_name}.{field.name}", value, field.type, default)
 
 
 def mac_from_bridge_id(bridge_id: str) -> str:
