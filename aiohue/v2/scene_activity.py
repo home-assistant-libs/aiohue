@@ -20,21 +20,21 @@ UpdateListener = Callable[[str], None]
 
 @dataclass(slots=True)
 class GroupSceneState:
-    """Holds active scene data for a Hue group (room/zone)."""
+    """Hold active scene data for a Hue group.
+
+    A smart scene and its effective regular scene can be active at the same time.
+    In that case, both ``smart_scene_id`` and ``scene_id`` are set.
+    """
 
     # Regular scene state
-    active_scene_id: str | None = None
-    active_scene_name: str | None = None
-    active_scene_mode: str | None = None  # "static" | "dynamic_palette" | "unknown"
-    active_scene_last_recall: datetime | None = None
-    active_scene_speed: float | None = (
-        None  # 0.0–1.0 (scene speed; used for dynamic palette)
-    )
-    active_scene_brightness: float | None = None  # 0.0–100.0
+    scene_id: str | None = None
+    scene_mode: SceneActiveStatus | None = None
+    scene_last_recall: datetime | None = None
+    scene_speed: float | None = None  # 0.0–1.0 (scene speed; used for dynamic palette)
+    scene_brightness: float | None = None  # 0.0–100.0
 
     # Smart scene state
-    active_smart_scene_id: str | None = None
-    active_smart_scene_name: str | None = None
+    smart_scene_id: str | None = None
 
 
 class SceneActivityTracker:
@@ -104,20 +104,15 @@ class SceneActivityTracker:
         if group_state is None:
             return
         changed = False
-        if isinstance(scene, Scene) and group_state.active_scene_id == scene.id:
-            group_state.active_scene_id = None
-            group_state.active_scene_name = None
-            group_state.active_scene_mode = None
-            group_state.active_scene_last_recall = None
-            group_state.active_scene_speed = None
-            group_state.active_scene_brightness = None
+        if isinstance(scene, Scene) and group_state.scene_id == scene.id:
+            group_state.scene_id = None
+            group_state.scene_mode = None
+            group_state.scene_last_recall = None
+            group_state.scene_speed = None
+            group_state.scene_brightness = None
             changed = True
-        elif (
-            isinstance(scene, SmartScene)
-            and group_state.active_smart_scene_id == scene.id
-        ):
-            group_state.active_smart_scene_id = None
-            group_state.active_smart_scene_name = None
+        elif isinstance(scene, SmartScene) and group_state.smart_scene_id == scene.id:
+            group_state.smart_scene_id = None
             changed = True
         if changed:
             for listener in list(self._listeners.get(group_id, [])):
@@ -141,12 +136,11 @@ class SceneActivityTracker:
         if scene.status is None:
             return False
         if scene.status.active != SceneActiveStatus.INACTIVE:
-            group_state.active_scene_id = scene.id
-            group_state.active_scene_name = scene.metadata.name
-            group_state.active_scene_mode = scene.status.active.value
-            group_state.active_scene_last_recall = scene.status.last_recall
-            group_state.active_scene_speed = scene.speed
-            group_state.active_scene_brightness = next(
+            group_state.scene_id = scene.id
+            group_state.scene_mode = scene.status.active
+            group_state.scene_last_recall = scene.status.last_recall
+            group_state.scene_speed = scene.speed
+            group_state.scene_brightness = next(
                 (
                     action.action.dimming.brightness
                     for action in scene.actions
@@ -155,13 +149,12 @@ class SceneActivityTracker:
                 None,
             )
             return True
-        if group_state.active_scene_id == scene.id:
-            group_state.active_scene_id = None
-            group_state.active_scene_name = None
-            group_state.active_scene_mode = None
-            group_state.active_scene_last_recall = None
-            group_state.active_scene_speed = None
-            group_state.active_scene_brightness = None
+        if group_state.scene_id == scene.id:
+            group_state.scene_id = None
+            group_state.scene_mode = None
+            group_state.scene_last_recall = None
+            group_state.scene_speed = None
+            group_state.scene_brightness = None
             return True
         return False
 
@@ -170,11 +163,9 @@ class SceneActivityTracker:
     ) -> bool:
         """Update group state from a smart scene event. Returns True if changed."""
         if scene.state == SmartSceneState.ACTIVE:
-            group_state.active_smart_scene_id = scene.id
-            group_state.active_smart_scene_name = scene.metadata.name
+            group_state.smart_scene_id = scene.id
             return True
-        if group_state.active_smart_scene_id == scene.id:
-            group_state.active_smart_scene_id = None
-            group_state.active_smart_scene_name = None
+        if group_state.smart_scene_id == scene.id:
+            group_state.smart_scene_id = None
             return True
         return False

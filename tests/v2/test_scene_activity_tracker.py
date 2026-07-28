@@ -49,7 +49,7 @@ def _smart_scene_data(scene_id: str, group_id: str, name: str, state: str) -> di
 
 
 async def test_active_scene_sets_state() -> None:
-    """After a scene becomes active, group state reflects name and mode."""
+    """After a scene becomes active, group state reflects its ID and mode."""
     bridge = HueBridgeV2("127.0.0.1", "fake")
     scene_id = str(uuid4())
     group_id = str(uuid4())
@@ -69,9 +69,8 @@ async def test_active_scene_sets_state() -> None:
     )
 
     state = tracker.get_group_state(group_id)
-    assert state.active_scene_id == scene_id
-    assert state.active_scene_name == "Relax"
-    assert state.active_scene_mode == "static"
+    assert state.scene_id == scene_id
+    assert state.scene_mode is SceneActiveStatus.STATIC
 
 
 async def test_inactive_scene_clears_state() -> None:
@@ -96,9 +95,8 @@ async def test_inactive_scene_clears_state() -> None:
     )
 
     state = tracker.get_group_state(group_id)
-    assert state.active_scene_id is None
-    assert state.active_scene_name is None
-    assert state.active_scene_mode is None
+    assert state.scene_id is None
+    assert state.scene_mode is None
 
 
 async def test_inactive_event_for_untracked_scene_ignored() -> None:
@@ -128,8 +126,7 @@ async def test_inactive_event_for_untracked_scene_ignored() -> None:
     )
 
     state = tracker.get_group_state(group_id)
-    assert state.active_scene_id == scene_a
-    assert state.active_scene_name == "Relax"
+    assert state.scene_id == scene_a
 
 
 async def test_listener_called_on_update() -> None:
@@ -186,7 +183,7 @@ async def test_listener_unsubscribe() -> None:
 
 
 async def test_active_smart_scene_sets_state() -> None:
-    """When a smart scene becomes active, group state reflects its name."""
+    """When a smart scene becomes active, group state reflects its ID."""
     bridge = HueBridgeV2("127.0.0.1", "fake")
     scene_id = str(uuid4())
     group_id = str(uuid4())
@@ -206,8 +203,7 @@ async def test_active_smart_scene_sets_state() -> None:
     )
 
     state = tracker.get_group_state(group_id)
-    assert state.active_smart_scene_id == scene_id
-    assert state.active_smart_scene_name == "Morning"
+    assert state.smart_scene_id == scene_id
 
 
 async def test_inactive_smart_scene_clears_state() -> None:
@@ -231,8 +227,52 @@ async def test_inactive_smart_scene_clears_state() -> None:
     )
 
     state = tracker.get_group_state(group_id)
-    assert state.active_smart_scene_id is None
-    assert state.active_smart_scene_name is None
+    assert state.smart_scene_id is None
+
+
+async def test_regular_and_smart_scene_state_coexist() -> None:
+    """A smart scene and its effective regular scene are tracked independently."""
+    bridge = HueBridgeV2("127.0.0.1", "fake")
+    scene_id = str(uuid4())
+    smart_scene_id = str(uuid4())
+    group_id = str(uuid4())
+
+    # pylint: disable=protected-access
+    await bridge.scenes.scene._handle_event(
+        EventType.RESOURCE_ADDED,
+        _scene_data(scene_id, group_id, "Relax", "static"),
+    )
+    await bridge.scenes.smart_scene._handle_event(
+        EventType.RESOURCE_ADDED,
+        _smart_scene_data(smart_scene_id, group_id, "Morning", "active"),
+    )
+
+    tracker = SceneActivityTracker(bridge.scenes)
+    tracker.start()
+
+    state = tracker.get_group_state(group_id)
+    assert state.scene_id == scene_id
+    assert state.smart_scene_id == smart_scene_id
+
+    await bridge.scenes.smart_scene._handle_event(
+        EventType.RESOURCE_UPDATED,
+        {"id": smart_scene_id, "type": "smart_scene", "state": "inactive"},
+    )
+
+    assert state.scene_id == scene_id
+    assert state.smart_scene_id is None
+
+    await bridge.scenes.smart_scene._handle_event(
+        EventType.RESOURCE_UPDATED,
+        {"id": smart_scene_id, "type": "smart_scene", "state": "active"},
+    )
+    await bridge.scenes.scene._handle_event(
+        EventType.RESOURCE_UPDATED,
+        {"id": scene_id, "type": "scene", "status": {"active": "inactive"}},
+    )
+
+    assert state.scene_id is None
+    assert state.smart_scene_id == smart_scene_id
 
 
 async def test_start_seeds_initial_state(v2_resources) -> None:
@@ -253,7 +293,7 @@ async def test_start_seeds_initial_state(v2_resources) -> None:
 
     for scene in active_scenes:
         state = tracker.get_group_state(scene.group.rid)
-        assert state.active_scene_name == scene.metadata.name
+        assert state.scene_id == scene.id
 
 
 async def test_stop_unsubscribes() -> None:
@@ -282,11 +322,11 @@ async def test_stop_unsubscribes() -> None:
     )
 
     listener.assert_not_called()
-    assert tracker.get_group_state(group_id).active_scene_id is None
+    assert tracker.get_group_state(group_id).scene_id is None
 
 
 async def test_dynamic_palette_mode() -> None:
-    """A dynamic_palette active status is reflected in active_scene_mode."""
+    """A dynamic_palette active status is reflected in scene_mode."""
     bridge = HueBridgeV2("127.0.0.1", "fake")
     scene_id = str(uuid4())
     group_id = str(uuid4())
@@ -310,7 +350,32 @@ async def test_dynamic_palette_mode() -> None:
     )
 
     state = tracker.get_group_state(group_id)
-    assert state.active_scene_mode == "dynamic_palette"
+    assert state.scene_mode is SceneActiveStatus.DYNAMIC_PALETTE
+
+
+async def test_unknown_scene_mode() -> None:
+    """An unrecognized Hue scene mode is preserved as the enum sentinel."""
+    bridge = HueBridgeV2("127.0.0.1", "fake")
+    scene_id = str(uuid4())
+    group_id = str(uuid4())
+
+    # pylint: disable=protected-access
+    await bridge.scenes.scene._handle_event(
+        EventType.RESOURCE_ADDED,
+        _scene_data(scene_id, group_id, "Future scene", "inactive"),
+    )
+
+    tracker = SceneActivityTracker(bridge.scenes)
+    tracker.start()
+
+    await bridge.scenes.scene._handle_event(
+        EventType.RESOURCE_UPDATED,
+        {"id": scene_id, "type": "scene", "status": {"active": "future_mode"}},
+    )
+
+    state = tracker.get_group_state(group_id)
+    assert state.scene_id == scene_id
+    assert state.scene_mode is SceneActiveStatus.UNKNOWN
 
 
 async def test_brightness_extracted_from_actions() -> None:
@@ -329,7 +394,7 @@ async def test_brightness_extracted_from_actions() -> None:
     tracker.start()
 
     state = tracker.get_group_state(group_id)
-    assert state.active_scene_brightness == 80.0
+    assert state.scene_brightness == 80.0
 
 
 async def test_deleted_active_scene_clears_state() -> None:
@@ -355,8 +420,7 @@ async def test_deleted_active_scene_clears_state() -> None:
     )
 
     state = tracker.get_group_state(group_id)
-    assert state.active_scene_id is None
-    assert state.active_scene_name is None
+    assert state.scene_id is None
     listener.assert_called_once_with(group_id)
 
 
@@ -389,7 +453,7 @@ async def test_deleted_inactive_scene_does_not_notify() -> None:
     )
 
     state = tracker.get_group_state(group_id)
-    assert state.active_scene_id == scene_a
+    assert state.scene_id == scene_a
     listener.assert_not_called()
 
 
@@ -413,8 +477,7 @@ async def test_deleted_active_smart_scene_clears_state() -> None:
     )
 
     state = tracker.get_group_state(group_id)
-    assert state.active_smart_scene_id is None
-    assert state.active_smart_scene_name is None
+    assert state.smart_scene_id is None
 
 
 async def test_brightness_none_when_no_dimming_action() -> None:
@@ -433,4 +496,4 @@ async def test_brightness_none_when_no_dimming_action() -> None:
     tracker.start()
 
     state = tracker.get_group_state(group_id)
-    assert state.active_scene_brightness is None
+    assert state.scene_brightness is None
