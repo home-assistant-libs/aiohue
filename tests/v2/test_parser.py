@@ -1,7 +1,7 @@
 """Test parser functions that converts the incoming json from API into dataclass models."""
 
 import datetime
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 import json
 
 import pytest
@@ -98,3 +98,22 @@ def test_dataclass_to_dict_serializes_enums_in_collections():
     assert result["actions"][0]["target"]["rtype"] == "light"
     # the request body is handed to json.dumps, so it must contain no Enums
     json.dumps(result)
+
+
+def test_dataclass_from_dict_uses_default_factory():
+    """Ensure a field with a default_factory is not treated as required."""
+
+    @dataclass
+    class ModelWithFactory:
+        """Test model with a default_factory field."""
+
+        a: int
+        b: list[str] = field(default_factory=list)
+
+    result = dataclass_from_dict(ModelWithFactory, {"a": 1})
+
+    assert isinstance(result.b, list)
+    assert not result.b
+    # the factory has to run per instance, not be shared between them
+    result.b.append("x")
+    assert not dataclass_from_dict(ModelWithFactory, {"a": 2}).b

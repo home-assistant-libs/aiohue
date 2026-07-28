@@ -1,7 +1,7 @@
 """Utils for aiohue."""
 
 import logging
-from dataclasses import MISSING, asdict, dataclass, fields, is_dataclass
+from dataclasses import MISSING, Field, asdict, dataclass, fields, is_dataclass
 from datetime import datetime
 from enum import Enum
 from types import NoneType, UnionType
@@ -258,11 +258,26 @@ def dataclass_from_dict(cls: dataclass, dict_obj: dict, strict=False):
                 f"{cls.__name__}.{field.name}",
                 dict_obj.get(field.name),
                 field.type,
-                field.default,
+                _field_default(field),
             )
             for field in fields(cls)
         }
     )
+
+
+def _field_default(field: Field) -> Any:
+    """
+    Return the default for a dataclass field, or MISSING if it has none.
+
+    A field declared with `default_factory` has no `default`, so its fallback
+    has to be produced by calling the factory. Without this the field is treated
+    as required and the whole resource fails to parse when the key is absent.
+    """
+    if field.default is not MISSING:
+        return field.default
+    if field.default_factory is not MISSING:
+        return field.default_factory()
+    return MISSING
 
 
 def mac_from_bridge_id(bridge_id: str) -> str:
