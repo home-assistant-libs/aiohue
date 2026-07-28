@@ -35,15 +35,6 @@ from typing import Any, Union, get_args, get_origin, get_type_hints
 import aiohue.v2.models as models_package
 from aiohue.v2.models.resource import ResourceTypes
 
-# rtypes the bridge references but never serves as a resource of its own
-REFERENCE_ONLY = {
-    "motion_area_candidate",
-    "private_group",
-    "public_image",
-    "recipe",
-    "taurus_7455",
-}
-
 parser = argparse.ArgumentParser(description="Diff a Hue bridge dump vs the models")
 parser.add_argument("dump", help="path to a dump produced by dump_bridge.py")
 parser.add_argument("--type", help="only audit this resource type")

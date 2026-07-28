@@ -81,6 +81,7 @@ warn_unused_ignores = true
 [tool.pylint.MAIN]
 ignore-paths = [
   "aiohue/v1/", # V1 code is no longer maintained
+  "scripts/", # Maintainer tooling, not shipped with the package
 ]
 
 [tool.pylint.BASIC]

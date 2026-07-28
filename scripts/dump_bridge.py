@@ -10,6 +10,9 @@ Usage:
 
 Use --redact when the dump will be shared or committed. It replaces names, macs
 and ip addresses while leaving every key and value shape intact.
+
+Bridges serve a self-signed certificate, so this script does not verify it. The
+appkey is sent over that connection, so only run it on a network you trust.
 """
 
 import argparse
