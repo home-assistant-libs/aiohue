@@ -117,7 +117,7 @@ class BehaviorInstance:
         Return the run state of a presence mimicking instance.
 
         Only presence mimicking instances report this, so None means this
-        instance can not be started and stopped.
+        instance cannot be started and stopped.
         """
         if self.state is None or (value := self.state.get("pm_state")) is None:
             return None
