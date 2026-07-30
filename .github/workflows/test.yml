@@ -9,45 +9,60 @@ on:
   pull_request:
     branches: [main]
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
 jobs:
   lint:
     runs-on: ubuntu-latest
-    continue-on-error: true
 
     steps:
       - name: Check out code from GitHub
-        uses: actions/checkout@v7.0.1
-      - name: Set up Python
-        uses: actions/setup-python@v7.0.0
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          python-version: "3.11"
+          persist-credentials: false
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.13"
+          cache: pip
+          cache-dependency-path: pyproject.toml
       - name: Install dependencies
         run: |
-          python -m pip install --upgrade pip build setuptools
-          pip install . .[test]
+          python -m pip install --upgrade pip
+          pip install .[test]
       - name: Lint/test with pre-commit
         run: SKIP=no-commit-to-branch pre-commit run --all-files
 
   test:
     runs-on: ubuntu-latest
-    continue-on-error: true
     strategy:
       fail-fast: false
       matrix:
         python-version:
           - "3.11"
           - "3.12"
+          - "3.13"
+          - "3.14"
 
     steps:
       - name: Check out code from GitHub
-        uses: actions/checkout@v7.0.1
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v7.0.0
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
           python-version: ${{ matrix.python-version }}
+          cache: pip
+          cache-dependency-path: pyproject.toml
       - name: Install dependencies
         run: |
-          python -m pip install --upgrade pip build setuptools
+          python -m pip install --upgrade pip
           pip install .[test]
       - name: Pytest
         run: pytest --durations 10 --cov-report term-missing --cov=aiohue --cov-report=xml tests/

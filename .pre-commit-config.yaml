@@ -94,6 +94,12 @@ repos:
         types: [text]
         entry: scripts/run-in-env.sh trailing-whitespace-fixer
         stages: [pre-commit, pre-push, manual]
+      - id: zizmor
+        name: 🔒 Auditing GitHub Actions workflows with zizmor
+        language: system
+        files: ^\.github/workflows/
+        entry: scripts/run-in-env.sh zizmor
+        require_serial: true
       # TODO: enable mypy and solve the found issues
       # - id: mypy
       #   name: mypy

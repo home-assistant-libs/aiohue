@@ -4,7 +4,29 @@ updates:
     directory: "/"
     schedule:
       interval: daily
+    # Actions are pinned to commit SHAs, so a bump is unreviewable by version
+    # alone. Let a fresh release sit for a few days before adopting it, so a
+    # compromised or broken tag has a chance to be pulled first.
+    cooldown:
+      default-days: 3
+      semver-major-days: 7
+    groups:
+      github-actions:
+        patterns:
+          - "*"
+    commit-message:
+      prefix: "ci"
+    labels:
+      - "ci"
+      - "dependencies"
   - package-ecosystem: "pip"
     directory: "/"
     schedule:
       interval: weekly
+    cooldown:
+      default-days: 3
+      semver-major-days: 7
+    commit-message:
+      prefix: "chore"
+    labels:
+      - "dependencies"
