@@ -131,15 +131,8 @@ class BehaviorInstanceController(BaseResourcesController[type[BehaviorInstance]]
     allow_parser_error = True
 
     async def set_enabled(self, id: str, enabled: bool) -> None:
-        """Enable/Disable behavior instance."""
-        # The bridge rejects a PUT that carries `enabled` on its own with
-        # "The instance doesn't support triggers." and only applies the change
-        # when a configuration is sent along with it, so resend the current
-        # configuration unmodified.
-        configuration = item.configuration if (item := self.get(id)) else None
-        await self.update(
-            id, BehaviorInstancePut(enabled=enabled, configuration=configuration)
-        )
+        """Enable/Disable sensor."""
+        await self.update(id, BehaviorInstancePut(enabled=enabled))
 
 
 class MotionAreaConfigurationController(
