@@ -92,3 +92,12 @@ async def test_successful_request_returns_data() -> None:
         result = await bridge.request("get", "clip/v2/resource/light")
 
     assert result == [{"id": "1234"}]
+
+
+async def test_success_with_unparsable_body_raises_decode_error() -> None:
+    """Test a 2xx with an unparsable body still surfaces the decode error."""
+    bridge = HueBridgeV2("192.168.1.123", "mock-key")
+    resp = mock_response(200, None, json_error=True)
+
+    with patch_response(bridge, resp), pytest.raises(aiohttp.ContentTypeError):
+        await bridge.request("get", "clip/v2/resource/light")
