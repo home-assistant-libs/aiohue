@@ -20,6 +20,19 @@ class BehaviorInstanceStatus(Enum):
     ERRORED = "errored"
 
 
+class PresenceMimickingState(Enum):
+    """Run state of a presence mimicking behavior instance."""
+
+    STARTED = "started"
+    STOPPED = "stopped"
+    UNKNOWN = "unknown"
+
+    @classmethod
+    def _missing_(cls: type, value: object):  # noqa: ARG003
+        """Set default enum member if an unknown value is provided."""
+        return PresenceMimickingState.UNKNOWN
+
+
 @dataclass
 class BehaviorInstanceMetadata:
     """Represent BehaviorInstance Metadata object as used by BehaviorInstance resource."""
@@ -97,6 +110,18 @@ class BehaviorInstance:
     id_v1: str | None = None
     migrated_from: str | None = None
     type: ResourceTypes = ResourceTypes.BEHAVIOR_INSTANCE
+
+    @property
+    def presence_mimicking_state(self) -> PresenceMimickingState | None:
+        """
+        Return the run state of a presence mimicking instance.
+
+        Only presence mimicking instances report this, so None means this
+        instance cannot be started and stopped.
+        """
+        if self.state is None or (value := self.state.get("pm_state")) is None:
+            return None
+        return PresenceMimickingState(value)
 
 
 @dataclass
