@@ -134,6 +134,19 @@ class BehaviorInstanceController(BaseResourcesController[type[BehaviorInstance]]
         """Enable/Disable sensor."""
         await self.update(id, BehaviorInstancePut(enabled=enabled))
 
+    async def start(self, id: str) -> None:
+        """
+        Start a behavior instance, e.g. presence mimicking.
+
+        Enabling an instance only arms it, this actually runs it. Instances
+        that report a `presence_mimicking_state` support this.
+        """
+        await self.update(id, BehaviorInstancePut(trigger={"start": {}}))
+
+    async def stop(self, id: str) -> None:
+        """Stop a behavior instance that was started with `start`."""
+        await self.update(id, BehaviorInstancePut(trigger={"stop": {}}))
+
 
 class MotionAreaConfigurationController(
     BaseResourcesController[type[MotionAreaConfiguration]]

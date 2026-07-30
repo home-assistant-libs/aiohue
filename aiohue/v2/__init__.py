@@ -4,7 +4,7 @@ import asyncio
 import logging
 import time
 from collections.abc import Callable, Generator
-from contextlib import asynccontextmanager
+from contextlib import asynccontextmanager, suppress
 from types import TracebackType
 from typing import Any, Self
 from uuid import uuid4
@@ -182,8 +182,17 @@ class HueBridgeV2:
                     continue
                 if resp.status == 403:
                     raise Unauthorized
-                # raise on all other error status codes
-                resp.raise_for_status()
+                if resp.status >= 400:
+                    # The bridge returns a CLIP error payload holding a human
+                    # readable description alongside error statuses, so read it
+                    # before raising for status, otherwise the caller only sees
+                    # a bare "400, message='Bad Request'". A body we cannot
+                    # parse just falls through to raise_for_status below.
+                    with suppress(aiohttp.ContentTypeError, ValueError):
+                        if errors := (await resp.json()).get("errors"):
+                            raise_from_error(errors[0])
+                    # raise on all other error status codes
+                    resp.raise_for_status()
                 result = await resp.json()
                 if result.get("errors"):
                     raise_from_error(result["errors"][0])
