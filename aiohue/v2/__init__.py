@@ -182,11 +182,18 @@ class HueBridgeV2:
                     continue
                 if resp.status == 403:
                     raise Unauthorized
+                # The bridge returns a CLIP error payload holding a human readable
+                # description alongside 4xx statuses, so parse the body before
+                # raising for status, otherwise that description is lost and the
+                # caller only sees a bare "400, message='Bad Request'".
+                try:
+                    result = await resp.json()
+                except (aiohttp.ContentTypeError, ValueError):
+                    result = None
+                if result and result.get("errors"):
+                    raise_from_error(result["errors"][0])
                 # raise on all other error status codes
                 resp.raise_for_status()
-                result = await resp.json()
-                if result.get("errors"):
-                    raise_from_error(result["errors"][0])
                 return result["data"]
 
         raise BridgeBusy(
