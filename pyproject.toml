@@ -40,7 +40,7 @@ test = [
   "pytest-cov==7.1.0",
   "ruff==0.16.6",
   "safety==3.7.0",
-  "zizmor==1.30.0",
+  "zizmor==1.30.1",
 ]
 
 [project.urls]
