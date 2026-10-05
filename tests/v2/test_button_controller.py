@@ -90,7 +90,7 @@ async def handle_button_event(
 class CopyingMock(Mock):
     """Mock that deep copies its arguments."""
 
-    def __call__(self, *args, **kwargs):
+    def __call__(self, *args, **kwargs):  # pylint: disable=arguments-differ
         args = deepcopy(args)
         kwargs = deepcopy(kwargs)
         return super().__call__(*args, **kwargs)
