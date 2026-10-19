@@ -1,6 +1,6 @@
 """Test parsing of Scene.status field."""
 
-import datetime
+import datetime as dt
 from unittest.mock import patch
 
 from aiohue import HueBridgeV2
@@ -28,10 +28,10 @@ async def test_scene_status_parsing(v2_resources):
     static_scene = scene_with_status(SceneActiveStatus.STATIC)
 
     assert dynamic_scene is not None
-    assert isinstance(dynamic_scene.status.last_recall, datetime.datetime)
+    assert isinstance(dynamic_scene.status.last_recall, dt.datetime)
 
     assert static_scene is not None
-    assert isinstance(static_scene.status.last_recall, datetime.datetime)
+    assert isinstance(static_scene.status.last_recall, dt.datetime)
 
 
 def test_scene_status_without_last_recall():
