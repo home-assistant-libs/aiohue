@@ -1,6 +1,6 @@
 """Test speakers controller functions."""
 
-import datetime
+import datetime as dt
 from unittest.mock import patch
 
 from aiohue import HueBridgeV2
@@ -107,8 +107,8 @@ async def test_playing_alarm_reports_estimated_end(v2_resources):
     speaker = bridge.speakers[SPEAKER_ID]
     assert speaker.is_playing_alarm
     assert speaker.is_playing_sound
-    assert speaker.alarm.status.estimated_end.estimate == datetime.datetime(
-        2026, 7, 27, 21, 25, 46, 56000, tzinfo=datetime.UTC
+    assert speaker.alarm.status.estimated_end.estimate == dt.datetime(
+        2026, 7, 27, 21, 25, 46, 56000, tzinfo=dt.UTC
     )
 
 

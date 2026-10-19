@@ -1,6 +1,6 @@
 """Test parser functions that converts the incoming json from API into dataclass models."""
 
-import datetime
+import datetime as dt
 from dataclasses import dataclass, field
 import json
 
@@ -31,7 +31,7 @@ class BasicModel:
     c: str
     d: int | None
     e: BasicModelChild
-    f: datetime.datetime
+    f: dt.datetime
     g: str = "default"
 
 
@@ -60,7 +60,7 @@ def test_dataclass_from_dict():
     res = dataclass_from_dict(BasicModel, raw)
     assert res.b == 2.0
     # test datetime string
-    assert isinstance(res.f, datetime.datetime)
+    assert isinstance(res.f, dt.datetime)
     assert res.f.month == 12
     assert res.f.day == 9
     # test string doesn't match int
