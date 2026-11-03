@@ -3,6 +3,7 @@
 from aiohue.v2.models.feature import (
     AlertEffectType,
     AlertFeaturePut,
+    ColorFeatureBase,
     ColorFeaturePut,
     ColorPoint,
     ColorTemperatureFeaturePut,
@@ -15,6 +16,9 @@ from aiohue.v2.models.feature import (
     EffectsV2ActionPut,
     EffectsV2FeaturePut,
     EffectsV2ParametersPut,
+    GradientFeatureBase,
+    GradientMode,
+    GradientPoint,
     OnFeature,
     TimedEffectsFeaturePut,
     TimedEffectStatus,
@@ -71,7 +75,7 @@ class LightsController(BaseResourcesController[type[Light]]):
         else:
             await self.set_state(id, alert=AlertEffectType.BREATHE)
 
-    async def set_state(
+    async def set_state(  # noqa: PLR0913, PLR0917  # pylint: disable=too-many-arguments,too-many-branches
         self,
         id: str,
         on: bool | None = None,
@@ -82,6 +86,8 @@ class LightsController(BaseResourcesController[type[Light]]):
         alert: AlertEffectType | None = None,
         effect: EffectStatus | TimedEffectStatus | None = None,
         effect_speed: float | None = None,
+        gradient_points: list[tuple[float, float]] | None = None,
+        gradient_mode: GradientMode | None = None,
     ) -> None:
         """Set supported feature(s) to light resource."""
         update_obj = LightPut()
@@ -97,6 +103,15 @@ class LightsController(BaseResourcesController[type[Light]]):
             update_obj.dynamics = DynamicsFeaturePut(duration=transition_time)
         if alert is not None:
             update_obj.alert = AlertFeaturePut(action=alert)
+        if gradient_points is not None:
+            # The bridge resets the mode to interpolated_palette when it is omitted.
+            update_obj.gradient = GradientFeatureBase(
+                points=[
+                    GradientPoint(color=ColorFeatureBase(xy=ColorPoint(x, y)))
+                    for x, y in gradient_points
+                ],
+                mode=gradient_mode,
+            )
 
         # for timed_effects feature, transition time is used for duration
         if effect is not None and isinstance(effect, TimedEffectStatus):
