@@ -9,7 +9,7 @@ from typing import Any, Union, get_args, get_origin, get_type_hints
 
 from aiohttp import ClientSession
 
-from aiohue.errors import raise_from_error
+from aiohue.errors import AiohueException, raise_from_error
 
 
 async def create_app_key(
@@ -46,6 +46,11 @@ async def create_app_key(
                     if "error" in result:
                         raise_from_error(result["error"])
                     return result["success"]["username"]
+            except AiohueException:
+                # The bridge answered over https. Do not retry over http:
+                # the bridge redirects http to https, and aiohttp then
+                # changes the POST into a GET, which hides the real error.
+                raise
             except Exception as exc:  # pylint: disable=broad-except
                 if proto == "http":
                     raise exc
