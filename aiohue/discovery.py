@@ -76,22 +76,29 @@ async def is_hue_bridge(host: str, websession: ClientSession | None = None) -> s
     if websession is None:
         websession = ClientSession()
     try:
-        # every hue bridge returns discovery info on this endpoint
-        url = f"http://{host}/api/config"
-        async with websession.get(url, timeout=30) as res:
-            res.raise_for_status()
-            data = await res.json()
-            if "bridgeid" not in data:
-                # there are some emulator projects out there that emulate a Hue bridge
-                # in a sloppy way, ignore them.
-                # https://github.com/home-assistant-libs/aiohue/issues/134
-                raise ClientConnectionError(
-                    "Invalid API response, not a real Hue bridge?"
-                )
-            return normalize_bridge_id(data["bridgeid"])
+        # every hue bridge returns discovery info on this endpoint.
+        # newer bridge firmware blocks the api over plain http (403),
+        # so try https first and fall back to http for older bridges.
+        try:
+            return await _get_bridge_id(f"https://{host}/api/config", websession)
+        except Exception:  # pylint: disable=broad-except
+            return await _get_bridge_id(f"http://{host}/api/config", websession)
     finally:
         if not websession_provided:
             await websession.close()
+
+
+async def _get_bridge_id(url: str, websession: ClientSession) -> str:
+    """Return the bridge ID from the discovery info at the given url."""
+    async with websession.get(url, ssl=False, timeout=30) as res:
+        res.raise_for_status()
+        data = await res.json()
+        if "bridgeid" not in data:
+            # there are some emulator projects out there that emulate a Hue bridge
+            # in a sloppy way, ignore them.
+            # https://github.com/home-assistant-libs/aiohue/issues/134
+            raise ClientConnectionError("Invalid API response, not a real Hue bridge?")
+        return normalize_bridge_id(data["bridgeid"])
 
 
 async def is_v2_bridge(host: str, websession: ClientSession | None = None) -> bool:
