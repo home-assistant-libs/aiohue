@@ -41,18 +41,20 @@ class RoomController(BaseResourcesController[type[Room]]):
         return [scene for scene in self._bridge.scenes if scene.group.rid == id]
 
     def get_lights(self, id: str) -> list[Light]:
-        """Return all lights in given room."""
+        """Return all lights in given room, in the order of its children."""
         if id not in self._items:
             return []
-        result = []
-        for dev_id in self._items[id].devices:
-            if (dev := self._bridge.devices.get(dev_id)) is None:
+        result: dict[str, Light] = {}
+        for device_id in dict.fromkeys(x.rid for x in self._items[id].children):
+            if (dev := self._bridge.devices.get(device_id)) is None:
                 continue
 
-            for light_id in dev.lights:
-                if light := self._bridge.lights.get(light_id):
-                    result.append(light)
-        return result
+            for service in dev.services:
+                if service.rtype != ResourceTypes.LIGHT or service.rid in result:
+                    continue
+                if light := self._bridge.lights.get(service.rid):
+                    result[service.rid] = light
+        return list(result.values())
 
     def get_speakers(self, id: str) -> list[Speaker]:
         """Return all speakers in given room."""
@@ -81,13 +83,17 @@ class ZoneController(BaseResourcesController[type[Zone]]):
         return [scene for scene in self._bridge.scenes if scene.group.rid == id]
 
     def get_lights(self, id: str) -> list[Light]:
-        """Return all lights in given zone."""
+        """Return all lights in given zone, in the order of its children."""
         if id not in self._items:
             return []
-        light_ids = {
+        light_ids = dict.fromkeys(
             x.rid for x in self._items[id].children if x.rtype == ResourceTypes.LIGHT
-        }
-        return [x for x in self._bridge.lights if x.id in light_ids]
+        )
+        return [
+            light
+            for light_id in light_ids
+            if (light := self._bridge.lights.get(light_id))
+        ]
 
 
 class GroupedLightController(BaseResourcesController[type[GroupedLight]]):
