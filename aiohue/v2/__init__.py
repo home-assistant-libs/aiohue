@@ -16,7 +16,12 @@ from aiohue.errors import BridgeBusy, Unauthorized, raise_from_error
 
 from .controllers.config import ConfigController
 from .controllers.devices import DevicesController
-from .controllers.events import EventCallBackType, EventStream, EventType
+from .controllers.events import (
+    KEEPALIVE_INTERVAL,
+    EventCallBackType,
+    EventStream,
+    EventType,
+)
 from .controllers.groups import GroupsController
 from .controllers.lights import LightsController
 from .controllers.scenes import ScenesController
@@ -25,6 +30,11 @@ from .controllers.speakers import SpeakersController
 
 # how many times do we retry on a 503 or 429 (bridge overload/rate limit)
 MAX_RETRIES = 25
+# how long (in seconds) an idle connection to the bridge stays in the pool.
+# aiohttp closes idle connections after 15 seconds by default; keeping them
+# longer than the event stream's keepalive interval lets the keepalive request
+# keep a connection open, so a request after a pause needs no new TLS handshake.
+IDLE_CONNECTION_TIMEOUT = KEEPALIVE_INTERVAL + 30
 
 
 class HueBridgeV2:
@@ -215,6 +225,7 @@ class HueBridgeV2:
         if self._websession is None:
             connector = aiohttp.TCPConnector(
                 limit_per_host=3,
+                keepalive_timeout=IDLE_CONNECTION_TIMEOUT,
             )
             self._websession = aiohttp.ClientSession(connector=connector)
 

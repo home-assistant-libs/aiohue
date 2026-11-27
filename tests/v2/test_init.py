@@ -1,8 +1,11 @@
 """Test v2 bridge."""
 
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
+
+import aiohttp
 
 from aiohue import HueBridgeV2
+from aiohue.v2.controllers.events import KEEPALIVE_INTERVAL
 
 
 async def test_bridge_init(v2_resources):
@@ -31,3 +34,22 @@ async def test_bridge_init(v2_resources):
     assert bridge.config.check_version("1.79.2071401010") is False
     assert bridge.config.check_version("1.78.2071401010") is True
     assert bridge.config.check_version("1.50.1950111030") is True
+
+
+async def test_idle_connections_outlive_the_keepalive_interval():
+    """Test idle connections stay pooled longer than the event stream keepalive.
+
+    The keepalive request then keeps a connection to the bridge open, so a
+    request after a pause doesn't need a new TCP connection and TLS handshake.
+    """
+    bridge = HueBridgeV2("192.168.1.123", "mock-key")
+    response = MagicMock()
+    with (
+        patch("aiohttp.TCPConnector", wraps=aiohttp.TCPConnector) as connector,
+        patch("aiohttp.ClientSession.request", return_value=response),
+    ):
+        async with bridge.create_request("get", "clip/v2/resource"):
+            pass
+        await bridge.close()
+
+    assert connector.call_args.kwargs["keepalive_timeout"] > KEEPALIVE_INTERVAL
